@@ -2693,7 +2693,14 @@ class LaporanaccountingController extends Controller
                 }
             }
 
-            $message = "Sinkronisasi Selesai.\n\n";
+            $resetSummary = $resReset->json('summary');
+            $message = "Sinkronisasi Selesai.\n";
+            $message .= "Data di Portax Berhasil di-Reset:\n";
+            $message .= "- Kas Kecil: " . ($resetSummary['kaskecil'] ?? 0) . " dihapus\n";
+            $message .= "- Ledger: " . ($resetSummary['ledger'] ?? 0) . " dihapus\n";
+            $message .= "- Jurnal Umum: " . ($resetSummary['jurnalumum'] ?? 0) . " dihapus\n\n";
+            
+            $message .= "Hasil Sinkronisasi Baru:\n";
             $message .= "Kas Kecil: {$kaskecilSuccess} Sukses, {$kaskecilFailed} Gagal\n";
             $message .= "Ledger: {$ledgerSuccess} Sukses, {$ledgerFailed} Gagal\n";
             $message .= "Jurnal Umum: {$juSuccess} Sukses, {$juFailed} Gagal";

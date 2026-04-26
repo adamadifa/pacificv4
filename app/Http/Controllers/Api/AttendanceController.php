@@ -202,6 +202,10 @@ class AttendanceController extends Controller
 
         // Cek Apakah Sudah Absen
         $cek = DB::table('hrd_presensi')->where('tanggal', $hariini_tgl)->where('nik', $nik)->first();
+        if ($cek) {
+            $cek->foto_in = $cek->foto_in ? asset('storage/uploads/absensi/' . $cek->foto_in) : null;
+            $cek->foto_out = $cek->foto_out ? asset('storage/uploads/absensi/' . $cek->foto_out) : null;
+        }
 
         //Cek Apakah Memiliki Jadwal Shift
         $cekjadwalshift = DB::table('hrd_jadwalshift_detail')

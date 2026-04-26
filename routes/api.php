@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/izin', [App\Http\Controllers\Api\IzinController::class, 'index']);
     Route::get('/izin/form-data', [App\Http\Controllers\Api\IzinController::class, 'getFormData']);
     Route::post('/izin/store', [App\Http\Controllers\Api\IzinController::class, 'store']);
+    Route::delete('/izin/{type}/{id}', [App\Http\Controllers\Api\IzinController::class, 'destroy']);
     Route::post('/logout-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'logout']);
     Route::get('/attendance-history', [\App\Http\Controllers\Api\AttendanceController::class, 'getHistory']);
     Route::get('/attendance-summary', [\App\Http\Controllers\Api\AttendanceController::class, 'getSummary']);

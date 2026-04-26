@@ -20,12 +20,10 @@ class AuthenticatedSessionController extends Controller
     {
 
         $agent = new Agent();
-        // if ($agent->isMobile()) {
-        //     return view('auth.mobile.login');
-        // }
-        // return view('auth.mobile.login');
+        if ($agent->isMobile()) {
+            return view('auth.mobile.login');
+        }
         return view('auth.login');
-        // return view('auth.mobile.login');
     }
 
     /**

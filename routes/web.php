@@ -149,6 +149,7 @@ use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalkasbesarController;
 use App\Http\Controllers\SaldoawalkaskecilController;
+use App\Http\Controllers\SaldoawalrekeningController;
 use App\Http\Controllers\SaldoawalledgerController;
 use App\Http\Controllers\SaldoawalmutasikeuanganController;
 use App\Http\Controllers\AjuanLimitConfigController;
@@ -247,6 +248,12 @@ Route::middleware('auth')->group(function () {
 
         //Salesman
         Route::post('/dashboard/getcheckinsalesman', 'getcheckinsalesman')->name('penjualan.getcheckinsalesman');
+
+        //Dashboard Owner Details
+        Route::get('/dashboard/getdetailsaldoawal', 'getdetailsaldoawal')->name('dashboard.getdetailsaldoawal');
+        Route::get('/dashboard/getdetailmutasi', 'getdetailmutasi')->name('dashboard.getdetailmutasi');
+        Route::get('/dashboard/getdetailsaldoawalkb', 'getdetailsaldoawalkb')->name('dashboard.getdetailsaldoawalkb');
+        Route::get('/dashboard/getdetailmutasikb', 'getdetailmutasikb')->name('dashboard.getdetailmutasikb');
         Route::post('/dashboard/getdpbsalesman', 'getdpbsalesman')->name('penjualan.getdpbsalesman');
     });
 
@@ -1351,7 +1358,6 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SaldoawalledgerController::class)->group(function () {
         Route::get('/saledger', 'index')->name('saledger.index')->can('saledger.index');
-        Route::get('/samutasibank', 'index')->name('samutasibank.index')->can('samutasibank.index');
         Route::get('/saledger/create', 'create')->name('saledger.create')->can('saledger.create');
         Route::post('/saledger/store', 'store')->name('saledger.store')->can('saledger.store');
         Route::get('/saledger/{no_bukti}/edit', 'edit')->name('saledger.edit')->can('saledger.edit');
@@ -1359,6 +1365,18 @@ Route::middleware('auth')->group(function () {
         Route::delete('/saledger/{no_bukti}/delete', 'destroy')->name('saledger.delete')->can('saledger.delete');
 
         Route::post('/saledger/getsaldo', 'getsaldo')->name('saledger.getsaldo');
+    });
+
+    Route::controller(SaldoawalrekeningController::class)->group(function () {
+        Route::get('/samutasibank', 'index')->name('samutasibank.index')->can('samutasibank.index');
+        Route::get('/samutasibank/create', 'create')->name('samutasibank.create')->can('samutasibank.create');
+        Route::post('/samutasibank', 'store')->name('samutasibank.store')->can('samutasibank.store');
+        Route::get('/samutasibank/downloadtemplate', 'downloadtemplate')->name('samutasibank.downloadtemplate')->can('samutasibank.create');
+        Route::post('/samutasibank/import', 'import')->name('samutasibank.import')->can('samutasibank.create');
+        Route::get('/samutasibank/{kode_saldo_awal}/edit', 'edit')->name('samutasibank.edit')->can('samutasibank.edit');
+        Route::put('/samutasibank/{kode_saldo_awal}/update', 'update')->name('samutasibank.update')->can('samutasibank.edit');
+        Route::get('/samutasibank/{kode_saldo_awal}/show', 'show')->name('samutasibank.show')->can('samutasibank.index');
+        Route::delete('/samutasibank/{kode_saldo_awal}/delete', 'destroy')->name('samutasibank.delete')->can('samutasibank.delete');
     });
 
     Route::controller(SaldoawalmutasikeuanganController::class)->group(function () {

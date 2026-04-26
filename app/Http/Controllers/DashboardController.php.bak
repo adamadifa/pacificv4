@@ -79,136 +79,9 @@ class DashboardController extends Controller
 
 
 
-    public function getdetailsaldoawal(Request $request)
-    {
-        $tanggal = $request->tanggal;
-        $details = DB::table('keuangan_rekening_saldoawal_detail')
-            ->join('keuangan_rekening_saldoawal', 'keuangan_rekening_saldoawal_detail.kode_saldo_awal', '=', 'keuangan_rekening_saldoawal.kode_saldo_awal')
-            ->join('bank', 'keuangan_rekening_saldoawal_detail.kode_bank', '=', 'bank.kode_bank')
-            ->where('keuangan_rekening_saldoawal.tanggal', $tanggal)
-            ->where('keuangan_rekening_saldoawal_detail.kode_bank', '!=', 'BK070')
-            ->select('bank.nama_bank', 'bank.no_rekening', 'keuangan_rekening_saldoawal_detail.jumlah')
-            ->get();
-
-        $agent = new Agent();
-        if ($agent->isMobile()) {
-            return view('dashboard.mobile.getdetailsaldoawal', compact('details'));
-        }
-        return view('dashboard.getdetailsaldoawal', compact('details'));
-    }
-
-    public function getdetailmutasi(Request $request)
-    {
-        $tanggal = $request->tanggal;
-        $jenis = $request->jenis; // K for Penerimaan, D for Pengeluaran
-        $details = DB::table('keuangan_mutasi')
-            ->join('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank')
-            ->where('keuangan_mutasi.tanggal', $tanggal)
-            ->where('keuangan_mutasi.debet_kredit', $jenis)
-            ->where('keuangan_mutasi.kode_bank', '!=', 'BK070')
-            ->select('keuangan_mutasi.*', 'bank.nama_bank')
-            ->orderBy('keuangan_mutasi.id', 'asc')
-            ->get();
-
-        $agent = new Agent();
-        if ($agent->isMobile()) {
-            return view('dashboard.mobile.getdetailmutasi', compact('details', 'jenis'));
-        }
-        return view('dashboard.getdetailmutasi', compact('details', 'jenis'));
-    }
-
-    public function getdetailsaldoawalkb(Request $request)
-    {
-        $tanggal = $request->tanggal;
-        $details = DB::table('keuangan_saldokasbesar')
-            ->join('cabang', 'keuangan_saldokasbesar.kode_cabang', '=', 'cabang.kode_cabang')
-            ->where('keuangan_saldokasbesar.tanggal', $tanggal)
-            ->select('cabang.nama_cabang', 'keuangan_saldokasbesar.jumlah', 'keuangan_saldokasbesar.keterangan')
-            ->get();
-
-        $agent = new Agent();
-        if ($agent->isMobile()) {
-            return view('dashboard.mobile.getdetailsaldoawalkb', compact('details'));
-        }
-        return view('dashboard.getdetailsaldoawalkb', compact('details'));
-    }
-
-    public function getdetailmutasikb(Request $request)
-    {
-        $tanggal = $request->tanggal;
-        $jenis = $request->jenis; // K for Penerimaan, D for Pengeluaran
-        $details = DB::table('keuangan_mutasi')
-            ->where('keuangan_mutasi.tanggal', $tanggal)
-            ->where('keuangan_mutasi.debet_kredit', $jenis)
-            ->where('keuangan_mutasi.kode_bank', 'BK070')
-            ->orderBy('keuangan_mutasi.id', 'asc')
-            ->get();
-
-        $agent = new Agent();
-        if ($agent->isMobile()) {
-            return view('dashboard.mobile.getdetailmutasikb', compact('details', 'jenis'));
-        }
-        return view('dashboard.getdetailmutasikb', compact('details', 'jenis'));
-    }
-
     public function dashboardowner(Request $request)
     {
-        $tanggal = $request->tanggal ?? date('Y-m-d');
-
-        // Total Saldo Awal Rekening
-        $saldo_awal = DB::table('keuangan_rekening_saldoawal_detail')
-            ->join('keuangan_rekening_saldoawal', 'keuangan_rekening_saldoawal_detail.kode_saldo_awal', '=', 'keuangan_rekening_saldoawal.kode_saldo_awal')
-            ->where('keuangan_rekening_saldoawal.tanggal', $tanggal)
-            ->where('keuangan_rekening_saldoawal_detail.kode_bank', '!=', 'BK070')
-            ->sum('jumlah');
-
-        // Total Penerimaan dan Pengeluaran dari Mutasi
-        $mutasi = DB::table('keuangan_mutasi')
-            ->select(
-                DB::raw("SUM(IF(debet_kredit='K',jumlah,0)) as penerimaan"),
-                DB::raw("SUM(IF(debet_kredit='D',jumlah,0)) as pengeluaran")
-            )
-            ->where('tanggal', $tanggal)
-            ->where('kode_bank', '!=', 'BK070')
-            ->first();
-
-        $data['tanggal'] = $tanggal;
-        $data['saldo_awal'] = $saldo_awal;
-        $data['penerimaan'] = $mutasi->penerimaan ?? 0;
-        $data['pengeluaran'] = $mutasi->pengeluaran ?? 0;
-        $data['net'] = $saldo_awal + ($mutasi->penerimaan ?? 0) - ($mutasi->pengeluaran ?? 0);
-
-        // Kas Besar BK070
-        $saldo_awal_kb = DB::table('keuangan_saldokasbesar')
-            ->where('tanggal', $tanggal)
-            ->sum('jumlah');
-        
-        $mutasi_kb = DB::table('keuangan_mutasi')
-            ->select(
-                DB::raw("SUM(IF(debet_kredit='K',jumlah,0)) as penerimaan"),
-                DB::raw("SUM(IF(debet_kredit='D',jumlah,0)) as pengeluaran")
-            )
-            ->where('tanggal', $tanggal)
-            ->where('kode_bank', 'BK070')
-            ->first();
-        
-        $data['saldo_awal_kb'] = $saldo_awal_kb;
-        $data['penerimaan_kb'] = $mutasi_kb->penerimaan ?? 0;
-        $data['pengeluaran_kb'] = $mutasi_kb->pengeluaran ?? 0;
-        $data['net_kb'] = $saldo_awal_kb + ($mutasi_kb->penerimaan ?? 0) - ($mutasi_kb->pengeluaran ?? 0);
-
-        // Combined Totals for Statistic Cards
-        $data['total_saldo_awal'] = $saldo_awal + $saldo_awal_kb;
-        $data['total_penerimaan'] = $data['penerimaan'] + $data['penerimaan_kb'];
-        $data['total_pengeluaran'] = $data['pengeluaran'] + $data['pengeluaran_kb'];
-        $data['total_net'] = $data['total_saldo_awal'] + $data['total_penerimaan'] - $data['total_pengeluaran'];
-
-        $agent = new Agent();
-        if ($agent->isMobile()) {
-            return view('dashboard.mobile.owner', $data);
-        }
-
-        return view('dashboard.owner', $data);
+        return $this->owner($request);
     }
     function owner($request)
     {
@@ -386,17 +259,6 @@ class DashboardController extends Controller
 
             return view('keuangan.laporan.mutasikeuangan_kategori_cetak', $data);
         }
-
-        $agent = new Agent();
-        if ($agent->isMobile()) {
-            $data['penerimaan'] = $data['rekap']->total_rekap_kredit ?? 0;
-            $data['pengeluaran'] = $data['rekap']->total_rekap_debet ?? 0;
-            $data['net'] = $data['rekap']->total_saldo ?? 0;
-            $data['saldo_awal'] = $data['net'] - $data['penerimaan'] + $data['pengeluaran'];
-            $data['tanggal'] = $request->dari ?? date('Y-m-d');
-            return view('dashboard.mobile.owner', $data);
-        }
-
         return view('dashboard.owner', $data);
     }
 

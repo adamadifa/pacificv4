@@ -26,6 +26,19 @@ class Karyawan extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function getFotoAttribute($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        if (strpos($value, 'http') === 0) {
+            return $value;
+        }
+
+        return url('storage/karyawan/' . $value);
+    }
+
 
     function getKaryawanpenilaian()
     {

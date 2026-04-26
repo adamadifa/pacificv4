@@ -39,11 +39,16 @@ class IzinController extends Controller
             ->select('kode_izin_keluar as id', 'tanggal', DB::raw('tanggal as dari'), DB::raw('tanggal as sampai'), 'keterangan', 'status', DB::raw("'Keluar' as tipe"))
             ->where('nik', $nik);
             
+        $koreksi = DB::table('hrd_izinkoreksi')
+            ->select('kode_izin_koreksi as id', 'tanggal', DB::raw('tanggal as dari'), DB::raw('tanggal as sampai'), 'keterangan', 'status', DB::raw("'Koreksi' as tipe"))
+            ->where('nik', $nik);
+            
         $combined = $sakit->union($absen)
             ->union($cuti)
             ->union($dinas)
             ->union($pulang)
             ->union($keluar)
+            ->union($koreksi)
             ->orderBy('tanggal', 'desc')
             ->get();
             
@@ -208,7 +213,6 @@ class IzinController extends Controller
                         'id_user' => 1
                     ]);
                     break;
-
                 case 'keluar':
                     $last = DB::table('hrd_izinkeluar')->whereRaw('LEFT(kode_izin_keluar,6) = "IK'.$tgl_code.'"')->orderBy('kode_izin_keluar', 'desc')->first();
                     $kode = buatkode($last ? $last->kode_izin_keluar : '', 'IK' . $tgl_code, 4);
@@ -225,7 +229,39 @@ class IzinController extends Controller
                         'kode_dept' => $karyawan->kode_dept,
                         'kode_cabang' => $karyawan->kode_cabang,
                         'head' => $head, 'status' => 0, 'hrd' => 0, 'direktur' => 0, 'forward_to_direktur' => 0,
-                        'id_user' => $request->user()->id
+                        'id_user' => 1
+                    ]);
+                    break;
+
+                case 'koreksi':
+                    $last = DB::table('hrd_izinkoreksi')->whereRaw('LEFT(kode_izin_koreksi,6) = "RK'.$tgl_code.'"')->orderBy('kode_izin_koreksi', 'desc')->first();
+                    $kode = buatkode($last ? $last->kode_izin_koreksi : '', 'RK' . $tgl_code, 4);
+                    
+                    $days = [
+                        'Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa',
+                        'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'
+                    ];
+                    $hari = $days[date('l', strtotime($request->tanggal))];
+                    $detail_jadwal = DB::table('hrd_jadwalkerja_detail')
+                        ->where('kode_jadwal', $karyawan->kode_jadwal)
+                        ->where('hari', $hari)
+                        ->first();
+                    $kode_jam_kerja = $detail_jadwal ? $detail_jadwal->kode_jam_kerja : 'JK01';
+
+                    DB::table('hrd_izinkoreksi')->insert([
+                        'kode_izin_koreksi' => $kode,
+                        'nik' => $nik,
+                        'tanggal' => $request->tanggal,
+                        'jam_masuk' => $request->jam_masuk ? $request->tanggal . ' ' . $request->jam_masuk . ':00' : null,
+                        'jam_pulang' => $request->jam_pulang ? $request->tanggal . ' ' . $request->jam_pulang . ':00' : null,
+                        'keterangan' => $request->keterangan,
+                        'kode_jadwal' => $karyawan->kode_jadwal,
+                        'kode_jam_kerja' => $kode_jam_kerja,
+                        'kode_jabatan' => $karyawan->kode_jabatan,
+                        'kode_dept' => $karyawan->kode_dept,
+                        'kode_cabang' => $karyawan->kode_cabang,
+                        'head' => $head, 'status' => 0, 'hrd' => 0, 'direktur' => 0, 'forward_to_direktur' => 0,
+                        'id_user' => 1
                     ]);
                     break;
             }
@@ -236,5 +272,39 @@ class IzinController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function destroy(Request $request, $type, $id)
+    {
+        $nik = $request->user()->nik;
+        $table = '';
+        $id_column = '';
+
+        switch ($type) {
+            case 'Sakit': $table = 'hrd_izinsakit'; $id_column = 'kode_izin_sakit'; break;
+            case 'Absen': $table = 'hrd_izinabsen'; $id_column = 'kode_izin'; break;
+            case 'Cuti': $table = 'hrd_izincuti'; $id_column = 'kode_izin_cuti'; break;
+            case 'Dinas': $table = 'hrd_izindinas'; $id_column = 'kode_izin_dinas'; break;
+            case 'Pulang': $table = 'hrd_izinpulang'; $id_column = 'kode_izin_pulang'; break;
+            case 'Keluar': $table = 'hrd_izinkeluar'; $id_column = 'kode_izin_keluar'; break;
+            case 'Koreksi': $table = 'hrd_izinkoreksi'; $id_column = 'kode_izin_koreksi'; break;
+        }
+
+        if (!$table) {
+            return response()->json(['success' => false, 'message' => 'Tipe izin tidak valid'], 400);
+        }
+
+        $check = DB::table($table)->where($id_column, $id)->where('nik', $nik)->first();
+        if (!$check) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        if ($check->status != 0) {
+            return response()->json(['success' => false, 'message' => 'Data sudah diproses, tidak bisa dibatalkan'], 400);
+        }
+
+        DB::table($table)->where($id_column, $id)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Pengajuan berhasil dibatalkan']);
     }
 }

@@ -256,13 +256,27 @@
              </a>
          </li>
          @if (in_array($level_user, ['super admin', 'direktur', 'gm administrasi', 'manager keuangan', 'regional operation manager', 'spv accounting']))
-             <li class="menu-item {{ request()->is(['dashboard/owner']) ? 'active' : '' }}">
-                 <a href="{{ route('dashboard.owner') }}" class="menu-link">
-                     <i class="menu-icon tf-icons ti ti-device-analytics"></i>
-                     <div>Dashboard Owner</div>
-                 </a>
-             </li>
-         @endif
+            <li class="menu-item {{ request()->is(['dashboard/owner', 'samutasibank', 'samutasibank/*']) ? 'open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-device-analytics"></i>
+                    <div>Dashboard Owner</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ request()->is(['dashboard/owner']) ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.owner') }}" class="menu-link">
+                            <div>Dashboard</div>
+                        </a>
+                    </li>
+                    @if (auth()->user()->hasAnyPermission(['samutasibank.index']))
+                        <li class="menu-item {{ request()->is(['samutasibank', 'samutasibank/*']) ? 'active' : '' }}">
+                            <a href="{{ route('samutasibank.index') }}" class="menu-link">
+                                <div>Saldo Awal Rekening</div>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </li>
+        @endif
 
 
          @if (auth()->user()->hasAnyPermission(['dashboard.sfa']))

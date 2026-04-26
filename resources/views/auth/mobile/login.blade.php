@@ -1,250 +1,200 @@
 <!DOCTYPE html>
+<html lang="id">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login | PORTAL CV. Makmur Permata</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(-45deg, #1c1c1c, #2a2a2a, #111827, #374151);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
+        .glass-container {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 100%;
+            height: 100vh;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
 
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
 
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
 
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
 
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
 
+        #character-container {
+            width: 160px;
+            margin-bottom: 1rem;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            pointer-events: none;
+        }
 
+        #character-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.5));
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+        }
 
+        .state-idle { transform: translateY(0); animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
 
+        .state-typing { transform: translateY(-3px) scale(1.02); }
+    </style>
+</head>
 
+<body>
+    <div class="glass-container">
+        <!-- Logo -->
+        <div class="mb-4">
+            <img src="{{ asset('assets/img/logo/logoportal.png') }}" alt="Logo" width="100" style="filter: brightness(0) invert(1);">
+        </div>
 
+        <!-- Character -->
+        <div id="character-container" class="state-idle">
+            <img id="character-img" src="{{ asset('karakter.png') }}" alt="Character">
+        </div>
 
+        <!-- Form Title -->
+        <div class="w-full mb-6 text-center">
+            <h1 class="text-2xl font-bold text-white mb-1">Welcome Back</h1>
+            <p class="text-gray-400 text-xs">Sign in to your account</p>
+        </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- =========================================================
-* Vuexy - Bootstrap Admin Template | v2.0.0
-==============================================================
-
-* Product Page: https://1.envato.market/vuexy_admin
-* Created by: Pixinvent
-* License: You must have a valid license purchased in order to legally use the theme for your project.
-* Copyright Pixinvent (https://pixinvent.com)
-
-=========================================================
- -->
-<!-- beautify ignore:start -->
-
-
-<html lang="en" class="light-style layout-wide  customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../../assets/" data-template="vertical-menu-template" data-style="light">
-
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
-    <title>Login Cover - Pages | Vuexy - Bootstrap Admin Template</title>
-
-
-    <meta name="description" content="Start your development with a Dashboard for Bootstrap 5" />
-    <meta name="keywords" content="dashboard, bootstrap 5 dashboard, bootstrap 5 design, bootstrap 5">
-    <!-- Canonical SEO -->
-    <link rel="canonical" href="https://1.envato.market/vuexy_admin">
-
-
-    <!-- ? PROD Only: Google Tag Manager (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
-
-    <!-- End Google Tag Manager -->
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
-        rel="stylesheet" />
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/fonts/fontawesome.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/fonts/tabler-icons.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/fonts/flag-icons.css') }}" />
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/css/rtl/core.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-semi-dark.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/assets/css/demo.css') }}" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/libs/node-waves/node-waves.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/libs/typeahead-js/typeahead.css') }}" />
-    <!-- Vendor -->
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/libs/@form-validation/umd/styles/index.min.css') }}" />
-
-    <!-- Page CSS -->
-    <!-- Page -->
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/css/pages/page-auth.css') }}" />
-
-    <!-- Helpers -->
-    <script src="{{ asset('/assets/vendor/js/helpers.js') }}"></script>
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="{{ asset('/assets/js/config.js') }}"></script>
-
-  </head>
-
-  <body>
-
-
-    <!-- ?PROD Only: Google Tag Manager (noscript) (Default ThemeSelection: GTM-5DDHKGP, PixInvent: GTM-5J3LMKC) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5J3LMKC" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
-    <!-- Content -->
-
-<div class="authentication-wrapper authentication-cover">
-  <!-- Logo -->
-  <a href="index.html" class="app-brand auth-cover-brand">
-    <span class="app-brand-logo demo">
-<svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" clip-rule="evenodd" d="M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z" fill="#7367F0" />
-  <path opacity="0.06" fill-rule="evenodd" clip-rule="evenodd" d="M7.69824 16.4364L12.5199 3.23696L16.5541 7.25596L7.69824 16.4364Z" fill="#161616" />
-  <path opacity="0.06" fill-rule="evenodd" clip-rule="evenodd" d="M8.07751 15.9175L13.9419 4.63989L16.5849 7.28475L8.07751 15.9175Z" fill="#161616" />
-  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z" fill="#7367F0" />
-</svg>
-</span>
-    <span class="app-brand-text demo text-heading fw-bold">Vuexy</span>
-  </a>
-  <!-- /Logo -->
-  <div class="authentication-inner row m-0">
-    <!-- /Left Text -->
-    <div class="d-none d-lg-flex col-lg-8 p-0">
-      <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-        <img src="../../assets/img/illustrations/auth-login-illustration-light.png" alt="auth-login-cover" class="my-5 auth-illustration" data-app-light-img="illustrations/auth-login-illustration-light.png" data-app-dark-img="illustrations/auth-login-illustration-dark.png">
-
-        <img src="../../assets/img/illustrations/bg-shape-image-light.png" alt="auth-login-cover" class="platform-bg" data-app-light-img="illustrations/bg-shape-image-light.png" data-app-dark-img="illustrations/bg-shape-image-dark.png">
-      </div>
-    </div>
-    <!-- /Left Text -->
-
-    <!-- Login -->
-    <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
-      <div class="w-px-400 mx-auto mt-12 pt-5">
-        <h4 class="mb-1">Welcome to Vuexy! 👋</h4>
-        <p class="mb-6">Please sign-in to your account and start the adventure</p>
-
-        <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
-          <div class="mb-6">
-            <label for="email" class="form-label">Email or Username</label>
-            <input type="text" class="form-control" id="email" name="email-username" placeholder="Enter your email or username" autofocus>
-          </div>
-          <div class="mb-6 form-password-toggle">
-            <label class="form-label" for="password">Password</label>
-            <div class="input-group input-group-merge">
-              <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+        @if ($errors->any())
+            <div class="w-full bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-2 rounded-xl mb-4 text-xs">
+                @foreach ($errors->all() as $error)
+                    <p>• {{ $error }}</p>
+                @endforeach
             </div>
-          </div>
-          <div class="my-8">
-            <div class="d-flex justify-content-between">
-              <div class="form-check mb-0 ms-2">
-                <input class="form-check-input" type="checkbox" id="remember-me">
-                <label class="form-check-label" for="remember-me">
-                  Remember Me
-                </label>
-              </div>
-              <a href="auth-forgot-password-cover.html">
-                <p class="mb-0">Forgot Password?</p>
-              </a>
+        @endif
+
+        <!-- Login Form -->
+        <form id="login-form" action="{{ route('login') }}" method="POST" class="w-full space-y-4">
+            @csrf
+            <div>
+                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Username</label>
+                <input type="text" name="id_user" id="id_user" placeholder="Username" 
+                    class="input-field w-full px-4 py-3.5 text-sm font-medium" required value="{{ old('id_user') }}" autocomplete="off">
             </div>
-          </div>
-          <button class="btn btn-primary d-grid w-100">
-            Sign in
-          </button>
+
+            <div>
+                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Password</label>
+                <div class="relative">
+                    <input type="password" name="password" id="password" placeholder="••••••••" 
+                        class="input-field w-full px-4 py-3.5 text-sm font-medium" required>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center px-1">
+                <div class="flex items-center">
+                    <input type="checkbox" name="remember" id="remember" class="w-3.5 h-3.5 rounded border-gray-600 bg-gray-800 text-blue-600 focus:ring-blue-500">
+                    <label for="remember" class="ml-2 text-xs text-gray-400">Remember me</label>
+                </div>
+                <a href="#" class="text-xs font-bold text-blue-400">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-5 text-white text-base mt-2 uppercase tracking-widest">
+                Sign In
+            </button>
+
+            <p class="text-gray-500 text-center text-[11px] mt-6">
+                Don't have an account? <a href="#" class="text-blue-400 font-bold ml-1">Contact Admin</a>
+            </p>
         </form>
-
-        <p class="text-center">
-          <span>New on our platform?</span>
-          <a href="auth-register-cover.html">
-            <span>Create an account</span>
-          </a>
-        </p>
-
-        <div class="divider my-6">
-          <div class="divider-text">or</div>
-        </div>
-
-        <div class="d-flex justify-content-center">
-          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-facebook me-1_5">
-            <i class="tf-icons ti ti-brand-facebook-filled"></i>
-          </a>
-
-          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-twitter me-1_5">
-            <i class="tf-icons ti ti-brand-twitter-filled"></i>
-          </a>
-
-          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-github me-1_5">
-            <i class="tf-icons ti ti-brand-github-filled"></i>
-          </a>
-
-          <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
-            <i class="tf-icons ti ti-brand-google-filled"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    <!-- /Login -->
-  </div>
-</div>
-
-<!-- / Content -->
-
-
-    <div class="buy-now">
-      <a href="https://1.envato.market/vuexy_admin" target="_blank" class="btn btn-danger btn-buy-now">Buy Now</a>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const charContainer = document.getElementById("character-container");
+            const charImg = document.getElementById("character-img");
+            const idInput = document.getElementById("id_user");
+            const passwordInput = document.getElementById("password");
 
+            function resetCharacter() {
+                charContainer.className = "state-idle";
+                charImg.style.transform = "rotate(0deg)";
+                charImg.src = "{{ asset('karakter.png') }}";
+            }
 
+            idInput.addEventListener("focus", () => {
+                charContainer.className = "state-typing";
+            });
 
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
+            idInput.addEventListener("blur", resetCharacter);
 
-<script src="{{ asset('/assets/vendor/libs/jquery/jquery.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/popper/popper.js') }}"></script>
-<script src="{{ asset('/assets/vendor/js/bootstrap.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/hammer/hammer.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/i18n/i18n.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
-<script src="{{ asset('/assets/vendor/js/menu.js') }}"></script>
+            idInput.addEventListener("input", (e) => {
+                const length = e.target.value.length;
+                const rotation = Math.min((length * 1.5), 10) - 5;
+                charImg.style.transform = `rotate(${rotation}deg) scale(1.05)`;
+            });
 
-<!-- endbuild -->
+            passwordInput.addEventListener("focus", () => {
+                charContainer.className = "state-typing";
+                charImg.src = "{{ asset('karaktertutupmata.png') }}";
+            });
 
-<!-- Vendors JS -->
-<script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
-<script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-
-<!-- Main JS -->
-<script src="{{ asset('/assets/js/main.js') }}"></script>
-
-<!-- Page JS -->
-<script src="{{ asset('/assets/js/pages-auth.js') }}"></script>
-
-  </body>
+            passwordInput.addEventListener("blur", resetCharacter);
+        });
+    </script>
+</body>
 
 </html>
-
-<!-- beautify ignore:end -->
