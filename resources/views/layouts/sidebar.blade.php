@@ -335,7 +335,7 @@
 
          @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
-             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket', 'mesinfingerprint']) ? 'open' : '' }} ">
+             <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket', 'mesinfingerprint', 'push-subscriptions']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
                      <i class="menu-icon tf-icons ti ti-tool"></i>
                      <div>Utilities</div>
@@ -385,6 +385,11 @@
                               </a>
                           </li>
                       @endif
+                      <li class="menu-item {{ request()->is(['push-subscriptions', 'push-subscriptions/*']) ? 'active' : '' }}">
+                          <a href="{{ route('push-subscriptions.index') }}" class="menu-link">
+                              <div>Push Subscriptions</div>
+                          </a>
+                      </li>
                  </ul>
              </li>
          @endif

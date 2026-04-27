@@ -182,6 +182,7 @@ use App\Http\Controllers\ProgrammarketingController;
 use App\Http\Controllers\ProgramIkatan2026Controller;
 use App\Http\Controllers\WorksheetomController;
 use App\Http\Controllers\MesinfingerprintController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\BPBController;
 use App\Http\Controllers\BPBPembelianController;
 use App\Http\Controllers\InternalMemoController;
@@ -2183,6 +2184,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/kirimlpc/{kode_kirim_lpc}/approve', 'approve')->name('kirimlpc.approve')->can('kirimlpc.approve');
         Route::post('/kirimlpc/{kode_kirim_lpc}/storeapprove', 'storeapprove')->name('kirimlpc.storeapprove')->can('kirimlpc.approve');
         Route::delete('/kirimlpc/{kode_kirim_lpc}/cancelapprove', 'cancelapprove')->name('kirimlpc.cancelapprove')->can('kirimlpc.approve');
+    });
+
+
+    Route::controller(PushSubscriptionController::class)->group(function () {
+        Route::get('/push-subscriptions', 'index')->name('push-subscriptions.index');
+        Route::delete('/push-subscriptions/{id}', 'destroy')->name('push-subscriptions.destroy');
     });
 
 
