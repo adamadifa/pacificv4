@@ -57,8 +57,9 @@
                 <tr>
                     <td style="text-align: center">
                         <h3 style="font-family:'Cambria'; line-height:0px">PINJAMAN KARYAWAN</h3>
-                        <h3 style="font-family:'Cambria'; line-height:0px">CV. PACIFIC & CV. MAKMUR PERMATA</h3>
-                        <span style="font-family:'Times New Roman'">Jl. Perintis Kemerdekaan No. 160 Tasikmalaya</span><br>
+                        <h3 style="font-family:'Cambria'; line-height:0px">CV. MAKMUR PERMATA</h3>
+                        <span style="font-family:'Times New Roman'">Jl. Perintis Kemerdekaan No. 160
+                            Tasikmalaya</span><br>
                         <span style="font-size: 12px">Telp (0265) 336794 Fax (0265) 332329</span><br>
                         <span style="font-size: 11px"><i>e-mail : pacific.tasikmalaya@gmail.com</i></span>
                     </td>
@@ -66,7 +67,8 @@
             </table>
             <hr>
             <u>
-                <h3 style="font-family:'Cambria'; line-height:0px; text-align:center">FORMULIR PENGAJUAN PINJAMAN KARYAWAN
+                <h3 style="font-family:'Cambria'; line-height:0px; text-align:center">FORMULIR PENGAJUAN PINJAMAN
+                    KARYAWAN
                 </h3>
             </u>
             <table class="datatable4">
@@ -162,7 +164,8 @@
                         <h3 style="font-family:'Cambria'; line-height:0px">MAKMUR PERMATA GROUP</h3>
                         <i style="font-family:'Cambria';">Factory / Head Office :</i>
                         <br>
-                        <span style="font-family:'Times New Roman'">Jl. Perintis Kemerdekaan No. 160 Tasikmalaya</span><br>
+                        <span style="font-family:'Times New Roman'">Jl. Perintis Kemerdekaan No. 160
+                            Tasikmalaya</span><br>
                         <span style="font-size: 12px">Telp (0265) 336794 Fax (0265) 332329</span><br>
                         <span style="font-size: 11px">e-mail : pacific.tasikmalaya@gmail.com</span>
                     </td>
