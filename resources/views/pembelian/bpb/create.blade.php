@@ -43,12 +43,12 @@
                 <form action="{{ route('bpbpembelian.store') }}" method="post" id="formcreatebpb">
                     @csrf
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal"
                                 value="{{ Date('Y-m-d') }}" datepicker="flatpickr-date" />
                         </div>
-                        <div class="col-6">
-                            <select name="kode_supplier" class="form-control select2KodeSupplier" required>
+                        <div class="col-6" hidden>
+                            <select name="kode_supplier" class="form-control select2KodeSupplier">
                                 <option value=""></option>
                                 @foreach ($supplier as $s)
                                     <option value="{{ $s->kode_supplier }}">
@@ -107,8 +107,8 @@
                                 <tr data-kode_kategori="{{ $b->kode_kategori }}">
                                     <td class="text-center">
                                         <input type="checkbox" class="pilih-barang" data-kode="{{ $b->kode_barang }}"
-                                            data-nama="{{ $b->nama_barang }}" data-satuan="{{ $b->satuan }}"
-                                            data-sisa="{{ $b->sisa }}">
+                                            data-nama="{{ $b->nama_barang }}" data-ket="{{ $b->keterangan }}"
+                                            data-satuan="{{ $b->satuan }}" data-sisa="{{ $b->sisa }}">
                                     </td>
                                     <td>{{ $b->kode_barang }}</td>
                                     <td>{{ strtoupper($b->nama_barang) }}</td>
@@ -118,7 +118,7 @@
                                     <td>
                                         <input type="text"
                                             class="form-control form-control-sm jumlah-barang number-separator"
-                                            disabled>
+                                            value="{{ $b->sisa }}" disabled>
                                     </td>
                                 </tr>
                             @endforeach
@@ -306,6 +306,12 @@
                 kode_group = "000";
             } else {
                 kode_group = "{{ Auth::user()->kode_dept }}";
+                if (kode_group = 'GDG') {
+                    kode_group = 'GDL';
+                } else {
+                    kode_group = "{{ Auth::user()->kode_dept }}";
+                }
+
             }
 
             // Reset modal sebelum dibuka
@@ -313,7 +319,6 @@
             $('#tableBarang tbody tr').show().removeClass('in-cart');
             $('.pilih-barang').prop('checked', false);
             $('.jumlah-barang').prop('disabled', true).val('');
-
             // Load DataTable & tampilkan modal
             loadTablebarang(kode_group);
 
@@ -473,6 +478,7 @@
             const satuan = $(this).data('satuan');
             const sisa = $(this).data('sisa');
             const jumlahInput = row.find('.jumlah-barang');
+            const ket = $(this).data('ket');
 
             if (this.checked) {
                 jumlahInput.prop('disabled', false).val(sisa);
@@ -499,7 +505,7 @@
                         <td>
                             <input type="text"
                                 class="form-control form-control-sm"
-                                name="ket[]"
+                                name="ket[]" value="${ket ?? ''}"
                                 placeholder="Keterangan...">
                         </td>
                         <td class="text-center">
@@ -536,13 +542,23 @@
         });
 
         $(document).on('keyup change', '.jml-keranjang', function() {
-            const kode = $(this).data('kode');
-            const jumlah = $(this).val();
+            let value = $(this).val().replaceAll('.', '');
+            let jumlah = parseInt(value || 0);
+            const sisa = parseInt($(this).data('sisa'));
 
-            $(`.pilih-barang[data-kode="${kode}"]`)
-                .closest('tr')
-                .find('.jumlah-barang')
-                .val(jumlah);
+            if (jumlah > sisa) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Jumlah Melebihi Sisa',
+                    text: `Maksimal ${sisa}`,
+                });
+                jumlah = sisa;
+                $(this).val(sisa);
+            }
+
+            if (jumlah <= 0) {
+                $(this).val(1);
+            }
         });
 
         $('#checkAllBarang').on('change', function() {

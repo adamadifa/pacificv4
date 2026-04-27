@@ -28,9 +28,9 @@ class BPBPembelianController extends Controller
         $deptList = DB::table('hrd_departemen')
             ->orderBy('nama_dept')
             ->get();
-        $bpb = DB::table('bpb_pembelian')
+        $bpb = DB::table('bpb_pembelian as bpb')
             ->select(
-                'bpb_pembelian.*',
+                'bpb.*',
                 'hrd_departemen.nama_dept',
                 'users.name as nama_user',
                 'u.name as nama_approve_user',
@@ -38,46 +38,64 @@ class BPBPembelianController extends Controller
 
                 // TOTAL BPB
                 DB::raw('
-                (SELECT SUM(jumlah)
-                 FROM bpb_pembelian_detail
-                 WHERE bpb_pembelian_detail.no_bpb = bpb_pembelian.no_bpb
-                ) as total_bpb
-            '),
+            (SELECT SUM(jumlah)
+             FROM bpb_pembelian_detail
+             WHERE bpb_pembelian_detail.no_bpb = bpb.no_bpb
+            ) as total_bpb
+        '),
+
+                // TOTAL SERAH TERIMA (dari pembelian)
+                DB::raw('
+            (SELECT SUM(pd.jumlah)
+             FROM pembelian p
+             JOIN pembelian_detail pd
+               ON pd.no_bukti = p.no_bukti
+             WHERE p.no_bpb = bpb.no_bpb
+            ) as total_serah_terima
+        ')
             )
-            ->leftJoin('hrd_departemen', 'bpb_pembelian.kode_dept', '=', 'hrd_departemen.kode_dept')
-            ->leftJoin('users', 'bpb_pembelian.id_user', '=', 'users.id')
-            ->leftJoin('users as u', 'bpb_pembelian.approve_user', '=', 'u.id')
-            ->leftJoin('cabang', 'bpb_pembelian.kode_cabang', '=', 'cabang.kode_cabang')
+            ->leftJoin('hrd_departemen', 'bpb.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->leftJoin('users', 'bpb.id_user', '=', 'users.id')
+            ->leftJoin('users as u', 'bpb.approve_user', '=', 'u.id')
+            ->leftJoin('cabang', 'bpb.kode_cabang', '=', 'cabang.kode_cabang')
 
             // Hak akses
             ->when(!in_array($id, ['54', '29', '1']), function ($q) use ($cabang, $dept) {
-                $q->where('bpb_pembelian.kode_cabang', $cabang)
-                    ->where('bpb_pembelian.kode_dept', $dept);
+                $q->where('bpb.kode_cabang', $cabang)
+                    ->where('bpb.kode_dept', $dept);
             })
+
             // Filter tanggal
             ->when($request->filled('dari') && $request->filled('sampai'), function ($q) use ($request) {
-                $q->whereBetween('bpb_pembelian.tanggal', [$request->dari, $request->sampai]);
+                $q->whereBetween('bpb.tanggal', [$request->dari, $request->sampai]);
             })
+
             // Filter no BPB
             ->when($request->filled('no_bpb_search'), function ($q) use ($request) {
-                $q->where('bpb_pembelian.no_bpb', $request->no_bpb_search);
+                $q->where('bpb.no_bpb', $request->no_bpb_search);
             })
-            // 🔥 FILTER STATUS
+
+            // 🔥 STATUS
             ->when($request->status == 'selesai', function ($q) {
-                $q->havingRaw('total_serah_terima = total_bpb');
+                $q->havingRaw('IFNULL(total_serah_terima,0) >= IFNULL(total_bpb,0)');
             })
+
             ->when($request->status == 'proses', function ($q) {
-                $q->havingRaw('(total_serah_terima < total_bpb OR total_serah_terima IS NULL)');
+                $q->havingRaw('IFNULL(total_serah_terima,0) < IFNULL(total_bpb,0)');
             })
+
+            // Filter cabang
             ->when($request->filled('kode_cabang'), function ($q) use ($request) {
-                $q->where('bpb_pembelian.kode_cabang', $request->kode_cabang);
+                $q->where('bpb.kode_cabang', $request->kode_cabang);
             })
+
             // Filter departemen
             ->when($request->filled('kode_dept'), function ($q) use ($request) {
-                $q->where('bpb_pembelian.kode_dept', $request->kode_dept);
+                $q->where('bpb.kode_dept', $request->kode_dept);
             })
-            ->orderBy('bpb_pembelian.tanggal', 'desc')
-            ->orderBy('bpb_pembelian.created_at', 'desc')
+
+            ->orderBy('bpb.tanggal', 'desc')
+            ->orderBy('bpb.created_at', 'desc')
             ->simplePaginate(20)
             ->appends($request->all());
 
@@ -146,28 +164,58 @@ class BPBPembelianController extends Controller
                     ->where('bpb.approve_gudang', '1');
             })
 
-            ->leftJoin('pembelian as st', 'st.no_bukti', '=', 'bpb.no_bpb')
-            ->leftJoin('pembelian_detail as std', 'std.no_bukti', '=', 'st.no_bukti')
-            ->leftJoin('bpb_pembelian_detail as bpd', 'bpd.kode_barang', '=', 'bp.kode_barang')
-
             ->select(
                 'bp.kode_barang',
+                'bp.nama_barang',
+                'bp.satuan',
                 'bp.kode_kategori',
                 'bp.kode_group',
                 'pbk.nama_kategori',
-                'bp.nama_barang',
-                'bp.satuan',
+                'bd.keterangan',
 
                 DB::raw('SUM(bd.jumlah) as total_bpb'),
-                DB::raw('COALESCE(SUM(std.jumlah),0) as total_serah_terima'),
-                DB::raw('COALESCE(SUM(bpd.jumlah),0) as total_pembelian'),
 
                 DB::raw('
-                    (SUM(bd.jumlah)
-                    - COALESCE(SUM(std.jumlah),0)
-                    - COALESCE(SUM(bpd.jumlah),0)
-                    ) as sisa
-                ')
+                    COALESCE((
+                        SELECT SUM(gd.jumlah)
+                        FROM gudang_logistik_barang_keluar_detail gd
+                        JOIN gudang_logistik_barang_keluar g
+                            ON g.no_bukti = gd.no_bukti
+                        WHERE g.no_ref = bd.no_bpb
+                        AND gd.kode_barang = bp.kode_barang
+                    ),0) as total_keluar
+                '),
+                DB::raw('
+                    COALESCE((
+                        SELECT SUM(bpd.jumlah - COALESCE(bpd.jumlah_diterima,0))
+                        FROM bpb_pembelian_detail bpd
+                        JOIN bpb_pembelian bpbh
+                        WHERE bpd.kode_barang = bp.kode_barang
+                        AND bpd.jumlah_diterima IS NULL
+                    ),0) as total_bpb_pembelian
+                '),
+
+                // 🔥 SISA FINAL
+                DB::raw('
+                (
+                    SUM(bd.jumlah)
+                    - COALESCE((
+                        SELECT SUM(gd.jumlah)
+                        FROM gudang_logistik_barang_keluar_detail gd
+                        JOIN gudang_logistik_barang_keluar g
+                            ON g.no_bukti = gd.no_bukti
+                        WHERE g.no_ref = bd.no_bpb
+                        AND gd.kode_barang = bp.kode_barang
+                    ),0)
+                    - COALESCE((
+                        SELECT SUM(bpd.jumlah - COALESCE(bpd.jumlah_diterima,0))
+                        FROM bpb_pembelian_detail bpd
+                        JOIN bpb_pembelian bpbh
+                        WHERE bpd.kode_barang = bp.kode_barang
+                        AND bpd.jumlah_diterima IS NULL
+                    ),0)
+                ) as sisa
+            ')
             )
 
             ->groupBy(
@@ -176,16 +224,12 @@ class BPBPembelianController extends Controller
                 'bp.kode_group',
                 'pbk.nama_kategori',
                 'bp.nama_barang',
-                'bp.satuan'
+                'bp.satuan',
+                'bd.no_bpb',
+                'bd.keterangan'
             )
 
-            ->havingRaw('
-                (SUM(bd.jumlah)
-                - COALESCE(SUM(std.jumlah),0)
-                - COALESCE(SUM(bpd.jumlah),0)
-                ) > 0
-            ')
-
+            ->having('sisa', '>', 0)
             ->get();
 
         return view('pembelian.bpb.create', $data);
@@ -431,7 +475,9 @@ class BPBPembelianController extends Controller
     public function show($no_bpb)
     {
         $no_bpb = Crypt::decrypt($no_bpb);
-
+        $data['supplier'] = DB::table('supplier')
+            ->orderBy('nama_supplier')
+            ->get();
         // HEADER BPB
         $data['bpb'] = DB::table('bpb_pembelian')->where('bpb_pembelian.no_bpb', $no_bpb)
             ->select(
@@ -455,30 +501,30 @@ class BPBPembelianController extends Controller
             )
             ->get();
 
-        $data['serahTerima'] = DB::table('pembelian')->where('no_bukti', $no_bpb)->orderBy('tanggal')->get();
+        $data['serahTerima'] = DB::table('gudang_logistik_barang_masuk')->where('gudang_logistik_barang_masuk.no_bpb', $no_bpb)->orderBy('tanggal')->get();
 
         // SERAH TERIMA DETAIL (GROUP BY NO SURAT)
-        $data['historyDetail'] = DB::table('pembelian_detail')
-            ->join('pembelian', 'pembelian.no_bukti', '=', 'pembelian_detail.no_bukti')
-            ->join('pembelian_barang', 'pembelian_barang.kode_barang', '=', 'pembelian_detail.kode_barang')
-            ->whereIn('pembelian_detail.no_bukti', $data['serahTerima']->pluck('no_bukti'))
+        $data['historyDetail'] = DB::table('gudang_logistik_barang_masuk_detail')
+            ->join('gudang_logistik_barang_masuk', 'gudang_logistik_barang_masuk.no_bukti', '=', 'gudang_logistik_barang_masuk_detail.no_bukti')
+            ->join('pembelian_barang', 'pembelian_barang.kode_barang', '=', 'gudang_logistik_barang_masuk_detail.kode_barang')
+            ->whereIn('gudang_logistik_barang_masuk_detail.no_bukti', $data['serahTerima']->pluck('no_bukti'))
             ->select(
-                'pembelian.no_bukti',
-                'pembelian.tanggal',
-                'pembelian_detail.kode_barang',
+                'gudang_logistik_barang_masuk.no_bukti',
+                'gudang_logistik_barang_masuk.tanggal',
+                'gudang_logistik_barang_masuk_detail.kode_barang',
                 'pembelian_barang.nama_barang',
                 'pembelian_barang.satuan',
-                'pembelian_detail.jumlah',
-                'pembelian_detail.keterangan',
+                'gudang_logistik_barang_masuk_detail.jumlah',
+                'gudang_logistik_barang_masuk_detail.keterangan',
             )
-            ->orderBy('pembelian.tanggal')
+            ->orderBy('gudang_logistik_barang_masuk.tanggal')
             ->get()
             ->groupBy('no_bukti');
 
         // TOTAL SUDAH DISERAHKAN PER BARANG
-        $data['diserahkanTotal'] = DB::table('pembelian_detail')
-            ->join('pembelian', 'pembelian.no_bukti', '=', 'pembelian_detail.no_bukti')
-            ->where('pembelian.no_bukti', $no_bpb)
+        $data['diserahkanTotal'] = DB::table('gudang_logistik_barang_masuk_detail')
+            ->join('gudang_logistik_barang_masuk', 'gudang_logistik_barang_masuk.no_bukti', '=', 'gudang_logistik_barang_masuk_detail.no_bukti')
+            ->where('gudang_logistik_barang_masuk.no_bpb', $no_bpb)
             ->select('kode_barang', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kode_barang')
             ->pluck('total', 'kode_barang');
@@ -488,7 +534,7 @@ class BPBPembelianController extends Controller
     {
         $bulan = date('m');
         $tahun = date('Y');
-        $dept = "KB";
+        $dept = "G";
 
         // Konversi bulan ke romawi
         $romawi = [
@@ -524,7 +570,7 @@ class BPBPembelianController extends Controller
         // Format 3 digit
         $noUrut = str_pad($next, 3, '0', STR_PAD_LEFT);
 
-        return $noUrut . '/' . $dept . '/' . $bulanRomawi . '/' . $tahun;
+        return $dept . '/' . $noUrut . '/' . $bulanRomawi . '/' . $tahun;
     }
 
 
@@ -534,70 +580,196 @@ class BPBPembelianController extends Controller
 
         try {
 
+            // ✅ VALIDASI
+            $request->validate([
+                'no_ref' => 'required',
+                'tanggal_diserahkan' => 'required',
+                'kode_supplier' => 'required'
+            ]);
+
+            $no_bpb = $request->no_ref;
+
+            // 1. Header BPB
+            $bpb = DB::table('bpb_pembelian')
+                ->where('no_bpb', $no_bpb)
+                ->first();
+
+            if (!$bpb) {
+                throw new \Exception('Data BPB tidak ditemukan');
+            }
+
+            // 2. Detail BPB
+            $detail_bpb = DB::table('bpb_pembelian_detail')
+                ->where('no_bpb', $no_bpb)
+                ->get()
+                ->keyBy('kode_barang');
+
+            if ($detail_bpb->isEmpty()) {
+                throw new \Exception('Detail BPB kosong');
+            }
+
+            // 3. Qty yang sudah diserahkan sebelumnya
+            $sudah = DB::table('pembelian_detail')
+                ->select('kode_barang', DB::raw('SUM(jumlah) as total'))
+                ->where('kode_transaksi', $no_bpb)
+                ->groupBy('kode_barang')
+                ->pluck('total', 'kode_barang');
+
+            // 4. Generate nomor bukti
             $no_bukti = $this->generateNoSerahTerima();
-            $header = [
+
+            // =========================
+            // ✅ INSERT PEMBELIAN (HEADER)
+            // =========================
+            DB::table('pembelian')->insert([
                 'no_bukti' => $no_bukti,
-                'kode_jenis_pengeluaran' => $request->kode_dept,
-                'no_ref' => $request->no_ref, // no_bpb
-                'kode_cabang' => $request->kode_cabang == 'PST' ? '' : $request->kode_cabang,
                 'tanggal' => $request->tanggal_diserahkan,
+                'kode_supplier' => $request->kode_supplier,
+                'kode_asal_pengajuan' => 'GDL',
+                'jenis_transaksi' => 'T',
+                'jatuh_tempo' => $request->tanggal_diserahkan,
+                'ppn' => 0,
+                'kategori_transaksi' => '',
+                'kode_akun' => '2-1300',
                 'id_user' => auth()->user()->id,
-                'diterima' => 0,
+                'no_bpb' => $no_bpb,
                 'created_at' => now(),
-            ];
+                'updated_at' => now(),
+            ]);
 
-            DB::table('pembelian')->insert($header);
+            // =========================
+            // ✅ INSERT GUDANG LOGISTIK (HEADER)
+            // =========================
+            DB::table('gudang_logistik_barang_masuk')->insert([
+                'no_bukti' => $no_bukti,
+                'tanggal' => $request->tanggal_diserahkan,
+                'no_bpb' => $no_bpb,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-            // LOOP DETAIL
+            $detail_insert = [];
+            $detail_gudang = [];
+            $total_pembelian = 0;
+
+            // =========================
+            // 🔁 LOOP BARANG
+            // =========================
             foreach ($request->diserahkan as $kode_barang => $qty) {
 
-                if ($qty === null || $qty == "" || $qty == 0) {
-                    continue; // skip kosong
+                $qty = floatval($qty);
+                if ($qty <= 0)
+                    continue;
+
+                if (!isset($detail_bpb[$kode_barang]))
+                    continue;
+
+                $qty_awal = $detail_bpb[$kode_barang]->jumlah;
+                $qty_sudah = $sudah[$kode_barang] ?? 0;
+                $sisa = $qty_awal - $qty_sudah;
+
+                // 🚨 VALIDASI SISA
+                if ($qty > $sisa) {
+                    throw new \Exception("Qty $kode_barang melebihi sisa ($sisa)");
                 }
 
-                DB::table('pembelian_detail')->insert([
+                $harga = $detail_bpb[$kode_barang]->harga ?? 0;
+                $subtotal = $qty * $harga;
+                $total_pembelian += $subtotal;
+
+                // =========================
+                // DETAIL PEMBELIAN
+                // =========================
+                $detail_insert[] = [
                     'no_bukti' => $no_bukti,
                     'kode_barang' => $kode_barang,
                     'jumlah' => $qty,
-                    'keterangan' => $request->keterangan[$kode_barang] ?? null,
+                    'harga' => $harga,
+                    'penyesuaian' => 0,
+                    'kode_akun' => null,
+                    'keterangan' => $detail_bpb[$kode_barang]->keterangan,
+                    'keterangan_penjualan' => null,
+                    'kode_transaksi' => 'PMB',
+                    'konversi_gram' => 0,
+                    'kode_cabang' => $bpb->kode_cabang,
+                    'kode_cr' => null,
                     'created_at' => now(),
-                ]);
+                    'updated_at' => now(),
+                ];
+
+                // =========================
+                // DETAIL GUDANG LOGISTIK
+                // =========================
+                $detail_gudang[] = [
+                    'no_bukti' => $no_bukti,
+                    'kode_barang' => $kode_barang,
+                    'keterangan' => $detail_bpb[$kode_barang]->keterangan,
+                    'jumlah' => $qty,
+                    'harga' => 0,
+                    'penyesuaian' => 0,
+                    'kode_akun' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
+
+
+            if (empty($detail_insert)) {
+                throw new \Exception('Tidak ada qty yang diserahkan');
+            }
+
+            // =========================
+            // ✅ INSERT DETAIL
+            // =========================
+            DB::table('pembelian_detail')->insert($detail_insert);
+            DB::table('gudang_logistik_barang_masuk_detail')->insert($detail_gudang);
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Serah terima BPB berhasil disimpan!');
+            return back()->with('success', 'Serah terima berhasil & masuk ke gudang logistik');
 
         } catch (\Exception $e) {
 
             DB::rollback();
-            return redirect()->back()->with('warning', 'Gagal menyimpan: ' . $e->getMessage());
+
+            return back()->with('error', $e->getMessage());
         }
     }
 
 
     public function updateSerahTerima(Request $request)
     {
-        $data = [];
-        if ($request->jumlah !== null) {
-            $data['jumlah'] = $request->jumlah;
-        }
-        if ($request->keterangan !== null) {
-            $data['keterangan'] = $request->keterangan;
+        $request->validate([
+            'no_bukti' => 'required'
+        ]);
+
+        // ✅ DATA DETAIL
+        $dataDetail = [];
+
+        if (!is_null($request->jumlah)) {
+            $dataDetail['jumlah'] = $request->jumlah;
         }
 
-        if ($request->diterima !== null) {
-            $data['diterima'] = $request->diterima;
-            $data['id_user_diterima'] = Auth::user()->id;
-            DB::table('pembelian')
+        if (!is_null($request->keterangan)) {
+            $dataDetail['keterangan'] = $request->keterangan;
+        }
+
+        // ✅ UPDATE DETAIL
+        if (!empty($dataDetail) && !empty($request->kode_barang)) {
+            DB::table('pembelian_detail')
                 ->where('no_bukti', $request->no_bukti)
-                ->update($data);
+                ->where('kode_barang', $request->kode_barang)
+                ->update($dataDetail);
         }
 
-        DB::table('pembelian_detail')
-            ->where('no_bukti', $request->no_bukti)
-            ->where('kode_barang', $request->kode_barang)
-            ->update($data);
+        // ✅ DATA HEADER
+        if ($request->diterima == 1) {
+            DB::table('pembelian')
+                ->where('no_bukti', $request->no_bukti) // ⛔ FIX INI
+                ->update([
+                    'diterima' => 1
+                ]);
+        }
 
         return response()->json(['status' => 'success']);
     }

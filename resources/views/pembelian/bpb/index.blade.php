@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('titlepage', 'Bukti Permintaan Barang (Pembelian)')
+@section('titlepage', 'BPPB')
 
 @section('content')
 @section('navigasi')
-    <span>Bukti Permintaan Barang (Pembelian)</span>
+    <span>BPPB</span>
 @endsection
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
@@ -128,18 +128,12 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($d->no_bukti != '')
-                                                        <button
-                                                            class="btn btn-sm btn-success {{ $d->approve_gudang == '1' ? 'btnInputBukti' : '' }}"
-                                                            {{ $d->approve_gudang == '0' ? 'disabled' : '' }}
-                                                            no_bpb="{{ Crypt::encrypt($d->no_bpb) }}">
+                                                    @if ($d->total_serah_terima == $d->total_bpb)
+                                                        <button class="btn btn-sm btn-success">
                                                             <i class="ti ti-check"></i> Selesai
                                                         </button>
                                                     @else
-                                                        <button
-                                                            class="btn btn-sm btn-secondary {{ $d->approve_gudang == '1' ? 'btnInputBukti' : '' }}"
-                                                            {{ $d->approve_gudang == '0' ? 'disabled' : '' }}
-                                                            no_bpb="{{ Crypt::encrypt($d->no_bpb) }}">
+                                                        <button class="btn btn-sm btn-secondary">
                                                             <i class="ti ti-clock"></i> Proses
                                                         </button>
                                                     @endif
@@ -261,76 +255,12 @@
             window.location.href = "/bpbpembelian/create";
         });
 
-        $(".btnInputBukti").click(function(e) {
-            e.preventDefault();
-
-            let no_bpb = $(this).attr("no_bpb");
-
-            Swal.fire({
-                title: 'Input No Bukti',
-                input: 'text',
-                inputLabel: 'Masukkan Nomor Bukti',
-                inputPlaceholder: 'Contoh : G/004/VI/2025',
-                showCancelButton: true,
-                confirmButtonText: 'Simpan',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#dc3545',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'No Bukti harus diisi!';
-                    }
-                }
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-
-                    let no_bukti = result.value;
-
-                    $.ajax({
-                        url: `/bpbpembelian/${no_bpb}/store-bukti`,
-                        type: "POST",
-                        data: {
-                            no_bukti: no_bukti,
-                            _token: $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(res) {
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: res.message,
-                                timer: 1500,
-                                showConfirmButton: false
-                            }).then(() => location.reload());
-
-                        },
-                        error: function(xhr) {
-
-                            Swal.fire(
-                                'Gagal',
-                                xhr.responseJSON?.message ??
-                                'Terjadi kesalahan',
-                                'error'
-                            );
-
-                        }
-                    });
-
-                }
-
-            });
-        });
-
 
         $(".btnShow").click(function(e) {
             e.preventDefault();
             var no_bpb = $(this).attr("no_bpb");
-            e.preventDefault();
-            $("#modal").modal("show");
-            $(".modal-title").text("Detail BPB");
-            $("#loadmodal").html(loadingElement());
-            $("#loadmodal").load(`/bpbpembelian/${no_bpb}/show`);
+
+            window.location.href = `/bpbpembelian/${no_bpb}/show`;
         });
 
         $(".btnApprove").click(function(e) {

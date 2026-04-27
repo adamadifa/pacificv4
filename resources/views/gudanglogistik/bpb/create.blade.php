@@ -1,7 +1,7 @@
 <form action="{{ route('bpb.store') }}" method="post" id="formcreatebpb">
     @csrf
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" value="{{ Date('Y-m-d') }}"
-        datepicker="flatpickr-date" hideLabel="true" />
+        datepicker="flatpickr-date" />
     {{-- <select class="form-select select2KodeDept" name="tujuan" id="tujuan">
         <option value="">Pilih Tujuan</option>
         <option value="GDL" {{ Request('tujuan') == 'GDL' ? 'selected' : '' }}>Gudang Logistik</option>
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <select class="form-select select2Kodebarang" name="kode_barang" id="kode_barang">
-                <option value="">Barang</option>
+                <option value="">Pilih Barang</option>
                 @foreach ($barang as $b)
                     <option value="{{ $b->kode_barang }}">
                         {{ $b->kode_barang }}
@@ -26,10 +26,10 @@
 
         </div>
         <div class="col-lg-2 col-md-12 col-sm-12">
-            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" hideLabel="true" />
+            <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
         </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
+    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
     <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
     <div class="row mt-2">
         <div class="col">
@@ -37,7 +37,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th style="width: 10%">Kode</th>
-                        <th style="width: 25%">Nama Barang</th>
+                        <th style="width: 30%">Nama Barang</th>
                         <th style="width: 5%">Jumlah</th>
                         <th>Keterangan</th>
                         <th style="width: 5%">#</th>
