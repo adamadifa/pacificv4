@@ -344,6 +344,7 @@ class AttendanceController extends Controller
                 'status_libur' => $cekliburhariini != null,
                 'status_wfh' => $cekwfhhariini != null,
                 'status_libur_pengganti' => $cekliburpenggantiminggu != null,
+                'status_perjalanan_dinas' => $cekperjalanandinas != null,
             ]
         ]);
     }
@@ -363,7 +364,7 @@ class AttendanceController extends Controller
 
         if ($cekperjalanandinas != null) {
             $kode_cabang = $cekperjalanandinas->kode_cabang;
-            $lock_location = 0;
+            $lock_location = 1; // 1 to ignore radius check
         } else {
             $kode_cabang = $user->kode_cabang;
         }
