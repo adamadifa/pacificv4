@@ -8,6 +8,7 @@ use App\Models\Presensi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class AttendanceController extends Controller
 {
@@ -388,8 +389,16 @@ class AttendanceController extends Controller
             $formatName = $nik . "-" . $tgl_presensi . "-" . $ket;
             $image_parts = explode(";base64", $image);
             $image_base64 = base64_decode($image_parts[1]);
-            $fileName = $formatName . ".png";
+            $fileName = $formatName . ".jpg";
             $file = $folderPath . $fileName;
+
+            // Image Compression
+            $img = Image::make($image_base64);
+            $img->resize(640, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $image_compressed = $img->encode('jpg', 80);
         } else {
             $fileName = null;
         }
@@ -481,7 +490,7 @@ class AttendanceController extends Controller
                 $data_masuk = ['jam_in' => $jam, 'foto_in' => $fileName, 'lokasi_in' => $lokasi];
                 $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
                 if ($update) {
-                    if (isset($request->image)) { Storage::put($file, $image_base64); }
+                    if (isset($request->image)) { Storage::put($file, $image_compressed); }
                     return response()->json(['success' => true, 'message' => 'Terimkasih, Selamat Bekerja']);
                 }
             } else if ($cek == null) {
@@ -491,7 +500,7 @@ class AttendanceController extends Controller
                 ];
                 $simpan = DB::table('hrd_presensi')->insert($data);
                 if ($simpan) {
-                    if (isset($request->image)) { Storage::put($file, $image_base64); }
+                    if (isset($request->image)) { Storage::put($file, $image_compressed); }
                     return response()->json(['success' => true, 'message' => 'Terimkasih, Selamat Bekerja']);
                 }
             }
@@ -566,7 +575,7 @@ class AttendanceController extends Controller
                 ];
                 $simpan = DB::table('hrd_presensi')->insert($data);
                 if ($simpan) {
-                    if (isset($request->image)) { Storage::put($file, $image_base64); }
+                    if (isset($request->image)) { Storage::put($file, $image_compressed); }
                     return response()->json(['success' => true, 'message' => 'Terimkasih, Hati Hati Di Jalan']);
                 }
             } else if ($cek != null && !empty($cek->jam_out)) {
@@ -575,7 +584,7 @@ class AttendanceController extends Controller
                 $data_pulang = ['jam_out' => $jam, 'foto_out' => $fileName, 'lokasi_out' => $lokasi];
                 $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
                 if ($update) {
-                    if (isset($request->image)) { Storage::put($file, $image_base64); }
+                    if (isset($request->image)) { Storage::put($file, $image_compressed); }
                     return response()->json(['success' => true, 'message' => 'Terimkasih, Hati Hati Di Jalan']);
                 }
             }
