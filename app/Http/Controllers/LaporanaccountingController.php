@@ -2563,9 +2563,11 @@ class LaporanaccountingController extends Controller
             $resReset = Http::timeout(60)->post($baseUrl . '/costratio/reset-batch', $cleanupParams);
             
             if (!$resReset->successful()) {
+                $errorDetail = $resReset->json('error') ?? '';
+                $errorMessage = $resReset->json('message') ?? 'Internal Server Error';
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal mereset data di Portax: ' . ($resReset->json('message') ?? 'Internal Server Error')
+                    'message' => 'Gagal mereset data di Portax: ' . $errorMessage . ($errorDetail ? ' | Detail: ' . $errorDetail : '')
                 ], 500);
             }
 
@@ -2768,9 +2770,11 @@ class LaporanaccountingController extends Controller
             $response = Http::timeout(60)->post($baseUrl . '/costratio/reset-batch', $params);
 
             if (!$response->successful()) {
+                $errorDetail = $response->json('error') ?? '';
+                $errorMessage = $response->json('message') ?? 'Internal Server Error';
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal mereset data di Portax: ' . ($response->json('message') ?? 'Internal Server Error')
+                    'message' => 'Gagal mereset data di Portax: ' . $errorMessage . ($errorDetail ? ' | Detail: ' . $errorDetail : '')
                 ], 500);
             }
 
