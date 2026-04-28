@@ -2194,6 +2194,26 @@ class LaporankeuanganController extends Controller
             return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
         }
 
+        // 0. Reset data di Portax sebelum sync baru (Hanya yang is_sync = 1)
+        try {
+            $resetResponse = Http::timeout(60)->post($baseUrl . '/ledger/pre-sync-cleanup', [
+                'dari' => $request->dari,
+                'sampai' => $request->sampai,
+                'kode_cabang' => $request->kode_cabang
+            ]);
+
+            if (!$resetResponse->successful()) {
+                $errorMsg = 'Gagal mereset data lama di Portax';
+                $json = $resetResponse->json();
+                if (isset($json['message'])) {
+                    $errorMsg .= ': ' . $json['message'];
+                }
+                return response()->json(['success' => false, 'message' => $errorMsg], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghubungi server Portax untuk reset: ' . $e->getMessage()], 500);
+        }
+
         $successCount = 0;
         $failCount = 0;
         $errors = [];
