@@ -185,6 +185,26 @@ class AttendanceController extends Controller
         $hariini_tgl = date("Y-m-d");
         $nik = $request->user()->nik;
 
+        // Cek Apakah Sudah Absen
+        $cek = DB::table('hrd_presensi')->where('tanggal', $hariini_tgl)->where('nik', $nik)->first();
+
+        // Lintas Hari Check
+        $jam_sekarang = date("H:i");
+        if ($cek == null && $jam_sekarang <= "08:00") {
+            $lastday = date('Y-m-d', strtotime('-1 day', strtotime($hariini_tgl)));
+            $cek_kemarin = DB::table('hrd_presensi')
+                ->join('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
+                ->where('hrd_presensi.tanggal', $lastday)
+                ->where('hrd_presensi.nik', $nik)
+                ->select('hrd_presensi.*', 'hrd_jamkerja.lintashari')
+                ->first();
+
+            if ($cek_kemarin != null && ($cek_kemarin->lintashari == '1' || $cek_kemarin->kode_jadwal == 'JD004') && empty($cek_kemarin->jam_out)) {
+                $hariini_tgl = $lastday;
+                $cek = $cek_kemarin;
+            }
+        }
+
         //Cek Apakah Sedang Perjalanan Dinas Ke Cabang lain
         $cekperjalanandinas = DB::table('hrd_izindinas')
             ->whereRaw('"' . $hariini_tgl . '" >= dari')
@@ -201,8 +221,6 @@ class AttendanceController extends Controller
         //Cek Lokasi Cabang
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
 
-        // Cek Apakah Sudah Absen
-        $cek = DB::table('hrd_presensi')->where('tanggal', $hariini_tgl)->where('nik', $nik)->first();
         if ($cek) {
             $cek->foto_in = $cek->foto_in ? asset('storage/uploads/absensi/' . $cek->foto_in) : null;
             $cek->foto_out = $cek->foto_out ? asset('storage/uploads/absensi/' . $cek->foto_out) : null;
