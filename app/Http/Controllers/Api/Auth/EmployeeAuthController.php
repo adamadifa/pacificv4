@@ -27,12 +27,13 @@ class EmployeeAuthController extends Controller
         }
 
         $token = $employee->createToken('employee-token')->plainTextToken;
+        $employeeData = Karyawan::getKaryawan($employee->nik);
 
         return response()->json([
             'success' => true,
             'message' => 'Login Berhasil',
             'token' => $token,
-            'employee' => $employee
+            'employee' => $employeeData
         ]);
     }
 
@@ -52,6 +53,31 @@ class EmployeeAuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => $employee
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $employee = Karyawan::where('nik', $request->user()->nik)->first();
+
+        if (!$employee || !Hash::check($request->old_password, $employee->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Password lama salah.',
+            ], 401);
+        }
+
+        $employee->password = Hash::make($request->new_password);
+        $employee->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password berhasil diubah.',
         ]);
     }
 }

@@ -2124,6 +2124,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanaccounting/lockneraca', 'lockNeraca')->name('laporanaccounting.lockneraca');
         Route::post('/laporanaccounting/locklabarugi', 'lockLabaRugi')->name('laporanaccounting.locklabarugi');
         Route::post('/laporanaccounting/syncallcostratio', 'syncallcostratio')->name('laporanaccounting.syncallcostratio');
+        Route::post('/laporanaccounting/resetcostratio', 'resetcostratio')->name('laporanaccounting.resetcostratio');
 
         //Laporan Keuangan
         Route::post('/laporanaccounting/cetakbukubesar', 'cetakbukubesar')->name('laporanaccounting.cetakbukubesar')->can('lk.bukubesar');

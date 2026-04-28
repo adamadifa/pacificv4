@@ -2569,6 +2569,30 @@ class LaporanaccountingController extends Controller
                 ], 500);
             }
 
+            // 0.1 Reset status_pajak di Pacificv4 untuk seluruh periode/cabang (Abaikan Ceklist)
+            // Reset Kas Kecil
+            $queryKkReset = Kaskecil::whereBetween('tanggal', [$dari, $sampai]);
+            if (!empty($kode_cabang)) {
+                $queryKkReset->where('kode_cabang', $kode_cabang);
+            }
+            $queryKkReset->update(['status_pajak' => 0]);
+
+            // Reset Ledger
+            $queryLedgerReset = Ledger::whereBetween('tanggal', [$dari, $sampai]);
+            if (!empty($kode_cabang)) {
+                $queryLedgerReset->whereIn('kode_bank', function ($q) use ($kode_cabang) {
+                    $q->select('kode_bank')->from('bank')->where('kode_cabang', $kode_cabang);
+                });
+            }
+            $queryLedgerReset->update(['status_pajak' => 0]);
+
+            // Reset Jurnal Umum
+            $queryJuReset = Jurnalumum::whereBetween('tanggal', [$dari, $sampai]);
+            if (!empty($kode_cabang)) {
+                $queryJuReset->where('kode_cabang', $kode_cabang);
+            }
+            $queryJuReset->update(['status_pajak' => 0]);
+
             // 1. Sync Batch Kas Kecil
             $responses = [];
             $kaskecilSuccess = 0;
@@ -2714,6 +2738,59 @@ class LaporanaccountingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Sync Gagal: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function resetcostratio(Request $request)
+    {
+        $dari = $request->dari;
+        $sampai = $request->sampai;
+        $kode_cabang = $request->kode_cabang;
+
+        $baseUrl = rtrim(env('SYNC_API_BASE_URL'), '/');
+
+        if (empty($baseUrl)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'SYNC_API_BASE_URL belum dikonfigurasi di .env'
+            ], 500);
+        }
+
+        try {
+            // 1. Reset data di Portax
+            $params = [
+                'dari' => $dari,
+                'sampai' => $sampai,
+                'kode_cabang' => $kode_cabang
+            ];
+
+            $response = Http::timeout(60)->post($baseUrl . '/costratio/reset-batch', $params);
+
+            if (!$response->successful()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mereset data di Portax: ' . ($response->json('message') ?? 'Internal Server Error')
+                ], 500);
+            }
+
+            $resetSummary = $response->json('summary');
+
+            $message = "Reset Data Portax Berhasil.\n";
+            $message .= "Data di Portax Berhasil dihapus:\n";
+            $message .= "- Kas Kecil: " . ($resetSummary['kaskecil'] ?? 0) . "\n";
+            $message .= "- Ledger: " . ($resetSummary['ledger'] ?? 0) . "\n";
+            $message .= "- Jurnal Umum: " . ($resetSummary['jurnalumum'] ?? 0) . "\n\n";
+            $message .= "Status Sync di Portal tetap dipertahankan.";
+
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Reset Gagal: ' . $e->getMessage()
             ], 500);
         }
     }
