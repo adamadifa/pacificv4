@@ -190,4 +190,71 @@ class CostratioController extends Controller
         }
         return view('accounting.costratio.cetak', $data);
     }
+
+    public function syncnominal(Request $request)
+    {
+        $dari = $request->dari;
+        $sampai = $request->sampai;
+        $kode_cabang = $request->kode_cabang;
+
+        $query = DB::table('accounting_costratio')
+            ->select(
+                'accounting_costratio.kode_cr',
+                'accounting_costratio.jumlah as jumlah_cr',
+                'accounting_costratio.kode_akun as kode_akun_cr',
+                'kk.jumlah as jumlah_kaskecil',
+                'kk.kode_akun as kode_akun_kaskecil',
+                'l.jumlah as jumlah_ledger',
+                'l.kode_akun as kode_akun_ledger',
+                'ju.jumlah as jumlah_jurnalumum',
+                'ju.kode_akun as kode_akun_jurnalumum'
+            )
+            ->leftJoin('keuangan_kaskecil_costratio', 'accounting_costratio.kode_cr', '=', 'keuangan_kaskecil_costratio.kode_cr')
+            ->leftJoin('keuangan_ledger_costratio', 'accounting_costratio.kode_cr', '=', 'keuangan_ledger_costratio.kode_cr')
+            ->leftJoin('accounting_jurnalumum_costratio', 'accounting_costratio.kode_cr', '=', 'accounting_jurnalumum_costratio.kode_cr')
+            ->leftJoin('keuangan_kaskecil as kk', 'keuangan_kaskecil_costratio.id', '=', 'kk.id')
+            ->leftJoin('keuangan_ledger as l', 'keuangan_ledger_costratio.no_bukti', '=', 'l.no_bukti')
+            ->leftJoin('accounting_jurnalumum as ju', 'accounting_jurnalumum_costratio.kode_ju', '=', 'ju.kode_ju')
+            ->whereBetween('accounting_costratio.tanggal', [$dari, $sampai]);
+
+        if (!empty($kode_cabang)) {
+            $query->where('accounting_costratio.kode_cabang', $kode_cabang);
+        }
+
+        $costratio = $query->get();
+        $updatedCount = 0;
+
+        foreach ($costratio as $item) {
+            $newJumlah = null;
+            $newKodeAkun = null;
+
+            if ($item->jumlah_kaskecil !== null) {
+                $newJumlah = $item->jumlah_kaskecil;
+                $newKodeAkun = $item->kode_akun_kaskecil;
+            } elseif ($item->jumlah_ledger !== null) {
+                $newJumlah = $item->jumlah_ledger;
+                $newKodeAkun = $item->kode_akun_ledger;
+            } elseif ($item->jumlah_jurnalumum !== null) {
+                $newJumlah = $item->jumlah_jurnalumum;
+                $newKodeAkun = $item->kode_akun_jurnalumum;
+            }
+
+            if ($newJumlah !== null) {
+                if ($newJumlah != $item->jumlah_cr || $newKodeAkun != $item->kode_akun_cr) {
+                    DB::table('accounting_costratio')
+                        ->where('kode_cr', $item->kode_cr)
+                        ->update([
+                            'jumlah' => $newJumlah,
+                            'kode_akun' => $newKodeAkun
+                        ]);
+                    $updatedCount++;
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Berhasil menyinkronkan nominal dan kode akun. $updatedCount data diperbarui."
+        ]);
+    }
 }

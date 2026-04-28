@@ -24,6 +24,7 @@
         @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
             <button id="btnSyncAll" class="btn btn-primary" style="margin-bottom: 5px;">Sync All Cost Ratio</button>
             <button id="btnReset" class="btn btn-danger" style="margin-bottom: 5px;">Reset Data Portax</button>
+            <button id="btnSyncNominal" class="btn btn-info" style="margin-bottom: 5px;">Sync Nominal</button>
         @endif
     </div>
     <div class="body">
@@ -246,6 +247,39 @@
                 $.ajax({
                     type: 'POST',
                     url: '{{ route("laporanaccounting.resetcostratio") }}',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}',
+                        kode_cabang: '{{ request("kode_cabang") }}'
+                    },
+                    success: function(response) {
+                        btn.prop('disabled', false).text(originalText);
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).text(originalText);
+                        var msg = 'Gagal';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg += ': ' + xhr.responseJSON.message;
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+
+            $('#btnSyncNominal').click(function(e) {
+                e.preventDefault();
+                if (!confirm('Apakah anda yakin ingin menyinkronkan nominal cost ratio dengan sumber transaksinya?')) return;
+
+                var btn = $(this);
+                var originalText = btn.text();
+                btn.prop('disabled', true).text('Syncing Nominal...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("costratio.syncnominal") }}',
                     data: {
                         _token: '{{ csrf_token() }}',
                         dari: '{{ $dari }}',
