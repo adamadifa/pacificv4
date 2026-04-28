@@ -522,38 +522,36 @@ class AttendanceController extends Controller
             $kode_jadwal_last = $cekjadwalshiftlast != null ? $cekjadwalshiftlast->kode_jadwal : $kode_jadwal;
             $kode_jam_kerja_store = $jadwal->kode_jam_kerja;
 
+            $tgl_presensi_final = $tgl_presensi;
+            $kode_jadwal_final = $kode_jadwal;
+
             if (!empty($last_lintashari)) {
                 if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
-                    $tgl_presensi = $lastday;
+                    $tgl_presensi_final = $lastday;
                 }
+
                 if ($namahari != "Sabtu") {
-                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi_final)));
                     $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
                 } else {
-                    $tgl_pulang = $tgl_presensi;
-                    $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
+                    $jam_pulang = $tgl_presensi_final . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
                 }
             } else {
                 if ($tgl_pulang_shift_3_check <= "08:00" && $kode_jadwal_last == "JD004") {
-                    $tgl_presensi = $lastday;
-                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
-                    if ($namahari != "Sabtu") {
-                        $jam_pulang = $tgl_pulang . " 07:00";
-                        $kode_jam_kerja_store = "JK08";
-                    } else {
-                        $jam_pulang = $tgl_pulang . " 22:00";
-                        $kode_jam_kerja_store = "JK15";
-                    }
-                    $kode_jadwal = "JD004";
+                    $tgl_presensi_final = $lastday;
+                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi_final)));
+                    $jam_pulang = $tgl_pulang . " 07:00";
+                    $kode_jam_kerja_store = "JK08";
+                    $kode_jadwal_final = "JD004";
                 } else {
                     if ($kode_jadwal == "JD004") {
                         if ($namahari != "Sabtu") {
-                            $tgl_pulang = ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") ? $tgl_presensi : date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                            $tgl_pulang = ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") ? $tgl_presensi_final : date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi_final)));
                         } else {
-                            $tgl_pulang = $tgl_presensi;
+                            $tgl_pulang = $tgl_presensi_final;
                         }
                     } else {
-                        $tgl_pulang = $tgl_presensi;
+                        $tgl_pulang = $tgl_presensi_final;
                     }
                     $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
                 }
@@ -561,18 +559,18 @@ class AttendanceController extends Controller
 
             $date_jampulang = date("Y-m-d", strtotime($jam_pulang));
             $hour_jampulang = (date("H", strtotime($jam_pulang)) - 2);
-            $h_jampulang = $hour_jampulang < 9 ? "0" . $hour_jampulang : $hour_jampulang;
+            $h_jampulang = $hour_jampulang < 10 ? "0" . $hour_jampulang : $hour_jampulang;
             $jam_pulang_final = $date_jampulang . " " . $h_jampulang . ":00";
 
             if ($jam < $jam_pulang_final) {
                 return response()->json(['success' => false, 'message' => "Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang_final], 422);
             }
 
-            $cek = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+            $cek = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi_final)->where('nik', $nik)->first();
             if ($cek == null) {
                 $data = [
-                    'nik' => $nik, 'tanggal' => $tgl_presensi, 'jam_out' => $jam, 'foto_out' => $fileName, 'lokasi_out' => $lokasi,
-                    'kode_jadwal' => $kode_jadwal, 'kode_jam_kerja' => $kode_jam_kerja_store, 'status' => 'h',
+                    'nik' => $nik, 'tanggal' => $tgl_presensi_final, 'jam_out' => $jam, 'foto_out' => $fileName, 'lokasi_out' => $lokasi,
+                    'kode_jadwal' => $kode_jadwal_final, 'kode_jam_kerja' => $kode_jam_kerja_store, 'status' => 'h',
                 ];
                 $simpan = DB::table('hrd_presensi')->insert($data);
                 if ($simpan) {
@@ -581,9 +579,9 @@ class AttendanceController extends Controller
                 }
             } else if ($cek != null && !empty($cek->jam_out)) {
                 return response()->json(['success' => false, 'message' => 'Maaf Gagal absen, Anda Sudah Melakukan Presensi Pulang'], 422);
-            } else if ($cek != null && empty($cek->jam_out)) {
+            } else {
                 $data_pulang = ['jam_out' => $jam, 'foto_out' => $fileName, 'lokasi_out' => $lokasi];
-                $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
+                $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi_final)->where('nik', $nik)->update($data_pulang);
                 if ($update) {
                     if (isset($request->image)) { Storage::put($file, $image_compressed); }
                     return response()->json(['success' => true, 'message' => 'Terimkasih, Hati Hati Di Jalan']);
