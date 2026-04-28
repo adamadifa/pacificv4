@@ -2571,29 +2571,10 @@ class LaporanaccountingController extends Controller
                 ], 500);
             }
 
-            // 0.1 Reset status_pajak di Pacificv4 untuk seluruh periode/cabang (Abaikan Ceklist)
-            // Reset Kas Kecil
-            $queryKkReset = Kaskecil::whereBetween('tanggal', [$dari, $sampai]);
-            if (!empty($kode_cabang)) {
-                $queryKkReset->where('kode_cabang', $kode_cabang);
-            }
-            $queryKkReset->update(['status_pajak' => 0]);
-
-            // Reset Ledger
-            $queryLedgerReset = Ledger::whereBetween('tanggal', [$dari, $sampai]);
-            if (!empty($kode_cabang)) {
-                $queryLedgerReset->whereIn('kode_bank', function ($q) use ($kode_cabang) {
-                    $q->select('kode_bank')->from('bank')->where('kode_cabang', $kode_cabang);
-                });
-            }
-            $queryLedgerReset->update(['status_pajak' => 0]);
-
-            // Reset Jurnal Umum
-            $queryJuReset = Jurnalumum::whereBetween('tanggal', [$dari, $sampai]);
-            if (!empty($kode_cabang)) {
-                $queryJuReset->where('kode_cabang', $kode_cabang);
-            }
-            $queryJuReset->update(['status_pajak' => 0]);
+            // 1. Sinkronisasi Data Baru berdasarkan Ceklist (Abaikan status_pajak, cukup push data)
+            $kaskecils = $queryKk->get();
+            $ledgers = $queryLedger->get();
+            $jurnalumums = $queryJu->get();
 
             // 1. Sync Batch Kas Kecil
             $responses = [];
@@ -2618,7 +2599,6 @@ class LaporanaccountingController extends Controller
                         'kode_peruntukan' => $kk->kode_peruntukan,
                         'cost_ratio' => $mapKaskecil[$kk->id] ?? []
                     ];
-                    $kk->update(['status_pajak' => 1]);
                 }
                 foreach (array_chunk($batchKaskecil, 50) as $chunk) {
                     $res = Http::timeout(60)->post($baseUrl . '/kaskecil/batch', [
@@ -2659,7 +2639,6 @@ class LaporanaccountingController extends Controller
                         'keterangan_peruntukan' => $l->keterangan_peruntukan,
                         'cost_ratio' => $mapLedger[$l->no_bukti] ?? []
                     ];
-                    $l->update(['status_pajak' => 1]);
                 }
                 foreach (array_chunk($batchLedger, 50) as $chunk) {
                     $res = Http::timeout(60)->post($baseUrl . '/ledger/batch', [
@@ -2700,7 +2679,6 @@ class LaporanaccountingController extends Controller
                         'id_user' => $ju->id_user ?? 1,
                         'cost_ratio' => $mapJurnalumum[$ju->kode_ju] ?? []
                     ];
-                    $ju->update(['status_pajak' => 1]);
                 }
                 foreach (array_chunk($batchJU, 50) as $chunk) {
                     $res = Http::timeout(60)->post($baseUrl . '/jurnalumum/batch', [

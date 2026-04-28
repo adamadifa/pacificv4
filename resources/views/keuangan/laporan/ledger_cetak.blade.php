@@ -50,7 +50,7 @@
                     <tr>
                         <th style="width: 1%">No</th>
                         @if (auth()->user()->hasRole(config('global.roles_show_status_pajak')))
-                            <th>Pajak</th>
+                            <th>Pajak <input type="checkbox" id="checkAllPajak"></th>
                         @endif
                         <th style="width: 4%">TGL</th>
                         <th style="width: 4%">No Bukti</th>
@@ -258,6 +258,55 @@
                              msg += ': ' + xhr.responseJSON.message;
                          }
                          alert(msg);
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).text(originalText);
+                        var msg = 'Gagal';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg += ': ' + xhr.responseJSON.message;
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+
+            $('#checkAllPajak').click(function() {
+                const isChecked = $(this).is(':checked');
+                const statusPajak = isChecked ? 1 : 0;
+                const confirmMsg = isChecked ? 
+                    'Apakah anda yakin ingin mencentang semua data status pajak ledger sesuai filter?' : 
+                    'Apakah anda yakin ingin menghapus centang semua data status pajak ledger sesuai filter?';
+
+                if (!confirm(confirmMsg)) {
+                    $(this).prop('checked', !isChecked);
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ route("laporankeuangan.updatestatuspajakledgerbatch") }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        status_pajak: statusPajak,
+                        dari: '{{ $dari }}',
+                        sampai: '{{ $sampai }}',
+                        kode_cabang: '{{ request("kode_cabang") }}',
+                        kode_bank: '{{ request("kode_bank_ledger") }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('Gagal: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        let errorMessage = 'Terjadi kesalahan saat mengupdate status pajak batch';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
                     }
                 });
             });

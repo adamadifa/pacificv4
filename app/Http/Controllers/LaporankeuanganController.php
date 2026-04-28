@@ -3059,4 +3059,39 @@ class LaporankeuanganController extends Controller
             ], 500);
         }
     }
+
+    public function updatestatuspajakledgerbatch(Request $request)
+    {
+        $request->validate([
+            'status_pajak' => 'required|in:0,1',
+            'dari' => 'required',
+            'sampai' => 'required',
+        ]);
+
+        try {
+            $query = Ledger::query();
+            $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
+            $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
+
+            if (!empty($request->kode_cabang)) {
+                $query->where('bank.kode_cabang', $request->kode_cabang);
+            }
+            if (!empty($request->kode_bank)) {
+                $query->where('keuangan_ledger.kode_bank', $request->kode_bank);
+            }
+
+            $updated = $query->update(['keuangan_ledger.status_pajak' => $request->status_pajak]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pajak ledger berhasil diperbarui untuk ' . $updated . ' data.',
+                'updated_count' => $updated
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate status pajak batch: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
