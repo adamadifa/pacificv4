@@ -14,7 +14,7 @@
                     <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('samutasibank.index') }}">Saldo Awal Rekening</a>
+                    <a href="{{ route('sarekening.index') }}">Saldo Awal Rekening</a>
                 </li>
                 <li class="breadcrumb-item active">Edit</li>
             </ol>
@@ -22,7 +22,7 @@
     </div>
 @endsection
 
-<form action="{{ route('samutasibank.update', Crypt::encrypt($saldo_awal->kode_saldo_awal)) }}" method="POST" id="formSaldoAwal">
+<form action="{{ route('sarekening.update', Crypt::encrypt($saldo_awal->kode_saldo_awal)) }}" method="POST" id="formSaldoAwal">
     @csrf
     @method('PUT')
     <div class="row">
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end gap-2">
-                    <a href="{{ route('samutasibank.index') }}" class="btn btn-label-secondary">Batal</a>
+                    <a href="{{ route('sarekening.index') }}" class="btn btn-label-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary"><i class="ti ti-device-floppy me-1"></i> Update Data</button>
                 </div>
             </div>

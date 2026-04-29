@@ -14,7 +14,7 @@
                     <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('samutasibank.index') }}">Saldo Awal Rekening</a>
+                    <a href="{{ route('sarekening.index') }}">Saldo Awal Rekening</a>
                 </li>
                 <li class="breadcrumb-item active">Buat</li>
             </ol>
@@ -22,7 +22,7 @@
     </div>
 @endsection
 
-<form action="{{ route('samutasibank.store') }}" method="POST" id="formSaldoAwal">
+<form action="{{ route('sarekening.store') }}" method="POST" id="formSaldoAwal">
     @csrf
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -47,7 +47,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 fw-bold text-white"><i class="ti ti-database-import me-2"></i>Input Saldo Awal Rekening</h6>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('samutasibank.downloadtemplate') }}" class="btn btn-success btn-sm">
+                            <a href="{{ route('sarekening.downloadtemplate') }}" class="btn btn-success btn-sm">
                                 <i class="ti ti-download me-1"></i> Template
                             </a>
                             <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalImport">
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end gap-2">
-                    <a href="{{ route('samutasibank.index') }}" class="btn btn-label-secondary">Batal</a>
+                    <a href="{{ route('sarekening.index') }}" class="btn btn-label-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary"><i class="ti ti-device-floppy me-1"></i> Simpan Data</button>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                 <h5 class="modal-title">Import Saldo Awal Rekening</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('samutasibank.import') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('sarekening.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="alert alert-info">

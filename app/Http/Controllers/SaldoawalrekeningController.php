@@ -81,7 +81,7 @@ class SaldoawalrekeningController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('samutasibank.index')->with(messageSuccess('Data Berhasil Diimport'));
+            return redirect()->route('sarekening.index')->with(messageSuccess('Data Berhasil Diimport'));
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
@@ -126,7 +126,7 @@ class SaldoawalrekeningController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('samutasibank.index')->with(messageSuccess('Data Berhasil Disimpan'));
+            return redirect()->route('sarekening.index')->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
@@ -181,7 +181,7 @@ class SaldoawalrekeningController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('samutasibank.index')->with(messageSuccess('Data Berhasil Diupdate'));
+            return redirect()->route('sarekening.index')->with(messageSuccess('Data Berhasil Diupdate'));
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));

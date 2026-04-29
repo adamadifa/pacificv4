@@ -14,7 +14,7 @@
                     <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('samutasibank.index') }}">Saldo Awal Rekening</a>
+                    <a href="{{ route('sarekening.index') }}">Saldo Awal Rekening</a>
                 </li>
                 <li class="breadcrumb-item active">Detail</li>
             </ol>
@@ -49,7 +49,7 @@
             <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-eye me-2"></i>Rincian Saldo Awal Rekening</h6>
-                    <a href="{{ route('samutasibank.index') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('sarekening.index') }}" class="btn btn-primary btn-sm">
                         <i class="ti ti-arrow-left me-1"></i> Kembali
                     </a>
                 </div>

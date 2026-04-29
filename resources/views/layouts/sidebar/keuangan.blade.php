@@ -49,6 +49,8 @@
             'saledger',
             'mutasibank',
             'samutasibank',
+            'sarekening',
+            'sarekening/*',
             'pjp',
             'pembayaranpjp',
             'kasbon',

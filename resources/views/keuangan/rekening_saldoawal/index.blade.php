@@ -49,8 +49,8 @@
                 style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-database-import me-2"></i>Data Saldo Awal Rekening</h6>
-                    @can('samutasibank.create')
-                        <a href="{{ route('samutasibank.create') }}" class="btn btn-primary btn-sm shadow-sm">
+                    @can('sarekening.create')
+                        <a href="{{ route('sarekening.create') }}" class="btn btn-primary btn-sm shadow-sm">
                             <i class="ti ti-plus me-1"></i> Buat Saldo Awal
                         </a>
                     @endcan
@@ -74,19 +74,19 @@
                                 <td class="text-center">{{ formatIndo($d->tanggal) }}</td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        @can('samutasibank.index')
-                                            <a href="{{ route('samutasibank.show', Crypt::encrypt($d->kode_saldo_awal)) }}" class="text-info" data-bs-toggle="tooltip" title="Detail">
+                                        @can('sarekening.index')
+                                            <a href="{{ route('sarekening.show', Crypt::encrypt($d->kode_saldo_awal)) }}" class="text-info" data-bs-toggle="tooltip" title="Detail">
                                                 <i class="ti ti-eye fs-4"></i>
                                             </a>
                                         @endcan
-                                        @can('samutasibank.edit')
-                                            <a href="{{ route('samutasibank.edit', Crypt::encrypt($d->kode_saldo_awal)) }}" class="text-warning" data-bs-toggle="tooltip" title="Edit">
+                                        @can('sarekening.edit')
+                                            <a href="{{ route('sarekening.edit', Crypt::encrypt($d->kode_saldo_awal)) }}" class="text-warning" data-bs-toggle="tooltip" title="Edit">
                                                 <i class="ti ti-edit fs-4"></i>
                                             </a>
                                         @endcan
-                                        @can('samutasibank.delete')
+                                        @can('sarekening.delete')
                                             <form method="POST" name="deleteform" class="deleteform d-inline"
-                                                action="{{ route('samutasibank.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                                action="{{ route('sarekening.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <a href="#" class="cancel-confirm text-danger" data-bs-toggle="tooltip" title="Hapus">

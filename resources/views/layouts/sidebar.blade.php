@@ -256,7 +256,7 @@
              </a>
          </li>
          @if (in_array($level_user, ['super admin', 'direktur', 'gm administrasi', 'manager keuangan', 'regional operation manager', 'spv accounting']))
-            <li class="menu-item {{ request()->is(['dashboard/owner', 'samutasibank', 'samutasibank/*']) ? 'open' : '' }}">
+            <li class="menu-item {{ request()->is(['dashboard/owner', 'sarekening', 'sarekening/*']) ? 'open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-device-analytics"></i>
                     <div>Dashboard Owner</div>
@@ -267,9 +267,9 @@
                             <div>Dashboard</div>
                         </a>
                     </li>
-                    @if (auth()->user()->hasAnyPermission(['samutasibank.index']))
-                        <li class="menu-item {{ request()->is(['samutasibank', 'samutasibank/*']) ? 'active' : '' }}">
-                            <a href="{{ route('samutasibank.index') }}" class="menu-link">
+                    @if (auth()->user()->hasAnyPermission(['sarekening.index']))
+                        <li class="menu-item {{ request()->is(['sarekening', 'sarekening/*']) ? 'active' : '' }}">
+                            <a href="{{ route('sarekening.index') }}" class="menu-link">
                                 <div>Saldo Awal Rekening</div>
                             </a>
                         </li>

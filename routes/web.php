@@ -1366,18 +1366,24 @@ Route::middleware('auth')->group(function () {
         Route::delete('/saledger/{no_bukti}/delete', 'destroy')->name('saledger.delete')->can('saledger.delete');
 
         Route::post('/saledger/getsaldo', 'getsaldo')->name('saledger.getsaldo');
+
+        Route::get('/samutasibank', 'index')->name('samutasibank.index')->can('samutasibank.index');
+        Route::get('/samutasibank/create', 'create')->name('samutasibank.create')->can('samutasibank.create');
+        Route::post('/samutasibank/store', 'store')->name('samutasibank.store')->can('samutasibank.store');
+        Route::delete('/samutasibank/{kode_saldo_awal}/delete', 'destroy')->name('samutasibank.delete')->can('samutasibank.delete');
+        Route::post('/samutasibank/getsaldo', 'getsaldo')->name('samutasibank.getsaldo');
     });
 
     Route::controller(SaldoawalrekeningController::class)->group(function () {
-        Route::get('/samutasibank', 'index')->name('samutasibank.index')->can('samutasibank.index');
-        Route::get('/samutasibank/create', 'create')->name('samutasibank.create')->can('samutasibank.create');
-        Route::post('/samutasibank', 'store')->name('samutasibank.store')->can('samutasibank.store');
-        Route::get('/samutasibank/downloadtemplate', 'downloadtemplate')->name('samutasibank.downloadtemplate')->can('samutasibank.create');
-        Route::post('/samutasibank/import', 'import')->name('samutasibank.import')->can('samutasibank.create');
-        Route::get('/samutasibank/{kode_saldo_awal}/edit', 'edit')->name('samutasibank.edit')->can('samutasibank.edit');
-        Route::put('/samutasibank/{kode_saldo_awal}/update', 'update')->name('samutasibank.update')->can('samutasibank.edit');
-        Route::get('/samutasibank/{kode_saldo_awal}/show', 'show')->name('samutasibank.show')->can('samutasibank.index');
-        Route::delete('/samutasibank/{kode_saldo_awal}/delete', 'destroy')->name('samutasibank.delete')->can('samutasibank.delete');
+        Route::get('/sarekening', 'index')->name('sarekening.index')->can('sarekening.index');
+        Route::get('/sarekening/create', 'create')->name('sarekening.create')->can('sarekening.create');
+        Route::post('/sarekening', 'store')->name('sarekening.store')->can('sarekening.store');
+        Route::get('/sarekening/downloadtemplate', 'downloadtemplate')->name('sarekening.downloadtemplate')->can('sarekening.create');
+        Route::post('/sarekening/import', 'import')->name('sarekening.import')->can('sarekening.create');
+        Route::get('/sarekening/{kode_saldo_awal}/edit', 'edit')->name('sarekening.edit')->can('sarekening.edit');
+        Route::put('/sarekening/{kode_saldo_awal}/update', 'update')->name('sarekening.update')->can('sarekening.edit');
+        Route::get('/sarekening/{kode_saldo_awal}/show', 'show')->name('sarekening.show')->can('sarekening.index');
+        Route::delete('/sarekening/{kode_saldo_awal}/delete', 'destroy')->name('sarekening.delete')->can('sarekening.delete');
     });
 
     Route::controller(SaldoawalmutasikeuanganController::class)->group(function () {

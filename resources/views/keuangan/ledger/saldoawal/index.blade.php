@@ -136,16 +136,16 @@
                                 <td>{{ $d->nama_bank }} {{ !empty($d->no_rekening) ? '(' . $d->no_rekening . ')' : '' }}</td>
                                 <td class="text-end fw-bold text-primary">{{ formatAngka($d->jumlah) }}</td>
                                 <td class="text-center">
-                                    @can('saledger.delete')
+                                    @if (auth()->user()->can('saledger.delete') || auth()->user()->can('samutasibank.delete'))
                                         <form method="POST" name="deleteform" class="deleteform d-inline"
-                                            action="{{ route('saledger.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
+                                            action="{{ request()->is('samutasibank') ? route('samutasibank.delete', Crypt::encrypt($d->kode_saldo_awal)) : route('saledger.delete', Crypt::encrypt($d->kode_saldo_awal)) }}">
                                             @csrf
                                             @method('DELETE')
                                             <a href="#" class="cancel-confirm text-danger" data-bs-toggle="tooltip" title="Hapus">
                                                 <i class="ti ti-trash fs-5"></i>
                                             </a>
                                         </form>
-                                    @endcan
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -168,8 +168,8 @@
         $("#btnCreate").click(function(e) {
             e.preventDefault();
             $("#modal").modal("show");
-            $("#modal").find(".modal-title").text("Buat Saldo Awal Ledger");
-            $("#loadmodal").load(`/saledger/create`);
+            $("#modal").find(".modal-title").text("{{ request()->is('samutasibank') ? 'Buat Saldo Awal Mutasi Bank' : 'Buat Saldo Awal Ledger' }}");
+            $("#loadmodal").load("{{ request()->is('samutasibank') ? '/samutasibank/create' : '/saledger/create' }}");
         });
 
         const select2Kodebanksearch = $('.select2Kodebanksearch');
