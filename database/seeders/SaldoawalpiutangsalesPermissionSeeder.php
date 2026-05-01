@@ -18,6 +18,9 @@ class SaldoawalpiutangsalesPermissionSeeder extends Seeder
             'sapiutangsales.create',
             'sapiutangsales.show',
             'sapiutangsales.delete',
+            'movefaktur.index',
+            'movefaktur.create',
+            'movefaktur.delete',
         ];
 
         foreach ($permissions as $permission) {

@@ -37,6 +37,7 @@
             'retur.index',
             'ajuanlimit.index',
             'sapiutangsales.index',
+            'movefaktur.index',
             ...$laporanpermissions,
         ]))
     <li
@@ -59,6 +60,8 @@
             'laporanmarketing',
             'sapiutangsales',
             'sapiutangsales/*',
+            'movefaktur',
+            'movefaktur/*',
         ])
             ? 'open'
             : '' }}">
@@ -154,6 +157,13 @@
                 <li class="menu-item {{ request()->is(['sapiutangsales', 'sapiutangsales/*']) ? 'active' : '' }}">
                     <a href="{{ route('sapiutangsales.index') }}" class="menu-link">
                         <div>S.A Piutang Sales</div>
+                    </a>
+                </li>
+            @endcan
+            @can('movefaktur.index')
+                <li class="menu-item {{ request()->is(['movefaktur', 'movefaktur/*']) ? 'active' : '' }}">
+                    <a href="{{ route('movefaktur.index') }}" class="menu-link">
+                        <div>Move Faktur</div>
                     </a>
                 </li>
             @endcan

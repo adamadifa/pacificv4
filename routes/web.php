@@ -146,6 +146,7 @@ use App\Http\Controllers\SaldoawalgudangcabangController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalpiutangController;
 use App\Http\Controllers\SaldoawalpiutangsalesController;
+use App\Http\Controllers\MovefakturController;
 use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalkasbesarController;
@@ -836,6 +837,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/sapiutangsales/{kode_saldo_awal}/show', 'show')->name('sapiutangsales.show')->can('sapiutangsales.show');
         //AJAX REQUEST
         Route::post('/sapiutangsales/getdetailsaldo', 'getdetailsaldo')->name('sapiutangsales.getdetailsaldo');
+    });
+
+    Route::controller(MovefakturController::class)->group(function () {
+        Route::get('/movefaktur', 'index')->name('movefaktur.index')->can('movefaktur.index');
+        Route::get('/movefaktur/create', 'create')->name('movefaktur.create')->can('movefaktur.create');
+        Route::post('/movefaktur', 'store')->name('movefaktur.store')->can('movefaktur.create');
+        Route::delete('/movefaktur/delete-multiple', 'deleteMultiple')->name('movefaktur.delete-multiple')->can('movefaktur.delete');
+        Route::delete('/movefaktur/{id}', 'destroy')->name('movefaktur.delete')->can('movefaktur.delete');
+        Route::post('/movefaktur/getfakturajax', 'getfakturajax')->name('movefaktur.getfakturajax');
     });
 
     Route::controller(SuratjalanangkutanController::class)->group(function () {
