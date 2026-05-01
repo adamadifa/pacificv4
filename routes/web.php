@@ -145,6 +145,7 @@ use App\Http\Controllers\SaldoawalgudangbahanController;
 use App\Http\Controllers\SaldoawalgudangcabangController;
 use App\Http\Controllers\SaldoawalgudangjadiController;
 use App\Http\Controllers\SaldoawalpiutangController;
+use App\Http\Controllers\SaldoawalpiutangsalesController;
 use App\Http\Controllers\SaldoawalgudanglogistikController;
 use App\Http\Controllers\SaldoawalhargagudangbahanController;
 use App\Http\Controllers\SaldoawalkasbesarController;
@@ -825,6 +826,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/sapiutang/{kode_saldo_awal}/show', 'show')->name('sapiutang.show')->can('sapiutang.show');
         //AJAX REQUEST
         Route::post('/sapiutang/getdetailsaldo', 'getdetailsaldo')->name('sapiutang.getdetailsaldo');
+    });
+
+    Route::controller(SaldoawalpiutangsalesController::class)->group(function () {
+        Route::get('/sapiutangsales', 'index')->name('sapiutangsales.index')->can('sapiutangsales.index');
+        Route::get('/sapiutangsales/create', 'create')->name('sapiutangsales.create')->can('sapiutangsales.create');
+        Route::post('/sapiutangsales', 'store')->name('sapiutangsales.store')->can('sapiutangsales.store');
+        Route::delete('/sapiutangsales/{kode_saldo_awal}', 'destroy')->name('sapiutangsales.delete')->can('sapiutangsales.delete');
+        Route::get('/sapiutangsales/{kode_saldo_awal}/show', 'show')->name('sapiutangsales.show')->can('sapiutangsales.show');
+        //AJAX REQUEST
+        Route::post('/sapiutangsales/getdetailsaldo', 'getdetailsaldo')->name('sapiutangsales.getdetailsaldo');
     });
 
     Route::controller(SuratjalanangkutanController::class)->group(function () {

@@ -36,6 +36,7 @@
             'penjualan.index',
             'retur.index',
             'ajuanlimit.index',
+            'sapiutangsales.index',
             ...$laporanpermissions,
         ]))
     <li
@@ -56,6 +57,8 @@
             'ajuanlimit/*',
             'ajuanfaktur',
             'laporanmarketing',
+            'sapiutangsales',
+            'sapiutangsales/*',
         ])
             ? 'open'
             : '' }}">
@@ -144,6 +147,13 @@
                 <li class="menu-item {{ request()->is(['sapiutang', 'sapiutang/*']) ? 'active' : '' }}">
                     <a href="{{ route('sapiutang.index') }}" class="menu-link">
                         <div>Saldo Awal Piutang</div>
+                    </a>
+                </li>
+            @endcan
+            @can('sapiutangsales.index')
+                <li class="menu-item {{ request()->is(['sapiutangsales', 'sapiutangsales/*']) ? 'active' : '' }}">
+                    <a href="{{ route('sapiutangsales.index') }}" class="menu-link">
+                        <div>S.A Piutang Sales</div>
                     </a>
                 </li>
             @endcan
