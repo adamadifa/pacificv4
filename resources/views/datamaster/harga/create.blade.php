@@ -68,7 +68,7 @@
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
 <script src="{{ asset('/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-<script src="{{ asset('assets/js/pages/harga/create.js') }}"></script>
+<script src="{{ asset('assets/js/pages/harga/create.js') }}?v=1.0.2"></script>
 <script>
    $(".money").maskMoney();
 </script>

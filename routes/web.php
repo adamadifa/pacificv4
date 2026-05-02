@@ -261,53 +261,58 @@ Route::middleware('auth')->group(function () {
     });
 
     //Setings
-    //Role
-    Route::controller(RoleController::class)->group(function () {
-        Route::get('/roles', 'index')->name('roles.index');
-        Route::get('/roles/create', 'create')->name('roles.create');
-        Route::post('/roles', 'store')->name('roles.store');
-        Route::get('/roles/{id}/edit', 'edit')->name('roles.edit');
-        Route::put('/roles/{id}/update', 'update')->name('roles.update');
-        Route::delete('/roles/{id}/delete', 'destroy')->name('roles.delete');
-        Route::get('/roles/{id}/createrolepermission', 'createrolepermission')->name('roles.createrolepermission');
-        Route::post('/roles/{id}/storerolepermission', 'storerolepermission')->name('roles.storerolepermission');
-    });
-
-
-    Route::controller(Permission_groupController::class)->group(function () {
-        Route::get('/permissiongroups', 'index')->name('permissiongroups.index');
-        Route::get('/permissiongroups/create', 'create')->name('permissiongroups.create');
-        Route::post('/permissiongroups', 'store')->name('permissiongroups.store');
-        Route::get('/permissiongroups/{id}/edit', 'edit')->name('permissiongroups.edit');
-        Route::put('/permissiongroups/{id}/update', 'update')->name('permissiongroups.update');
-        Route::delete('/permissiongroups/{id}/delete', 'destroy')->name('permissiongroups.delete');
-    });
-
-
-    Route::controller(PermissionController::class)->group(function () {
-        Route::get('/permissions', 'index')->name('permissions.index');
-        Route::get('/permissions/create', 'create')->name('permissions.create');
-        Route::post('/permissions', 'store')->name('permissions.store');
-        Route::get('/permissions/{id}/edit', 'edit')->name('permissions.edit');
-        Route::put('/permissions/{id}/update', 'update')->name('permissions.update');
-        Route::delete('/permissions/{id}/delete', 'destroy')->name('permissions.delete');
-    });
-
     Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'index')->name('users.index');
-        Route::get('/users/create', 'create')->name('users.create');
-        Route::post('/users', 'store')->name('users.store');
-        Route::get('/users/{id}/edit', 'edit')->name('users.edit');
         Route::get('/users/ubahpassword', 'ubahpassword')->name('users.ubahpassword');
         Route::put('/users/updateprofile', 'updateprofile')->name('users.updateprofile');
-        Route::put('/users/{id}/update', 'update')->name('users.update');
-        Route::delete('/users/{id}/delete', 'destroy')->name('users.delete');
+    });
 
-        Route::get('/users/{id}/createuserpermission', 'createuserpermission')->name('users.createuserpermission');
-        Route::post('/users/{id}/storeuserpermission', 'storeuserpermission')->name('users.storeuserpermission');
+    Route::middleware('role:super admin')->group(function () {
+        //Role
+        Route::controller(RoleController::class)->group(function () {
+            Route::get('/roles', 'index')->name('roles.index');
+            Route::get('/roles/create', 'create')->name('roles.create');
+            Route::post('/roles', 'store')->name('roles.store');
+            Route::get('/roles/{id}/edit', 'edit')->name('roles.edit');
+            Route::put('/roles/{id}/update', 'update')->name('roles.update');
+            Route::delete('/roles/{id}/delete', 'destroy')->name('roles.delete');
+            Route::get('/roles/{id}/createrolepermission', 'createrolepermission')->name('roles.createrolepermission');
+            Route::post('/roles/{id}/storerolepermission', 'storerolepermission')->name('roles.storerolepermission');
+        });
 
-        Route::get('/users/{id}/pjpaccess', 'editPjpAccess')->name('users.pjpaccess');
-        Route::post('/users/{id}/pjpaccess', 'updatePjpAccess')->name('users.pjpaccess.update');
+
+        Route::controller(Permission_groupController::class)->group(function () {
+            Route::get('/permissiongroups', 'index')->name('permissiongroups.index');
+            Route::get('/permissiongroups/create', 'create')->name('permissiongroups.create');
+            Route::post('/permissiongroups', 'store')->name('permissiongroups.store');
+            Route::get('/permissiongroups/{id}/edit', 'edit')->name('permissiongroups.edit');
+            Route::put('/permissiongroups/{id}/update', 'update')->name('permissiongroups.update');
+            Route::delete('/permissiongroups/{id}/delete', 'destroy')->name('permissiongroups.delete');
+        });
+
+
+        Route::controller(PermissionController::class)->group(function () {
+            Route::get('/permissions', 'index')->name('permissions.index');
+            Route::get('/permissions/create', 'create')->name('permissions.create');
+            Route::post('/permissions', 'store')->name('permissions.store');
+            Route::get('/permissions/{id}/edit', 'edit')->name('permissions.edit');
+            Route::put('/permissions/{id}/update', 'update')->name('permissions.update');
+            Route::delete('/permissions/{id}/delete', 'destroy')->name('permissions.delete');
+        });
+
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/users', 'index')->name('users.index');
+            Route::get('/users/create', 'create')->name('users.create');
+            Route::post('/users', 'store')->name('users.store');
+            Route::get('/users/{id}/edit', 'edit')->name('users.edit');
+            Route::put('/users/{id}/update', 'update')->name('users.update');
+            Route::delete('/users/{id}/delete', 'destroy')->name('users.delete');
+
+            Route::get('/users/{id}/createuserpermission', 'createuserpermission')->name('users.createuserpermission');
+            Route::post('/users/{id}/storeuserpermission', 'storeuserpermission')->name('users.storeuserpermission');
+
+            Route::get('/users/{id}/pjpaccess', 'editPjpAccess')->name('users.pjpaccess');
+            Route::post('/users/{id}/pjpaccess', 'updatePjpAccess')->name('users.pjpaccess.update');
+        });
     });
 
 
