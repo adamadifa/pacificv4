@@ -44,8 +44,12 @@ class HargaController extends Controller
             }
         }
 
-        if (!$user->hasRole('super admin')) {
-            $query->where('status_aktif_harga', 1);
+        if ($request->status_aktif_harga === '1' || $request->status_aktif_harga === '0') {
+            $query->where('status_aktif_harga', $request->status_aktif_harga);
+        } else {
+            if (!$user->hasRole('super admin')) {
+                $query->where('status_aktif_harga', 1);
+            }
         }
         $harga = $query->paginate(10);
         $harga->appends(request()->all());

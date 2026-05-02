@@ -93,14 +93,21 @@
                         icon="ti ti-search" hideLabel="true" />
                 </div>
                 @hasanyrole($roles_show_cabang)
-                    <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="col-lg-2 col-md-2 col-sm-12">
                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
                             selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                     </div>
                 @endhasanyrole
-                <div class="col">
+                <div class="col-lg-2 col-md-2 col-sm-12">
                     <x-select label="Kategori" name="kode_kategori_salesman" :data="$kategorisalesman" key="kode_kategori_salesman"
                         textShow="nama_kategori_salesman" selected="{{ Request('kode_kategori_salesman') }}" hideLabel="true" />
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <select name="status_aktif_harga" id="status_aktif_harga" class="form-select">
+                        <option value="">Status</option>
+                        <option value="1" {{ Request('status_aktif_harga') === '1' ? 'selected' : '' }}>Aktif</option>
+                        <option value="0" {{ Request('status_aktif_harga') === '0' ? 'selected' : '' }}>Non Aktif</option>
+                    </select>
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-primary"><i class="ti ti-search me-1"></i>Cari</button>
