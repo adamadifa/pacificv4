@@ -9,11 +9,11 @@
                         notEmpty: {
                             message: 'Kode Harga Harus Diisi'
                         },
-                        stringLength: {
-                            max: 7,
-                            min: 7,
-                            message: 'Maksimal 7 Karakter '
-                        },
+                        // stringLength: {
+                        //     max: 7,
+                        //     min: 7,
+                        //     message: 'Maksimal 7 Karakter '
+                        // },
 
 
                     }
