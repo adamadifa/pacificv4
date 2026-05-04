@@ -12,7 +12,7 @@
     </div>
     <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" hideLabel="true" />
     <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
-    <x-input-file name="sid" label="sid" />
+    <x-input-file name="sid" label="SID" accept="image/*" />
     <div class="form-group">
         <button class="btn btn-primary w-100" id="btnSimpan" type="submit">
             <ion-icon name="send-outline" class="me-1"></ion-icon>

@@ -159,7 +159,7 @@ class PelangganController extends Controller
         $data_foto = [];
         if ($request->hasfile('foto')) {
             $foto_name =  $kode_pelanggan . "." . $request->file('foto')->getClientOriginalExtension();
-            $destination_foto_path = "/public/pelanggan";
+            $destination_foto_path = "public/pelanggan";
             $foto = $foto_name;
             $data_foto = [
                 'foto' => $foto
@@ -213,7 +213,14 @@ class PelangganController extends Controller
             $simpan = Pelanggan::create($data);
             if ($simpan) {
                 if ($request->hasfile('foto')) {
-                    $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                    $image = $request->file('foto');
+                    $img = Image::make($image->getRealPath());
+                    $img->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                    $img->encode('jpg', 70);
+                    Storage::put($destination_foto_path . "/" . $foto_name, $img);
                 }
             }
             DB::commit();
@@ -281,7 +288,7 @@ class PelangganController extends Controller
         $data_foto_owner = [];
         if ($request->hasfile('foto')) {
             $foto_name =  $kode_pelanggan . "." . $request->file('foto')->getClientOriginalExtension();
-            $destination_foto_path = "/public/pelanggan";
+            $destination_foto_path = "public/pelanggan";
             $foto = $foto_name;
             $data_foto = [
                 'foto' => $foto
@@ -290,7 +297,7 @@ class PelangganController extends Controller
 
         if ($request->hasfile('foto_owner')) {
             $foto_owner_name =  $kode_pelanggan . "." . $request->file('foto_owner')->getClientOriginalExtension();
-            $destination_foto_owner_path = "/public/pelanggan/owner";
+            $destination_foto_owner_path = "public/pelanggan/owner";
             $foto_owner = $foto_owner_name;
             $data_foto_owner = [
                 'foto_owner' => $foto_owner
@@ -378,17 +385,28 @@ class PelangganController extends Controller
         try {
             $simpan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->update($data);
             if ($simpan) {
-                $image = $request->file('foto');
                 if ($request->hasfile('foto')) {
-
                     Storage::delete($destination_foto_path . "/" . $pelanggan->foto);
-                    $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                    $image = $request->file('foto');
+                    $img = Image::make($image->getRealPath());
+                    $img->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                    $img->encode('jpg', 70);
+                    Storage::put($destination_foto_path . "/" . $foto_name, $img);
                 }
 
                 if ($request->hasfile('foto_owner')) {
-
                     Storage::delete($destination_foto_owner_path . "/" . $pelanggan->foto_owner);
-                    $request->file('foto_owner')->storeAs($destination_foto_owner_path, $foto_owner_name);
+                    $image_owner = $request->file('foto_owner');
+                    $img_owner = Image::make($image_owner->getRealPath());
+                    $img_owner->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                    $img_owner->encode('jpg', 70);
+                    Storage::put($destination_foto_owner_path . "/" . $foto_owner_name, $img_owner);
                 }
             }
             DB::commit();

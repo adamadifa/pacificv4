@@ -14,7 +14,7 @@
     </div>
     <x-input-with-icon icon="ti ti-sun" label="Jumlah Hari" name="jml_hari" disabled="true" hideLabel="true" />
     <x-textarea label="Keterangan" name="keterangan" value="{{ $izinsakit->keterangan }}" hideLabel="true" />
-    <x-input-file name="sid" label="sid" />
+    <x-input-file name="sid" label="SID" accept="image/*" />
     <div class="row mb-3 mt-2">
         <div class="col">
             @if (!empty($izinsakit->doc_sid))

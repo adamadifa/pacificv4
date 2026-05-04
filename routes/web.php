@@ -2493,6 +2493,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ActivitylogController::class)->group(function () {
         Route::get('/activitylog', 'index')->name('activitylog.index')->can('activitylog.index');
+        Route::post('/activitylog/prune', 'prune')->name('activitylog.prune')->can('activitylog.index');
     });
 
     Route::controller(TicketController::class)->group(function () {

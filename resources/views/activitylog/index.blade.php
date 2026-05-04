@@ -9,7 +9,12 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-header">
-
+                <form action="{{ route('activitylog.prune') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger delete-confirm">
+                        <i class="ti ti-trash me-1"></i> Prune Log (> 3 Bulan)
+                    </button>
+                </form>
             </div>
             <div class="card-body">
                 <div class="row">

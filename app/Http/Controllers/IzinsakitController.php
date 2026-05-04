@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class IzinsakitController extends Controller
 {
@@ -53,6 +54,7 @@ class IzinsakitController extends Controller
             'dari' => 'required',
             'sampai' => 'required',
             'keterangan' => 'required',
+            'sid' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
         DB::beginTransaction();
         try {
@@ -70,7 +72,7 @@ class IzinsakitController extends Controller
             $data_sid = [];
             if ($request->hasfile('sid')) {
                 $sid_name =  $kode_izin_sakit . "." . $request->file('sid')->getClientOriginalExtension();
-                $destination_sid_path = "/public/uploads/sid";
+                $destination_sid_path = "public/uploads/sid";
                 $sid = $sid_name;
                 $data_sid = [
                     'doc_sid' => $sid,
@@ -98,7 +100,14 @@ class IzinsakitController extends Controller
             $simpandatasakit = Izinsakit::create($data);
             if ($simpandatasakit) {
                 if ($request->hasfile('sid')) {
-                    $request->file('sid')->storeAs($destination_sid_path, $sid_name);
+                    $image = $request->file('sid');
+                    $img = Image::make($image->getRealPath());
+                    $img->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                    $img->encode('jpg', 70);
+                    Storage::put($destination_sid_path . "/" . $sid_name, $img);
                 }
             }
             DB::commit();
@@ -126,6 +135,7 @@ class IzinsakitController extends Controller
             'dari' => 'required',
             'sampai' => 'required',
             'keterangan' => 'required',
+            'sid' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
         DB::beginTransaction();
         try {
@@ -133,7 +143,7 @@ class IzinsakitController extends Controller
             $data_sid = [];
             if ($request->hasfile('sid')) {
                 $sid_name =  $kode_izin_sakit . "." . $request->file('sid')->getClientOriginalExtension();
-                $destination_sid_path = "/public/uploads/sid";
+                $destination_sid_path = "public/uploads/sid";
                 $sid = $sid_name;
                 $data_sid = [
                     'doc_sid' => $sid,
@@ -154,7 +164,14 @@ class IzinsakitController extends Controller
             if ($simpandatasakit) {
                 if ($request->hasfile('sid')) {
                     Storage::delete($destination_sid_path . "/" . $izinsakit->doc_sid);
-                    $request->file('sid')->storeAs($destination_sid_path, $sid_name);
+                    $image = $request->file('sid');
+                    $img = Image::make($image->getRealPath());
+                    $img->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                    $img->encode('jpg', 70);
+                    Storage::put($destination_sid_path . "/" . $sid_name, $img);
                 }
             }
             DB::commit();

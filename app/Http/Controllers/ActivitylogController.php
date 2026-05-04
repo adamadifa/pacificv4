@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Action;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivitylogController extends Controller
@@ -48,5 +49,15 @@ class ActivitylogController extends Controller
         $data['users'] = User::orderBy('name')->get();
         $data['kategori'] = Activity::select('log_name')->groupBy('log_name')->get();
         return view('activitylog.index', $data);
+    }
+
+    public function prune()
+    {
+        try {
+            Activity::where('created_at', '<', now()->subMonths(3))->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }
