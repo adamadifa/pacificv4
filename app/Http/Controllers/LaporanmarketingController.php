@@ -6996,7 +6996,18 @@ class LaporanmarketingController extends Controller
                     }
                 }
                 // Ambil detail penjualan lengkap dengan info produk & harga untuk auto-sync di Portax
-                $details = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'produk_harga.kode_cabang as kode_cabang_harga', 'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 'produk_harga.kode_pelanggan as kode_pelanggan_harga', 'produk.satuan')
+                $details = Detailpenjualan::select(
+                        'marketing_penjualan_detail.*', 
+                        'produk_harga.kode_produk', 
+                        'produk_harga.harga_retur_dus', 'produk_harga.harga_retur_pack', 'produk_harga.harga_retur_pcs',
+                        'produk_harga.status_aktif_harga', 'produk_harga.status_ppn', 'produk_harga.status_promo',
+                        'produk_harga.kode_cabang as kode_cabang_harga', 
+                        'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 
+                        'produk_harga.kode_pelanggan as kode_pelanggan_harga',
+                        'produk.nama_produk', 'produk.satuan', 'produk.isi_pcs_dus', 'produk.isi_pack_dus', 'produk.isi_pcs_pack',
+                        'produk.kode_kategori_produk', 'produk.kode_jenis_produk', 'produk.status_aktif_produk',
+                        'produk.kode_sku', 'produk.kode_kategori_diskon'
+                    )
                     ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                     ->where('no_faktur', $request->no_faktur)->get();
@@ -7064,9 +7075,23 @@ class LaporanmarketingController extends Controller
                         'kode_produk' => $detail->kode_produk,
                         'nama_produk' => $detail->nama_produk,
                         'satuan' => $detail->satuan,
+                        'isi_pcs_dus' => $detail->isi_pcs_dus,
+                        'isi_pack_dus' => $detail->isi_pack_dus,
+                        'isi_pcs_pack' => $detail->isi_pcs_pack,
+                        'kode_kategori_produk' => $detail->kode_kategori_produk,
+                        'kode_jenis_produk' => $detail->kode_jenis_produk,
+                        'status_aktif_produk' => $detail->status_aktif_produk,
+                        'kode_sku' => $detail->kode_sku,
+                        'kode_kategori_diskon' => $detail->kode_kategori_diskon,
                         'kode_cabang_harga' => $detail->kode_cabang_harga,
                         'kode_kategori_salesman_harga' => $detail->kode_kategori_salesman_harga,
                         'kode_pelanggan_harga' => $detail->kode_pelanggan_harga,
+                        'harga_retur_dus' => $detail->harga_retur_dus,
+                        'harga_retur_pack' => $detail->harga_retur_pack,
+                        'harga_retur_pcs' => $detail->harga_retur_pcs,
+                        'status_aktif_harga' => $detail->status_aktif_harga,
+                        'status_ppn' => $detail->status_ppn,
+                        'status_promo' => $detail->status_promo,
                     ];
                 }
 
@@ -7300,7 +7325,18 @@ class LaporanmarketingController extends Controller
                 if(!$penjualan) continue;
 
                  // Prepare Payload (Same as multipleStatusPajak)
-                 $details = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'produk_harga.kode_cabang as kode_cabang_harga', 'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 'produk_harga.kode_pelanggan as kode_pelanggan_harga', 'produk.satuan')
+                 $details = Detailpenjualan::select(
+                        'marketing_penjualan_detail.*', 
+                        'produk_harga.kode_produk', 
+                        'produk_harga.harga_retur_dus', 'produk_harga.harga_retur_pack', 'produk_harga.harga_retur_pcs',
+                        'produk_harga.status_aktif_harga', 'produk_harga.status_ppn', 'produk_harga.status_promo',
+                        'produk_harga.kode_cabang as kode_cabang_harga', 
+                        'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 
+                        'produk_harga.kode_pelanggan as kode_pelanggan_harga',
+                        'produk.nama_produk', 'produk.satuan', 'produk.isi_pcs_dus', 'produk.isi_pack_dus', 'produk.isi_pcs_pack',
+                        'produk.kode_kategori_produk', 'produk.kode_jenis_produk', 'produk.status_aktif_produk',
+                        'produk.kode_sku', 'produk.kode_kategori_diskon'
+                    )
                     ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                     ->where('no_faktur', $penjualan->no_faktur)->get();
@@ -7380,9 +7416,23 @@ class LaporanmarketingController extends Controller
                         'kode_produk' => $detail->kode_produk,
                         'nama_produk' => $detail->nama_produk,
                         'satuan' => $detail->satuan,
+                        'isi_pcs_dus' => $detail->isi_pcs_dus,
+                        'isi_pack_dus' => $detail->isi_pack_dus,
+                        'isi_pcs_pack' => $detail->isi_pcs_pack,
+                        'kode_kategori_produk' => $detail->kode_kategori_produk,
+                        'kode_jenis_produk' => $detail->kode_jenis_produk,
+                        'status_aktif_produk' => $detail->status_aktif_produk,
+                        'kode_sku' => $detail->kode_sku,
+                        'kode_kategori_diskon' => $detail->kode_kategori_diskon,
                         'kode_cabang_harga' => $detail->kode_cabang_harga,
                         'kode_kategori_salesman_harga' => $detail->kode_kategori_salesman_harga,
                         'kode_pelanggan_harga' => $detail->kode_pelanggan_harga,
+                        'harga_retur_dus' => $detail->harga_retur_dus,
+                        'harga_retur_pack' => $detail->harga_retur_pack,
+                        'harga_retur_pcs' => $detail->harga_retur_pcs,
+                        'status_aktif_harga' => $detail->status_aktif_harga,
+                        'status_ppn' => $detail->status_ppn,
+                        'status_promo' => $detail->status_promo,
                     ];
                 }
 
