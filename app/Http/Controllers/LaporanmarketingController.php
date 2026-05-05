@@ -19,6 +19,7 @@ use App\Models\Dpb;
 use App\Models\Dpbdriverhelper;
 use App\Models\Driverhelper;
 use App\Models\Historibayarpenjualan;
+use App\Models\Harga;
 use App\Models\Kategorikomisi;
 use App\Models\Kendaraan;
 use App\Models\Movefaktur;
@@ -6994,8 +6995,11 @@ class LaporanmarketingController extends Controller
                         }
                     }
                 }
-                // Ambil detail penjualan
-                $details = Detailpenjualan::where('no_faktur', $request->no_faktur)->get();
+                // Ambil detail penjualan lengkap dengan info produk & harga untuk auto-sync di Portax
+                $details = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'produk_harga.kode_cabang as kode_cabang_harga', 'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 'produk_harga.kode_pelanggan as kode_pelanggan_harga', 'produk.satuan')
+                    ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                    ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                    ->where('no_faktur', $request->no_faktur)->get();
                 
                 if ($details->isEmpty()) {
                     return response()->json([
@@ -7055,7 +7059,14 @@ class LaporanmarketingController extends Controller
                         'harga_pcs' => $detail->harga_pcs ?? 0,
                         'jumlah' => $detail->jumlah,
                         'subtotal' => $detail->subtotal,
-                        'status_promosi' => $detail->status_promosi ?? '0'
+                        'status_promosi' => $detail->status_promosi ?? '0',
+                        // Additional fields for auto-sync in Portax
+                        'kode_produk' => $detail->kode_produk,
+                        'nama_produk' => $detail->nama_produk,
+                        'satuan' => $detail->satuan,
+                        'kode_cabang_harga' => $detail->kode_cabang_harga,
+                        'kode_kategori_salesman_harga' => $detail->kode_kategori_salesman_harga,
+                        'kode_pelanggan_harga' => $detail->kode_pelanggan_harga,
                     ];
                 }
 
@@ -7289,7 +7300,10 @@ class LaporanmarketingController extends Controller
                 if(!$penjualan) continue;
 
                  // Prepare Payload (Same as multipleStatusPajak)
-                $details = Detailpenjualan::where('no_faktur', $penjualan->no_faktur)->get();
+                 $details = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'produk_harga.kode_cabang as kode_cabang_harga', 'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 'produk_harga.kode_pelanggan as kode_pelanggan_harga', 'produk.satuan')
+                    ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                    ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                    ->where('no_faktur', $penjualan->no_faktur)->get();
                 if ($details->isEmpty()) continue;
 
                 // Cek Kode Cabang PKP Pelanggan - hanya ubah kode_salesman yang dikirim ke API
@@ -7361,7 +7375,14 @@ class LaporanmarketingController extends Controller
                         'harga_pcs' => $detail->harga_pcs ?? 0,
                         'jumlah' => $detail->jumlah,
                         'subtotal' => $detail->subtotal,
-                        'status_promosi' => $detail->status_promosi ?? '0'
+                        'status_promosi' => $detail->status_promosi ?? '0',
+                        // Additional fields for auto-sync in Portax
+                        'kode_produk' => $detail->kode_produk,
+                        'nama_produk' => $detail->nama_produk,
+                        'satuan' => $detail->satuan,
+                        'kode_cabang_harga' => $detail->kode_cabang_harga,
+                        'kode_kategori_salesman_harga' => $detail->kode_kategori_salesman_harga,
+                        'kode_pelanggan_harga' => $detail->kode_pelanggan_harga,
                     ];
                 }
 
