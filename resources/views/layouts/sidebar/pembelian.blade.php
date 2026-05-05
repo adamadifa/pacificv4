@@ -46,7 +46,7 @@
             @endif
             @if (auth()->user()->hasAnyPermission(['bpbpembelian.index']))
                 <li class="menu-item {{ request()->is(['bpbpembelian', 'bpbpembelian/*']) ? 'active' : '' }}">
-                    <a href="{{ route('po.index') }}" class="menu-link">
+                    <a href="{{ route('bpbpembelian.index') }}" class="menu-link">
                         <div>BPB</div>
                     </a>
                 </li>
