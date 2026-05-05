@@ -7084,25 +7084,36 @@ class LaporanmarketingController extends Controller
                 // Cek response dari API
                 if (!$response->successful()) {
                     $errorMessage = 'Gagal sync ke API';
+                    $responseData = $response->json();
                     
                     if ($response->status() == 422) {
                         $errors = $response->json('errors');
                         if ($errors) {
                             $errorMessage .= ': ' . json_encode($errors);
                         } else {
-                            $errorMessage .= ': ' . $response->json('message');
+                            $errorMessage .= ': ' . ($responseData['message'] ?? 'Validation Error');
                         }
                     } else {
                         $errorMessage .= ' (Status: ' . $response->status() . ')';
-                        if ($response->json('message')) {
-                            $errorMessage .= ' - ' . $response->json('message');
+                        if (isset($responseData['message'])) {
+                            $errorMessage .= ' - ' . $responseData['message'];
+                        }
+                        if (isset($responseData['error'])) {
+                            $errorMessage .= ' | Error: ' . $responseData['error'];
+                        }
+                        if (isset($responseData['sql_error'])) {
+                            $errorMessage .= ' | SQL: ' . $responseData['sql_error'];
+                        }
+                        
+                        if (empty($responseData)) {
+                            $errorMessage .= ' - ' . substr($response->body(), 0, 150);
                         }
                     }
                     
                     // Log error untuk debugging
                     Log::error("Sync penjualan gagal: {$request->no_faktur}", [
                         'status' => $response->status(),
-                        'response' => $response->json()
+                        'response' => $responseData ?? $response->body()
                     ]);
                     
                     return response()->json([
@@ -7397,6 +7408,12 @@ class LaporanmarketingController extends Controller
                              foreach ($result['results'] as $res) {
                                  if (isset($res['status']) && $res['status'] === 'failed') {
                                      $errorMsg = ($res['no_faktur'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                     if (isset($res['error'])) {
+                                         $errorMsg .= ' | Error: ' . $res['error'];
+                                     }
+                                     if (isset($res['sql_error'])) {
+                                         $errorMsg .= ' | SQL: ' . $res['sql_error'];
+                                     }
                                      if (!empty($debugInfo)) {
                                          $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
                                      }
@@ -7407,15 +7424,26 @@ class LaporanmarketingController extends Controller
                      } else {
                          // Batch Request Failed
                          $failCount += count($chunk);
-                         $errorMsg = $response->body();
-                         // Try to parse json error
-                         $jsonError = $response->json();
-                         $debugInfo = $response->json('debug');
-                         if(isset($jsonError['message'])) {
-                             $errorMsg = $jsonError['message'];
+                         $responseData = $response->json();
+                         $errorMsg = 'Status ' . $response->status();
+                         
+                         if(isset($responseData['message'])) {
+                             $errorMsg .= ' - ' . $responseData['message'];
                          }
+                         if(isset($responseData['error'])) {
+                             $errorMsg .= ' | Error: ' . $responseData['error'];
+                         }
+                         if(isset($responseData['sql_error'])) {
+                             $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
+                         }
+                         
+                         $debugInfo = $response->json('debug');
                          if (!empty($debugInfo)) {
                              $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
+                         }
+                         
+                         if (empty($responseData)) {
+                             $errorMsg .= ' - ' . substr($response->body(), 0, 150);
                          }
                          
                          $errors[] = "Batch Failed: " . $errorMsg;
@@ -7536,7 +7564,24 @@ class LaporanmarketingController extends Controller
                         }
                     } else {
                         $failCount += count($chunk);
-                        $errors[] = "Batch Failed: " . ($response->json('message') ?? $response->body());
+                        $responseData = $response->json();
+                        $errorMsg = 'Status ' . $response->status();
+                        
+                        if(isset($responseData['message'])) {
+                            $errorMsg .= ' - ' . $responseData['message'];
+                        }
+                        if(isset($responseData['error'])) {
+                            $errorMsg .= ' | Error: ' . $responseData['error'];
+                        }
+                        if(isset($responseData['sql_error'])) {
+                            $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
+                        }
+                        
+                        if (empty($responseData)) {
+                            $errorMsg .= ' - ' . substr($response->body(), 0, 150);
+                        }
+                        
+                        $errors[] = "Batch Failed: " . $errorMsg;
                     }
                 } catch (\Exception $e) {
                     $failCount += count($chunk);

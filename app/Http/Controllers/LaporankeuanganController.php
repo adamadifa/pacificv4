@@ -2058,25 +2058,36 @@ class LaporankeuanganController extends Controller
                 // Cek response dari API
                 if (!$response->successful()) {
                     $errorMessage = 'Gagal sync ke API';
+                    $responseData = $response->json();
 
                     if ($response->status() == 422) {
                         $errors = $response->json('errors');
                         if ($errors) {
                             $errorMessage .= ': ' . json_encode($errors);
                         } else {
-                            $errorMessage .= ': ' . $response->json('message');
+                            $errorMessage .= ': ' . ($responseData['message'] ?? 'Validation Error');
                         }
                     } else {
                         $errorMessage .= ' (Status: ' . $response->status() . ')';
-                        if ($response->json('message')) {
-                            $errorMessage .= ' - ' . $response->json('message');
+                        if (isset($responseData['message'])) {
+                            $errorMessage .= ' - ' . $responseData['message'];
+                        }
+                        if (isset($responseData['error'])) {
+                            $errorMessage .= ' | Error: ' . $responseData['error'];
+                        }
+                        if (isset($responseData['sql_error'])) {
+                            $errorMessage .= ' | SQL: ' . $responseData['sql_error'];
+                        }
+
+                        if (empty($responseData)) {
+                            $errorMessage .= ' - ' . substr($response->body(), 0, 150);
                         }
                     }
 
                     // Log error untuk debugging
                     Log::error("Sync kas kecil gagal: {$kaskecil->no_bukti}", [
                         'status' => $response->status(),
-                        'response' => $response->json()
+                        'response' => $responseData ?? $response->body()
                     ]);
 
                     return response()->json([
@@ -2243,7 +2254,7 @@ class LaporankeuanganController extends Controller
             try {
                 $response = Http::timeout(60)->post($baseUrl . '/ledger/batch', ['data' => $chunk]);
 
-                if ($response->successful()) {
+                 if ($response->successful()) {
                     $result = $response->json();
                     if (isset($result['summary'])) {
                         $successCount += $result['summary']['success'];
@@ -2255,17 +2266,36 @@ class LaporankeuanganController extends Controller
                     if (isset($result['results'])) {
                         foreach ($result['results'] as $res) {
                             if (isset($res['status']) && $res['status'] === 'failed') {
-                                $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                $errorMsg = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                if (isset($res['error'])) {
+                                    $errorMsg .= ' | Error: ' . $res['error'];
+                                }
+                                if (isset($res['sql_error'])) {
+                                    $errorMsg .= ' | SQL: ' . $res['sql_error'];
+                                }
+                                $errors[] = $errorMsg;
                             }
                         }
                     }
                 } else {
                     $failCount += count($chunk);
-                    $errorMsg = $response->body();
-                    $jsonError = $response->json();
-                    if (isset($jsonError['message'])) {
-                        $errorMsg = $jsonError['message'];
+                    $responseData = $response->json();
+                    $errorMsg = 'Status ' . $response->status();
+                    
+                    if(isset($responseData['message'])) {
+                        $errorMsg .= ' - ' . $responseData['message'];
                     }
+                    if(isset($responseData['error'])) {
+                        $errorMsg .= ' | Error: ' . $responseData['error'];
+                    }
+                    if(isset($responseData['sql_error'])) {
+                        $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
+                    }
+                    
+                    if (empty($responseData)) {
+                        $errorMsg .= ' - ' . substr($response->body(), 0, 150);
+                    }
+                    
                     $errors[] = "Batch Failed: " . $errorMsg;
                     Log::error("Batch sync ledger failed: " . $errorMsg);
                 }
@@ -2365,7 +2395,7 @@ class LaporankeuanganController extends Controller
             try {
                 $response = Http::timeout(60)->post($baseUrl . '/kaskecil/batch', ['data' => $chunk]);
 
-                if ($response->successful()) {
+                 if ($response->successful()) {
                     $result = $response->json();
                     if (isset($result['summary'])) {
                         $successCount += $result['summary']['success'];
@@ -2377,17 +2407,36 @@ class LaporankeuanganController extends Controller
                     if (isset($result['results'])) {
                         foreach ($result['results'] as $res) {
                             if (isset($res['status']) && $res['status'] === 'failed') {
-                                $errors[] = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                $errorMsg = ($res['no_bukti'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                if (isset($res['error'])) {
+                                    $errorMsg .= ' | Error: ' . $res['error'];
+                                }
+                                if (isset($res['sql_error'])) {
+                                    $errorMsg .= ' | SQL: ' . $res['sql_error'];
+                                }
+                                $errors[] = $errorMsg;
                             }
                         }
                     }
                 } else {
                     $failCount += count($chunk);
-                    $errorMsg = $response->body();
-                    $jsonError = $response->json();
-                    if (isset($jsonError['message'])) {
-                        $errorMsg = $jsonError['message'];
+                    $responseData = $response->json();
+                    $errorMsg = 'Status ' . $response->status();
+                    
+                    if(isset($responseData['message'])) {
+                        $errorMsg .= ' - ' . $responseData['message'];
                     }
+                    if(isset($responseData['error'])) {
+                        $errorMsg .= ' | Error: ' . $responseData['error'];
+                    }
+                    if(isset($responseData['sql_error'])) {
+                        $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
+                    }
+                    
+                    if (empty($responseData)) {
+                        $errorMsg .= ' - ' . substr($response->body(), 0, 150);
+                    }
+                    
                     $errors[] = "Batch Failed: " . $errorMsg;
                     Log::error("Batch sync kas kecil failed: " . $errorMsg);
                 }
@@ -2488,21 +2537,29 @@ class LaporankeuanganController extends Controller
                     // Cek response dari API
                     if (!$response->successful()) {
                         $errorMessage = 'Gagal sync ke API';
+                        $responseData = $response->json();
 
                         if ($response->status() == 422) {
                             $errors = $response->json('errors');
                             if ($errors) {
                                 $errorMessage .= ': ' . json_encode($errors);
                             } else {
-                                $errorMessage .= ': ' . $response->json('message');
+                                $errorMessage .= ': ' . ($responseData['message'] ?? 'Validation Error');
                             }
                         } else {
                             $errorMessage .= ' (Status: ' . $response->status() . ')';
-                            if ($response->json('message')) {
-                                $errorMessage .= ' - ' . $response->json('message');
+                            if (isset($responseData['message'])) {
+                                $errorMessage .= ' - ' . $responseData['message'];
                             }
-                            if ($response->json('error')) {
-                                $errorMessage .= ' | Detail: ' . $response->json('error');
+                            if (isset($responseData['error'])) {
+                                $errorMessage .= ' | Error: ' . $responseData['error'];
+                            }
+                            if (isset($responseData['sql_error'])) {
+                                $errorMessage .= ' | SQL: ' . $responseData['sql_error'];
+                            }
+                            
+                            if (empty($responseData)) {
+                                $errorMessage .= ' - ' . substr($response->body(), 0, 150);
                             }
                         }
 
@@ -2510,7 +2567,7 @@ class LaporankeuanganController extends Controller
                         Log::error("Sync kas kecil dari costratio gagal: {$kaskecil->no_bukti}", [
                             'kode_cr' => $request->kode_cr,
                             'status' => $response->status(),
-                            'response' => $response->json()
+                            'response' => $responseData ?? $response->body()
                         ]);
 
                         return response()->json([
@@ -2962,11 +3019,14 @@ class LaporankeuanganController extends Controller
                         // Endpoint tidak ditemukan
                         $errorData = $responseData['error'] ?? [];
                         $errorMessage .= ' (Status: 404)';
-                        if (isset($errorData['cause'])) {
+                        if (is_array($errorData) && isset($errorData['cause'])) {
                             $errorMessage .= ' - ' . $errorData['cause'];
                         }
-                        if (isset($errorData['suggestions']) && !empty($errorData['suggestions'])) {
+                        if (is_array($errorData) && isset($errorData['suggestions']) && !empty($errorData['suggestions'])) {
                             $errorMessage .= '. Saran endpoint: ' . implode(', ', $errorData['suggestions']);
+                        }
+                        if (is_string($errorData)) {
+                             $errorMessage .= ' - ' . $errorData;
                         }
                     } else {
                         // Error lainnya
@@ -2975,7 +3035,14 @@ class LaporankeuanganController extends Controller
                             $errorMessage .= ' - ' . $responseData['message'];
                         }
                         if (isset($responseData['error'])) {
-                            $errorMessage .= ' - ' . (is_string($responseData['error']) ? $responseData['error'] : json_encode($responseData['error']));
+                            $errorMessage .= ' | Error: ' . (is_string($responseData['error']) ? $responseData['error'] : json_encode($responseData['error']));
+                        }
+                        if (isset($responseData['sql_error'])) {
+                            $errorMessage .= ' | SQL: ' . $responseData['sql_error'];
+                        }
+                        
+                        if (empty($responseData)) {
+                            $errorMessage .= ' - ' . substr($response->body(), 0, 150);
                         }
                     }
 
