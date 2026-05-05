@@ -119,6 +119,11 @@
                         <div>Monitoring Presensi</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is(['presensi/logerror']) ? 'active' : '' }}">
+                    <a href="{{ route('presensi.logerror') }}" class="menu-link">
+                        <div>Log Error Presensi</div>
+                    </a>
+                </li>
             @endif
             @if (auth()->user()->hasAnyPermission(['presensi.index']))
                 <li class="menu-item {{ request()->is(['presensikaryawan']) ? 'active' : '' }}">

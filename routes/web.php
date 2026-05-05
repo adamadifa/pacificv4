@@ -2019,6 +2019,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PresensiController::class)->group(function () {
         Route::get('/presensi', 'index')->name('presensi.index')->can('presensi.index');
+        Route::get('/presensi/logerror', 'logerror')->name('presensi.logerror')->can('presensi.index');
         Route::get('/presensikaryawan', 'presensikaryawan')->name('presensi.presensikaryawan')->can('presensi.index');
         Route::post('/presensi/getdatamesin', 'getdatamesin')->name('presensi.getdatamesin')->can('presensi.index');
         Route::post('/presensi/{pin}/{status_scan}/updatefrommachine', 'updatefrommachine')->name('presensi.updatefrommachine')->can('presensi.index');

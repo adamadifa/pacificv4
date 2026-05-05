@@ -17,6 +17,7 @@ use App\Models\Jadwalkerja;
 use App\Models\Jamkerja;
 use App\Models\Presensi;
 use App\Models\LogMesinPresensi;
+use App\Models\PresensiLogError;
 use App\Models\MesinFingerprint;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
@@ -397,8 +398,19 @@ class PresensiController extends Controller
 
         $mesin_adms = MesinFingerprint::where('status', 'Aktif')->get();
 
+        $karyawan = Karyawan::where('pin', $pin)->first();
+        $nik = $karyawan ? $karyawan->nik : null;
 
-        return view('presensi.getdatamesin', compact('filtered_array', 'filtered_array_2', 'log', 'mesin_adms'));
+        $log_error = [];
+        if ($nik) {
+            $log_error = PresensiLogError::where('nik', $nik)
+                ->where('tanggal', $tanggal)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+
+        return view('presensi.getdatamesin', compact('filtered_array', 'filtered_array_2', 'log', 'mesin_adms', 'log_error'));
     }
 
 
@@ -932,5 +944,27 @@ class PresensiController extends Controller
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function logerror(Request $request)
+    {
+        $query = PresensiLogError::query();
+        $query->select('hrd_presensi_log_error.*', 'nama_karyawan');
+        $query->join('hrd_karyawan', 'hrd_presensi_log_error.nik', '=', 'hrd_karyawan.nik');
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('hrd_presensi_log_error.tanggal', [$request->dari, $request->sampai]);
+        } else {
+            $query->where('hrd_presensi_log_error.tanggal', date('Y-m-d'));
+        }
+
+        if (!empty($request->nama_karyawan)) {
+            $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan . '%');
+        }
+
+        $query->orderBy('hrd_presensi_log_error.created_at', 'desc');
+        $data['log_error'] = $query->paginate(50);
+        $data['log_error']->appends($request->all());
+
+        return view('presensi.log_error', $data);
     }
 }

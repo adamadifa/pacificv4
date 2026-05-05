@@ -371,8 +371,12 @@ class AttendanceController extends Controller
     {
         $user = $request->user();
         $nik = $user->nik;
-        $lock_location = $user->lock_location;
-        $tgl_presensi = date("Y-m-d");
+        $statuspresensi = $request->statuspresensi;
+        $lokasi = $request->lokasi;
+
+        try {
+            $lock_location = $user->lock_location;
+            $tgl_presensi = date("Y-m-d");
 
         $cekperjalanandinas = DB::table('hrd_izindinas')
             ->whereRaw('"' . $tgl_presensi . '" >= dari')
@@ -486,9 +490,11 @@ class AttendanceController extends Controller
         $jam_sekarang = date("H:i:s");
 
         if ($radius > $lok_kantor->radius_cabang && $lock_location == 0) {
+            $message = "Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor";
+            $this->logAttendanceError($nik, $tgl_presensi, $statuspresensi, $lokasi, $message, $request->all());
             return response()->json([
                 'success' => false,
-                'message' => "Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor",
+                'message' => $message,
                 'type' => 'radius'
             ], 422);
         }
@@ -498,11 +504,15 @@ class AttendanceController extends Controller
         if ($statuspresensi == "masuk") {
             $jam_masuk_limit = $tgl_presensi . " " . "10:00";
             if (($kode_jadwal == "JD004" || $kode_jadwal == "JD003") && $jam <= $jam_masuk_limit) {
-                return response()->json(['success' => false, 'message' => 'Maaf Belum Waktunya Absen Masuk'], 422);
+                $message = 'Maaf Belum Waktunya Absen Masuk';
+                $this->logAttendanceError($nik, $tgl_presensi, $statuspresensi, $lokasi, $message, $request->all());
+                return response()->json(['success' => false, 'message' => $message], 422);
             }
 
             if ($cek != null && !empty($cek->jam_in)) {
-                return response()->json(['success' => false, 'message' => 'Maaf Gagal absen, Anda Sudah Melakukan Presensi Masuk'], 422);
+                $message = 'Maaf Gagal absen, Anda Sudah Melakukan Presensi Masuk';
+                $this->logAttendanceError($nik, $tgl_presensi, $statuspresensi, $lokasi, $message, $request->all());
+                return response()->json(['success' => false, 'message' => $message], 422);
             }
 
             if ($cek != null && empty($cek->jam_in)) {
@@ -581,7 +591,9 @@ class AttendanceController extends Controller
             $jam_pulang_final = $date_jampulang . " " . $h_jampulang . ":00";
 
             if ($jam < $jam_pulang_final) {
-                return response()->json(['success' => false, 'message' => "Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang_final], 422);
+                $message = "Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang_final;
+                $this->logAttendanceError($nik, $tgl_presensi_final, $statuspresensi, $lokasi, $message, $request->all());
+                return response()->json(['success' => false, 'message' => $message], 422);
             }
 
             $cek = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi_final)->where('nik', $nik)->first();
@@ -596,7 +608,9 @@ class AttendanceController extends Controller
                     return response()->json(['success' => true, 'message' => 'Terimkasih, Hati Hati Di Jalan']);
                 }
             } else if ($cek != null && !empty($cek->jam_out)) {
-                return response()->json(['success' => false, 'message' => 'Maaf Gagal absen, Anda Sudah Melakukan Presensi Pulang'], 422);
+                $message = 'Maaf Gagal absen, Anda Sudah Melakukan Presensi Pulang';
+                $this->logAttendanceError($nik, $tgl_presensi_final, $statuspresensi, $lokasi, $message, $request->all());
+                return response()->json(['success' => false, 'message' => $message], 422);
             } else {
                 $data_pulang = ['jam_out' => $jam, 'foto_out' => $fileName, 'lokasi_out' => $lokasi];
                 $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi_final)->where('nik', $nik)->update($data_pulang);
@@ -607,7 +621,33 @@ class AttendanceController extends Controller
             }
         }
 
-        return response()->json(['success' => false, 'message' => 'Maaf Gagal absen, Hubungi Tim IT'], 500);
+        } catch (\Exception $e) {
+            $this->logAttendanceError($nik, date("Y-m-d"), $statuspresensi, $lokasi, $e->getMessage(), $request->all());
+            return response()->json(['success' => false, 'message' => 'Maaf Gagal absen, Hubungi Tim IT'], 500);
+        }
+
+        $message = 'Maaf Gagal absen, Hubungi Tim IT';
+        $this->logAttendanceError($nik, date("Y-m-d"), $statuspresensi, $lokasi, $message, $request->all());
+        return response()->json(['success' => false, 'message' => $message], 500);
+    }
+
+    private function logAttendanceError($nik, $tanggal, $status_presensi, $lokasi, $message, $payload)
+    {
+        if (isset($payload['image'])) {
+            $payload['image'] = '[IMAGE_DATA_OMITTED]';
+        }
+
+        DB::table('hrd_presensi_log_error')->insert([
+            'nik' => $nik,
+            'tanggal' => $tanggal,
+            'jam' => date("Y-m-d H:i:s"),
+            'status_presensi' => $status_presensi,
+            'lokasi' => $lokasi,
+            'error_message' => $message,
+            'payload' => json_encode($payload),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 
     private function distance($lat1, $lon1, $lat2, $lon2)

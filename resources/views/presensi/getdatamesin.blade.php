@@ -156,6 +156,11 @@
                 <i class="ti ti-device-laptop me-1"></i> Log ADMS
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="logerror-tab" data-bs-toggle="tab" data-bs-target="#logerror" type="button" role="tab">
+                <i class="ti ti-alert-circle me-1 text-danger"></i> Log Error Mobile
+            </button>
+        </li>
     </ul>
 
     <!-- Tab Content -->
@@ -340,5 +345,71 @@
                 </div>
             </div>
         </div>
+
+        <!-- Log Error Mobile -->
+        <div class="tab-pane fade" id="logerror" role="tabpanel">
+            <div class="unified-container shadow-sm">
+                <div class="unified-header bg-danger">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-white text-danger fw-bold" style="font-size: 0.65rem">MOBILE APP ERRORS</span>
+                        <span class="text-white fw-medium small">Log kegagalan presensi dari aplikasi mobile</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-interesting">
+                        <thead>
+                            <tr>
+                                <th class="bg-danger">Waktu</th>
+                                <th class="bg-danger">Status</th>
+                                <th class="bg-danger">Pesan Error</th>
+                                <th class="bg-danger text-center">Payload</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($log_error as $le)
+                                <tr>
+                                    <td>
+                                        <span class="text-val">{{ date('H:i:s', strtotime($le->jam)) }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-label-{{ $le->status_presensi == 'masuk' ? 'success' : 'danger' }} badge-modern">
+                                            {{ strtoupper($le->status_presensi) }}
+                                        </span>
+                                    </td>
+                                    <td style="max-width: 300px; white-space: normal;">
+                                        <span class="text-sub text-dark fw-bold">{{ $le->error_message }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-icon btn-label-info btnShowPayloadModal" payload="{{ $le->payload }}" title="Lihat Payload">
+                                            <i class="ti ti-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="empty-state-modern"><span class="text-muted small">Tidak ada log error untuk hari ini</span></td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    $(function() {
+        $(".btnShowPayloadModal").click(function(e) {
+            e.preventDefault();
+            const payload = $(this).attr("payload");
+            // Find parent modal to avoid closing it if possible, but usually, we can just show another modal or alert
+            // Since we are inside a modal, we can use Swal to show the payload for simplicity and better UX
+            Swal.fire({
+                title: 'Detail Payload',
+                html: '<pre class="text-start p-3 bg-light" style="white-space: pre-wrap; word-wrap: break-word; font-size: 11px;">' + JSON.stringify(JSON.parse(payload), null, 4) + '</pre>',
+                width: '600px',
+                confirmButtonText: 'Tutup'
+            });
+        });
+    });
+</script>
