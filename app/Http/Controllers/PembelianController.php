@@ -160,8 +160,8 @@ class PembelianController extends Controller
                         'kode_cr' => $kode_cr,
                         'tanggal' => $request->tanggal,
                         'kode_akun' => $kode_akun[$i],
-                        'keterangan'   => "Pembelian " . $barangpembelian->nama_barang . "(" . $jumlah[$i] . ")",
-                        'kode_cabang'  => $kode_cabang[$i],
+                        'keterangan' => "Pembelian " . $barangpembelian->nama_barang . "(" . $jumlah[$i] . ")",
+                        'kode_cabang' => $kode_cabang[$i],
                         'kode_sumber' => 4,
                         'jumlah' => $subtotal
                     ];
@@ -266,7 +266,7 @@ class PembelianController extends Controller
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup'));
             }
 
-            if ($cekkontrabonpembeliansudahbayar >  0) {
+            if ($cekkontrabonpembeliansudahbayar > 0) {
                 return Redirect::back()->with(messageError('Data Tidak Dapat DiHapus, Karena Memiliki Kontrabon Yang Sudah Dibayar'));
             }
 
@@ -308,7 +308,7 @@ class PembelianController extends Controller
 
         $data['detail'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang', 'nama_akun')
             ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
-            ->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun')
+            ->leftjoin('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun')
             ->where('pembelian_detail.no_bukti', $no_bukti)
             ->where('pembelian_detail.kode_transaksi', 'PMB')
             ->select('pembelian_detail.*', 'pembelian_barang.nama_barang', 'coa.nama_akun')
@@ -316,7 +316,7 @@ class PembelianController extends Controller
 
         $data['potongan'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang', 'nama_akun')
             ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
-            ->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun')
+            ->leftjoin('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun')
             ->where('no_bukti', $no_bukti)
             ->where('pembelian_detail.kode_transaksi', 'PNJ')
             ->get();
@@ -463,8 +463,8 @@ class PembelianController extends Controller
                         'kode_cr' => $kode_cr,
                         'tanggal' => $request->tanggal,
                         'kode_akun' => $kode_akun[$i],
-                        'keterangan'   => "Pembelian " . $barangpembelian->nama_barang . "(" . $jumlah[$i] . ")",
-                        'kode_cabang'  => $kode_cabang[$i],
+                        'keterangan' => "Pembelian " . $barangpembelian->nama_barang . "(" . $jumlah[$i] . ")",
+                        'kode_cabang' => $kode_cabang[$i],
                         'kode_sumber' => 4,
                         'jumlah' => $subtotal
                     ];
@@ -913,7 +913,7 @@ class PembelianController extends Controller
         }
     }
 
-    
+
     public function getPoBySupplier($kode_supplier)
     {
         $po = DB::table('po')

@@ -532,45 +532,43 @@ class BPBPembelianController extends Controller
     }
     private function generateNoSerahTerima()
     {
-        $bulan = date('m');
+        $bulan = date('n');
         $tahun = date('Y');
-        $dept = "G";
 
-        // Konversi bulan ke romawi
+        $prefix = 'GL/MP';
+
+        // Romawi
         $romawi = [
             1 => 'I',
-            2 => 'II',
-            3 => 'III',
-            4 => 'IV',
-            5 => 'V',
-            6 => 'VI',
-            7 => 'VII',
-            8 => 'VIII',
-            9 => 'IX',
-            10 => 'X',
-            11 => 'XI',
-            12 => 'XII'
+            'II',
+            'III',
+            'IV',
+            'V',
+            'VI',
+            'VII',
+            'VIII',
+            'IX',
+            'X',
+            'XI',
+            'XII'
         ];
-        $bulanRomawi = $romawi[(int) $bulan];
+        $bulanRomawi = $romawi[$bulan];
 
-        $last = DB::table('pembelian')->whereMonth('tanggal', $bulan)
+        // Ambil nomor terakhir khusus GL/MP bulan ini
+        $last = DB::table('pembelian')
+            ->where('no_bukti', 'like', $prefix . '/%')
+            ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
-            ->orderBy('no_bukti', 'desc')
+            ->selectRaw("
+                MAX(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(no_bukti,'/',3),'/',-1) AS UNSIGNED)) as max_no
+            ")
             ->first();
 
-        if ($last) {
-            // Format lama: 036/KB/V/2025
-            $explode = explode('/', $last->no_bukti);
-            $running = (int) $explode[0];
-            $next = $running + 1;
-        } else {
-            $next = 1;
-        }
+        $next = ($last->max_no ?? 0) + 1;
 
-        // Format 3 digit
         $noUrut = str_pad($next, 3, '0', STR_PAD_LEFT);
 
-        return $dept . '/' . $noUrut . '/' . $bulanRomawi . '/' . $tahun;
+        return $prefix . '/' . $noUrut . '/' . $bulanRomawi . '/' . $tahun;
     }
 
 
