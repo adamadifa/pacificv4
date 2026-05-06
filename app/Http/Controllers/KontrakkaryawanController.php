@@ -31,9 +31,9 @@ class KontrakkaryawanController extends Controller
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['karyawan'] = Karyawan::orderBy('nik')
-            ->whereNotIn('nik', function ($query) {
-                $query->select('nik')->from('hrd_kontrak');
-            })
+            // ->whereNotIn('nik', function ($query) {
+            //     $query->select('nik')->from('hrd_kontrak');
+            // })
             ->whereNotIn('status_karyawan', ['O', 'T'])
             ->where('status_aktif_karyawan', 1)
             ->get();
@@ -61,7 +61,7 @@ class KontrakkaryawanController extends Controller
                 ->orderBy("no_kontrak", "desc")
                 ->first();
             $last_no_kontrak = $lastkontrak != null ? $lastkontrak->no_kontrak : '';
-            $no_kontrak  = buatkode($last_no_kontrak, "K" . date('my', strtotime($request->dari)), 3);
+            $no_kontrak = buatkode($last_no_kontrak, "K" . date('my', strtotime($request->dari)), 3);
 
             //Generate Kode Gaji
 
@@ -72,7 +72,7 @@ class KontrakkaryawanController extends Controller
                 ->first();
 
             $last_kode_gaji = $lastgaji != null ? $lastgaji->kode_gaji : '';
-            $kode_gaji  = buatkode($last_kode_gaji, "S" . date('y', strtotime($request->dari)), 4);
+            $kode_gaji = buatkode($last_kode_gaji, "S" . date('y', strtotime($request->dari)), 4);
 
             //Cek Kontrak Terakhir Karyawan
             $lastkontrakkaryawan = Kontrakkaryawan::where('nik', $nik)
@@ -253,7 +253,7 @@ class KontrakkaryawanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data Kontrak',
-            'data'    => $lastkontrak
+            'data' => $lastkontrak
         ]);
     }
 }
