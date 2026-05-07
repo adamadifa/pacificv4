@@ -1,23 +1,17 @@
 <div>
-    <div class="row">
-        <div class="col-8">
-            <div class="form-group mb-3 mt-3">
-                <div class="input-group input-group-merge">
-                    <span class="input-group-text" id="basic-addon-search31"><i class="ti ti-barcode"></i></span>
-                    <input type="text" class="form-control" id="nofaktur_search" name="nofaktur_search" placeholder="Cari No. Faktur" autocomplete="off"
-                        aria-autocomplete="none" wire:model.live.debounce.200ms="nofaktur_search">
-                </div>
-            </div>
+    <div class="form-group mb-2 mt-3">
+        <div class="input-group input-group-merge">
+            <span class="input-group-text" id="basic-addon-search31"><i class="ti ti-barcode"></i></span>
+            <input type="text" class="form-control" id="nofaktur_search" name="nofaktur_search" placeholder="Cari No. Faktur" autocomplete="off"
+                aria-autocomplete="none" wire:model.live.debounce.200ms="nofaktur_search">
         </div>
-        <div class="col-4">
-            <div class="form-group mb-3 mt-3">
-                <select name="status_lunas_search" id="status_lunas_search" class="form-select" wire:model.live="status_lunas_search">
-                    <option value="">Semua</option>
-                    <option value="1">Lunas</option>
-                    <option value="0">Belum Lunas</option>
-                </select>
-            </div>
-        </div>
+    </div>
+    <div class="form-group mb-3">
+        <select name="status_lunas_search" id="status_lunas_search" class="form-select" wire:model.live="status_lunas_search">
+            <option value="">Semua Status</option>
+            <option value="1">Lunas</option>
+            <option value="0">Belum Lunas</option>
+        </select>
     </div>
     @foreach ($datapenjualan as $d)
         @if ($d->status == '1')
