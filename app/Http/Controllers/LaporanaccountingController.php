@@ -2572,9 +2572,6 @@ class LaporanaccountingController extends Controller
             }
 
             // 1. Sinkronisasi Data Baru berdasarkan Ceklist (Abaikan status_pajak, cukup push data)
-            $kaskecils = $queryKk->get();
-            $ledgers = $queryLedger->get();
-            $jurnalumums = $queryJu->get();
 
             // 1. Sync Batch Kas Kecil
             $responses = [];
