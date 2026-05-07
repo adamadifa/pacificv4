@@ -6,8 +6,9 @@
             <div class="flex justify-between items-start gap-4">
                 <div class="flex-1">
                     <p class="text-xs font-bold text-slate-800 leading-tight mb-2">{{ $d->keterangan }}</p>
-                    <div class="flex items-center">
+                    <div class="flex items-center gap-2">
                         <span class="text-[10px] px-2 py-0.5 bg-slate-100 rounded-lg text-slate-500 font-bold uppercase tracking-tighter">{{ $d->nama_bank }}</span>
+                        <span class="text-[10px] px-2 py-0.5 bg-blue-50 rounded-lg text-blue-600 font-bold uppercase tracking-tighter">{{ $d->nama_kategori }}</span>
                     </div>
                 </div>
                 <div class="text-right">

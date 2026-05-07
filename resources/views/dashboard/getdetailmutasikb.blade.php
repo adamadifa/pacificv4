@@ -4,6 +4,7 @@
             <tr>
                 <th class="text-center text-white" style="width: 5%">No</th>
                 <th class="text-white">Keterangan</th>
+                <th class="text-white">Kategori</th>
                 <th class="text-end text-white">Jumlah</th>
             </tr>
         </thead>
@@ -14,19 +15,20 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $d->keterangan }}</td>
+                    <td>{{ $d->nama_kategori }}</td>
                     <td class="text-end fw-bold {{ $jenis == 'K' ? 'text-success' : 'text-danger' }}">
                         {{ formatAngka($d->jumlah) }}
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3" class="text-center text-muted">Data tidak ditemukan</td>
+                    <td colspan="4" class="text-center text-muted">Data tidak ditemukan</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot class="table-light">
             <tr>
-                <th colspan="2" class="text-center">TOTAL</th>
+                <th colspan="3" class="text-center">TOTAL</th>
                 <th class="text-end fw-bold {{ $jenis == 'K' ? 'text-success' : 'text-danger' }}">
                     {{ formatAngka($total) }}
                 </th>
