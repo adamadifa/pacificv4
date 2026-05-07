@@ -106,6 +106,7 @@ class DashboardController extends Controller
             ->where('keuangan_mutasi.tanggal', $tanggal)
             ->where('keuangan_mutasi.debet_kredit', $jenis)
             ->where('keuangan_mutasi.kode_bank', '!=', 'BK070')
+            ->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
             ->select('keuangan_mutasi.*', 'bank.nama_bank')
             ->orderBy('keuangan_mutasi.id', 'asc')
             ->get();
@@ -141,6 +142,7 @@ class DashboardController extends Controller
             ->where('keuangan_mutasi.tanggal', $tanggal)
             ->where('keuangan_mutasi.debet_kredit', $jenis)
             ->where('keuangan_mutasi.kode_bank', 'BK070')
+            ->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
             ->orderBy('keuangan_mutasi.id', 'asc')
             ->get();
 
@@ -170,6 +172,7 @@ class DashboardController extends Controller
             )
             ->where('tanggal', $tanggal)
             ->where('kode_bank', '!=', 'BK070')
+            ->where('kode_kategori', '!=', 'MK006')
             ->first();
 
         $data['tanggal'] = $tanggal;
@@ -190,6 +193,7 @@ class DashboardController extends Controller
             )
             ->where('tanggal', $tanggal)
             ->where('kode_bank', 'BK070')
+            ->where('kode_kategori', '!=', 'MK006')
             ->first();
         
         $data['saldo_awal_kb'] = $saldo_awal_kb;
@@ -240,6 +244,7 @@ class DashboardController extends Controller
             ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                 $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
             })
+            ->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
             ->groupBy('keuangan_mutasi.kode_kategori');
 
         $rekapdebetkreditbytanggal  = Mutasikeuangan::select(
@@ -253,6 +258,7 @@ class DashboardController extends Controller
             }, function ($query) {
                 $query->where('tanggal', date('Y-m-d'));
             })
+            ->where('kode_kategori', '!=', 'MK006')
             ->groupBy('kode_bank');
 
 
@@ -332,6 +338,7 @@ class DashboardController extends Controller
             ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                 $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
             })
+            ->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
             ->groupBy(
                 'keuangan_mutasi.tanggal',
                 'keuangan_mutasi_kategori.nama_kategori',
@@ -380,6 +387,7 @@ class DashboardController extends Controller
                 ->when(empty($request->dari) && empty($request->sampai), function ($query) use ($start_date) {
                     $query->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
                 })
+                ->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
                 ->groupBy('keuangan_mutasi.tanggal', 'keuangan_mutasi_kategori.nama_kategori')
                 ->orderBy('keuangan_mutasi.tanggal', 'asc')
                 ->get();
