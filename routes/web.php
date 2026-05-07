@@ -2237,7 +2237,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sfa/pelanggan/{kode_pelanggan}/edit', 'editpelanggan')->name('sfa.editpelanggan')->can('sfa.pelanggan');
         Route::post('/sfa/pelanggan/store', 'storepelanggan')->name('sfa.storepelanggan')->can('sfa.pelanggan');
         Route::put('/sfa/pelanggan/{kode_pelanggan}/updatepelanggan', 'updatepelanggan')->name('sfa.updatepelanggan')->can('sfa.pelanggan');
-        Route::get('/sfa/pelanggan/{kode_pelanggan}/show', 'showpelanggan')->name('sfa.showpelanggan')->can('sfa.pelanggan');
+        Route::get('/sfa/pelanggan/{kode_pelanggan}/show', 'showpelanggan')->name('sfa.showpelanggan')->can('sfa.pelanggan')->where('kode_pelanggan', '.*');
         Route::get('/sfa/pelanggan/{kode_pelanggan}/capture', 'capture')->name('sfa.capture')->can('sfa.pelanggan');
         Route::post('/sfa/checkinstore', 'checkinstore')->name('sfa.checkinstore')->can('sfa.penjualan');
         Route::get('/sfa/{kode_pelanggan}/checkout', 'checkout')->name('sfa.checkout')->can('sfa.penjualan');

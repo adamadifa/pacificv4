@@ -11,13 +11,21 @@ class Penjualanpelanggan extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    // public $datapenjualan;
+
     public $kode_pelanggan;
     public $nofaktur_search;
-    // public function mount($kode_pelanggan)
-    // {
-    //     $this->kode_pelanggan = $kode_pelanggan;
-    // }
+    public $status_lunas_search;
+
+    public function updatingNofakturSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusLunasSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
 
@@ -39,9 +47,12 @@ class Penjualanpelanggan extends Component
             ->when($this->nofaktur_search, function ($query) {
                 $query->where('no_faktur', 'like', '%' . $this->nofaktur_search . '%');
             })
+            ->when($this->status_lunas_search !== null && $this->status_lunas_search !== '', function ($query) {
+                $query->where('status', $this->status_lunas_search);
+            })
             ->orderBy('marketing_penjualan.tanggal', 'desc')
             ->orderBy('marketing_penjualan.no_faktur', 'desc')
-            ->paginate(3);
+            ->paginate(10);
         return view('livewire.penjualanpelanggan', ['datapenjualan' => $data]);
     }
 }

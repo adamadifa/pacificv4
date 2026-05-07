@@ -5,11 +5,21 @@ namespace App\Livewire;
 use App\Models\Retur;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Returpelanggan extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
     public $kode_pelanggan;
     public $nofaktur_search;
+
+    public function updatingNofakturSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
 
@@ -30,7 +40,7 @@ class Returpelanggan extends Component
             })
             ->orderBy('marketing_retur.tanggal', 'desc')
             ->orderBy('marketing_retur.no_retur', 'desc')
-            ->paginate(3);
+            ->paginate(10);
 
         return view('livewire.returpelanggan', ['dataretur' => $data]);
     }
