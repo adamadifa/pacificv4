@@ -65,7 +65,7 @@ class DashboardController extends Controller
         } else if ($user->hasAnyRole(['asst. manager hrd', 'spv presensi', 'spv recruitment'])) {
             return $this->hrd();
         } else if ($user->hasAnyRole(['owner'])) {
-            return $this->owner($request);
+            return $this->dashboardowner($request);
         } else {
             return $this->dashboarddefault();
         }

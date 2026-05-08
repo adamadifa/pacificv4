@@ -79,9 +79,56 @@
         }
 
         .flatpickr-calendar {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-            border: none !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 24px !important;
+            padding: 12px !important;
+            width: auto !important;
+            box-sizing: border-box !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+        .flatpickr-months .flatpickr-month {
+            background: transparent !important;
+            color: #1E293B !important;
+            height: 40px !important;
+        }
+        .flatpickr-months .flatpickr-prev-month, .flatpickr-months .flatpickr-next-month {
+            color: #64748B !important;
+            fill: #64748B !important;
+            padding: 10px !important;
+        }
+        .flatpickr-months .flatpickr-prev-month:hover, .flatpickr-months .flatpickr-next-month:hover {
+            color: #2563EB !important;
+            fill: #2563EB !important;
+        }
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            font-weight: 700 !important;
+            font-size: 15px !important;
+        }
+        .flatpickr-weekdays .flatpickr-weekday {
+            color: #94A3B8 !important;
+            font-weight: 600 !important;
+            font-size: 12px !important;
+        }
+        .flatpickr-day {
             border-radius: 12px !important;
+            color: #334155 !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            margin: 2px !important;
+        }
+        .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+            color: #CBD5E1 !important;
+            font-weight: 500 !important;
+        }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+            background: #2563EB !important;
+            border-color: #2563EB !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+        }
+        .flatpickr-day:hover {
+            background: #F1F5F9 !important;
         }
 
         .bottom-nav {
@@ -92,7 +139,7 @@
     </style>
 </head>
 
-<body class="pb-32">
+<body class="pb-6">
     <!-- Header Background -->
     <div class="header-bg"></div>
 
@@ -108,12 +155,9 @@
             </div>
         </div>
         <div class="flex space-x-3">
-            <button class="w-10 h-10 rounded-full glass-icon flex items-center justify-center">
-                <i class="ti ti-bell text-lg"></i>
-            </button>
-            <button class="w-10 h-10 rounded-full glass-icon flex items-center justify-center">
-                <i class="ti ti-message-dots text-lg"></i>
-            </button>
+            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="w-10 h-10 rounded-full glass-icon flex items-center justify-center hover:bg-white/20 transition-all" title="Logout">
+                <i class="ti ti-logout text-lg"></i>
+            </a>
         </div>
     </div>
 
@@ -124,7 +168,7 @@
             <div class="flex justify-between items-start mb-6">
                 <div>
                     <p class="text-xs text-white/70 font-medium mb-1">Total Saldo</p>
-                    <h1 class="text-3xl font-bold tracking-tight">Rp {{ formatAngka($total_saldo_awal) }}</h1>
+                    <h1 class="text-3xl font-bold tracking-tight">Rp {{ formatAngka($total_net) }}</h1>
                 </div>
                 <div class="flex flex-col items-end">
                     <img src="{{ asset('assets/img/logo/logoportal64.png') }}" class="h-10 rounded-sm mb-2" style="filter: brightness(0) invert(1);">
@@ -136,26 +180,23 @@
                     <p class="text-[10px] text-white/50 uppercase tracking-widest mb-1">Periode</p>
                     <p class="text-xs font-bold">{{ date('d M Y', strtotime($tanggal)) }}</p>
                 </div>
-                <a href="#" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all">
-                    Lihat Laporan
-                </a>
             </div>
         </div>
 
         <!-- Date Filter Section -->
-        <div class="mb-10 px-1">
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
-                        <i class="ti ti-calendar-stats text-xl"></i>
+        <div class="mb-8 px-1">
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <div class="w-8 h-8 bg-blue-50 rounded-[10px] flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                        <i class="ti ti-calendar-stats text-lg"></i>
                     </div>
                 </div>
                 <input type="text" id="tanggal_filter_display" 
-                    class="block w-full pl-16 pr-4 py-5 bg-white border-none rounded-[28px] shadow-sm text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer"
+                    class="block w-full pl-14 pr-4 py-3 bg-white border-none rounded-[20px] shadow-sm text-[13px] font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer hover:shadow-md"
                     value="{{ date('d F Y', strtotime($tanggal)) }}"
                     readonly>
-                <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
-                    <i class="ti ti-chevron-right text-slate-300"></i>
+                <div class="absolute inset-y-0 right-0 pr-5 flex items-center pointer-events-none">
+                    <i class="ti ti-chevron-right text-slate-300 text-sm group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
         </div>
@@ -311,33 +352,9 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-0 right-0 z-50 bottom-nav px-8 py-4 pb-8 flex justify-between items-center rounded-t-[32px]">
-        <a href="{{ route('dashboard') }}" class="flex flex-col items-center tab-active">
-            <i class="ti ti-smart-home text-xl mb-1"></i>
-            <span class="text-[10px] font-bold uppercase">Beranda</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-slate-400">
-            <i class="ti ti-chart-pie text-xl mb-1"></i>
-            <span class="text-[10px] font-bold uppercase">Statistik</span>
-        </a>
-        <div class="relative -mt-12">
-            <button class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-600/30 border-4 border-white">
-                <i class="ti ti-scan text-2xl"></i>
-            </button>
-        </div>
-        <a href="#" class="flex flex-col items-center text-slate-400">
-            <i class="ti ti-wallet text-xl mb-1"></i>
-            <span class="text-[10px] font-bold uppercase">Dompet</span>
-        </a>
-        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex flex-col items-center text-slate-400">
-            <i class="ti ti-user text-xl mb-1"></i>
-            <span class="text-[10px] font-bold uppercase">Profil</span>
-        </a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-            @csrf
-        </form>
-    </div>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -347,7 +364,7 @@
                 altInput: true,
                 altFormat: "d F Y",
                 onChange: function(selectedDates, dateStr) {
-                    window.location.href = "{{ URL::current() }}?dari=" + dateStr + "&sampai=" + dateStr;
+                    window.location.href = "{{ URL::current() }}?tanggal=" + dateStr + "&dari=" + dateStr + "&sampai=" + dateStr;
                 }
             });
 
