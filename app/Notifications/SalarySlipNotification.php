@@ -7,7 +7,9 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\WebPush\WebPushMessage;
 use NotificationChannels\WebPush\WebPushChannel;
 
-class SalarySlipNotification extends Notification
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class SalarySlipNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
