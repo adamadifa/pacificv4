@@ -270,7 +270,7 @@ class LaporanpembelianController extends Controller
                 ,IF(pembelian.tanggal BETWEEN '$request->dari' AND '$request->sampai',(SUM(IF(kode_transaksi = 'PMB', ((jumlah*harga)+penyesuaian), 0 ) ) - SUM(IF(kode_transaksi = 'PNJ',(jumlah*harga), 0 ) ) ),0) as pmbbulanini
                 FROM pembelian_detail
                 INNER JOIN pembelian ON pembelian_detail.no_bukti = pembelian.no_bukti
-                GROUP BY pembelian_detail.no_bukti
+                GROUP BY pembelian_detail.no_bukti,pembelian.tanggal
             ) detailpembelian"),
             function ($join) {
                 $join->on('pembelian.no_bukti', '=', 'detailpembelian.no_bukti');
