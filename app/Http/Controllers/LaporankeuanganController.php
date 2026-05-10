@@ -197,7 +197,7 @@ class LaporankeuanganController extends Controller
         $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
         $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
         $query->orderBy('nama_bank');
-        $query->groupBy('keuangan_ledger.kode_bank', 'nama_bank');
+        $query->groupBy('keuangan_ledger.kode_bank', 'nama_bank', 'no_rekening');
         $data['ledger'] = $query->get();
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
@@ -715,7 +715,7 @@ class LaporankeuanganController extends Controller
             ->where('keuangan_setoranpusat.kode_cabang', $kode_cabang)
             ->where('status', '1')
             ->whereBetween('keuangan_ledger.tanggal', [$tgl_awal_setoran, $setoran_sampai])
-            ->groupBy('keuangan_ledger.kode_bank')
+            ->groupBy('keuangan_ledger.kode_bank', 'bank.nama_bank', 'bank.nama_bank_alias')
             ->get();
 
 
