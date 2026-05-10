@@ -25,6 +25,8 @@
             <a href="#" class="btn btn-primary" id="btncreateKaryawan"><i class="fa fa-plus me-2"></i> Tambah
                 Karyawan</a>
         @endcan
+        <a href="{{ route('karyawan.resetsession') }}" class="btn btn-danger btnResetAllSession"><i class="ti ti-refresh me-2"></i> Reset
+            All Session</a>
     </div>
 </div>
 
@@ -153,6 +155,13 @@
                                     </a>
                                     <div class="text-muted" style="font-size: 0.6rem;">Lock Loc</div>
                                 </div>
+                                <div class="text-center me-lg-4">
+                                    <a href="{{ route('karyawan.resetsession', ['nik' => Crypt::encrypt($d->nik)]) }}"
+                                        class="text-warning d-inline-block hover-scale btnResetSession" title="Reset Session">
+                                        <i class="ti ti-refresh ti-md"></i>
+                                    </a>
+                                    <div class="text-muted" style="font-size: 0.6rem;">Reset Session</div>
+                                </div>
 
                                 <div class="btn-group shadow-sm rounded">
                                     @can('karyawan.edit')
@@ -232,7 +241,44 @@
                     dropdownParent: $this.parent()
                 });
             });
+            });
         }
+
+        $(".btnResetAllSession").click(function(e) {
+            e.preventDefault();
+            var href = $(this).attr("href");
+            Swal.fire({
+                title: `Apakah Anda Yakin Ingin Reset Semua Session Karyawan?`,
+                text: "Semua karyawan akan ter-logout dari aplikasi presensi.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Reset All!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = href;
+                }
+            });
+        });
+
+        $(".btnResetSession").click(function(e) {
+            e.preventDefault();
+            var href = $(this).attr("href");
+            Swal.fire({
+                title: `Apakah Anda Yakin Ingin Reset Session Karyawan Ini?`,
+                text: "Karyawan ini akan ter-logout dari aplikasi presensi.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Reset!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = href;
+                }
+            });
+        });
     });
 </script>
 @endpush

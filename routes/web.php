@@ -501,6 +501,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/karyawan/{nik}/getkaryawan', 'getkaryawan')->name('karyawan.getkaryawan');
         Route::get('/karyawan/getkaryawanjson', 'getkaryawanjson')->name('karyawan.getkaryawanjson');
         Route::get('/karyawan/getkaryawanpiutangkaryawanjson', 'getkaryawanpiutangkaryawanjson')->name('karyawan.getkaryawanpiutangkaryawanjson');
+        Route::get('/karyawan/resetsession', 'resetsession')->name('karyawan.resetsession');
     });
 
     Route::controller(RekeningController::class)->group(function () {

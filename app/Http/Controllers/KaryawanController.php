@@ -539,4 +539,25 @@ class KaryawanController extends Controller
             'data'    => $data
         ]);
     }
+
+    public function resetsession(Request $request)
+    {
+        try {
+            if ($request->nik) {
+                $nik = Crypt::decrypt($request->nik);
+                DB::table('personal_access_tokens')
+                    ->where('tokenable_type', 'App\Models\Karyawan')
+                    ->where('tokenable_id', $nik)
+                    ->delete();
+                return Redirect::back()->with(messageSuccess('Session Karyawan Berhasil Di Reset'));
+            } else {
+                DB::table('personal_access_tokens')
+                    ->where('tokenable_type', 'App\Models\Karyawan')
+                    ->delete();
+                return Redirect::back()->with(messageSuccess('Semua Session Karyawan Berhasil Di Reset'));
+            }
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
 }
