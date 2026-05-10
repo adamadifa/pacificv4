@@ -897,7 +897,7 @@ class LaporankeuanganController extends Controller
             ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('keuangan_setoranpenjualan.tanggal', [$request->dari, $request->sampai])
-            ->groupBy('keuangan_setoranpenjualan.kode_salesman')
+            ->groupBy('keuangan_setoranpenjualan.kode_salesman', 'nama_salesman')
             ->get();
 
         //dd($salesman);
