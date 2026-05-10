@@ -6943,7 +6943,7 @@ class LaporanmarketingController extends Controller
         $query->where('salesman.nama_salesman', '!=', '-');
         $query->orderBy('salesman.kode_cabang');
         $query->orderBy('pelanggan.kode_salesman');
-        $query->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');
+        $query->groupBy('pelanggan.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');
         $persentasedatapelanggan = $query->get();
 
 
