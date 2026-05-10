@@ -2148,9 +2148,10 @@ class LaporanmarketingController extends Controller
             $query->groupBy(
                 'marketing_penjualan.kode_pelanggan',
                 'nama_pelanggan',
+                'limit_pelanggan',
                 'nama_wilayah',
                 'klasifikasi',
-
+                'nama_salesman'
             );
             $query->orderBy('pelanggan.nama_pelanggan', 'asc');
 
@@ -2328,6 +2329,7 @@ class LaporanmarketingController extends Controller
         $query->orderBy('gudang_cabang_dpb_detail.kode_produk', 'asc');
         $query->groupBy(
             'gudang_cabang_dpb_detail.kode_produk',
+            'produk.nama_produk',
             'gudang_cabang_dpb.kode_kendaraan',
             'produk.isi_pcs_dus',
             'jml_penjualan',
@@ -3555,7 +3557,16 @@ class LaporanmarketingController extends Controller
         $qdetailpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
         $qdetailpenjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         $qdetailpenjualan->where('marketing_penjualan.tanggal', $request->tanggal);
-        $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur', 'nama_pelanggan', 'status_batal');
+        $qdetailpenjualan->groupBy(
+            'marketing_penjualan_detail.no_faktur',
+            'nama_pelanggan',
+            'status_batal',
+            'jenis_transaksi',
+            'potongan',
+            'potongan_istimewa',
+            'penyesuaian',
+            'ppn'
+        );
         $qdetailpenjualan->orderBy('marketing_penjualan_detail.no_faktur');
 
 
