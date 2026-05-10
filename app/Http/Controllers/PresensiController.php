@@ -116,12 +116,12 @@ class PresensiController extends Controller
             $departemen = Karyawan::select('hrd_karyawan.kode_dept', 'nama_dept')
                 ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
                 ->where('kode_cabang', auth()->user()->kode_cabang)
-                ->groupBy('hrd_karyawan.kode_dept')
+                ->groupBy('hrd_karyawan.kode_dept', 'nama_dept')
                 ->orderBy('hrd_karyawan.kode_dept')->get();
             $group = Karyawan::select('hrd_karyawan.kode_group', 'nama_group')
                 ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
                 ->where('kode_cabang', auth()->user()->kode_cabang)
-                ->groupBy('hrd_karyawan.kode_group')
+                ->groupBy('hrd_karyawan.kode_group', 'nama_group')
                 ->orderBy('hrd_karyawan.kode_group')->get();
         } else {
             $departemen = Departemen::orderBy('kode_dept')->get();
@@ -777,23 +777,23 @@ class PresensiController extends Controller
                 $departemen = Karyawan::select('hrd_karyawan.kode_dept', 'nama_dept')
                     ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
                     ->where('kode_cabang', auth()->user()->kode_cabang)
-                    ->groupBy('hrd_karyawan.kode_dept')
+                    ->groupBy('hrd_karyawan.kode_dept', 'nama_dept')
                     ->orderBy('hrd_karyawan.kode_dept')->get();
                 $group = Karyawan::select('hrd_karyawan.kode_group', 'nama_group')
                     ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
                     ->where('kode_cabang', auth()->user()->kode_cabang)
-                    ->groupBy('hrd_karyawan.kode_group')
+                    ->groupBy('hrd_karyawan.kode_group', 'nama_group')
                     ->orderBy('hrd_karyawan.kode_group')->get();
             } else {
                 $departemen = Karyawan::select('hrd_karyawan.kode_dept', 'nama_dept')
                     ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
                     ->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept)
-                    ->groupBy('hrd_karyawan.kode_dept')
+                    ->groupBy('hrd_karyawan.kode_dept', 'nama_dept')
                     ->orderBy('hrd_karyawan.kode_dept')->get();
                 $group = Karyawan::select('hrd_karyawan.kode_group', 'nama_group')
                     ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
                     ->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept)
-                    ->groupBy('hrd_karyawan.kode_group')
+                    ->groupBy('hrd_karyawan.kode_group', 'nama_group')
                     ->orderBy('hrd_karyawan.kode_group')->get();
             }
         } else {
