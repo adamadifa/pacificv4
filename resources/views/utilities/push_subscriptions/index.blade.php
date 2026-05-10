@@ -53,13 +53,19 @@
                                                 </small>
                                             </td>
                                             <td>
-                                                <form action="{{ route('push-subscriptions.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menghapus subscription ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ route('push-subscriptions.test', $d->id) }}" class="btn btn-warning btn-sm">
+                                                        <i class="ti ti-bell"></i> Test
+                                                    </a>
+                                                    <form action="{{ route('push-subscriptions.destroy', $d->id) }}" method="POST"
+                                                        onsubmit="return confirm('Apakah anda yakin ingin menghapus subscription ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

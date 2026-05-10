@@ -11,7 +11,7 @@ class TestPushNotification extends Notification
 {
     use Queueable;
 
-    public function via($notifiable)
+    public function via(object $notifiable): array
     {
         return [WebPushChannel::class];
     }
@@ -19,9 +19,10 @@ class TestPushNotification extends Notification
     public function toWebPush($notifiable, $notification)
     {
         return (new WebPushMessage)
-            ->title('Halo ' . $notifiable->nama_karyawan)
+            ->title('Test Notifikasi 🔔')
             ->icon('/images/logo-mp.png')
-            ->body('Sistem notifikasi sudah berhasil terhubung!')
-            ->action('Cek Sekarang', 'view_notification');
+            ->body("Halo {$notifiable->nama_karyawan}, ini adalah tes notifikasi push dari sistem Portal. Jika Anda melihat ini, berarti perangkat Anda sudah terhubung dengan benar!")
+            ->action('Oce!', 'test_action')
+            ->data(['url' => '/dashboard']);
     }
 }

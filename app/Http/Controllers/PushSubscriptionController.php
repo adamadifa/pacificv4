@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use NotificationChannels\WebPush\PushSubscription;
+use App\Notifications\TestPushNotification;
+use App\Models\Karyawan;
 
 class PushSubscriptionController extends Controller
 {
@@ -24,6 +26,23 @@ class PushSubscriptionController extends Controller
         $subscriptions->appends($request->all());
 
         return view('utilities.push_subscriptions.index', compact('subscriptions'));
+    }
+
+    public function test($id)
+    {
+        try {
+            $subscription = PushSubscription::findOrFail($id);
+            $karyawan = Karyawan::find($subscription->subscribable_id);
+
+            if ($karyawan) {
+                $karyawan->notify(new TestPushNotification());
+                return redirect()->back()->with('success', 'Test notification sent to ' . $karyawan->nama_karyawan);
+            }
+
+            return redirect()->back()->with('error', 'Karyawan not found');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
 
     public function destroy($id)
