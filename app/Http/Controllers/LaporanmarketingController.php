@@ -445,6 +445,7 @@ class LaporanmarketingController extends Controller
             'jenis_transaksi',
             'jenis_bayar',
             'status',
+            'status_batal',
             'marketing_penjualan.status_pajak'
         );
 
@@ -1597,7 +1598,7 @@ class LaporanmarketingController extends Controller
         }
 
 
-        $query->groupBy('produk_harga.kode_produk');
+        $query->groupBy('produk_harga.kode_produk', 'produk.nama_produk', 'produk.isi_pcs_dus', 'produk.isi_pcs_pack');
         $query->orderBy('produk_harga.kode_produk');
         $penjualan = $query->get();
 
@@ -3554,7 +3555,7 @@ class LaporanmarketingController extends Controller
         $qdetailpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
         $qdetailpenjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         $qdetailpenjualan->where('marketing_penjualan.tanggal', $request->tanggal);
-        $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur', 'nama_pelanggan');
+        $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur', 'nama_pelanggan', 'status_batal');
         $qdetailpenjualan->orderBy('marketing_penjualan_detail.no_faktur');
 
 
@@ -3578,7 +3579,7 @@ class LaporanmarketingController extends Controller
 
         $qhistoribayar->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman);
         $qhistoribayar->where('marketing_penjualan_historibayar.tanggal', $request->tanggal);
-        $qhistoribayar->groupBy('marketing_penjualan_historibayar.no_faktur', 'nama_pelanggan');
+        $qhistoribayar->groupBy('marketing_penjualan_historibayar.no_faktur', 'nama_pelanggan', 'status_batal');
 
 
         $qgiro = Detailgiro::query();
@@ -3598,7 +3599,7 @@ class LaporanmarketingController extends Controller
         $qgiro->join('pelanggan', 'marketing_penjualan_giro.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $qgiro->where('marketing_penjualan_giro.kode_salesman', $request->kode_salesman);
         $qgiro->where('marketing_penjualan_giro.tanggal', $request->tanggal);
-        $qgiro->groupBy('marketing_penjualan_giro_detail.no_faktur', 'nama_pelanggan');
+        $qgiro->groupBy('marketing_penjualan_giro_detail.no_faktur', 'nama_pelanggan', 'status_batal');
 
         $qtransfer = Detailtransfer::query();
         $qtransfer->select(
@@ -3617,7 +3618,7 @@ class LaporanmarketingController extends Controller
         $qtransfer->join('pelanggan', 'marketing_penjualan_transfer.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $qtransfer->where('marketing_penjualan_transfer.kode_salesman', $request->kode_salesman);
         $qtransfer->where('marketing_penjualan_transfer.tanggal', $request->tanggal);
-        $qtransfer->groupBy('marketing_penjualan_transfer_detail.no_faktur', 'nama_pelanggan');
+        $qtransfer->groupBy('marketing_penjualan_transfer_detail.no_faktur', 'nama_pelanggan', 'status_batal');
 
         $query_lhp = $qdetailpenjualan->unionAll($qhistoribayar)->unionAll($qgiro)->unionAll($qtransfer)->get();
         $lhp = $query_lhp->groupBy('no_faktur', 'nama_pelanggan')
@@ -5320,7 +5321,7 @@ class LaporanmarketingController extends Controller
             $qproduk->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
         $qproduk->orderBy('produk_harga.kode_produk');
-        $qproduk->groupby('produk_harga.kode_produk');
+        $qproduk->groupby('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
         $produk = $qproduk->get();
 
         $selecColumproduct = [];
@@ -5382,7 +5383,7 @@ class LaporanmarketingController extends Controller
             $qproduk->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
         $qproduk->orderBy('produk_harga.kode_produk');
-        $qproduk->groupby('produk_harga.kode_produk');
+        $qproduk->groupby('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
         $produk = $qproduk->get();
 
         $selecColumproduct = [];
