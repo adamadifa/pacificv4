@@ -152,7 +152,7 @@ class LaporanhrdController extends Controller
         return $html;
     }
 
-    public function cetakpresensi(Request $request)
+    public function cetakpresensi_old(Request $request)
     {
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
@@ -698,6 +698,483 @@ class LaporanhrdController extends Controller
             }
         }
     }
+
+    public function cetakpresensi(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $roles_access_all_karyawan = config('global.roles_access_all_karyawan');
+        $roles_access_all_pjp = config('global.roles_access_all_pjp');
+        $user = User::findorfail(auth()->user()->id);
+        $dept_access = json_decode($user->dept_access, true) ?? [];
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+
+        $kode_potongan = "GJ" . $request->bulan . $request->tahun;
+
+        $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
+        $bulan = $request->bulan < 10 ? '0' . $request->bulan : $request->bulan;
+        if ($request->periode_laporan == 2) {
+            $dari = $request->tahun . "-" . $bulan  . "-01";
+            $sampai = date("Y-m-t", strtotime($dari));
+        } else {
+            $dari = $lasttahun . "-" . $lastbulan . "-21";
+            $sampai = $request->tahun . "-" . $bulan . "-20";
+        }
+
+        $start_date = $dari;
+        $end_date = $sampai;
+
+        $daribulangaji = $dari;
+        $berlakugaji =  in_array($request->format_laporan, [4, 5]) ? date('Y-m-t', strtotime(date('Y-m', strtotime($dari)) . '-01')) : $sampai;
+
+        $karyawan_phk_maret = [
+            '15.03.371',
+            '15.05.373',
+            '19.07.419',
+            '22.01.450',
+            '24.07.315'
+        ];
+
+        // 1. SUBQUERIES UNTUK HEADER KARYAWAN
+        $gajiTerakhir = DB::table('hrd_gaji')
+            ->select('nik', 'gaji_pokok', 't_jabatan', 't_masakerja', 't_tanggungjawab', 't_makan', 't_istri', 't_skill', 'tanggal_berlaku')
+            ->whereIn('kode_gaji', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_gaji)'))
+                    ->from('hrd_gaji')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
+
+        $insentif = DB::table('hrd_insentif')
+            ->select('nik', 'iu_masakerja', 'iu_lembur', 'iu_penempatan', 'iu_kpi', 'im_ruanglingkup', 'im_penempatan', 'im_kinerja', 'im_kendaraan', 'tanggal_berlaku')
+            ->whereIn('kode_insentif', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_insentif)'))
+                    ->from('hrd_insentif')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
+
+        $pjp = Historibayarpjp::select('nik', DB::raw('SUM(jumlah) as cicilan_pjp'))
+            ->join('keuangan_pjp', 'keuangan_pjp.no_pinjaman', '=', 'keuangan_pjp_historibayar.no_pinjaman')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
+        $kasbon = Historibayarkasbon::select('nik', DB::raw('SUM(keuangan_kasbon_historibayar.jumlah) as cicilan_kasbon'))
+            ->join('keuangan_kasbon', 'keuangan_kasbon.no_kasbon', '=', 'keuangan_kasbon_historibayar.no_kasbon')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
+        $piutangkaryawan = Historibayarpiutangkaryawan::select('nik', DB::raw('SUM(keuangan_piutangkaryawan_historibayar.jumlah) as cicilan_piutang'))
+            ->join('keuangan_piutangkaryawan', 'keuangan_piutangkaryawan_historibayar.no_pinjaman', '=', 'keuangan_piutangkaryawan.no_pinjaman')
+            ->where('kode_potongan', $kode_potongan)
+            ->groupBy('nik');
+
+        $bpjskesehatan = Bpjskesehatan::select('nik', 'iuran')
+            ->whereIn('kode_bpjs_kesehatan', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_bpjs_kesehatan)'))
+                    ->from('hrd_bpjs_kesehatan')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
+
+        $bpjstenagakerja = Bpjstenagakerja::select('nik', 'iuran')
+            ->whereIn('kode_bpjs_tenagakerja', function ($query) use ($berlakugaji) {
+                $query->select(DB::raw('MAX(kode_bpjs_tenagakerja)'))
+                    ->from('hrd_bpjs_tenagakerja')
+                    ->where('tanggal_berlaku', '<=', $berlakugaji)
+                    ->groupBy('nik');
+            });
+
+        $penyesuaianupah = Detailpenyesuaianupah::select('nik', DB::raw('SUM(penambah) as jml_penambah'), DB::raw('SUM(pengurang) as jml_pengurang'))
+            ->join('hrd_penyesuaian_upah', 'hrd_penyesuaian_upah_detail.kode_gaji', '=', 'hrd_penyesuaian_upah.kode_gaji')
+            ->where('hrd_penyesuaian_upah.kode_gaji', $kode_potongan)
+            ->groupBy('nik');
+
+        // 2. QUERY MASTER KARYAWAN
+        $q_karyawan = Karyawan::query();
+        $q_karyawan->select(
+            'hrd_karyawan.nik',
+            'nama_karyawan',
+            'hrd_karyawan.kode_cabang',
+            'hrd_karyawan.kode_jabatan',
+            'hrd_jabatan.nama_jabatan',
+            'hrd_karyawan.kode_dept',
+            'hrd_karyawan.kode_perusahaan',
+            'hrd_karyawan.kode_klasifikasi',
+            'hrd_karyawan.spip',
+            'hrd_klasifikasi.klasifikasi',
+            'hrd_karyawan.no_rekening',
+            'hrd_karyawan.no_ktp',
+            'hrd_karyawan.kode_status_kawin',
+            'hrd_group.nama_group',
+            'hrd_karyawan.tanggal_masuk',
+            'hrd_karyawan.jenis_kelamin',
+            'hrd_karyawan.status_karyawan',
+
+            //Gaji
+            'hrd_gaji.gaji_pokok',
+            'hrd_gaji.t_jabatan',
+            'hrd_gaji.t_masakerja',
+            'hrd_gaji.t_tanggungjawab',
+            'hrd_gaji.t_makan',
+            'hrd_gaji.t_istri',
+            'hrd_gaji.t_skill',
+
+            //Insentif
+            'hrd_insentif.iu_masakerja',
+            'hrd_insentif.iu_lembur',
+            'hrd_insentif.iu_penempatan',
+            'hrd_insentif.iu_kpi',
+            'hrd_insentif.im_ruanglingkup',
+            'hrd_insentif.im_penempatan',
+            'hrd_insentif.im_kinerja',
+            'hrd_insentif.im_kendaraan',
+
+            'hrd_bpjs_kesehatan.iuran as iuran_bpjs_kesehatan',
+            'hrd_bpjs_tenagakerja.iuran as iuran_bpjs_tenagakerja',
+
+            'pjp.cicilan_pjp',
+            'kasbon.cicilan_kasbon',
+            'piutangkaryawan.cicilan_piutang',
+            'penyesuaianupah.jml_penambah',
+            'penyesuaianupah.jml_pengurang'
+        );
+        $q_karyawan->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $q_karyawan->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $q_karyawan->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
+        $q_karyawan->leftJoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        
+        $q_karyawan->leftjoinSub($gajiTerakhir, 'hrd_gaji', 'hrd_karyawan.nik', '=', 'hrd_gaji.nik');
+        $q_karyawan->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');
+        $q_karyawan->leftjoinSub($bpjskesehatan, 'hrd_bpjs_kesehatan', 'hrd_karyawan.nik', '=', 'hrd_bpjs_kesehatan.nik');
+        $q_karyawan->leftjoinSub($bpjstenagakerja, 'hrd_bpjs_tenagakerja', 'hrd_karyawan.nik', '=', 'hrd_bpjs_tenagakerja.nik');
+        $q_karyawan->leftjoinSub($pjp, 'pjp', 'hrd_karyawan.nik', '=', 'pjp.nik');
+        $q_karyawan->leftjoinSub($kasbon, 'kasbon', 'hrd_karyawan.nik', '=', 'kasbon.nik');
+        $q_karyawan->leftjoinSub($piutangkaryawan, 'piutangkaryawan', 'hrd_karyawan.nik', '=', 'piutangkaryawan.nik');
+        $q_karyawan->leftjoinSub($penyesuaianupah, 'penyesuaianupah', 'hrd_karyawan.nik', '=', 'penyesuaianupah.nik');
+
+        if (!empty($kode_cabang)) {
+            $q_karyawan->where('hrd_karyawan.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_dept)) {
+            $q_karyawan->where('hrd_karyawan.kode_dept', $request->kode_dept);
+        }
+        if (!empty($request->kode_group)) {
+            $q_karyawan->where('hrd_karyawan.kode_group', $request->kode_group);
+        }
+
+        if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan'])) {
+            if ($user->hasRole('regional sales manager')) {
+                $q_karyawan->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                if (auth()->user()->kode_cabang != 'PST') {
+                    $q_karyawan->where('hrd_karyawan.kode_cabang', auth()->user()->kode_cabang);
+                } else {
+                    if ($user->hasRole(['staff keuangan'])) {
+                        $q_karyawan->where('hrd_karyawan.kode_dept', auth()->user()->kode_dept);
+                    } else if ($user->hasRole(['manager keuangan', 'gm administrasi'])) {
+                        $q_karyawan->whereIn('hrd_karyawan.kode_dept', ['AKT', 'KEU']);
+                    } else {
+                        $q_karyawan->whereIn('hrd_karyawan.kode_dept', $dept_access);
+                    }
+                }
+            }
+        }
+
+        if (request()->is('laporanhrd/cetakgaji')) {
+            if (!$user->hasRole($roles_access_all_pjp)) {
+                if ($request->format_laporan != 3) {
+                    $q_karyawan->where('hrd_jabatan.kategori', 'NM');
+                }
+            } else {
+                if (!empty($request->kategori_laporan)) {
+                    $q_karyawan->where('hrd_jabatan.kategori', $request->kategori_laporan);
+                }
+            }
+        } else {
+            if (!empty($request->kategori_laporan)) {
+                $q_karyawan->where('hrd_jabatan.kategori', $request->kategori_laporan);
+            }
+        }
+
+        $q_karyawan->where(function($q) use ($end_date, $start_date, $request, $karyawan_phk_maret) {
+            $q->where(function($q1) use ($end_date, $request, $karyawan_phk_maret) {
+                $q1->where('status_aktif_karyawan', 1)
+                   ->where('tanggal_masuk', '<=', $end_date);
+                if (in_array($request->format_laporan, [4, 5])) {
+                    $q1->where('hrd_karyawan.status_karyawan', '!=', 'O');
+                    $q1->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
+                }
+            })->orWhere(function($q2) use ($start_date, $end_date, $request, $karyawan_phk_maret) {
+                $q2->where('status_aktif_karyawan', 0)
+                   ->where('tanggal_off_gaji', '>=', $start_date)
+                   ->where('tanggal_masuk', '<=', $end_date);
+                if (in_array($request->format_laporan, [4, 5])) {
+                    $q2->where('hrd_karyawan.status_karyawan', '!=', 'O');
+                    $q2->whereNotIn('hrd_karyawan.nik', $karyawan_phk_maret);
+                }
+            });
+        });
+
+        $q_karyawan->orderBy('hrd_karyawan.nik', 'asc');
+        $karyawans = $q_karyawan->get();
+
+        // 3. QUERY DETAIL PRESENSI (HANYA UNTUK KARYAWAN YANG DITARIK)
+        $niks = $karyawans->pluck('nik')->toArray();
+
+        $q_presensi = Presensi::query();
+        $q_presensi->select(
+            'hrd_presensi.nik',
+            'hrd_presensi.tanggal',
+            'jam_in',
+            'jam_out',
+            'hrd_presensi.status',
+            'hrd_presensi.kode_jadwal',
+            'nama_jadwal',
+            'hrd_presensi.kode_jam_kerja',
+            'jam_masuk as jam_mulai',
+            'hrd_jamkerja.jam_pulang as jam_selesai',
+            'lintashari',
+            'total_jam',
+            'istirahat',
+            'jam_awal_istirahat',
+            'jam_akhir_istirahat',
+            
+            'hrd_presensi_izinkeluar.kode_izin_keluar',
+            'hrd_izinkeluar.jam_keluar',
+            'hrd_izinkeluar.jam_kembali',
+            'hrd_izinkeluar.keperluan',
+            'hrd_izinkeluar.direktur as izin_keluar_direktur',
+
+            'hrd_presensi_izinterlambat.kode_izin_terlambat',
+            'hrd_izinterlambat.direktur as izin_terlambat_direktur',
+
+            'hrd_presensi_izinsakit.kode_izin_sakit',
+            'hrd_izinsakit.doc_sid',
+            'hrd_izinsakit.direktur as izin_sakit_direktur',
+
+            'hrd_presensi_izinpulang.kode_izin_pulang',
+            'hrd_izinpulang.direktur as izin_pulang_direktur',
+
+            'hrd_presensi_izincuti.kode_izin_cuti',
+            'hrd_izincuti.kode_cuti',
+            'hrd_izincuti.direktur as izin_cuti_direktur',
+            'hrd_jeniscuti.nama_cuti',
+
+            'hrd_presensi_izinabsen.kode_izin as kode_izin_absen',
+            'hrd_izinabsen.direktur as izin_absen_direktur'
+        );
+
+        if (!empty($niks)) {
+            $q_presensi->whereIn('hrd_presensi.nik', $niks);
+        } else {
+            $q_presensi->where('hrd_presensi.nik', 'none'); // Return empty if no employees
+        }
+        $q_presensi->whereBetween('hrd_presensi.tanggal', [$start_date, $end_date]);
+        
+        $q_presensi->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
+        $q_presensi->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
+
+        $q_presensi->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi');
+        $q_presensi->leftJoin('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat');
+
+        $q_presensi->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi');
+        $q_presensi->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar');
+
+        $q_presensi->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi');
+        $q_presensi->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit');
+
+        $q_presensi->leftJoin('hrd_presensi_izinpulang', 'hrd_presensi.id', '=', 'hrd_presensi_izinpulang.id_presensi');
+        $q_presensi->leftJoin('hrd_izinpulang', 'hrd_presensi_izinpulang.kode_izin_pulang', '=', 'hrd_izinpulang.kode_izin_pulang');
+
+        $q_presensi->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi');
+        $q_presensi->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti');
+        $q_presensi->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti');
+
+        $q_presensi->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
+        $q_presensi->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
+
+        $q_presensi->orderBy('hrd_presensi.tanggal', 'asc');
+        
+        $presensi_details = $q_presensi->get()->groupBy('nik');
+
+        // 4. MAPPING DATA
+        $data['presensi'] = collect([]);
+
+        foreach ($karyawans as $karyawan) {
+            $karyawan_data = [
+                'nik' => $karyawan->nik,
+                'nama_karyawan' => $karyawan->nama_karyawan,
+                'kode_jabatan' => $karyawan->kode_jabatan,
+                'nama_jabatan' => $karyawan->nama_jabatan,
+                'kode_dept' => $karyawan->kode_dept,
+                'kode_cabang' => $karyawan->kode_cabang,
+                'kode_perusahaan' => $karyawan->kode_perusahaan,
+                'kode_klasifikasi' => $karyawan->kode_klasifikasi,
+                'klasifikasi' => $karyawan->klasifikasi,
+                'no_rekening' => $karyawan->no_rekening,
+                'no_ktp' => $karyawan->no_ktp,
+                'kode_status_kawin' => $karyawan->kode_status_kawin,
+                'nama_group' => $karyawan->nama_group,
+                'tanggal_masuk' => $karyawan->tanggal_masuk,
+                'jenis_kelamin' => $karyawan->jenis_kelamin,
+                'status_karyawan' => $karyawan->status_karyawan,
+                'gaji_pokok' => $karyawan->gaji_pokok,
+                't_jabatan' => $karyawan->t_jabatan,
+                't_masakerja' => $karyawan->t_masakerja,
+                't_tanggungjawab' => $karyawan->t_tanggungjawab,
+                't_makan' => $karyawan->t_makan,
+                't_istri' => $karyawan->t_istri,
+                't_skill' => $karyawan->t_skill,
+                'iu_masakerja' => $karyawan->iu_masakerja,
+                'iu_lembur' => $karyawan->iu_lembur,
+                'iu_penempatan' => $karyawan->iu_penempatan,
+                'iu_kpi' => $karyawan->iu_kpi,
+                'im_ruanglingkup' => $karyawan->im_ruanglingkup,
+                'im_penempatan' => $karyawan->im_penempatan,
+                'im_kinerja' => $karyawan->im_kinerja,
+                'im_kendaraan' => $karyawan->im_kendaraan,
+                'iuran_bpjs_kesehatan' => $karyawan->iuran_bpjs_kesehatan,
+                'iuran_bpjs_tenagakerja' => $karyawan->iuran_bpjs_tenagakerja,
+                'cicilan_pjp' => $karyawan->cicilan_pjp,
+                'cicilan_kasbon' => $karyawan->cicilan_kasbon,
+                'cicilan_piutang' => $karyawan->cicilan_piutang,
+                'spip' => $karyawan->spip,
+                'jml_penambah' => $karyawan->jml_penambah,
+                'jml_pengurang' => $karyawan->jml_pengurang,
+            ];
+
+            $details = $presensi_details->get($karyawan->nik, collect([]));
+            foreach ($details as $row) {
+                $karyawan_data[$row->tanggal] = [
+                    'status' => $row->status,
+                    'jam_in' => $row->jam_in,
+                    'jam_out' => $row->jam_out,
+                    'kode_jadwal' => $row->kode_jadwal,
+                    'nama_jadwal' => $row->nama_jadwal,
+                    'kode_jam_kerja' => $row->kode_jam_kerja,
+                    'jam_mulai' => $row->jam_mulai,
+                    'jam_selesai' => $row->jam_selesai,
+                    'lintashari' => $row->lintashari,
+                    'istirahat' => $row->istirahat,
+                    'jam_awal_istirahat' => $row->jam_awal_istirahat,
+                    'jam_akhir_istirahat' => $row->jam_akhir_istirahat,
+                    'total_jam' => $row->total_jam,
+                    'kode_izin_keluar' => $row->kode_izin_keluar,
+                    'jam_keluar' => $row->jam_keluar,
+                    'jam_kembali' => $row->jam_kembali,
+                    'keperluan' => $row->keperluan,
+                    'izin_keluar_direktur' => $row->izin_keluar_direktur,
+
+                    'kode_izin_terlambat' => $row->kode_izin_terlambat,
+                    'izin_terlambat_direktur' => $row->izin_terlambat_direktur,
+
+                    'kode_izin_sakit' => $row->kode_izin_sakit,
+                    'doc_sid' => $row->doc_sid,
+                    'izin_sakit_direktur' => $row->izin_sakit_direktur,
+
+                    'kode_izin_pulang' => $row->kode_izin_pulang,
+                    'izin_pulang_direktur' => $row->izin_pulang_direktur,
+
+                    'kode_izin_cuti' => $row->kode_izin_cuti,
+                    'kode_cuti' => $row->kode_cuti,
+                    'izin_cuti_direktur' => $row->izin_cuti_direktur,
+                    'nama_cuti' => $row->nama_cuti,
+
+                    'kode_izin' => $row->kode_izin_absen,
+                    'izin_absen_direktur' => $row->izin_absen_direktur,
+                ];
+            }
+            $data['presensi'][$karyawan->nik] = $karyawan_data;
+        }
+
+        $data['start_date'] = $start_date;
+        $data['end_date'] = $end_date;
+
+        $data['dataliburnasional'] = getdataliburnasional($start_date, $end_date);
+        $data['datadirumahkan'] = getdirumahkan($start_date, $end_date);
+        $data['dataliburpengganti'] = getliburpengganti($start_date, $end_date);
+        $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
+        $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);
+        $data['datalembur'] = getlembur($start_date, $end_date, 1);
+        $data['datalemburharilibur'] = getlembur($start_date, $end_date, 2);
+        $data['jmlhari'] = hitungJumlahHari($start_date, $end_date) + 1;
+        $data['roles_access_all_pjp'] = $roles_access_all_pjp;
+        $data['format_laporan'] = $request->format_laporan;
+        $privillage_karyawan = [
+            '16.11.266',
+            '22.08.339',
+            '19.10.142',
+            '17.03.025',
+            '00.12.062',
+            '08.07.092',
+            '16.05.259',
+            '17.08.023',
+            '15.10.043',
+            '17.07.302',
+            '15.10.143',
+            '03.03.065',
+            '23.12.337',
+        ];
+
+        $data['bulan'] = $bulan;
+        $data['tahun'] = $request->tahun;
+        $data['privillage_karyawan'] = $privillage_karyawan;
+        
+        if (request()->is('laporanhrd/cetakgaji')) {
+            if ($request->format_laporan == 1 || $request->format_laporan == 3) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=Laporan Gaji.xls");
+                }
+                return view('hrd.laporan.gaji_cetak', $data);
+            } else if ($request->format_laporan == 2) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=Rekap Gaji.xls");
+                }
+                $data['cabang'] = Cabang::orderby('kode_cabang')->get();
+                return view('hrd.laporan.rekap_gaji_cetak', $data);
+            } else if ($request->format_laporan == 4) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=Laporan THR.xls");
+                }
+                return view('hrd.laporan.thr_cetak', $data);
+            } else if ($request->format_laporan == 5) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=Rekap THR.xls");
+                }
+                return view('hrd.laporan.rekap_thr_cetak', $data);
+            }
+        } else {
+            if ($request->format_laporan == 1) {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=Laporan Presensi.xls");
+                }
+                return view('hrd.laporan.presensi_cetak', $data);
+            } else {
+                if (isset($_POST['exportButton'])) {
+                    header("Content-type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename=PSM.xls");
+                }
+                return view('hrd.laporan.psm_cetak', $data);
+            }
+        }
+    }
+
 
 
     public function cetakcuti(Request $request)
