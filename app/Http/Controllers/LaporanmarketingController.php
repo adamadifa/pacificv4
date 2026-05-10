@@ -4023,7 +4023,7 @@ class LaporanmarketingController extends Controller
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->orderBy('produk_harga.kode_produk')
-            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_produk')
             ->get();
 
 
@@ -6887,7 +6887,7 @@ class LaporanmarketingController extends Controller
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $query->orderBy('salesman.kode_cabang');
         $query->orderBy('marketing_penjualan.kode_salesman');
-        $query->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');
+        $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.kode_cabang');
         $persentasesfa = $query->get();
 
 
