@@ -188,11 +188,9 @@
 
                                 {{-- Section 5: Actions --}}
                                 <div class="p-3 bg-light d-flex flex-row justify-content-center align-items-center gap-2" style="width: 140px;">
-                                    @if ($d->status_kehadiran == 'h')
-                                        <button class="btn btn-sm btn-label-success btn-icon btnKoreksi" nik="{{ $d->nik }}" tanggal="{{ $tanggal }}" title="Koreksi Presensi">
-                                            <i class="ti ti-edit fs-5"></i>
-                                        </button>
-                                    @endif
+                                    <button class="btn btn-sm btn-label-success btn-icon btnKoreksi" nik="{{ $d->nik }}" tanggal="{{ $tanggal }}" title="Koreksi Presensi">
+                                        <i class="ti ti-edit fs-5"></i>
+                                    </button>
                                     <button class="btn btn-sm btn-label-primary btn-icon btngetDatamesin" pin="{{ $d->pin }}" tanggal="{{ $tanggal }}" kode_jadwal="{{ $d->kode_jadwal }}" title="Get Data Mesin">
                                         <i class="ti ti-device-desktop fs-5"></i>
                                     </button>
