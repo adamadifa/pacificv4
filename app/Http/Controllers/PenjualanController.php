@@ -49,12 +49,6 @@ class PenjualanController extends Controller
             DB::raw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) as kode_cabang_baru')
         );
 
-        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'));
-        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
-        INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
-        WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'));
-        $query->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'));
-
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
@@ -114,6 +108,37 @@ class PenjualanController extends Controller
         $query->orderBy('marketing_penjualan.no_faktur', 'desc');
         $penjualan = $query->cursorPaginate();
         $penjualan->appends(request()->all());
+
+        // Query Splitting for Aggregates
+        $no_faktur_list = $penjualan->pluck('no_faktur')->toArray();
+
+        $total_bruto = DB::table('marketing_penjualan_detail')
+            ->select('no_faktur', DB::raw('SUM(subtotal) as total_bruto'))
+            ->whereIn('no_faktur', $no_faktur_list)
+            ->groupBy('no_faktur')
+            ->pluck('total_bruto', 'no_faktur');
+
+        $total_retur = DB::table('marketing_retur_detail')
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->select('no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->whereIn('no_faktur', $no_faktur_list)
+            ->where('jenis_retur', 'PF')
+            ->groupBy('no_faktur')
+            ->pluck('total_retur', 'no_faktur');
+
+        $total_bayar = DB::table('marketing_penjualan_historibayar')
+            ->select('no_faktur', DB::raw('SUM(jumlah) as total_bayar'))
+            ->whereIn('no_faktur', $no_faktur_list)
+            ->groupBy('no_faktur')
+            ->pluck('total_bayar', 'no_faktur');
+
+        $penjualan->getCollection()->transform(function ($item) use ($total_bruto, $total_retur, $total_bayar) {
+            $item->total_bruto = $total_bruto[$item->no_faktur] ?? 0;
+            $item->total_retur = $total_retur[$item->no_faktur] ?? 0;
+            $item->total_bayar = $total_bayar[$item->no_faktur] ?? 0;
+            return $item;
+        });
+
         $data['penjualan'] = $penjualan;
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
