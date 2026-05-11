@@ -39,6 +39,9 @@ class PenjualanController extends Controller
             }
         }
         $query = Penjualan::query();
+        if (empty($request->no_faktur_search) && empty($request->kode_pelanggan_search) && empty($request->nama_pelanggan_search)) {
+             $query->fromRaw('marketing_penjualan FORCE INDEX (idx_penjualan_tanggal_nofaktur)');
+        }
         $query->select(
             'marketing_penjualan.*',
             'pelanggan.nama_pelanggan',
