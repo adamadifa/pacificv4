@@ -3100,7 +3100,7 @@ class LaporanmarketingController extends Controller
 
         // dd($querypenjualan->get());
 
-        $querykartupiutang = $querysaldoawal->unionAll($querysaldoawalbulanini)->unionAll($querypenjualan)->orderBy('tanggal')->get();
+        $querykartupiutang = $querysaldoawal->unionAll($querysaldoawalbulanini)->unionAll($querypenjualan)->orderBy('tanggal')->orderBy('no_faktur')->get();
 
 
 
