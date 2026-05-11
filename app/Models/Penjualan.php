@@ -249,6 +249,7 @@ class Penjualan extends Model
             'nama_cabang',
             'alamat_cabang',
             'nama_pt',
+            'marketing_penjualan.signature',
             'total_bruto',
             'total_retur',
             'total_bayar'
