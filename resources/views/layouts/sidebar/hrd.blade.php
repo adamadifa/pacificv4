@@ -114,16 +114,18 @@
                 </li>
             @endif
             @if (auth()->user()->hasAnyPermission(['presensi.index']))
-                <li class="menu-item {{ request()->is(['presensi', 'presensi/*']) ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is(['presensi', 'presensi/*']) && !request()->is(['presensi/logerror']) ? 'active' : '' }}">
                     <a href="{{ route('presensi.index') }}" class="menu-link">
                         <div>Monitoring Presensi</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is(['presensi/logerror']) ? 'active' : '' }}">
-                    <a href="{{ route('presensi.logerror') }}" class="menu-link">
-                        <div>Log Error Presensi</div>
-                    </a>
-                </li>
+                @if (auth()->user()->hasRole('super admin'))
+                    <li class="menu-item {{ request()->is(['presensi/logerror']) ? 'active' : '' }}">
+                        <a href="{{ route('presensi.logerror') }}" class="menu-link">
+                            <div>Log Error Presensi</div>
+                        </a>
+                    </li>
+                @endif
             @endif
             @if (auth()->user()->hasAnyPermission(['presensi.index']))
                 <li class="menu-item {{ request()->is(['presensikaryawan']) ? 'active' : '' }}">

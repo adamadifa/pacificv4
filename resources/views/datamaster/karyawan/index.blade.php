@@ -241,7 +241,6 @@
                     dropdownParent: $this.parent()
                 });
             });
-            });
         }
 
         $(".btnResetAllSession").click(function(e) {
