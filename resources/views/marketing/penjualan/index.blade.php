@@ -115,6 +115,15 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-group mb-1">
+                        <select name="status_po" id="status_po" class="form-select">
+                            <option value="">Status PO</option>
+                            <option value="1" {{ Request('status_po') === '1' ? 'selected' : '' }}>PO</option>
+                            <option value="0" {{ Request('status_po') === '0' ? 'selected' : '' }}>Non PO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">

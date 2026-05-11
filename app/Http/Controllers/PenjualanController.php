@@ -116,6 +116,12 @@ class PenjualanController extends Controller
             $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan_search . '%');
         }
 
+        if ($request->status_po === '1') {
+            $query->whereRaw('MID(marketing_penjualan.no_faktur,4,2)="PR"');
+        } else if ($request->status_po === '0') {
+            $query->whereRaw('MID(marketing_penjualan.no_faktur,4,2)!="PR"');
+        }
+
         $query->orderBy('marketing_penjualan.tanggal', 'desc');
         $query->orderBy('marketing_penjualan.no_faktur', 'desc');
         $penjualan = $query->cursorPaginate();
