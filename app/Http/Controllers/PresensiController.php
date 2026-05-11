@@ -670,6 +670,29 @@ class PresensiController extends Controller
         }
     }
 
+    public function storekoreksipresensi(Request $request)
+    {
+        $tanggal = $request->tanggal;
+        $tanggal_pulang  = in_array($request->kode_jam_kerja, ['JK08', 'JK25']) ? date('Y-m-d', strtotime($tanggal . ' + 1 days')) : $tanggal;
+        $jam_in = !empty($request->jam_in) ? $tanggal . ' ' . $request->jam_in : null;
+        $jam_out = !empty($request->jam_out) ? $tanggal_pulang . ' ' . $request->jam_out : null;
+
+        try {
+            Presensi::create([
+                'nik' => $request->nik,
+                'tanggal' => $request->tanggal,
+                'kode_jadwal' => $request->kode_jadwal,
+                'kode_jam_kerja' => $request->kode_jam_kerja,
+                'jam_in' => $jam_in,
+                'jam_out' => $jam_out,
+                'status_kehadiran' => 'h'
+            ]);
+            return Redirect::back()->with(messageSuccess('Presensi Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
 
     function getjamkerja(Request $request)
     {
