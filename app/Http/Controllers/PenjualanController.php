@@ -41,6 +41,101 @@ class PenjualanController extends Controller
         $query = Penjualan::query();
         $query->select(
             'marketing_penjualan.*',
+            'pelanggan.nama_pelanggan',
+            'salesman.nama_salesman',
+            'cabang.nama_cabang',
+            'worksheetom_visitpelanggan.kode_visit',
+            DB::raw('IF(salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru) as kode_salesman_baru'),
+            DB::raw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) as kode_cabang_baru')
+        );
+
+        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'));
+        $query->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_retur_detail
+        INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur
+        WHERE no_faktur = marketing_penjualan.no_faktur AND jenis_retur="PF") as total_retur'));
+        $query->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'));
+
+        $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('worksheetom_visitpelanggan', 'marketing_penjualan.no_faktur', '=', 'worksheetom_visitpelanggan.no_faktur');
+
+        $movefaktur = DB::table('marketing_penjualan_movefaktur')
+            ->select('no_faktur', 'kode_salesman_baru as salesbaru', 'salesman.kode_cabang as cabangbaru')
+            ->join('salesman', 'marketing_penjualan_movefaktur.kode_salesman_baru', '=', 'salesman.kode_salesman')
+            ->whereIn('id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))->from('marketing_penjualan_movefaktur')->groupBy('no_faktur');
+            });
+
+        $query->leftJoinSub($movefaktur, 'movefaktur', 'marketing_penjualan.no_faktur', '=', 'movefaktur.no_faktur');
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->whereRaw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) = ?', [auth()->user()->kode_cabang]);
+            }
+        }
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+        } else {
+            $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+        }
+
+        if (!empty($request->no_faktur_search)) {
+            $query->where('marketing_penjualan.no_faktur', $request->no_faktur_search);
+        }
+
+        if (!empty($request->kode_cabang_search)) {
+            $query->whereRaw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) = ?', [$request->kode_cabang_search]);
+        }
+
+        if (!empty($request->kode_salesman_search)) {
+            $query->whereRaw('IF(salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru) = ?', [$request->kode_salesman_search]);
+        }
+
+        if (!empty($request->kode_pelanggan_search)) {
+            $query->where('marketing_penjualan.kode_pelanggan', $request->kode_pelanggan_search);
+        }
+
+
+        if (!empty($request->nama_pelanggan_search)) {
+            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan_search . '%');
+        }
+
+        if ($request->status_po === '1') {
+            $query->whereRaw('MID(marketing_penjualan.no_faktur,4,2)="PR"');
+        } else if ($request->status_po === '0') {
+            $query->whereRaw('MID(marketing_penjualan.no_faktur,4,2)!="PR"');
+        }
+
+        $query->orderBy('marketing_penjualan.tanggal', 'desc');
+        $query->orderBy('marketing_penjualan.no_faktur', 'desc');
+        $penjualan = $query->cursorPaginate();
+        $penjualan->appends(request()->all());
+        $data['penjualan'] = $penjualan;
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('marketing.penjualan.index', $data);
+    }
+
+    public function index_old(Request $request)
+    {
+
+        $start_date = config('global.start_date');
+        $end_date = config('global.end_date');
+        $user = User::findorfail(auth()->user()->id);
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        if (!empty($request->dari) && !empty($request->sampai)) {
+            if (lockreport($request->dari) == "error") {
+                return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+            }
+        }
+        $query = Penjualan::query();
+        $query->select(
+            'marketing_penjualan.*',
             'nama_pelanggan',
             'nama_salesman',
             'nama_cabang',
