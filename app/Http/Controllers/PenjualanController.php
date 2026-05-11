@@ -67,7 +67,12 @@ class PenjualanController extends Controller
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);
             } else {
-                $query->whereRaw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) = ?', [auth()->user()->kode_cabang]);
+                $query->where(function ($q) {
+                    $q->where(function ($q2) {
+                        $q2->whereNull('cabangbaru')
+                            ->where('salesman.kode_cabang', auth()->user()->kode_cabang);
+                    })->orWhere('cabangbaru', auth()->user()->kode_cabang);
+                });
             }
         }
 
@@ -82,11 +87,21 @@ class PenjualanController extends Controller
         }
 
         if (!empty($request->kode_cabang_search)) {
-            $query->whereRaw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) = ?', [$request->kode_cabang_search]);
+            $query->where(function ($q) use ($request) {
+                $q->where(function ($q2) use ($request) {
+                    $q2->whereNull('cabangbaru')
+                        ->where('salesman.kode_cabang', $request->kode_cabang_search);
+                })->orWhere('cabangbaru', $request->kode_cabang_search);
+            });
         }
 
         if (!empty($request->kode_salesman_search)) {
-            $query->whereRaw('IF(salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru) = ?', [$request->kode_salesman_search]);
+            $query->where(function ($q) use ($request) {
+                $q->where(function ($q2) use ($request) {
+                    $q2->whereNull('salesbaru')
+                        ->where('marketing_penjualan.kode_salesman', $request->kode_salesman_search);
+                })->orWhere('salesbaru', $request->kode_salesman_search);
+            });
         }
 
         if (!empty($request->kode_pelanggan_search)) {
@@ -99,9 +114,9 @@ class PenjualanController extends Controller
         }
 
         if ($request->status_po === '1') {
-            $query->whereRaw('MID(marketing_penjualan.no_faktur,4,2)="PR"');
+            $query->where('marketing_penjualan.no_faktur', 'LIKE', '___PR%');
         } else if ($request->status_po === '0') {
-            $query->whereRaw('MID(marketing_penjualan.no_faktur,4,2)!="PR"');
+            $query->where('marketing_penjualan.no_faktur', 'NOT LIKE', '___PR%');
         }
 
         $query->orderBy('marketing_penjualan.tanggal', 'desc');
