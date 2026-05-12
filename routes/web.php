@@ -176,6 +176,7 @@ use App\Http\Controllers\TargetkomisiController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketupdateController;
 use App\Http\Controllers\TransitinController;
+use App\Http\Controllers\TrackingtruckController;
 use App\Http\Controllers\TujuanangkutanController;
 use App\Http\Controllers\TutuplaporanController;
 use App\Http\Controllers\UserController;
@@ -2676,6 +2677,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/bbm/cetak', 'cetak')->name('bbm.cetak');
         Route::get('/bbm/get-km-terakhir/{id}', 'getKmTerakhir')->name('getKmTerakhir');
     });
+
+    Route::get('/trackingtruck', [TrackingtruckController::class, 'index'])->name('trackingtruck.index')->can('trackingtruck.index');
 });
 
 
@@ -2711,4 +2714,5 @@ Route::get('/assignrole', function () {
         $user->assignRole($role);
     }
 });
+
 require __DIR__ . '/auth.php';

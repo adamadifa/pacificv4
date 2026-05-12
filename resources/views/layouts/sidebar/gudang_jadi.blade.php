@@ -20,6 +20,13 @@
                     </a>
                 </li>
             @endcan
+            @can('trackingtruck.index')
+                <li class="menu-item {{ request()->is(['trackingtruck', 'trackingtruck/*']) ? 'active' : '' }}">
+                    <a href="{{ route('trackingtruck.index') }}" class="menu-link">
+                        <div>Tracking Truck</div>
+                    </a>
+                </li>
+            @endcan
             @can('kontrabonangkutan.index')
                 <li class="menu-item {{ request()->is(['kontrabonangkutan', 'kontrabonangkutan/*']) ? 'active' : '' }}">
                     <a href="{{ route('kontrabonangkutan.index') }}" class="menu-link">
