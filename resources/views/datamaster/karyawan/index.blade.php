@@ -25,8 +25,10 @@
             <a href="#" class="btn btn-primary" id="btncreateKaryawan"><i class="fa fa-plus me-2"></i> Tambah
                 Karyawan</a>
         @endcan
-        <a href="{{ route('karyawan.resetsession') }}" class="btn btn-danger btnResetAllSession"><i class="ti ti-refresh me-2"></i> Reset
-            All Session</a>
+        @role('super admin')
+            <a href="{{ route('karyawan.resetsession') }}" class="btn btn-danger btnResetAllSession"><i class="ti ti-refresh me-2"></i> Reset
+                All Session</a>
+        @endrole
     </div>
 </div>
 
@@ -155,13 +157,15 @@
                                     </a>
                                     <div class="text-muted" style="font-size: 0.6rem;">Lock Loc</div>
                                 </div>
-                                <div class="text-center me-lg-4">
-                                    <a href="{{ route('karyawan.resetsession', ['nik' => Crypt::encrypt($d->nik)]) }}"
-                                        class="text-warning d-inline-block hover-scale btnResetSession" title="Reset Session">
-                                        <i class="ti ti-refresh ti-md"></i>
-                                    </a>
-                                    <div class="text-muted" style="font-size: 0.6rem;">Reset Session</div>
-                                </div>
+                                @role('super admin')
+                                    <div class="text-center me-lg-4">
+                                        <a href="{{ route('karyawan.resetsession', ['nik' => Crypt::encrypt($d->nik)]) }}"
+                                            class="text-warning d-inline-block hover-scale btnResetSession" title="Reset Session">
+                                            <i class="ti ti-refresh ti-md"></i>
+                                        </a>
+                                        <div class="text-muted" style="font-size: 0.6rem;">Reset Session</div>
+                                    </div>
+                                @endrole
 
                                 <div class="btn-group shadow-sm rounded">
                                     @can('karyawan.edit')
