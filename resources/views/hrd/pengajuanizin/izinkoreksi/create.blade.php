@@ -30,8 +30,15 @@
             <x-input-with-icon icon="ti ti-clock" label="Jam Pulang" name="jam_pulang" hideLabel="true" />
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <x-select label="Alasan" name="id_alasan" :data="$alasan_koreksi" key="id" textShow="alasan" hideLabel="true" />
+        </div>
+    </div>
 
-    <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
+    <div id="keterangan_div" style="display: none">
+        <x-textarea label="Keterangan" name="keterangan" hideLabel="true" />
+    </div>
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
@@ -78,6 +85,16 @@
         $("#nik,#tanggal").change(function(e) {
             getpresensi();
         });
+
+        $("#id_alasan").change(function() {
+            const alasanText = $(this).find("option:selected").text();
+            if (alasanText.toLowerCase().includes("lainnya")) {
+                $("#keterangan_div").show();
+            } else {
+                $("#keterangan_div").hide();
+                $("#keterangan").val("");
+            }
+        });
         const select2Kodejadwal = $('.select2Kodejadwal');
         if (select2Kodejadwal.length) {
             select2Kodejadwal.each(function() {
@@ -121,6 +138,7 @@
             const tanggal = form.find("#tanggal").val();
             const jam_masuk = form.find("#jam_masuk").val();
             const jam_pulang = form.find("#jam_pulang").val();
+            const id_alasan = form.find("#id_alasan").val();
             const keterangan = form.find("#keterangan").val();
             if (nik == '') {
                 Swal.fire({
@@ -166,7 +184,18 @@
                     }
                 });
                 return false;
-            } else if (keterangan == '') {
+            } else if (id_alasan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: 'Alasan Harus Diisi !',
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#id_alasan").focus();
+                    }
+                });
+                return false;
+            } else if ($("#keterangan_div").is(":visible") && keterangan == '') {
                 Swal.fire({
                     title: "Oops!",
                     text: 'Keterangan Harus Diisi !',

@@ -10,6 +10,7 @@ use App\Http\Controllers\AjuanprogramikatanenambulanController;
 use App\Http\Controllers\AjuanprogramkumulatifController;
 use App\Http\Controllers\AjuantransferdanaController;
 use App\Http\Controllers\AktifitassmmController;
+use App\Http\Controllers\AlasankoreksiController;
 use App\Http\Controllers\AngkutanController;
 // use App\Http\Controllers\Api\SlipgajiController;
 use App\Http\Controllers\BadstokgaController;
@@ -502,6 +503,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/karyawan/getkaryawanjson', 'getkaryawanjson')->name('karyawan.getkaryawanjson');
         Route::get('/karyawan/getkaryawanpiutangkaryawanjson', 'getkaryawanpiutangkaryawanjson')->name('karyawan.getkaryawanpiutangkaryawanjson');
         Route::get('/karyawan/resetsession', 'resetsession')->name('karyawan.resetsession');
+    });
+
+    Route::controller(AlasankoreksiController::class)->group(function () {
+        Route::get('/alasankoreksi', 'index')->name('alasankoreksi.index')->can('alasankoreksi.index');
+        Route::get('/alasankoreksi/create', 'create')->name('alasankoreksi.create')->can('alasankoreksi.create');
+        Route::post('/alasankoreksi', 'store')->name('alasankoreksi.store')->can('alasankoreksi.store');
+        Route::get('/alasankoreksi/{id}/edit', 'edit')->name('alasankoreksi.edit')->can('alasankoreksi.edit');
+        Route::put('/alasankoreksi/{id}', 'update')->name('alasankoreksi.update')->can('alasankoreksi.update');
+        Route::delete('/alasankoreksi/{id}', 'destroy')->name('alasankoreksi.delete')->can('alasankoreksi.delete');
     });
 
     Route::controller(RekeningController::class)->group(function () {

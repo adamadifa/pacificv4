@@ -477,7 +477,9 @@ class GlobalProvider extends ServiceProvider
                 'angkutan',
                 'angkutan/*',
                 'barangpembelian',
-                'driverhelper'
+                'driverhelper',
+                'alasankoreksi',
+                'alasankoreksi/*'
             ];
 
 
@@ -504,7 +506,8 @@ class GlobalProvider extends ServiceProvider
                 'driverhelper.index',
                 'angkutan.index',
                 'tujuanangkutan.index',
-                'barangpembelian.index'
+                'barangpembelian.index',
+                'alasankoreksi.index'
             ];
 
             //Produksi

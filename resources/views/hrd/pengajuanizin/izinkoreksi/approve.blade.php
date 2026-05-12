@@ -44,6 +44,15 @@
                     <th>Jam Pulang</th>
                     <td class="text-end">{{ date('H:i', strtotime($izinkoreksi->jam_pulang)) }}</td>
                 </tr>
+                <tr>
+                    <th>Alasan</th>
+                    <td class="text-end">
+                        {{ $izinkoreksi->alasan }}
+                        @if ($izinkoreksi->status_denda == 1)
+                            <span class="badge bg-danger p-1" style="font-size: 0.6rem">Denda</span>
+                        @endif
+                    </td>
+                </tr>
 
                 <tr>
                     <th>Keterangan</th>

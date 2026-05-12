@@ -116,6 +116,14 @@
                  </li>
              @endcan
 
+             @can('alasankoreksi.index')
+                 <li class="menu-item {{ request()->is(['alasankoreksi', 'alasankoreksi/*']) ? 'active' : '' }}">
+                     <a href="{{ route('alasankoreksi.index') }}" class="menu-link">
+                         <div>Alasan Koreksi</div>
+                     </a>
+                 </li>
+             @endcan
+
              @can('rekening.index')
                  <li class="menu-item {{ request()->is(['rekening', 'rekening/*']) ? 'active' : '' }}">
                      <a href="{{ route('rekening.index') }}" class="menu-link">

@@ -33,8 +33,16 @@
                 value="{{ date('H:i', strtotime($izinkoreksi->jam_pulang)) }}" hideLabel="true" />
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <x-select label="Alasan" name="id_alasan" :data="$alasan_koreksi" key="id" textShow="alasan"
+                selected="{{ $izinkoreksi->id_alasan }}" hideLabel="true" />
+        </div>
+    </div>
 
-    <x-textarea label="Keterangan" name="keterangan" value="{{ $izinkoreksi->keterangan }}" hideLabel="true" />
+    <div id="keterangan_div" style="display: none">
+        <x-textarea label="Keterangan" name="keterangan" value="{{ $izinkoreksi->keterangan }}" hideLabel="true" />
+    </div>
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan">
             <ion-icon name="send-outline" class="me-1"></ion-icon>
@@ -82,6 +90,24 @@
             getpresensi();
         });
 
+        function toggleKeterangan() {
+            const alasanText = $("#id_alasan").find("option:selected").text();
+            if (alasanText.toLowerCase().includes("lainnya")) {
+                $("#keterangan_div").show();
+            } else {
+                $("#keterangan_div").hide();
+            }
+        }
+
+        $("#id_alasan").change(function() {
+            toggleKeterangan();
+            if (!$("#keterangan_div").is(":visible")) {
+                $("#keterangan").val("");
+            }
+        });
+
+        toggleKeterangan();
+
         // getpresensi();
         const select2Kodejadwal = $('.select2Kodejadwal');
         if (select2Kodejadwal.length) {
@@ -124,7 +150,9 @@
         form.submit(function(e) {
             const nik = form.find("#nik").val();
             const tanggal = form.find("#tanggal").val();
-            const jam_koreksi = form.find("#jam_koreksi").val();
+            const jam_masuk = form.find("#jam_masuk").val();
+            const jam_pulang = form.find("#jam_pulang").val();
+            const id_alasan = form.find("#id_alasan").val();
             const keterangan = form.find("#keterangan").val();
             if (nik == '') {
                 Swal.fire({
@@ -148,18 +176,40 @@
                     }
                 });
                 return false;
-            } else if (jam_koreksi == "") {
+            } else if (jam_masuk == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: 'Jam koreksi Harus Diisi !',
+                    text: 'Jam Masuk Harus Diisi !',
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        form.find("#jam_koreksi").focus();
+                        form.find("#jam_masuk").focus();
                     }
                 });
                 return false;
-            } else if (keterangan == '') {
+            } else if (jam_pulang == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: 'Jam Pulang Harus Diisi !',
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#jam_pulang").focus();
+                    }
+                });
+                return false;
+            } else if (id_alasan == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: 'Alasan Harus Diisi !',
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        form.find("#id_alasan").focus();
+                    }
+                });
+                return false;
+            } else if ($("#keterangan_div").is(":visible") && keterangan == '') {
                 Swal.fire({
                     title: "Oops!",
                     text: 'Keterangan Harus Diisi !',

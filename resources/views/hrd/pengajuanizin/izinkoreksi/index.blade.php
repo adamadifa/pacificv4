@@ -109,6 +109,7 @@
                             <th class="text-white">Cabang</th>
                             <th class="text-white">Masuk</th>
                             <th class="text-white">Pulang</th>
+                            <th class="text-white">Alasan</th>
                             <th class="text-white">Jadwal</th>
                             <th class="text-white text-center">Posisi</th>
                             <th class="text-white text-center">Status</th>
@@ -125,6 +126,12 @@
                                 <td>{{ $d->kode_cabang }}</td>
                                 <td>{{ date('H:i', strtotime($d->jam_masuk)) }}</td>
                                 <td>{{ date('H:i', strtotime($d->jam_pulang)) }}</td>
+                                <td>
+                                    {{ $d->alasan }}
+                                    @if ($d->status_denda == 1)
+                                        <span class="badge bg-danger p-1" style="font-size: 0.6rem">Denda</span>
+                                    @endif
+                                </td>
                                 <td>
                                     {{ $d->nama_jadwal }} -
                                     {{ date('H:i', strtotime($d->jam_mulai)) }} -

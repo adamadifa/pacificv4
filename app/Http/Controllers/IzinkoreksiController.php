@@ -12,6 +12,7 @@ use App\Models\Karyawan;
 use App\Models\Presensi;
 use App\Models\Presensiizinkoreksi;
 use App\Models\User;
+use App\Models\Alasankoreksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +39,7 @@ class IzinkoreksiController extends Controller
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
+        $data['alasan_koreksi'] = Alasankoreksi::orderBy('id')->get();
 
         return view('hrd.pengajuanizin.izinkoreksi.create', $data);
     }
@@ -126,6 +128,7 @@ class IzinkoreksiController extends Controller
                 'kode_jadwal' => $request->kode_jadwal,
                 'kode_jam_kerja' => $request->kode_jam_kerja,
                 'keterangan' => $request->keterangan,
+                'id_alasan' => $request->id_alasan,
                 'head' => $head,
                 'status' => 0,
                 'direktur' => 0,
@@ -148,6 +151,7 @@ class IzinkoreksiController extends Controller
         //dd($data['izinkoreksi']);
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
+        $data['alasan_koreksi'] = Alasankoreksi::orderBy('id')->get();
         return view('hrd.pengajuanizin.izinkoreksi.edit', $data);
     }
 
@@ -179,6 +183,7 @@ class IzinkoreksiController extends Controller
                 'kode_jadwal' => $request->kode_jadwal,
                 'kode_jam_kerja' => $request->kode_jam_kerja,
                 'keterangan' => $request->keterangan,
+                'id_alasan' => $request->id_alasan,
             ]);
 
             DB::commit();

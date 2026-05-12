@@ -14,6 +14,11 @@ class Izinkoreksi extends Model
     protected $primaryKey = "kode_izin_koreksi";
     protected $guarded = [];
     public $incrementing  = false;
+    
+    public function alasan()
+    {
+        return $this->belongsTo(Alasankoreksi::class, 'id_alasan');
+    }
 
     function getIzinkoreksi($kode_izin_koreksi = null, Request $request = null, $cekPending = false)
     {
@@ -36,6 +41,8 @@ class Izinkoreksi extends Model
             'hrd_jadwalkerja.nama_jadwal',
             'hrd_jamkerja.jam_masuk as jam_mulai',
             'hrd_jamkerja.jam_pulang as jam_selesai',
+            'hrd_alasan_koreksi.alasan',
+            'hrd_alasan_koreksi.status_denda',
         );
         $query->join('hrd_karyawan', 'hrd_izinkoreksi.nik', '=', 'hrd_karyawan.nik');
         $query->join('hrd_jabatan', 'hrd_izinkoreksi.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -43,6 +50,7 @@ class Izinkoreksi extends Model
         $query->join('cabang', 'hrd_izinkoreksi.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('hrd_jadwalkerja', 'hrd_izinkoreksi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal');
         $query->join('hrd_jamkerja', 'hrd_izinkoreksi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja');
+        $query->leftJoin('hrd_alasan_koreksi', 'hrd_izinkoreksi.id_alasan', '=', 'hrd_alasan_koreksi.id');
 
 
         // Data Access Restrictions
