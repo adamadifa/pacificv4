@@ -80,6 +80,7 @@ class IzinkoreksiController extends Controller
     {
         $user = User::findorfail(auth()->user()->id);
         $role = $user->getRoleNames()->first();
+        $alasan = Alasankoreksi::find($request->id_alasan);
         $request->validate([
             'nik' => 'required',
             'tanggal' => 'required',
@@ -87,7 +88,8 @@ class IzinkoreksiController extends Controller
             'jam_pulang' => 'required',
             'kode_jam_kerja' => 'required',
             'kode_jadwal' => 'required',
-            'keterangan' => 'required',
+            'id_alasan' => 'required',
+            'keterangan' => ($alasan && str_contains(strtolower($alasan->alasan), 'lainnya')) ? 'required' : 'nullable',
         ]);
         //dd($request->tanggal);
         DB::beginTransaction();
@@ -159,13 +161,15 @@ class IzinkoreksiController extends Controller
     public function update(Request $request, $kode_izin_koreksi)
     {
         $kode_izin_koreksi = Crypt::decrypt($kode_izin_koreksi);
+        $alasan = Alasankoreksi::find($request->id_alasan);
         $request->validate([
             'tanggal' => 'required',
             'jam_masuk' => 'required',
             'jam_pulang' => 'required',
             'kode_jadwal' => 'required',
             'kode_jam_kerja' => 'required',
-            'keterangan' => 'required',
+            'id_alasan' => 'required',
+            'keterangan' => ($alasan && str_contains(strtolower($alasan->alasan), 'lainnya')) ? 'required' : 'nullable',
         ]);
         DB::beginTransaction();
         try {
