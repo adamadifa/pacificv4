@@ -369,7 +369,8 @@
 
             if (jenis_perhitungan == "P") {
                 qtyhelper.each(function() {
-                    let value = $(this).val();
+                    let val = $(this).val() == "" ? "0" : $(this).val();
+                    let value = val.replaceAll('.', '').replaceAll(',', '.');
                     let persentase = totalbarangkeluar > 0 ? parseFloat(value) / parseFloat(
                         totalbarangkeluar) * 100 : 0;
                     $(this).val(Math.round(persentase));
