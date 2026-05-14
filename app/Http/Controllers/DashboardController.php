@@ -128,6 +128,21 @@ class DashboardController extends Controller
             ->select('cabang.nama_cabang', 'keuangan_saldokasbesar.jumlah', 'keuangan_saldokasbesar.keterangan')
             ->get();
 
+        $tunai_setoran_kb = DB::table('keuangan_mutasi')
+            ->where('tanggal', $tanggal)
+            ->where('kode_bank', 'BK070')
+            ->where('kode_kategori', 'MK007')
+            ->where('debet_kredit', 'K')
+            ->sum('jumlah');
+
+        if ($tunai_setoran_kb > 0) {
+            $details->push((object)[
+                'nama_cabang' => 'Tunai Setoran',
+                'jumlah' => -$tunai_setoran_kb,
+                'keterangan' => 'Pengurang Saldo Awal'
+            ]);
+        }
+
         $agent = new Agent();
         if ($agent->isMobile()) {
             return view('dashboard.mobile.getdetailsaldoawalkb', compact('details'));
@@ -188,7 +203,14 @@ class DashboardController extends Controller
         $saldo_awal_kb = DB::table('keuangan_saldokasbesar')
             ->where('tanggal', $tanggal)
             ->sum('jumlah');
-        
+
+        $tunai_setoran_kb = DB::table('keuangan_mutasi')
+            ->where('tanggal', $tanggal)
+            ->where('kode_bank', 'BK070')
+            ->where('kode_kategori', 'MK007')
+            ->where('debet_kredit', 'K')
+            ->sum('jumlah');
+
         $mutasi_kb = DB::table('keuangan_mutasi')
             ->select(
                 DB::raw("SUM(IF(debet_kredit='K',jumlah,0)) as penerimaan"),
@@ -198,14 +220,14 @@ class DashboardController extends Controller
             ->where('kode_bank', 'BK070')
             ->where('kode_kategori', '!=', 'MK006')
             ->first();
-        
-        $data['saldo_awal_kb'] = $saldo_awal_kb;
+
+        $data['saldo_awal_kb'] = $saldo_awal_kb - $tunai_setoran_kb;
         $data['penerimaan_kb'] = $mutasi_kb->penerimaan ?? 0;
         $data['pengeluaran_kb'] = $mutasi_kb->pengeluaran ?? 0;
-        $data['net_kb'] = $saldo_awal_kb + ($mutasi_kb->penerimaan ?? 0) - ($mutasi_kb->pengeluaran ?? 0);
+        $data['net_kb'] = ($saldo_awal_kb - $tunai_setoran_kb) + ($mutasi_kb->penerimaan ?? 0) - ($mutasi_kb->pengeluaran ?? 0);
 
         // Combined Totals for Statistic Cards
-        $data['total_saldo_awal'] = $saldo_awal + $saldo_awal_kb;
+        $data['total_saldo_awal'] = $saldo_awal + $data['saldo_awal_kb'];
         $data['total_penerimaan'] = $data['penerimaan'] + $data['penerimaan_kb'];
         $data['total_pengeluaran'] = $data['pengeluaran'] + $data['pengeluaran_kb'];
         $data['total_net'] = $data['total_saldo_awal'] + $data['total_penerimaan'] - $data['total_pengeluaran'];
