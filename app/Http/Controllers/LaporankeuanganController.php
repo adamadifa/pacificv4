@@ -1945,6 +1945,7 @@ class LaporankeuanganController extends Controller
             if ($request->kode_bank_ledger != "") {
                 $query->where('keuangan_mutasi.kode_bank', $request->kode_bank_ledger);
             }
+            $query->where('keuangan_mutasi.kode_kategori', '!=', 'MK007');
 
 
             $data['ledger'] = $query->get();
@@ -1967,6 +1968,7 @@ class LaporankeuanganController extends Controller
                         ->where('tanggal', '>=', $start_date)
                         ->where('tanggal', '<', $request->dari)
                         ->where('kode_bank', 'BK070')
+                        ->where('kode_kategori', '!=', 'MK007')
                         ->first();
                 } else {
                     $data['mutasi'] = Mutasikeuangan::select(
@@ -1976,6 +1978,7 @@ class LaporankeuanganController extends Controller
                         ->where('tanggal', '>=', $start_date)
                         ->where('tanggal', '<', $request->dari)
                         ->where('kode_bank', $request->kode_bank_ledger)
+                        ->where('kode_kategori', '!=', 'MK007')
                         ->first();
                 }
             } else {
@@ -2003,6 +2006,7 @@ class LaporankeuanganController extends Controller
             if (!empty($request->kode_bank_ledger)) {
                 $query->where('keuangan_mutasi.kode_bank', $request->kode_bank_ledger);
             }
+            $query->where('keuangan_mutasi.kode_kategori', '!=', 'MK007');
 
             $query->groupBy('keuangan_mutasi.kode_bank', 'nama_bank');
             $data['ledger'] = $query->get();

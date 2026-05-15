@@ -45,6 +45,7 @@ class MutasikeuanganController extends Controller
                     ->where('tanggal', '>=', $start_date)
                     ->where('tanggal', '<', $request->dari)
                     ->where('kode_bank', 'BK070')
+                    ->where('kode_kategori', '!=', 'MK007')
                     ->first();
             } else {
                 $data['mutasi']  = Mutasikeuangan::select(
@@ -55,6 +56,7 @@ class MutasikeuanganController extends Controller
                     ->where('tanggal', '>=', $start_date)
                     ->where('tanggal', '<', $request->dari)
                     ->where('kode_bank', $request->kode_bank_search)
+                    ->where('kode_kategori', '!=', 'MK007')
                     ->first();
             }
         } else {
@@ -162,6 +164,7 @@ class MutasikeuanganController extends Controller
             ->when(!empty($kode_bank), function ($query) use ($kode_bank) {
                 $query->where('kode_bank', $kode_bank);
             })
+            ->where('kode_kategori', '!=', 'MK007')
             // ->when($request->dari && $request->sampai, function ($query) use ($request) {
             //     $query->where('tanggal', '>=', $request->dari)
             //         ->where('tanggal', '<=', $request->sampai);
@@ -177,6 +180,7 @@ class MutasikeuanganController extends Controller
         } else {
             $qmutasi->where('tanggal', '>=', $start_date)->where('tanggal', '<=', date('Y-m-d'));
         }
+        $qmutasi->where('kode_kategori', '!=', 'MK007');
 
 
         $data['mutasi']  = $qmutasi->get();

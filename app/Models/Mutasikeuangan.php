@@ -37,6 +37,7 @@ class Mutasikeuangan extends Model
         } else {
             $query->where('keuangan_mutasi.kode_bank', $request->kode_bank_search);
         }
+        $query->where('keuangan_mutasi.kode_kategori', '!=', 'MK007');
         $query->whereBetween('keuangan_mutasi.tanggal', [$request->dari, $request->sampai]);
         $query->orderBy('keuangan_mutasi.tanggal');
         $query->orderBy('keuangan_mutasi.created_at');
