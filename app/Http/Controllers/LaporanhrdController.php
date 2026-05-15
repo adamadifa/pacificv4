@@ -356,6 +356,10 @@ class LaporanhrdController extends Controller
             'hrd_presensi_izinabsen.kode_izin',
             'hrd_izinabsen.direktur as izin_absen_direktur',
 
+            //Izin Koreksi
+            'hrd_alasan_koreksi.status_denda',
+            'hrd_alasan_koreksi.alasan',
+
 
             //Gaji
             'hrd_gaji.gaji_pokok',
@@ -420,6 +424,10 @@ class LaporanhrdController extends Controller
 
         $query->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
         $query->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
+
+        $query->leftJoin('hrd_presensi_izinkoreksi', 'hrd_presensi.id', '=', 'hrd_presensi_izinkoreksi.id_presensi');
+        $query->leftJoin('hrd_izinkoreksi', 'hrd_presensi_izinkoreksi.kode_izin_koreksi', '=', 'hrd_izinkoreksi.kode_izin_koreksi');
+        $query->leftJoin('hrd_alasan_koreksi', 'hrd_izinkoreksi.id_alasan', '=', 'hrd_alasan_koreksi.id');
 
         if (!empty($kode_cabang)) {
             $query->where('hrd_karyawan.kode_cabang', $kode_cabang);
@@ -575,44 +583,57 @@ class LaporanhrdController extends Controller
                 'jml_pengurang' => $rows->first()->jml_pengurang,
             ];
             foreach ($rows as $row) {
-                $data[$row->tanggal] = [
-                    'status' => $row->status,
-                    'jam_in' => $row->jam_in,
-                    'jam_out' => $row->jam_out,
-                    'kode_jadwal' => $row->kode_jadwal,
-                    'nama_jadwal' => $row->nama_jadwal,
-                    'kode_jam_kerja' => $row->kode_jam_kerja,
-                    'jam_mulai' => $row->jam_mulai,
-                    'jam_selesai' => $row->jam_selesai,
-                    'lintashari' => $row->lintashari,
-                    'istirahat' => $row->istirahat,
-                    'jam_awal_istirahat' => $row->jam_awal_istirahat,
-                    'jam_akhir_istirahat' => $row->jam_akhir_istirahat,
-                    'total_jam' => $row->total_jam,
-                    'kode_izin_keluar' => $row->kode_izin_keluar,
-                    'jam_keluar' => $row->jam_keluar,
-                    'jam_kembali' => $row->jam_kembali,
-                    'keperluan' => $row->keperluan,
-                    'izin_keluar_direktur' => $row->izin_keluar_direktur,
+                if (!isset($data[$row->tanggal])) {
+                    $data[$row->tanggal] = [
+                        'status' => $row->status,
+                        'jam_in' => $row->jam_in,
+                        'jam_out' => $row->jam_out,
+                        'kode_jadwal' => $row->kode_jadwal,
+                        'nama_jadwal' => $row->nama_jadwal,
+                        'kode_jam_kerja' => $row->kode_jam_kerja,
+                        'jam_mulai' => $row->jam_mulai,
+                        'jam_selesai' => $row->jam_selesai,
+                        'lintashari' => $row->lintashari,
+                        'istirahat' => $row->istirahat,
+                        'jam_awal_istirahat' => $row->jam_awal_istirahat,
+                        'jam_akhir_istirahat' => $row->jam_akhir_istirahat,
+                        'total_jam' => $row->total_jam,
+                        'kode_izin_keluar' => $row->kode_izin_keluar,
+                        'jam_keluar' => $row->jam_keluar,
+                        'jam_kembali' => $row->jam_kembali,
+                        'keperluan' => $row->keperluan,
+                        'izin_keluar_direktur' => $row->izin_keluar_direktur,
 
-                    'kode_izin_terlambat' => $row->kode_izin_terlambat,
-                    'izin_terlambat_direktur' => $row->izin_terlambat_direktur,
+                        'kode_izin_terlambat' => $row->kode_izin_terlambat,
+                        'izin_terlambat_direktur' => $row->izin_terlambat_direktur,
 
-                    'kode_izin_sakit' => $row->kode_izin_sakit,
-                    'doc_sid' => $row->doc_sid,
-                    'izin_sakit_direktur' => $row->izin_sakit_direktur,
+                        'kode_izin_sakit' => $row->kode_izin_sakit,
+                        'doc_sid' => $row->doc_sid,
+                        'izin_sakit_direktur' => $row->izin_sakit_direktur,
 
-                    'kode_izin_pulang' => $row->kode_izin_pulang,
-                    'izin_pulang_direktur' => $row->izin_pulang_direktur,
+                        'kode_izin_pulang' => $row->kode_izin_pulang,
+                        'izin_pulang_direktur' => $row->izin_pulang_direktur,
 
-                    'kode_izin_cuti' => $row->kode_izin_cuti,
-                    'kode_cuti' => $row->kode_cuti,
-                    'izin_cuti_direktur' => $row->izin_cuti_direktur,
-                    'nama_cuti' => $row->nama_cuti,
+                        'kode_izin_cuti' => $row->kode_izin_cuti,
+                        'kode_cuti' => $row->kode_cuti,
+                        'izin_cuti_direktur' => $row->izin_cuti_direktur,
+                        'nama_cuti' => $row->nama_cuti,
 
-                    'kode_izin' => $row->kode_izin_absen,
-                    'izin_absen_direktur' => $row->izin_absen_direktur,
-                ];
+                        'kode_izin' => $row->kode_izin_absen,
+                        'izin_absen_direktur' => $row->izin_absen_direktur,
+                        'status_denda' => $row->status_denda,
+                        'alasan' => $row->alasan,
+                    ];
+                } else {
+                    if (!empty($row->status_denda)) $data[$row->tanggal]['status_denda'] = $row->status_denda;
+                    if (!empty($row->alasan)) $data[$row->tanggal]['alasan'] = $row->alasan;
+                    if (!empty($row->kode_izin_keluar)) $data[$row->tanggal]['kode_izin_keluar'] = $row->kode_izin_keluar;
+                    if (!empty($row->kode_izin_terlambat)) $data[$row->tanggal]['kode_izin_terlambat'] = $row->kode_izin_terlambat;
+                    if (!empty($row->kode_izin_sakit)) $data[$row->tanggal]['kode_izin_sakit'] = $row->kode_izin_sakit;
+                    if (!empty($row->kode_izin_pulang)) $data[$row->tanggal]['kode_izin_pulang'] = $row->kode_izin_pulang;
+                    if (!empty($row->kode_izin_cuti)) $data[$row->tanggal]['kode_izin_cuti'] = $row->kode_izin_cuti;
+                    if (!empty($row->kode_izin_absen)) $data[$row->tanggal]['kode_izin'] = $row->kode_izin_absen;
+                }
             }
             return $data;
         });
@@ -973,7 +994,8 @@ class LaporanhrdController extends Controller
 
             'hrd_presensi_izinabsen.kode_izin as kode_izin_absen',
             'hrd_izinabsen.direktur as izin_absen_direktur',
-            'hrd_alasan_koreksi.status_denda'
+            'hrd_alasan_koreksi.status_denda',
+            'hrd_alasan_koreksi.alasan'
         );
 
         if (!empty($niks)) {
@@ -1100,10 +1122,12 @@ class LaporanhrdController extends Controller
                         'kode_izin' => $row->kode_izin_absen,
                         'izin_absen_direktur' => $row->izin_absen_direktur,
                         'status_denda' => $row->status_denda,
+                        'alasan' => $row->alasan,
                     ];
                 } else {
                     // Jika data sudah ada (karena multi join), update field yang mungkin null di baris sebelumnya tapi ada di baris ini
                     if (!empty($row->status_denda)) $karyawan_data[$row->tanggal]['status_denda'] = $row->status_denda;
+                    if (!empty($row->alasan)) $karyawan_data[$row->tanggal]['alasan'] = $row->alasan;
                     if (!empty($row->kode_izin_keluar)) $karyawan_data[$row->tanggal]['kode_izin_keluar'] = $row->kode_izin_keluar;
                     if (!empty($row->kode_izin_terlambat)) $karyawan_data[$row->tanggal]['kode_izin_terlambat'] = $row->kode_izin_terlambat;
                     if (!empty($row->kode_izin_sakit)) $karyawan_data[$row->tanggal]['kode_izin_sakit'] = $row->kode_izin_sakit;

@@ -356,10 +356,14 @@
                                             </p>
                                             <!-- Terlambat -->
                                             <p style="margin:0">
-                                                <span style="color: {{ !empty($textcolor) ? $textcolor : $terlambat['color'] }}">
+                                                <span style="color: {{ !empty($textcolor) ? $textcolor : (!empty($jumlah_denda) ? 'red' : $terlambat['color']) }}">
                                                     {{ $terlambat['keterangan'] }}
+                                                    @if (!empty($d[$tanggal_presensi]['alasan']) && !empty($d[$tanggal_presensi]['status_denda']))
+                                                        <br>
+                                                        ({{ $d[$tanggal_presensi]['alasan'] }})
+                                                    @endif
                                                     <br>
-                                                    {{ !empty($denda['denda']) ? '(' . formatAngka($denda['denda']) . ')' : '' }}
+                                                    {{ !empty($jumlah_denda) ? '(' . formatAngka($jumlah_denda) . ')' : '' }}
                                                 </span>
                                             </p>
                                             <!-- Pulang Cepat -->

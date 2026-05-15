@@ -348,8 +348,8 @@ class LaporangudangjadiController extends Controller
             ->select('marketing_permintaan_kiriman_detail.kode_produk', 'nama_produk')
             ->join('produk', 'marketing_permintaan_kiriman_detail.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('tanggal', [$dari, $sampai])
-            ->orderBy('kode_produk')
-            ->groupBY('kode_produk')
+            ->orderBy('marketing_permintaan_kiriman_detail.kode_produk')
+            ->groupBy('marketing_permintaan_kiriman_detail.kode_produk', 'nama_produk')
             ->get();
 
         foreach ($produk as $d) {
@@ -432,8 +432,8 @@ class LaporangudangjadiController extends Controller
             ->join('produk', 'marketing_oman_cabang_detail.kode_produk', '=', 'produk.kode_produk')
             ->where('bulan', $request->bulan)
             ->where('tahun', $request->tahun)
-            ->orderBy('kode_produk')
-            ->groupBY('kode_produk')
+            ->orderBy('marketing_oman_cabang_detail.kode_produk')
+            ->groupBy('marketing_oman_cabang_detail.kode_produk', 'nama_produk')
             ->get();
 
 
