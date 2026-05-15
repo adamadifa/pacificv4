@@ -1061,45 +1061,56 @@ class LaporanhrdController extends Controller
 
             $details = $presensi_details->get($karyawan->nik, collect([]));
             foreach ($details as $row) {
-                $karyawan_data[$row->tanggal] = [
-                    'status' => $row->status,
-                    'jam_in' => $row->jam_in,
-                    'jam_out' => $row->jam_out,
-                    'kode_jadwal' => $row->kode_jadwal,
-                    'nama_jadwal' => $row->nama_jadwal,
-                    'kode_jam_kerja' => $row->kode_jam_kerja,
-                    'jam_mulai' => $row->jam_mulai,
-                    'jam_selesai' => $row->jam_selesai,
-                    'lintashari' => $row->lintashari,
-                    'istirahat' => $row->istirahat,
-                    'jam_awal_istirahat' => $row->jam_awal_istirahat,
-                    'jam_akhir_istirahat' => $row->jam_akhir_istirahat,
-                    'total_jam' => $row->total_jam,
-                    'kode_izin_keluar' => $row->kode_izin_keluar,
-                    'jam_keluar' => $row->jam_keluar,
-                    'jam_kembali' => $row->jam_kembali,
-                    'keperluan' => $row->keperluan,
-                    'izin_keluar_direktur' => $row->izin_keluar_direktur,
+                if (!isset($karyawan_data[$row->tanggal])) {
+                    $karyawan_data[$row->tanggal] = [
+                        'status' => $row->status,
+                        'jam_in' => $row->jam_in,
+                        'jam_out' => $row->jam_out,
+                        'kode_jadwal' => $row->kode_jadwal,
+                        'nama_jadwal' => $row->nama_jadwal,
+                        'kode_jam_kerja' => $row->kode_jam_kerja,
+                        'jam_mulai' => $row->jam_mulai,
+                        'jam_selesai' => $row->jam_selesai,
+                        'lintashari' => $row->lintashari,
+                        'istirahat' => $row->istirahat,
+                        'jam_awal_istirahat' => $row->jam_awal_istirahat,
+                        'jam_akhir_istirahat' => $row->jam_akhir_istirahat,
+                        'total_jam' => $row->total_jam,
+                        'kode_izin_keluar' => $row->kode_izin_keluar,
+                        'jam_keluar' => $row->jam_keluar,
+                        'jam_kembali' => $row->jam_kembali,
+                        'keperluan' => $row->keperluan,
+                        'izin_keluar_direktur' => $row->izin_keluar_direktur,
 
-                    'kode_izin_terlambat' => $row->kode_izin_terlambat,
-                    'izin_terlambat_direktur' => $row->izin_terlambat_direktur,
+                        'kode_izin_terlambat' => $row->kode_izin_terlambat,
+                        'izin_terlambat_direktur' => $row->izin_terlambat_direktur,
 
-                    'kode_izin_sakit' => $row->kode_izin_sakit,
-                    'doc_sid' => $row->doc_sid,
-                    'izin_sakit_direktur' => $row->izin_sakit_direktur,
+                        'kode_izin_sakit' => $row->kode_izin_sakit,
+                        'doc_sid' => $row->doc_sid,
+                        'izin_sakit_direktur' => $row->izin_sakit_direktur,
 
-                    'kode_izin_pulang' => $row->kode_izin_pulang,
-                    'izin_pulang_direktur' => $row->izin_pulang_direktur,
+                        'kode_izin_pulang' => $row->kode_izin_pulang,
+                        'izin_pulang_direktur' => $row->izin_pulang_direktur,
 
-                    'kode_izin_cuti' => $row->kode_izin_cuti,
-                    'kode_cuti' => $row->kode_cuti,
-                    'izin_cuti_direktur' => $row->izin_cuti_direktur,
-                    'nama_cuti' => $row->nama_cuti,
+                        'kode_izin_cuti' => $row->kode_izin_cuti,
+                        'kode_cuti' => $row->kode_cuti,
+                        'izin_cuti_direktur' => $row->izin_cuti_direktur,
+                        'nama_cuti' => $row->nama_cuti,
 
-                    'kode_izin' => $row->kode_izin_absen,
-                    'izin_absen_direktur' => $row->izin_absen_direktur,
-                    'status_denda' => $row->status_denda,
-                ];
+                        'kode_izin' => $row->kode_izin_absen,
+                        'izin_absen_direktur' => $row->izin_absen_direktur,
+                        'status_denda' => $row->status_denda,
+                    ];
+                } else {
+                    // Jika data sudah ada (karena multi join), update field yang mungkin null di baris sebelumnya tapi ada di baris ini
+                    if (!empty($row->status_denda)) $karyawan_data[$row->tanggal]['status_denda'] = $row->status_denda;
+                    if (!empty($row->kode_izin_keluar)) $karyawan_data[$row->tanggal]['kode_izin_keluar'] = $row->kode_izin_keluar;
+                    if (!empty($row->kode_izin_terlambat)) $karyawan_data[$row->tanggal]['kode_izin_terlambat'] = $row->kode_izin_terlambat;
+                    if (!empty($row->kode_izin_sakit)) $karyawan_data[$row->tanggal]['kode_izin_sakit'] = $row->kode_izin_sakit;
+                    if (!empty($row->kode_izin_pulang)) $karyawan_data[$row->tanggal]['kode_izin_pulang'] = $row->kode_izin_pulang;
+                    if (!empty($row->kode_izin_cuti)) $karyawan_data[$row->tanggal]['kode_izin_cuti'] = $row->kode_izin_cuti;
+                    if (!empty($row->kode_izin_absen)) $karyawan_data[$row->tanggal]['kode_izin'] = $row->kode_izin_absen;
+                }
             }
             $data['presensi'][$karyawan->nik] = $karyawan_data;
         }
