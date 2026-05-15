@@ -160,7 +160,7 @@
                                     }
                                     $total_overtime_libur += $overtime_libur;
 
-                                    if ($tanggal_presensi < '2026-03-21') {
+                                    if ($tanggal_presensi < '2026-03-21' || $tanggal_presensi >= '2026-04-21') {
                                         $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
                                         $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                                     }
@@ -172,15 +172,15 @@
                                             $lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi;
                                         $total_jam_jadwal = $d[$tanggal_presensi]['total_jam'];
                                         //Jadwal Jam Kerja
-                                        $j_mulai = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
-                                        $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
+                                        $j_mulai = date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
+                                        $j_selesai = date('Y-m-d H:i:s', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
 
                                         //Jam Absen Masuk dan Pulang
                                         $jam_in = !empty($d[$tanggal_presensi]['jam_in'])
-                                            ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_in']))
+                                            ? date('Y-m-d H:i:s', strtotime($d[$tanggal_presensi]['jam_in']))
                                             : 'Belum Absen';
                                         $jam_out = !empty($d[$tanggal_presensi]['jam_out'])
-                                            ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_out']))
+                                            ? date('Y-m-d H:i:s', strtotime($d[$tanggal_presensi]['jam_out']))
                                             : 'Belum Absen';
 
                                         //Jadwal SPG
@@ -267,6 +267,8 @@
                                                     $d[$tanggal_presensi]['kode_izin_terlambat'],
                                                     $d['kode_dept'],
                                                     $d['kode_jabatan'],
+                                                    $tanggal_presensi,
+                                                    $terlambat['diffterlambat']
                                                 );
 
                                                 //Cek Pulang Cepat

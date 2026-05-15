@@ -13,11 +13,13 @@ function presensiHitungJamTerlambat($jam_in, $jam_mulai)
 
             $jamterlambat = floor($diffterlambat / (60 * 60));
             $menitterlambat = floor(($diffterlambat - $jamterlambat * (60 * 60)) / 60);
+            $detikterlambat = $diffterlambat % 60;
 
             $jterlambat = $jamterlambat <= 9 ? '0' . $jamterlambat : $jamterlambat;
             $mterlambat = $menitterlambat <= 9 ? '0' . $menitterlambat : $menitterlambat;
+            $dterlambat = $detikterlambat <= 9 ? '0' . $detikterlambat : $detikterlambat;
 
-            $keterangan_terlambat =  $jterlambat . ':' . $mterlambat;
+            $keterangan_terlambat =  $jterlambat . ':' . $mterlambat . ':' . $dterlambat;
             $desimal_terlambat = $jamterlambat +   ROUND(($menitterlambat / 60), 2);
 
 
@@ -29,11 +31,20 @@ function presensiHitungJamTerlambat($jam_in, $jam_mulai)
                 $desimal_terlambat = $desimal_terlambat;
             }
 
+            $teks_durasi = [];
+            if ($jamterlambat > 0) $teks_durasi[] = $jamterlambat . ' Jam';
+            if ($menitterlambat > 0) $teks_durasi[] = $menitterlambat . ' Menit';
+            if ($detikterlambat > 0) $teks_durasi[] = $detikterlambat . ' Detik';
+            $string_durasi = implode(' ', $teks_durasi);
+            if (empty($string_durasi)) $string_durasi = '0 Detik';
+
             return [
                 'status' => true,
-                'keterangan' => 'Telat :' . $keterangan_terlambat . ' (' . $desimal_terlambat . ')',
+                'keterangan' => 'Telat :' . $keterangan_terlambat . ' (' . $string_durasi . ')',
                 'jamterlambat' => $jamterlambat,
                 'menitterlambat' => $menitterlambat,
+                'detikterlambat' => $detikterlambat,
+                'diffterlambat' => $diffterlambat,
                 'desimal' => $desimal_terlambat,
                 'color' => 'red'
             ];
@@ -43,6 +54,8 @@ function presensiHitungJamTerlambat($jam_in, $jam_mulai)
                 'keterangan' => 'Tepat Waktu',
                 'jamterlambat' => 0,
                 'menitterlambat' => 0,
+                'detikterlambat' => 0,
+                'diffterlambat' => 0,
                 'desimal' => 0,
                 'color' => 'green',
             ];
@@ -53,6 +66,8 @@ function presensiHitungJamTerlambat($jam_in, $jam_mulai)
             'keterangan' => '',
             'jamterlambat' => 0,
             'menitterlambat' => 0,
+            'detikterlambat' => 0,
+            'diffterlambat' => 0,
             'desimal' => 0,
             'color' => '',
         ];
@@ -183,12 +198,12 @@ function presensiHitungJamKeluarKantor($jam_keluar, $j_kembali, $jam_selesai, $j
     }
 }
 
-function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept, $kode_jabatan)
+function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept, $kode_jabatan, $tanggal_presensi = null, $diffterlambat = 0)
 {
 
     //
     //Jika Terlambat
-    if (!empty($jamterlambat) || !empty($menitterlambat)) {
+    if (!empty($jamterlambat) || !empty($menitterlambat) || !empty($diffterlambat)) {
 
         //Jika Terlambat Kurang Dari 1 Jam
         if ($jamterlambat < 1 || $jamterlambat == 1 && $menitterlambat == 0) {
@@ -229,8 +244,27 @@ function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlamba
                 $keterangan = "Sudah Izin";
                 $cek = 2;
             } else {
+                if (!empty($tanggal_presensi) && $tanggal_presensi >= '2026-05-01') {
+                    if ($diffterlambat > 0 && $diffterlambat <= 300) {
+                        $denda = 5000;
+                        $keterangan = "";
+                        $cek = 3;
+                    } elseif ($diffterlambat > 300 && $diffterlambat <= 600) {
+                        $denda = 10000;
+                        $keterangan = "";
+                        $cek = 4;
+                    } elseif ($diffterlambat > 600 && $diffterlambat <= 3599) {
+                        $denda = 15000;
+                        $keterangan = "";
+                        $cek = 5;
+                    } else {
+                        $denda = 0;
+                        $keterangan = "";
+                        $cek = 6;
+                    }
+                } else {
 
-                if ($kode_jabatan == 'J19') {
+                    if ($kode_jabatan == 'J19') {
                     if ($menitterlambat >= 10 and $menitterlambat < 15) {
                         $denda = 5000;
                         $keterangan = "";
@@ -266,6 +300,7 @@ function presensiHitungDenda($jamterlambat, $menitterlambat, $kode_izin_terlamba
                         $keterangan = "";
                         $cek = 6;
                     }
+                }
                 }
             }
         } else {

@@ -160,15 +160,15 @@
                                             $lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi;
                                         $total_jam_jadwal = $d[$tanggal_presensi]['total_jam'];
                                         //Jadwal Jam Kerja
-                                        $j_mulai = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
-                                        $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
+                                        $j_mulai = date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
+                                        $j_selesai = date('Y-m-d H:i:s', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
 
                                         //Jam Absen Masuk dan Pulang
                                         $jam_in = !empty($d[$tanggal_presensi]['jam_in'])
-                                            ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_in']))
+                                            ? date('Y-m-d H:i:s', strtotime($d[$tanggal_presensi]['jam_in']))
                                             : 'Belum Absen';
                                         $jam_out = !empty($d[$tanggal_presensi]['jam_out'])
-                                            ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_out']))
+                                            ? date('Y-m-d H:i:s', strtotime($d[$tanggal_presensi]['jam_out']))
                                             : 'Belum Absen';
                                         //Jadwal SPG
                                         //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal atau Hari Minggu Absen
@@ -256,6 +256,8 @@
                                                     $d[$tanggal_presensi]['kode_izin_terlambat'],
                                                     $d['kode_dept'],
                                                     $d['kode_jabatan'],
+                                                    $tanggal_presensi,
+                                                    $terlambat['diffterlambat']
                                                 );
 
                                                 //Cek Pulang Cepat
@@ -350,9 +352,9 @@
                                             <!-- Jam Masuk dan Pulang -->
                                             <p style="margin:0">
                                                 <span
-                                                    style="color: {{ !empty($textcolor) ? $textcolor : $color_in }}">{{ !empty($d[$tanggal_presensi]['jam_in']) ? date('H:i', strtotime($jam_in)) : $jam_in }}</span>
+                                                    style="color: {{ !empty($textcolor) ? $textcolor : $color_in }}">{{ !empty($d[$tanggal_presensi]['jam_in']) ? date('H:i:s', strtotime($jam_in)) : $jam_in }}</span>
                                                 - <span
-                                                    style="color: {{ !empty($textcolor) ? $textcolor : $color_out }}">{{ !empty($d[$tanggal_presensi]['jam_out']) ? date('H:i', strtotime($jam_out)) : $jam_out }}</span>
+                                                    style="color: {{ !empty($textcolor) ? $textcolor : $color_out }}">{{ !empty($d[$tanggal_presensi]['jam_out']) ? date('H:i:s', strtotime($jam_out)) : $jam_out }}</span>
                                             </p>
                                             <!-- Terlambat -->
                                             <p style="margin:0">

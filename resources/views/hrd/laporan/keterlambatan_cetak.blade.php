@@ -55,8 +55,8 @@
             <tbody>
                 @foreach ($keterlambatan as $d)
                     @php
-                        $jam_in = !empty($d->jam_in) ? date('Y-m-d H:i', strtotime($d->jam_in)) : 'Belum Absen';
-                        $jam_masuk = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_masuk));
+                        $jam_in = !empty($d->jam_in) ? date('Y-m-d H:i:s', strtotime($d->jam_in)) : 'Belum Absen';
+                        $jam_masuk = date('Y-m-d H:i:s', strtotime($d->tanggal . ' ' . $d->jam_masuk));
                         $terlambat = presensiHitungJamTerlambat($jam_in, $jam_masuk);
                         if ($terlambat['status']) {
                             $jterlambat =
@@ -67,7 +67,11 @@
                                 $terlambat['menitterlambat'] <= 9
                                     ? '0' . $terlambat['menitterlambat']
                                     : $terlambat['menitterlambat'];
-                            $format_terlambat = $jterlambat . ':' . $mterlambat;
+                            $dterlambat =
+                                $terlambat['detikterlambat'] <= 9
+                                    ? '0' . $terlambat['detikterlambat']
+                                    : $terlambat['detikterlambat'];
+                            $format_terlambat = $jterlambat . ':' . $mterlambat . ':' . $dterlambat;
 
                             // Hitung Denda
                             $denda = presensiHitungDenda(
@@ -76,6 +80,8 @@
                                 $d->kode_izin_terlambat,
                                 $d->kode_dept,
                                 $d->kode_jabatan,
+                                $d->tanggal,
+                                $terlambat['diffterlambat']
                             );
                         } else {
                             $format_terlambat = '-';

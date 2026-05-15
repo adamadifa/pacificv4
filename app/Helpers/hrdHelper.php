@@ -534,11 +534,20 @@ function hitungjamterlambat($jam_in, $jam_mulai, $kode_izin_terlambat)
 
             $jamterlambat = floor($diffterlambat / (60 * 60));
             $menitterlambat = floor(($diffterlambat - $jamterlambat * (60 * 60)) / 60);
+            $detikterlambat = $diffterlambat % 60;
 
             $jterlambat = $jamterlambat <= 9 ? '0' . $jamterlambat : $jamterlambat;
             $mterlambat = $menitterlambat <= 9 ? '0' . $menitterlambat : $menitterlambat;
+            $dterlambat = $detikterlambat <= 9 ? '0' . $detikterlambat : $detikterlambat;
 
-            $keterangan_terlambat =  $jterlambat . ':' . $mterlambat;
+            $teks_durasi = [];
+            if ($jamterlambat > 0) $teks_durasi[] = $jamterlambat . ' Jam';
+            if ($menitterlambat > 0) $teks_durasi[] = $menitterlambat . ' Menit';
+            if ($detikterlambat > 0) $teks_durasi[] = $detikterlambat . ' Detik';
+            $string_durasi = implode(' ', $teks_durasi);
+            if (empty($string_durasi)) $string_durasi = '0 Detik';
+
+            $keterangan_terlambat =  $jterlambat . ':' . $mterlambat . ':' . $dterlambat . ' (' . $string_durasi . ')';
             $desimal_terlambat = $jamterlambat +   ROUND(($menitterlambat / 60), 2);
 
 
@@ -574,6 +583,7 @@ function hitungjamterlambat($jam_in, $jam_mulai, $kode_izin_terlambat)
                 'keterangan_terlambat' => $keterangan_terlambat,
                 'jamterlambat' => $jamterlambat,
                 'menitterlambat' => $menitterlambat,
+                'diffterlambat' => $diffterlambat,
                 'desimal_terlambat' => $desimal_terlambat,
                 'color_terlambat' => $color_terlambat
             ];

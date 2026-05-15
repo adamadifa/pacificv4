@@ -64,15 +64,15 @@
                     $cektanggallimajam = ceklibur($datatanggallimajam, $search);
 
                     $tanggal_selesai = $d->lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal))) : $d->tanggal;
-                    $jam_in = !empty($d->jam_in) ? date('H:i', strtotime($d->jam_in)) : null;
-                    $jam_out = !empty($d->jam_out) ? date('H:i', strtotime($d->jam_out)) : null;
+                    $jam_in = !empty($d->jam_in) ? date('H:i:s', strtotime($d->jam_in)) : null;
+                    $jam_out = !empty($d->jam_out) ? date('H:i:s', strtotime($d->jam_out)) : null;
 
-                    $j_mulai = date('Y-m-d H:i', strtotime($d->tanggal . ' ' . $d->jam_mulai));
-                    $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
+                    $j_mulai = date('Y-m-d H:i:s', strtotime($d->tanggal . ' ' . $d->jam_mulai));
+                    $j_selesai = date('Y-m-d H:i:s', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
 
                     $is_spg_spm = in_array($d->kode_jabatan, ['J22', 'J23']) || (in_array($d->kode_jabatan, ['J31', 'J32']) && $tanggal >= '2026-02-21');
-                    $jam_mulai_jadwal = $is_spg_spm ? (!empty($d->jam_in) ? date('H:i', strtotime($d->jam_in)) : date('H:i', strtotime($j_mulai))) : date('H:i', strtotime($j_mulai));
-                    $jam_selesai_jadwal = $is_spg_spm ? (!empty($d->jam_out) ? date('H:i', strtotime($d->jam_out)) : date('H:i', strtotime($j_selesai))) : date('H:i', strtotime($j_selesai));
+                    $jam_mulai_jadwal = $is_spg_spm ? (!empty($d->jam_in) ? date('H:i:s', strtotime($d->jam_in)) : date('H:i:s', strtotime($j_mulai))) : date('H:i:s', strtotime($j_mulai));
+                    $jam_selesai_jadwal = $is_spg_spm ? (!empty($d->jam_out) ? date('H:i:s', strtotime($d->jam_out)) : date('H:i:s', strtotime($j_selesai))) : date('H:i:s', strtotime($j_selesai));
 
                     $terlambat = hitungjamterlambat($d->jam_in, $d->tanggal . ' ' . $d->jam_mulai, $d->kode_izin_terlambat);
 
@@ -172,7 +172,21 @@
                                         <div class="mb-2">
                                             <small class="text-muted d-block mb-1 small-caps">Keterlambatan</small>
                                             @if (!empty($terlambat))
-                                                <span class="text-danger fw-bold"><i class="ti ti-alert-triangle me-1"></i>{{ $terlambat['keterangan_terlambat'] }}</span>
+                                                <span class="text-danger fw-bold d-block"><i class="ti ti-alert-triangle me-1"></i>{{ $terlambat['keterangan_terlambat'] }}</span>
+                                                @php
+                                                    $denda = presensiHitungDenda(
+                                                        $terlambat['jamterlambat'],
+                                                        $terlambat['menitterlambat'],
+                                                        $d->kode_izin_terlambat,
+                                                        $d->kode_dept,
+                                                        $d->kode_jabatan,
+                                                        $d->tanggal,
+                                                        $terlambat['diffterlambat']
+                                                    );
+                                                @endphp
+                                                @if (!empty($denda['denda']))
+                                                    <span class="text-danger fw-bold"><i class="ti ti-receipt me-1"></i>Rp {{ formatAngka($denda['denda']) }}</span>
+                                                @endif
                                             @else
                                                 <span class="text-success fw-bold"><i class="ti ti-circle-check me-1"></i>Tepat Waktu</span>
                                             @endif
