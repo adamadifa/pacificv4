@@ -483,7 +483,7 @@ class SlipgajiController extends Controller
             $premi_shift2_rate = ($tanggal_presensi >= '2026-02-25') ? 7500 : 5000;
             $premi_shift3_rate = ($tanggal_presensi >= '2026-02-25') ? 10000 : 6000;
 
-            if ($tanggal_presensi < '2026-03-21') {
+            if ($tanggal_presensi < '2026-03-21' || $tanggal_presensi >= '2026-04-21') {
                 $jml_premi_s2 = $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
                 $jml_premi_s3 = $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                 $upah_premi_shift2_total += $jml_premi_s2 * $premi_shift2_rate;

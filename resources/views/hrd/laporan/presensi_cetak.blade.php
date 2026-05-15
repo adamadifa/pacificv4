@@ -148,7 +148,7 @@
                                     }
                                     $total_overtime_libur += $overtime_libur;
 
-                                    if ($tanggal_presensi < '2026-03-21') {
+                                    if ($tanggal_presensi < '2026-03-21' || $tanggal_presensi >= '2026-04-21') {
                                         $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
                                         $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                                     }

@@ -541,7 +541,7 @@
                             $jml_premi_shift3_lembur =
                                 $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
 
-                            if ($tanggal_presensi < '2026-03-21') {
+                            if ($tanggal_presensi < '2026-03-21' || $tanggal_presensi >= '2026-04-21') {
                                 $total_premi_shift2_lembur += $jml_premi_shift2_lembur;
                                 $total_premi_shift3_lembur += $jml_premi_shift3_lembur;
 
