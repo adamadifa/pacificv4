@@ -261,7 +261,7 @@
                             : 0;
 
                     //Denda
-                    $jumlah_denda = $denda['denda'];
+                    $jumlah_denda = $denda['denda'] + ($tanggal_presensi >= '2026-05-01' && !empty($d[$tanggal_presensi]['status_denda']) ? 5000 : 0);
 
                     //Premi
                     if (

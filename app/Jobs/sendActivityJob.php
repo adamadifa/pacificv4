@@ -57,7 +57,7 @@ class sendActivityJob implements ShouldQueue
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://wa.portax.site/send-media',
+            CURLOPT_URL => 'https://wa.gaweid.my.id/send-media',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,

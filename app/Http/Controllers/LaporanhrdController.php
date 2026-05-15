@@ -936,13 +936,13 @@ class LaporanhrdController extends Controller
         $q_presensi->select(
             'hrd_presensi.nik',
             'hrd_presensi.tanggal',
-            'jam_in',
-            'jam_out',
+            'hrd_presensi.jam_in',
+            'hrd_presensi.jam_out',
             'hrd_presensi.status',
             'hrd_presensi.kode_jadwal',
             'nama_jadwal',
             'hrd_presensi.kode_jam_kerja',
-            'jam_masuk as jam_mulai',
+            'hrd_jamkerja.jam_masuk as jam_mulai',
             'hrd_jamkerja.jam_pulang as jam_selesai',
             'lintashari',
             'total_jam',
@@ -972,7 +972,8 @@ class LaporanhrdController extends Controller
             'hrd_jeniscuti.nama_cuti',
 
             'hrd_presensi_izinabsen.kode_izin as kode_izin_absen',
-            'hrd_izinabsen.direktur as izin_absen_direktur'
+            'hrd_izinabsen.direktur as izin_absen_direktur',
+            'hrd_alasan_koreksi.status_denda'
         );
 
         if (!empty($niks)) {
@@ -1003,6 +1004,10 @@ class LaporanhrdController extends Controller
 
         $q_presensi->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
         $q_presensi->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
+
+        $q_presensi->leftJoin('hrd_presensi_izinkoreksi', 'hrd_presensi.id', '=', 'hrd_presensi_izinkoreksi.id_presensi');
+        $q_presensi->leftJoin('hrd_izinkoreksi', 'hrd_presensi_izinkoreksi.kode_izin_koreksi', '=', 'hrd_izinkoreksi.kode_izin_koreksi');
+        $q_presensi->leftJoin('hrd_alasan_koreksi', 'hrd_izinkoreksi.id_alasan', '=', 'hrd_alasan_koreksi.id');
 
         $q_presensi->orderBy('hrd_presensi.tanggal', 'asc');
         
@@ -1093,6 +1098,7 @@ class LaporanhrdController extends Controller
 
                     'kode_izin' => $row->kode_izin_absen,
                     'izin_absen_direktur' => $row->izin_absen_direktur,
+                    'status_denda' => $row->status_denda,
                 ];
             }
             $data['presensi'][$karyawan->nik] = $karyawan_data;

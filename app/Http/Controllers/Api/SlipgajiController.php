@@ -190,13 +190,13 @@ class SlipgajiController extends Controller
             'hrd_karyawan.tanggal_masuk',
             'hrd_karyawan.jenis_kelamin',
             'hrd_karyawan.status_karyawan',
-            'jam_in',
-            'jam_out',
+            'hrd_presensi.jam_in',
+            'hrd_presensi.jam_out',
             'hrd_presensi.status',
             'hrd_presensi.kode_jadwal',
             'nama_jadwal',
             'hrd_presensi.kode_jam_kerja',
-            'jam_masuk as jam_mulai',
+            'hrd_jamkerja.jam_masuk as jam_mulai',
             'hrd_jamkerja.jam_pulang as jam_selesai',
             'lintashari',
             'total_jam',
@@ -232,6 +232,7 @@ class SlipgajiController extends Controller
             //Izin Absen
             'hrd_presensi_izinabsen.kode_izin',
             'hrd_izinabsen.direktur as izin_absen_direktur',
+            'hrd_alasan_koreksi.status_denda',
 
 
             //Gaji
@@ -297,6 +298,10 @@ class SlipgajiController extends Controller
 
         $query->leftJoin('hrd_presensi_izinabsen', 'hrd_presensi.id', '=', 'hrd_presensi_izinabsen.id_presensi');
         $query->leftJoin('hrd_izinabsen', 'hrd_presensi_izinabsen.kode_izin', '=', 'hrd_izinabsen.kode_izin');
+
+        $query->leftJoin('hrd_presensi_izinkoreksi', 'hrd_presensi.id', '=', 'hrd_presensi_izinkoreksi.id_presensi');
+        $query->leftJoin('hrd_izinkoreksi', 'hrd_presensi_izinkoreksi.kode_izin_koreksi', '=', 'hrd_izinkoreksi.kode_izin_koreksi');
+        $query->leftJoin('hrd_alasan_koreksi', 'hrd_izinkoreksi.id_alasan', '=', 'hrd_alasan_koreksi.id');
 
         $query->where('hrd_karyawan.nik', $nik);
         $presensi = $query->get();
@@ -380,8 +385,9 @@ class SlipgajiController extends Controller
                     'izin_cuti_direktur' => $row->izin_cuti_direktur,
                     'nama_cuti' => $row->nama_cuti,
 
-                    'kode_izin' => $row->kode_izin_absen,
+                    'kode_izin' => $row->kode_izin,
                     'izin_absen_direktur' => $row->izin_absen_direktur,
+                    'status_denda' => $row->status_denda,
                 ];
             }
             return $data;
@@ -486,7 +492,7 @@ class SlipgajiController extends Controller
 
                     $terlambat = presensiHitungJamTerlambat($row['jam_in'], $jam_mulai);
                     $denda = presensiHitungDenda($terlambat['jamterlambat'], $terlambat['menitterlambat'], $row['kode_izin_terlambat'], $d['kode_dept'], $d['kode_jabatan']);
-                    $denda_hari = $denda['denda'];
+                    $denda_hari = $denda['denda'] + ($tanggal_presensi >= '2026-05-01' && !empty($row['status_denda']) ? 5000 : 0);
 
                     $jam_awal_ist = null; $jam_akhir_ist = null;
                     if ($istirahat == '1') {

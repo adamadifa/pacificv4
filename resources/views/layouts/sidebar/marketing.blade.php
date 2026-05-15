@@ -38,6 +38,7 @@
             'ajuanlimit.index',
             'sapiutangsales.index',
             'movefaktur.index',
+            'trackingtruck.index',
             ...$laporanpermissions,
         ]))
     <li
@@ -62,6 +63,8 @@
             'sapiutangsales/*',
             'movefaktur',
             'movefaktur/*',
+            'trackingtruck',
+            'trackingtruck/*',
         ])
             ? 'open'
             : '' }}">
@@ -179,6 +182,13 @@
                     </a>
                 </li>
             @endif
+            @can('trackingtruck.index')
+                <li class="menu-item {{ request()->is(['trackingtruck', 'trackingtruck/*']) ? 'active' : '' }}">
+                    <a href="{{ route('trackingtruck.index') }}" class="menu-link">
+                        <div>Tracking Truck</div>
+                    </a>
+                </li>
+            @endcan
             @if (auth()->user()->hasAnyPermission($laporanpermissions))
                 <li class="menu-item {{ request()->is(['laporanmarketing']) ? 'active' : '' }}">
                     <a href="{{ route('laporanmarketing.index') }}" class="menu-link">

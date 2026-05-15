@@ -578,8 +578,6 @@ class GlobalProvider extends ServiceProvider
                 'laporangudangjadi/*',
                 'kontrabonangkutan',
                 'kontrabonangkutan/*',
-                'trackingtruck',
-                'trackingtruck/*'
             ];
 
             $gudang_jadi_permission = [
@@ -598,7 +596,6 @@ class GlobalProvider extends ServiceProvider
                 'gj.realisasioman',
                 'gj.angkutan',
                 'suratjalanangkutan.index',
-                'trackingtruck.index'
             ];
 
             $gudang_jadi_mutasi_request = [
