@@ -32,10 +32,15 @@ class AttendanceController extends Controller
                 'hrd_jamkerja.jam_akhir_istirahat',
                 'hrd_jamkerja.lintashari',
                 'hrd_presensi_izinterlambat.kode_izin_terlambat',
-                'hrd_jeniscuti.nama_cuti'
+                'hrd_jeniscuti.nama_cuti',
+                'hrd_alasan_koreksi.status_denda',
+                'hrd_alasan_koreksi.alasan'
             )
             ->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
             ->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi')
+            ->leftJoin('hrd_presensi_izinkoreksi', 'hrd_presensi.id', '=', 'hrd_presensi_izinkoreksi.id_presensi')
+            ->leftJoin('hrd_izinkoreksi', 'hrd_presensi_izinkoreksi.kode_izin_koreksi', '=', 'hrd_izinkoreksi.kode_izin_koreksi')
+            ->leftJoin('hrd_alasan_koreksi', 'hrd_izinkoreksi.id_alasan', '=', 'hrd_alasan_koreksi.id')
             ->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi')
             ->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti')
             ->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti')
@@ -57,21 +62,21 @@ class AttendanceController extends Controller
             $tanggal_selesai = $lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi;
 
             // Jam Jadwal
-            $j_mulai = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d->jam_mulai));
-            $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
+            $j_mulai = date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $d->jam_mulai));
+            $j_selesai = date('Y-m-d H:i:s', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
 
             // Jam Absen
-            $jam_in = !empty($d->jam_in) ? date('Y-m-d H:i', strtotime($d->jam_in)) : null;
-            $jam_out = !empty($d->jam_out) ? date('Y-m-d H:i', strtotime($d->jam_out)) : null;
+            $jam_in = !empty($d->jam_in) ? date('Y-m-d H:i:s', strtotime($d->jam_in)) : null;
+            $jam_out = !empty($d->jam_out) ? date('Y-m-d H:i:s', strtotime($d->jam_out)) : null;
 
             // Istirahat
             if ($d->istirahat == '1') {
                 if ($lintashari == '0') {
-                    $jam_awal_istirahat = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d->jam_awal_istirahat));
-                    $jam_akhir_istirahat = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d->jam_akhir_istirahat));
+                    $jam_awal_istirahat = date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $d->jam_awal_istirahat));
+                    $jam_akhir_istirahat = date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $d->jam_akhir_istirahat));
                 } else {
-                    $jam_awal_istirahat = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_awal_istirahat));
-                    $jam_akhir_istirahat = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_akhir_istirahat));
+                    $jam_awal_istirahat = date('Y-m-d H:i:s', strtotime($tanggal_selesai . ' ' . $d->jam_awal_istirahat));
+                    $jam_akhir_istirahat = date('Y-m-d H:i:s', strtotime($tanggal_selesai . ' ' . $d->jam_akhir_istirahat));
                 }
             } else {
                 $jam_awal_istirahat = null;
@@ -87,8 +92,12 @@ class AttendanceController extends Controller
                 $terlambat['menitterlambat'],
                 $d->kode_izin_terlambat,
                 $user->kode_dept,
-                $user->kode_jabatan
+                $user->kode_jabatan,
+                $tanggal_presensi,
+                $terlambat['diffterlambat']
             );
+
+            $denda_akhir = $denda['denda'] + ($tanggal_presensi >= '2026-05-01' && !empty($d->status_denda) ? 5000 : 0);
 
             // Hitung Pulang Cepat
             $pulangcepat = presensiHitungPulangCepat(
@@ -123,8 +132,11 @@ class AttendanceController extends Controller
                 'jam_out' => $d->jam_out ? date('H:i', strtotime($d->jam_out)) : null,
                 'status' => $d->status,
                 'terlambat_min' => ($terlambat['jamterlambat'] * 60) + $terlambat['menitterlambat'],
+                'terlambat_keterangan' => $terlambat['keterangan'] ?? null,
+                'diffterlambat' => $terlambat['diffterlambat'] ?? 0,
                 'pulang_cepat_min' => $pulangcepat['status'] ? round($pulangcepat['desimal'] * 60) : 0,
-                'denda' => $denda['denda'],
+                'denda' => $denda_akhir,
+                'alasan' => $d->alasan,
                 'keterangan' => $display_keterangan
             ];
         });

@@ -233,6 +233,7 @@ class SlipgajiController extends Controller
             'hrd_presensi_izinabsen.kode_izin',
             'hrd_izinabsen.direktur as izin_absen_direktur',
             'hrd_alasan_koreksi.status_denda',
+            'hrd_alasan_koreksi.alasan',
 
 
             //Gaji
@@ -389,9 +390,11 @@ class SlipgajiController extends Controller
                         'kode_izin' => $row->kode_izin,
                         'izin_absen_direktur' => $row->izin_absen_direktur,
                         'status_denda' => $row->status_denda,
+                        'alasan' => $row->alasan,
                     ];
                 } else {
                     if (!empty($row->status_denda)) $data[$row->tanggal]['status_denda'] = $row->status_denda;
+                    if (!empty($row->alasan)) $data[$row->tanggal]['alasan'] = $row->alasan;
                     if (!empty($row->kode_izin_keluar)) $data[$row->tanggal]['kode_izin_keluar'] = $row->kode_izin_keluar;
                     if (!empty($row->kode_izin_terlambat)) $data[$row->tanggal]['kode_izin_terlambat'] = $row->kode_izin_terlambat;
                     if (!empty($row->kode_izin_sakit)) $data[$row->tanggal]['kode_izin_sakit'] = $row->kode_izin_sakit;
@@ -447,6 +450,7 @@ class SlipgajiController extends Controller
         $total_premi_shift3_lembur = 0;
         $upah_premi_shift2_total = 0;
         $upah_premi_shift3_total = 0;
+        $denda_details = [];
         
         $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
 
@@ -497,12 +501,22 @@ class SlipgajiController extends Controller
                 $row = $d[$tanggal_presensi];
                 if ($row['status'] == 'h') {
                     $istirahat = $row['istirahat'];
-                    $jam_mulai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_in'] : date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $row['jam_mulai']));
-                    $jam_selesai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_out'] : date(($row['lintashari'] == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi) . ' ' . $row['jam_selesai']);
+                    $jam_mulai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_in'] : date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $row['jam_mulai']));
+                    $jam_selesai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_out'] : date(($row['lintashari'] == '1' ? date('Y-m-d H:i:s', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi) . ' ' . $row['jam_selesai']);
 
                     $terlambat = presensiHitungJamTerlambat($row['jam_in'], $jam_mulai);
-                    $denda = presensiHitungDenda($terlambat['jamterlambat'], $terlambat['menitterlambat'], $row['kode_izin_terlambat'], $d['kode_dept'], $d['kode_jabatan']);
+                    $denda = presensiHitungDenda($terlambat['jamterlambat'] ?? 0, $terlambat['menitterlambat'] ?? 0, $row['kode_izin_terlambat'], $d['kode_dept'], $d['kode_jabatan'], $tanggal_presensi, $terlambat['diffterlambat'] ?? 0);
                     $denda_hari = $denda['denda'] + ($tanggal_presensi >= '2026-05-01' && !empty($row['status_denda']) ? 5000 : 0);
+                    if ($denda_hari > 0) {
+                        $denda_details[] = [
+                            'tanggal' => $tanggal_presensi,
+                            'jam_in' => $row['jam_in'],
+                            'jam_mulai' => $jam_mulai,
+                            'terlambat' => $terlambat['keterangan'] ?? '',
+                            'denda' => $denda_hari,
+                            'alasan' => $row['alasan'] ?? ''
+                        ];
+                    }
 
                     $jam_awal_ist = null; $jam_akhir_ist = null;
                     if ($istirahat == '1') {
@@ -662,7 +676,8 @@ class SlipgajiController extends Controller
                 'piutang' => $d['cicilan_piutang'],
                 'spip' => $spip,
                 'pengurang' => $d['jml_pengurang'],
-                'total' => $jml_potongan_upah
+                'total' => $jml_potongan_upah,
+                'details' => $denda_details
             ],
             'penambah' => $d['jml_penambah'],
             'bruto' => $bruto,
