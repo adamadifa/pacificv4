@@ -18,6 +18,18 @@
                     <p class="text-[9px] text-slate-300 font-medium mt-1">{{ date('H:i', strtotime($d->created_at ?? now())) }} WIB</p>
                 </div>
             </div>
+            @if (auth()->user()->hasRole(['super admin', 'manager keuangan']) && ($d->kode_kategori == 'MK007' || stripos($d->nama_kategori, 'tunai setoran') !== false))
+                <div class="flex justify-end mt-3 pt-3 border-t border-slate-100">
+                    <form method="POST" class="deleteform-mutasi" action="{{ route('mutasikeuangan.delete', Crypt::encrypt($d->id)) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="delete-confirm-mutasi flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 rounded-xl text-rose-600 transition-colors duration-150 border-0">
+                            <i class="ti ti-trash text-sm"></i>
+                            <span class="text-[10px] font-bold">Hapus Transaksi</span>
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
     @empty
         <div class="text-center py-10">
@@ -35,3 +47,29 @@
     </div>
     @endif
 </div>
+
+@if (auth()->user()->hasRole(['super admin', 'manager keuangan']))
+<script>
+    $(function() {
+        $('.delete-confirm-mutasi').click(function(event) {
+            var form = $(this).closest("form");
+            event.preventDefault();
+            Swal.fire({
+                title: `Apakah Anda Yakin Ingin Menghapus Data Ini ?`,
+                text: "Jika dihapus maka data akan hilang permanent.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#2563EB",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Hapus Saja!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+@endif
+
