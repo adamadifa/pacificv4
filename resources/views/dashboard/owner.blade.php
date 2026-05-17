@@ -45,7 +45,7 @@
         <div class="row">
             {{-- Saldo Awal --}}
             <div class="col-xl-3 col-md-6 col-12 mb-4">
-                <div class="card cursor-pointer btn-detail-saldoawal">
+                <div class="card cursor-pointer btn-detail-saldoawal-all">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div class="card-info">
@@ -239,6 +239,26 @@
                 url: "{{ route('dashboard.getdetailsaldoawal') }}",
                 type: "GET",
                 data: { tanggal: tanggal },
+                success: function(response) {
+                    $("#modalBody").html(response);
+                }
+            });
+        });
+
+        // Detail Saldo Awal All (Combined)
+        $(".btn-detail-saldoawal-all").click(function() {
+            let tanggal = $("#tanggal").val();
+            $("#modalTitle").text("Detail Saldo Awal (Gabungan) (" + tanggal + ")");
+            $("#modalBody").html('<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>');
+            $("#modalDetail").modal("show");
+
+            $.ajax({
+                url: "{{ route('dashboard.getdetailsaldoawal') }}",
+                type: "GET",
+                data: { 
+                    tanggal: tanggal,
+                    all: 1
+                },
                 success: function(response) {
                     $("#modalBody").html(response);
                 }

@@ -82,13 +82,47 @@ class DashboardController extends Controller
     public function getdetailsaldoawal(Request $request)
     {
         $tanggal = $request->tanggal;
-        $details = DB::table('keuangan_rekening_saldoawal_detail')
+        $all = $request->all; // 1 for combined (Bank + Kas Besar)
+
+        $query = DB::table('keuangan_rekening_saldoawal_detail')
             ->join('keuangan_rekening_saldoawal', 'keuangan_rekening_saldoawal_detail.kode_saldo_awal', '=', 'keuangan_rekening_saldoawal.kode_saldo_awal')
             ->join('bank', 'keuangan_rekening_saldoawal_detail.kode_bank', '=', 'bank.kode_bank')
-            ->where('keuangan_rekening_saldoawal.tanggal', $tanggal)
-            ->where('keuangan_rekening_saldoawal_detail.kode_bank', '!=', 'BK070')
-            ->select('bank.nama_bank', 'bank.no_rekening', 'keuangan_rekening_saldoawal_detail.jumlah')
+            ->where('keuangan_rekening_saldoawal.tanggal', $tanggal);
+
+        if (!$all) {
+            $query->where('keuangan_rekening_saldoawal_detail.kode_bank', '!=', 'BK070');
+        }
+
+        $details = $query->select('bank.nama_bank', 'bank.no_rekening', 'keuangan_rekening_saldoawal_detail.jumlah')
             ->get();
+
+        if ($all) {
+            // Remove any BK070 rows that might have been loaded to prevent double counting
+            $details = $details->filter(function($item) {
+                return !str_contains(strtolower($item->nama_bank), 'kas besar') && $item->nama_bank !== 'KAS BESAR';
+            });
+
+            // Calculate exact Kas Besar Saldo Awal (Saldo Awal KB - Tunai Setoran KB)
+            $saldo_awal_kb = DB::table('keuangan_saldokasbesar')
+                ->where('tanggal', $tanggal)
+                ->sum('jumlah');
+
+            $tunai_setoran_kb = DB::table('keuangan_mutasi')
+                ->where('tanggal', $tanggal)
+                ->where('kode_bank', 'BK070')
+                ->where('kode_kategori', 'MK007')
+                ->where('debet_kredit', 'K')
+                ->sum('jumlah');
+
+            $net_saldo_awal_kb = $saldo_awal_kb - $tunai_setoran_kb;
+
+            // Push Kas Besar row
+            $details->push((object)[
+                'nama_bank' => 'KAS BESAR',
+                'no_rekening' => '-',
+                'jumlah' => $net_saldo_awal_kb
+            ]);
+        }
 
         $agent = new Agent();
         if ($agent->isMobile()) {
