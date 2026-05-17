@@ -101,16 +101,29 @@ class DashboardController extends Controller
     {
         $tanggal = $request->tanggal;
         $jenis = $request->jenis; // K for Penerimaan, D for Pengeluaran
-        $details = DB::table('keuangan_mutasi')
-            ->join('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank')
+        $all = $request->all; // 1 for combined (Bank + Kas Besar)
+
+        $query = DB::table('keuangan_mutasi')
+            ->leftJoin('bank', 'keuangan_mutasi.kode_bank', '=', 'bank.kode_bank')
             ->leftJoin('keuangan_mutasi_kategori', 'keuangan_mutasi.kode_kategori', '=', 'keuangan_mutasi_kategori.kode_kategori')
             ->where('keuangan_mutasi.tanggal', $tanggal)
-            ->where('keuangan_mutasi.debet_kredit', $jenis)
-            ->where('keuangan_mutasi.kode_bank', '!=', 'BK070')
-            ->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
+            ->where('keuangan_mutasi.debet_kredit', $jenis);
+
+        if (!$all) {
+            $query->where('keuangan_mutasi.kode_bank', '!=', 'BK070');
+        }
+
+        $details = $query->where('keuangan_mutasi.kode_kategori', '!=', 'MK006')
             ->select('keuangan_mutasi.*', 'bank.nama_bank', 'keuangan_mutasi_kategori.nama_kategori')
             ->orderBy('keuangan_mutasi.id', 'asc')
             ->get();
+
+        $details = $details->map(function ($item) {
+            if ($item->kode_bank == 'BK070') {
+                $item->nama_bank = 'KAS BESAR';
+            }
+            return $item;
+        });
 
         $agent = new Agent();
         if ($agent->isMobile()) {

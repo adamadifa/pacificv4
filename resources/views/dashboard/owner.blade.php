@@ -62,7 +62,7 @@
 
             {{-- Penerimaan --}}
             <div class="col-xl-3 col-md-6 col-12 mb-4">
-                <div class="card cursor-pointer btn-detail-mutasi" data-jenis="K">
+                <div class="card cursor-pointer btn-detail-mutasi-all" data-jenis="K">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div class="card-info">
@@ -79,7 +79,7 @@
 
             {{-- Pengeluaran --}}
             <div class="col-xl-3 col-md-6 col-12 mb-4">
-                <div class="card cursor-pointer btn-detail-mutasi" data-jenis="D">
+                <div class="card cursor-pointer btn-detail-mutasi-all" data-jenis="D">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div class="card-info">
@@ -261,6 +261,30 @@
                 data: { 
                     tanggal: tanggal,
                     jenis: jenis
+                },
+                success: function(response) {
+                    $("#modalBody").html(response);
+                }
+            });
+        });
+
+        // Detail Mutasi All (Penerimaan / Pengeluaran Combined)
+        $(".btn-detail-mutasi-all").click(function() {
+            let tanggal = $("#tanggal").val();
+            let jenis = $(this).data("jenis");
+            let title = jenis == "K" ? "Detail Penerimaan (Gabungan)" : "Detail Pengeluaran (Gabungan)";
+            
+            $("#modalTitle").text(title + " (" + tanggal + ")");
+            $("#modalBody").html('<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>');
+            $("#modalDetail").modal("show");
+
+            $.ajax({
+                url: "{{ route('dashboard.getdetailmutasi') }}",
+                type: "GET",
+                data: { 
+                    tanggal: tanggal,
+                    jenis: jenis,
+                    all: 1
                 },
                 success: function(response) {
                     $("#modalBody").html(response);
