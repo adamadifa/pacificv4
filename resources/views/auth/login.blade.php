@@ -285,6 +285,29 @@
     </div>
 </div>
 
+<!-- PWA Install Prompt Banner -->
+<div id="pwa-install-prompt" class="fixed bottom-0 left-0 right-0 z-50 p-4 transform translate-y-full transition-all duration-500 ease-out hidden">
+    <div class="max-w-md mx-auto bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl flex flex-col space-y-4">
+        <div class="flex items-start space-x-3.5">
+            <div class="flex-shrink-0 bg-blue-600/20 p-2.5 rounded-xl border border-blue-500/30 flex items-center justify-center">
+                <img src="{{ asset('logo.png') }}" alt="Portal Logo" class="w-10 h-10 object-contain rounded-lg">
+            </div>
+            <div class="flex-grow">
+                <h3 class="text-white font-bold text-base">Install Portal App</h3>
+                <p class="text-gray-400 text-xs mt-0.5 leading-relaxed">Akses Portal CV. Makmur Permata lebih cepat dan stabil langsung dari layar utama handphone Anda.</p>
+            </div>
+        </div>
+        <div class="flex space-x-3">
+            <button id="pwa-btn-cancel" class="flex-1 py-2.5 border border-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-semibold transition duration-200">
+                Nanti Saja
+            </button>
+            <button id="pwa-btn-install" class="flex-1 btn-primary py-2.5 text-white rounded-xl text-xs font-bold shadow-md hover:brightness-110 transition duration-200">
+                Install
+            </button>
+        </div>
+    </div>
+</div>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const charContainer = document.getElementById("character-container");
@@ -335,6 +358,49 @@
                 (error) => { console.error(`Service worker registration failed: ${error}`); }
             );
         }
+
+        // PWA Install Prompt Logic
+        let deferredPrompt;
+        const pwaPrompt = document.getElementById('pwa-install-prompt');
+        const btnInstall = document.getElementById('pwa-btn-install');
+        const btnCancel = document.getElementById('pwa-btn-cancel');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!sessionStorage.getItem('pwa-prompt-dismissed')) {
+                pwaPrompt.classList.remove('hidden');
+                setTimeout(() => {
+                    pwaPrompt.classList.remove('translate-y-full');
+                }, 100);
+            }
+        });
+
+        btnInstall.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User choice outcome: ${outcome}`);
+            deferredPrompt = null;
+            hidePwaPrompt();
+        });
+
+        btnCancel.addEventListener('click', () => {
+            sessionStorage.setItem('pwa-prompt-dismissed', 'true');
+            hidePwaPrompt();
+        });
+
+        function hidePwaPrompt() {
+            pwaPrompt.classList.add('translate-y-full');
+            setTimeout(() => {
+                pwaPrompt.classList.add('hidden');
+            }, 500);
+        }
+
+        window.addEventListener('appinstalled', (event) => {
+            console.log('PWA installed successfully');
+            hidePwaPrompt();
+        });
     </script>
 </body>
 
