@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | PORTAL CV. Makmur Permata</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Login | PORTAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
@@ -226,7 +227,7 @@
                 <img src="{{ asset('assets/img/logo/logoportal.png') }}" alt="Logo" width="140" class="mx-auto" style="filter: brightness(0) invert(1);">
             </div>
             <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-            <p class="text-gray-400 text-sm">Sign in to your CV. Makmur Permata account</p>
+            <p class="text-gray-400 text-sm">Sign in to your account</p>
         </div>
 
         @if ($errors->any())
@@ -294,7 +295,7 @@
             </div>
             <div class="flex-grow">
                 <h3 class="text-white font-bold text-base">Install Portal App</h3>
-                <p class="text-gray-400 text-xs mt-0.5 leading-relaxed">Akses Portal CV. Makmur Permata lebih cepat dan stabil langsung dari layar utama handphone Anda.</p>
+                <p class="text-gray-400 text-xs mt-0.5 leading-relaxed">Akses Portal lebih cepat dan stabil langsung dari layar utama handphone Anda.</p>
             </div>
         </div>
         <div class="flex space-x-3">
