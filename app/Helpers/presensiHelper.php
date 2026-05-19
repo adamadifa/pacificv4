@@ -349,7 +349,7 @@ function presensiHitunglembur($datalembur)
         if (in_array($nik, $karyawan_12_jam)) {
             $jmljam_lembur = $jmljam_lbr - $istirahatlbr;
         } else {
-            $jmljam_lembur = $jmljam_lbr > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
+            $jmljam_lembur = ($jmljam_lbr - $istirahatlbr) > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
         }
 
 
