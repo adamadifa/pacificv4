@@ -1471,7 +1471,7 @@
 
 
         function hitungdskonSAOSME() {
-            const kode_cabang_diskon_saosme = ['BTN', 'CRB'];
+            const kode_cabang_diskon_saosme = ['BTN', 'CRB','SKB','TSM','BKI','KLT','PWK','BDG'];
             let totalQuantity = calculateTotalQuantityByCategory('D010');
             let diskon = calculateDiscount(totalQuantity, 'D010');
             // Baris berikut memeriksa apakah kode_cabang_pelanggan termasuk dalam daftar kode_cabang_diskon_saosme.

@@ -6126,7 +6126,7 @@ class LaporanmarketingController extends Controller
             FROM marketing_penjualan_historibayar_giro
             INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_giro.no_bukti = marketing_penjualan_historibayar.no_bukti
             INNER JOIN salesman  ON marketing_penjualan_historibayar.kode_salesman = salesman.kode_salesman
-            GROUP BY kode_giro,kode_salesman,marketing_penjualan_historibayar.tanggal
+            GROUP BY kode_giro,kode_salesman,salesman.kode_cabang,marketing_penjualan_historibayar.tanggal
             ) historibayar"),
                 function ($join) {
                     $join->on('marketing_penjualan_giro.kode_giro', '=', 'historibayar.kode_giro');

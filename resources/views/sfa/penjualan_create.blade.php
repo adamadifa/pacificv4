@@ -1208,7 +1208,7 @@
         }
 
         function hitungdiskonSAOSME() {
-            const kode_cabang_diskon_saosme = ['BTN', 'CRB'];
+            const kode_cabang_diskon_saosme = ['BTN', 'CRB','SKB','TSM','BKI','KLT','PWK','BDG'];
             let totalQuantity = calculateTotalQuantityByCategory('D010');
             let diskon = calculateDiscount(totalQuantity, 'D010');
             if (kode_cabang_diskon_saosme.includes(kode_cabang_pelanggan)) {
