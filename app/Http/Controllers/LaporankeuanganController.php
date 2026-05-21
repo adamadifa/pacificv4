@@ -2214,7 +2214,8 @@ class LaporankeuanganController extends Controller
             $resetResponse = Http::timeout(60)->post($baseUrl . '/ledger/pre-sync-cleanup', [
                 'dari' => $request->dari,
                 'sampai' => $request->sampai,
-                'kode_cabang' => $request->kode_cabang
+                'kode_cabang' => $request->kode_cabang,
+                'kode_bank' => $request->kode_bank
             ]);
 
             if (!$resetResponse->successful()) {
