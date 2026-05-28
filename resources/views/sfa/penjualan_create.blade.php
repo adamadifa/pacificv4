@@ -1200,7 +1200,7 @@
             ];
             let totalQuantity = calculateTotalQuantityByCategory('D009');
             let diskon = calculateDiscount(totalQuantity, 'D009');
-            if (blacklist_pelanggan.includes(kode_pel)) {
+            if (blacklist_pelanggan.iancludes(kode_pel)) {
                 diskon = 0;
             }
             return diskon;

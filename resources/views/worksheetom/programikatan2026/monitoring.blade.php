@@ -107,7 +107,11 @@
                                                  </div>
                                                  <div class="col-4 text-center">
                                                     <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">Realisasi</small>
-                                                    <span class="fw-bold fs-5 {{ $color_reward ? 'text-white' : '' }}">{{ formatAngka($d->realisasi) }}</span>
+                                                    <span class="fw-bold fs-5 btnDetailRealisasi cursor-pointer {{ $color_reward ? 'text-white text-decoration-underline' : 'text-primary text-decoration-underline' }}"
+                                                          no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}"
+                                                          kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
+                                                        {{ formatAngka($d->realisasi) }}
+                                                    </span>
                                                  </div>
                                                   <div class="col-4 text-center">
                                                     <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">%</small>
@@ -163,6 +167,7 @@
 </div>
 
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modalDetailrealisasi" size="modal-xl" show="loadmodaldetailrealisasi" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -178,6 +183,23 @@
                 });
             });
         }
+
+        $(document).on('click', '.btnDetailRealisasi', function(e) {
+            e.preventDefault();
+            let no_pengajuan = $(this).attr('no_pengajuan');
+            let kode_pelanggan = $(this).attr('kode_pelanggan');
+            $("#modalDetailrealisasi").modal("show");
+            $("#modalDetailrealisasi").find(".modal-title").text('Detail Realisasi Penjualan');
+            $("#modalDetailrealisasi").find("#loadmodaldetailrealisasi").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+            $("#modalDetailrealisasi").find("#loadmodaldetailrealisasi").load(
+                `/programikatan2026/${no_pengajuan}/${kode_pelanggan}/detailrealisasi`);
+        });
     });
 </script>
 @endpush

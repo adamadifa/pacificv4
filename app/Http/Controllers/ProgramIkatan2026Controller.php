@@ -1045,4 +1045,38 @@ class ProgramIkatan2026Controller extends Controller
 
         return view('worksheetom.programikatan2026.monitoring', $data);
     }
+
+    public function detailrealisasi($no_pengajuan, $kode_pelanggan)
+    {
+        $no_pengajuan = Crypt::decrypt($no_pengajuan);
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+
+        $programikatan = MktIkatan2026::where('no_pengajuan', $no_pengajuan)
+            ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->select('mkt_ikatan_2026.*', 'program_ikatan.nama_program', 'program_ikatan.produk')
+            ->first();
+
+        $produk = json_decode($programikatan->produk, true) ?? [];
+
+        $detailpenjualan = Detailpenjualan::select(
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.tanggal_pelunasan',
+            'marketing_penjualan.jenis_transaksi',
+            'produk.nama_produk',
+            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus')
+        )
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->whereIn('produk_harga.kode_produk', $produk)
+            ->whereBetween('marketing_penjualan.tanggal', [$programikatan->periode_dari, $programikatan->periode_sampai])
+            ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->where('status_promosi', 0)
+            ->where('status_batal', 0)
+            ->get();
+
+        return view('worksheetom.programikatan2026.detailrealisasi', compact('detailpenjualan'));
+    }
 }
+
