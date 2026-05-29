@@ -890,6 +890,26 @@ class SfaControler extends Controller
             $printer->text(strtoupper($jenis_transaksi) . ".\n");
             $printer->selectPrintMode();
 
+            if ($faktur->jenis_transaksi == 'K') {
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->feed();
+                
+                $centerText = function($str, $width = 16) {
+                    $str = substr($str, 0, $width);
+                    return str_pad($str, $width, " ", STR_PAD_BOTH);
+                };
+                
+                $col_header = $centerText("Pelanggan") . $centerText("Salesman");
+                $col_sig = $centerText("(___________)") . $centerText("(___________)");
+                $col_names = $centerText($faktur->nama_pelanggan) . $centerText($faktur->nama_salesman);
+                
+                $printer->text($col_header . "\n");
+                $printer->feed(2);
+                $printer->text($col_sig . "\n");
+                $printer->text($col_names . "\n");
+                $printer->feed();
+            }
+
             // /* Footer */
 
             if (!$pembayaran->isEmpty()) {
@@ -1060,6 +1080,26 @@ class SfaControler extends Controller
             $printer->text(strtoupper($jenis_transaksi) . ".\n");
             $printer->selectPrintMode();
 
+            if ($faktur->jenis_transaksi == 'K') {
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->feed();
+                
+                $centerText = function($str, $width = 16) {
+                    $str = substr($str, 0, $width);
+                    return str_pad($str, $width, " ", STR_PAD_BOTH);
+                };
+                
+                $col_header = $centerText("Pelanggan") . $centerText("Salesman");
+                $col_sig = $centerText("(___________)") . $centerText("(___________)");
+                $col_names = $centerText($faktur->nama_pelanggan) . $centerText($faktur->nama_salesman);
+                
+                $printer->text($col_header . "\n");
+                $printer->feed(2);
+                $printer->text($col_sig . "\n");
+                $printer->text($col_names . "\n");
+                $printer->feed();
+            }
+
             // /* Footer */
 
             if (!$pembayaran->isEmpty()) {
@@ -1218,6 +1258,26 @@ class SfaControler extends Controller
                 $jenis_transaksi = $faktur->jenis_transaksi == 'T' ? 'TUNAI' : 'KREDIT';
                 $printer->text(strtoupper($jenis_transaksi) . ".\n");
                 $printer->selectPrintMode();
+
+                if ($faktur->jenis_transaksi == 'K') {
+                    $printer->setJustification(Printer::JUSTIFY_LEFT);
+                    $printer->feed();
+                    
+                    $centerText = function($str, $width = 16) {
+                        $str = substr($str, 0, $width);
+                        return str_pad($str, $width, " ", STR_PAD_BOTH);
+                    };
+                    
+                    $col_header = $centerText("Pelanggan") . $centerText("Salesman");
+                    $col_sig = $centerText("(___________)") . $centerText("(___________)");
+                    $col_names = $centerText($faktur->nama_pelanggan) . $centerText($faktur->nama_salesman);
+                    
+                    $printer->text($col_header . "\n");
+                    $printer->feed(2);
+                    $printer->text($col_sig . "\n");
+                    $printer->text($col_names . "\n");
+                    $printer->feed();
+                }
 
                 // /* Footer */
 

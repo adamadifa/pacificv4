@@ -31,7 +31,11 @@
                             <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" name="kode_salesman" id="kode_salesman">
                             <div class="form-group mb-3">
-                                <textarea name="keterangan" class="form-control" id="" cols="30" rows="5" id="keterangan" placeholder="Keterangan">{{ $penjualan->keterangan }}</textarea>
+                                <textarea name="keterangan" class="form-control" id="keterangan" cols="30" rows="5" placeholder="Keterangan">{{ $penjualan->keterangan }}</textarea>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" name="status_sampel" type="checkbox" value="1" id="status_sampel" {{ $penjualan->status_sampel == 1 ? 'checked' : '' }}>
+                                <label class="form-check-label" for="status_sampel">Status Sampel</label>
                             </div>
                         </div>
                     </div>
@@ -1355,6 +1359,24 @@
             showhidekredit();
         });
 
+        function handleStatusSampel() {
+            if ($("#status_sampel").is(":checked")) {
+                $("#jenis_transaksi").val("T").trigger("change");
+                $("#jenis_bayar").val("TN").trigger("change");
+                $("#jenis_transaksi").prop("disabled", true);
+                $("#jenis_bayar").prop("disabled", true);
+            } else {
+                $("#jenis_transaksi").prop("disabled", true);
+                $("#jenis_bayar").prop("disabled", false);
+            }
+        }
+
+        $("#status_sampel").change(function() {
+            handleStatusSampel();
+        });
+
+        handleStatusSampel();
+
         function hitungdiskonAida() {
             let totalQuantity = calculateTotalQuantityByCategory('D002');
             let diskon = calculateDiscount(totalQuantity, 'D002');
@@ -1715,6 +1737,8 @@
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
             } else {
+                $("#jenis_transaksi").prop("disabled", false);
+                $("#jenis_bayar").prop("disabled", false);
                 buttonDisable();
             }
             // else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >

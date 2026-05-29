@@ -782,6 +782,7 @@ class PenjualanController extends Controller
                 'kode_pelanggan' => $kode_pelanggan,
                 'kode_salesman' => $kode_salesman,
                 'keterangan' => $keterangan,
+                'status_sampel' => $request->status_sampel ?? 0,
 
                 'potongan_aida' => $potongan_aida,
                 'potongan_swan' => $potongan_swan,
@@ -1086,8 +1087,8 @@ class PenjualanController extends Controller
         // if ($diffInDays > 3) {
         //     return redirect()->back()->with('error', 'Data penjualan tidak bisa diupdate karena sudah lebih dari 3 hari dari tanggal transaksi.');
         // }
-        $jenis_transaksi = $penjualan->jenis_transaksi;
-        $jenis_bayar = $penjualan->jenis_bayar;
+        $jenis_transaksi = ($request->status_sampel == 1) ? 'T' : $penjualan->jenis_transaksi;
+        $jenis_bayar = ($request->status_sampel == 1) ? 'TN' : $penjualan->jenis_bayar;
         $titipan = $jenis_transaksi == "T" ? 0 : toNumber($request->titipan);
         $voucher = $jenis_transaksi == "K" ? 0 : toNumber($request->voucher);
         $keterangan = $request->keterangan;
@@ -1244,6 +1245,7 @@ class PenjualanController extends Controller
                 'no_faktur' => $request->no_faktur,
                 'tanggal' => $request->tanggal,
                 'keterangan' => $keterangan,
+                'status_sampel' => $request->status_sampel ?? 0,
 
                 'potongan_aida' => $potongan_aida,
                 'potongan_swan' => $potongan_swan,

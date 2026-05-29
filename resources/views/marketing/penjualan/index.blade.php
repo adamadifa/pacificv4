@@ -182,6 +182,9 @@
                                 } elseif ($d->status_batal == '2') {
                                     $color = '#edd993';
                                     $color_text = '#000';
+                                } elseif ($d->status_sampel == '1') {
+                                    $color = '#d1e7dd';
+                                    $color_text = '#0f5132';
                                 } elseif (substr($d->no_faktur, 3, 2) == 'PR') {
                                     $color = '#b0d9f1';
                                     $color_text = '#000';

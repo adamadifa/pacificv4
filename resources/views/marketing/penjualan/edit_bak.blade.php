@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('titlepage', 'Input Penjualan')
+@section('titlepage', 'Edit Penjualan')
 @section('content')
 
     <style>
@@ -8,34 +8,30 @@
         }
     </style>
 @section('navigasi')
-    <span class="text-muted">Penjualan</span> / <span>Input Penjualan</span>
+    <span class="text-muted">Penjualan</span> / <span>Edit Penjualan</span>
 @endsection
-<form action="{{ route('penjualan.store') }}" method="POST" id="formPenjualan">
+<form action="{{ route('penjualan.update', Crypt::encrypt($penjualan->no_faktur)) }}" method="POST" id="formPenjualan">
     @csrf
+    @method('PUT')
     <input type="hidden" name="limit_pelanggan" id="limit_pelanggan">
     <input type="hidden" name="sisa_piutang" id="sisa_piutang">
     <input type="hidden" name="siklus_pembayaran" id="siklus_pembayaran">
     <input type="hidden" name="max_kredit" id="max_kredit">
-
     <div class="row">
         <div class="col-lg-3 col-sm-12 col-xs-12">
             <div class="row mb-3">
                 <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" hideLabel="true" />
-                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+                            <x-input-with-icon label="No. Faktur" name="no_faktur" icon="ti ti-barcode" value="{{ $penjualan->no_faktur }}" hideLabel="true" />
+                            <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date"
+                                value="{{ $penjualan->tanggal }}" hideLabel="true" />
                             <x-input-with-icon label="Pelanggan" name="nama_pelanggan" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" id="kode_pelanggan" name="kode_pelanggan">
-                            <input type="hidden" id="kode_cabang_pelanggan" name="kode_cabang_pelanggan">
                             <x-input-with-icon label="Salesman" name="nama_salesman" icon="ti ti-user" readonly="true" hideLabel="true" />
                             <input type="hidden" name="kode_salesman" id="kode_salesman">
                             <div class="form-group mb-3">
-                                <textarea name="keterangan" class="form-control" id="keterangan" cols="30" rows="5" placeholder="Keterangan"></textarea>
-                            </div>
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" name="status_sampel" type="checkbox" value="1" id="status_sampel">
-                                <label class="form-check-label" for="status_sampel">Status Sampel</label>
+                                <textarea name="keterangan" class="form-control" id="" cols="30" rows="5" id="keterangan" placeholder="Keterangan">{{ $penjualan->keterangan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -74,10 +70,6 @@
                                 <tr>
                                     <th>Faktur Kredit</th>
                                     <td id="jmlfaktur_kredit"></td>
-                                </tr>
-                                <tr>
-                                    <th>Saldo Voucher</th>
-                                    <td id="saldo_voucher_text"></td>
                                 </tr>
                             </table>
                         </div>
@@ -195,11 +187,85 @@
                                                     <th>Harga</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="loadproduk"></tbody>
+                                            <tbody id="loadproduk">
+                                                @php
+                                                    $subtotal = 0;
+                                                @endphp
+                                                @foreach ($detail as $d)
+                                                    @php
+                                                        $index = $d->kode_harga . $d->status_promosi;
+                                                        $jml = convertToduspackpcsv3($d->isi_pcs_dus, $d->isi_pcs_pack, $d->jumlah);
+                                                        $jml_dus = $jml[0];
+                                                        $jml_pack = $jml[1];
+                                                        $jml_pcs = $jml[2];
+
+                                                        $subtotal += $d->subtotal;
+
+                                                        if ($d->status_promosi == '1') {
+                                                            $color_row = 'bg-warning';
+                                                        } else {
+                                                            $color_row = '';
+                                                        }
+                                                    @endphp
+                                                    <tr id="index_{{ $index }}" class="{{ $color_row }}">
+                                                        <td>
+                                                            <input type="hidden" name="kode_harga_produk[]" value="{{ $d->kode_harga }}"
+                                                                class="kode_harga" />
+                                                            <input type="hidden" name="kode_produk_produk[]" value="{{ $d->kode_produk }}"
+                                                                class="kode_produk" />
+                                                            <input type="hidden" name="status_promosi_produk[]" class="status_promosi"
+                                                                value="{{ $d->status_promosi }}" />
+                                                            <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon"
+                                                                value="{{ $d->kode_kategori_diskon }}" />
+                                                            <input type="hidden" name="jumlah_produk[]" value="{{ $d->jumlah }}" />
+                                                            <input type="hidden" name="isi_pcs_dus_produk[]" value="{{ $d->isi_pcs_dus }}" class="isi_pcs_dus" />
+                                                            <input type="hidden" name="isi_pcs_pack_produk[]" value="{{ $d->isi_pcs_pack }}" class="isi_pcs_pack" />
+                                                            {{ $d->kode_harga }}
+                                                        </td>
+                                                        <td>{{ $d->nama_produk }}</td>
+                                                        <td class="text-center">{{ $jml_dus }}</td>
+                                                        <td class="text-end">
+                                                            {{ formatAngka($d->harga_dus) }}
+                                                            <input type="hidden" name="harga_dus_produk[]"
+                                                                value="{{ formatAngka($d->harga_dus) }}" />
+                                                        </td>
+                                                        <td class="text-center">{{ $jml_pack }}</td>
+                                                        <td class="text-end">
+                                                            {{ formatAngka($d->harga_pack) }}
+                                                            <input type="hidden" name="harga_pack_produk[]"
+                                                                value="{{ formatAngka($d->harga_pack) }}" />
+                                                        </td>
+                                                        <td class="text-center">{{ $jml_pcs }}</td>
+                                                        <td class="text-end">
+                                                            {{ formatAngka($d->harga_pcs) }}
+                                                            <input type="hidden" name="harga_pcs_produk[]"
+                                                                value="{{ formatAngka($d->harga_pcs) }}" />
+                                                        </td>
+                                                        <td class="text-end">
+                                                            {{ formatAngka($d->subtotal) }}
+                                                            <input type="hidden" name="subtotal[]" class="subtotal"
+                                                                value="{{ $d->subtotal }}" />
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                <div>
+                                                                    <a href="#" key="{{ $index }}" class="edit me-2"><i
+                                                                            class="ti ti-edit text-success"></i></a>
+                                                                </div>
+                                                                <div>
+                                                                    <a href="#" key="{{ $index }}" class="delete"><i
+                                                                            class="ti ti-trash text-danger"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
                                             <tfoot class="table-dark">
                                                 <tr>
                                                     <td colspan="8">SUBTOTAL</td>
-                                                    <td class="text-end" id="subtotal"></td>
+                                                    <td class="text-end" id="subtotal">{{ formatAngka($subtotal) }}
+                                                    </td>
                                                     <td></td>
                                                 </tr>
                                             </tfoot>
@@ -220,14 +286,15 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
+
                                             <x-input-with-group label="AIDA" placeholder="Potongan AIDA" name="potongan_aida" align="right"
-                                                money="true" readonly="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->potongan_aida) }}" readonly="true" />
                                             <x-input-with-group label="SWAN" placeholder="Potongan SWAN" name="potongan_swan" align="right"
-                                                money="true" readonly="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->potongan_swan) }}" readonly="true" />
                                             <x-input-with-group label="STICK" placeholder="Potongan STICK" name="potongan_stick" align="right"
-                                                money="true" readonly="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->potongan_stick) }}" readonly="true" />
                                             <x-input-with-group label="SAMBAL" placeholder="Potongan SAMBAL" name="potongan_sambal" align="right"
-                                                money="true" readonly="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->potongan_sambal) }}" readonly="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -244,11 +311,11 @@
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-group label="AIDA" placeholder="Potongan Istimewa AIDA" name="potis_aida"
-                                                align="right" money="true" />
+                                                align="right" money="true" value="{{ formatRupiah($penjualan->potis_aida) }}" />
                                             <x-input-with-group label="SWAN" placeholder="Potongan Istimewa SWAN" name="potis_swan"
-                                                align="right" money="true" />
+                                                align="right" money="true" value="{{ formatRupiah($penjualan->potis_swan) }}" />
                                             <x-input-with-group label="STICK" placeholder="Potongan Istimewa STICK" name="potis_stick"
-                                                align="right" money="true" />
+                                                align="right" money="true" value="{{ formatRupiah($penjualan->potis_stick) }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -265,11 +332,11 @@
                                     <div class="row">
                                         <div class="col">
                                             <x-input-with-group label="AIDA" placeholder="Penyesuaian AIDA" name="peny_aida" align="right"
-                                                money="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->peny_aida) }}" />
                                             <x-input-with-group label="SWAN" placeholder="Penyesuaian SWAN" name="peny_swan" align="right"
-                                                money="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->peny_swan) }}" />
                                             <x-input-with-group label="STICK" placeholder="Penyesuaian STICK" name="peny_stick" align="right"
-                                                money="true" />
+                                                money="true" value="{{ formatRupiah($penjualan->peny_stick) }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -286,36 +353,42 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group mb-3">
-                                                <select name="jenis_transaksi" id="jenis_transaksi" class="form-select">
+                                                <select name="jenis_transaksi" id="jenis_transaksi" class="form-select" disabled>
                                                     <option value="">Jenis Transaksi</option>
-                                                    <option value="T">TUNAI</option>
-                                                    <option value="K">KREDIT</option>
+                                                    <option value="T" {{ $penjualan->jenis_transaksi == 'T' ? 'selected' : '' }}>
+                                                        TUNAI
+                                                    </option>
+                                                    <option value="K" {{ $penjualan->jenis_transaksi == 'K' ? 'selected' : '' }}>
+                                                        KREDIT</option>
                                                 </select>
                                             </div>
                                             <x-input-with-icon label="Grand Total" name="grandtotal" id="grandtotal" icon="ti ti-shopping-cart"
                                                 align="right" disabled="true" hideLabel="true" />
                                         </div>
                                     </div>
-                                    <div class="row" id="jenis_bayar_tunai">
+                                    <div class="row" id="jenis_bayar_tunai" disabled>
                                         <div class="col">
                                             <div class="form-group mb-3">
                                                 <select name="jenis_bayar" id="jenis_bayar" class="form-select">
                                                     <option value="">Jenis Bayar</option>
-                                                    <option value="TN">CASH</option>
-                                                    <option value="TR">TRANSFER</option>
+                                                    <option value="TN" {{ $penjualan->jenis_bayar == 'TN' ? 'selected' : '' }}>CASH
+                                                    </option>
+                                                    <option value="TR" {{ $penjualan->jenis_bayar == 'TR' ? 'selected' : '' }}>
+                                                        TRANSFER</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row" id="titipan">
                                         <div class="col">
-                                            <x-input-with-icon icon="ti ti-moneybag" name="titipan" money="true" align="right"
-                                                label="Titipan" hideLabel="true" />
+                                            <x-input-with-icon icon="ti ti-moneybag" name="titipan" money="true" align="right" label="Titipan"
+                                                value="{{ formatRupiah($titipan) }}" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row" id="voucher_tunai">
                                         <div class="col">
-                                            <x-input-with-icon icon="ti ti-tag" name="voucher" money="true" align="right" label="Voucher" hideLabel="true" />
+                                            <x-input-with-icon icon="ti ti-tag" name="voucher" money="true" align="right" label="Voucher"
+                                                value="{{ formatRupiah($voucher) }}" hideLabel="true" />
                                         </div>
                                     </div>
                                     <div class="row">
@@ -359,36 +432,20 @@
                             </tr>
                         </thead>
                         <tbody></tbody>
-                        <tfoot class="table-dark">
-                            <tr>
-                                <th>No.</th>
-                                <th>Kode</th>
-                                <th>Nama Pelanggan</th>
-                                <th>Salesman</th>
-                                <th>Wilayah</th>
-                                <th>Status</th>
-                                <th>#</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 @push('myscript')
 <script type="text/javascript">
     $(document).ready(function() {
 
-        const kode_cabang_user = '{{ Auth::user()->kode_cabang }}';
+        const kode_pelanggan = "{{ Crypt::encrypt($penjualan->kode_pelanggan) }}";
         let kode_cabang_pelanggan = '';
         let kode_pel = '';
-        // alert(kode_cabang_user);
-        let jmlfakturbelumlunas = 0;
-        let jmlfakturmax = 0;
-        let saldo_voucher = 0;
 
         function convertToRupiah(number) {
             if (number) {
@@ -410,6 +467,9 @@
                 return number;
             }
         }
+
+
+
         $('#tabelpelanggan').DataTable({
             processing: true,
             serverSide: true,
@@ -428,36 +488,36 @@
                 {
                     data: 'kode_pelanggan',
                     name: 'kode_pelanggan',
-                    orderable: false,
-                    searchable: false,
+                    orderable: true,
+                    searchable: true,
                     width: '10%'
                 },
                 {
                     data: 'nama_pelanggan',
                     name: 'nama_pelanggan',
-                    orderable: false,
+                    orderable: true,
                     searchable: true,
                     width: '30%'
                 },
                 {
                     data: 'nama_salesman',
                     name: 'nama_salesman',
-                    orderable: false,
-                    searchable: true,
+                    orderable: true,
+                    searchable: false,
                     width: '20%'
                 },
 
                 {
                     data: 'nama_wilayah',
                     name: 'nama_wilayah',
-                    orderable: false,
+                    orderable: true,
                     searchable: false,
                     width: '30%'
                 },
                 {
                     data: 'status_pelanggan',
                     name: 'status_pelanggan',
-                    orderable: false,
+                    orderable: true,
                     searchable: false,
                     width: '30%'
                 },
@@ -469,21 +529,7 @@
                     width: '5%'
                 }
             ],
-            initComplete: function() {
-                this.api().columns().every(function(index) {
-                    if (index == 2 || index ==
-                        3
-                    ) { // Only add search inputs for nama_pelanggan and nama_salesman columns
-                        var column = this;
-                        var input = document.createElement("input");
-                        $(input).appendTo($(column.header()))
-                            .on('keyup change', function() {
-                                column.search($(this).val(), false, false, true).draw();
-                            })
-                            .addClass('form-control form-control-sm mt-2');
-                    }
-                });
-            },
+
             rowCallback: function(row, data, index) {
                 if (data.status_pelanggan == "NonAktif") {
                     $("td", row).addClass("bg-danger text-white");
@@ -491,12 +537,10 @@
             }
         });
 
-        $("#nama_pelanggan").on('click focus', function(e) {
-            e.preventDefault();
-            $("#modalPelanggan").modal("show");
-        });
-
-
+        // $("#nama_pelanggan").on('click focus', function(e) {
+        //     e.preventDefault();
+        //     $("#modalPelanggan").modal("show");
+        // });
 
         //Cek file Foto Pelanggan
         function checkFileExistence(fileFoto) {
@@ -528,15 +572,16 @@
         //GetPiutang
 
         function getPiutang(kode_pelanggan) {
+            const total_netto = "{{ $total_netto }}";
             buttonDisable();
             $.ajax({
                 url: `/pelanggan/${kode_pelanggan}/getPiutangpelanggan`,
                 type: 'GET',
                 cache: false,
                 success: function(response) {
-                    console.log(response);
-                    $("#sisa_piutang_text").text(convertToRupiah(response.data));
-                    $("#sisa_piutang").val(response.data);
+                    const sisa_piutang = parseInt(response.data) - parseInt(total_netto);
+                    $("#sisa_piutang_text").text(convertToRupiah(sisa_piutang));
+                    $("#sisa_piutang").val(sisa_piutang);
                     buttonEnable();
                 }
             });
@@ -551,15 +596,9 @@
                 cache: false,
                 success: function(response) {
                     console.log(response);
-                    const unpaid_faktur = response.data.unpaid_faktur;
+                    const unpaid_faktur = response.data.unpaid_faktur - 1;
                     const max_faktur = response.data.jml_faktur;
                     const siklus_pembayaran = response.data.siklus_pembayaran;
-                    jmlfakturbelumlunas = unpaid_faktur;
-                    jmlfakturmax = max_faktur;
-
-                    console.log(jmlfakturbelumlunas);
-                    console.log(jmlfakturmax);
-
                     // if (unpaid_faktur >= max_faktur && siklus_pembayaran === '0') {
                     //     SwalWarning("nama_pelanggan", "Melebihi Maksimal Faktur Kredit");
                     //     $("#no_faktur").val("");
@@ -580,14 +619,15 @@
                     //     checkFileExistence(fileFoto);
                     //     //Data Salesman
                     // } else {
-                    //     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
+                    //     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
                     //     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
                     //     $("#max_kredit").val(response.data.jml_faktur);
                     // }
 
-                    $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
+                    $("#jmlfaktur_kredit").text(response.data.unpaid_faktur - 1);
                     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
                     $("#max_kredit").val(response.data.jml_faktur);
+
                     buttonEnable();
                 }
             });
@@ -618,61 +658,69 @@
                 success: function(response) {
                     //fill data to form
                     const status_aktif_pelanggan = response.data.status_aktif_pelanggan;
-                    if (status_aktif_pelanggan === '0') {
-                        Swal.fire({
-                            title: "Oops!",
-                            text: "Pelanggan Tidak Dapat Bertransaksi, Silahkan Hubungi Admin Untuk Mengaktifkan Pelanggan !",
-                            icon: "warning",
-                            showConfirmButton: true,
-                        });
-                    } else {
-                        $('#kode_pelanggan').val(response.data.kode_pelanggan);
-                        kode_pel = response.data.kode_pelanggan;
-                        $('#kode_cabang_pelanggan').val(response.data.kode_cabang);
-                        kode_cabang_pelanggan = response.data.kode_cabang;
-                        //alert(kode_cabang_pelanggan);
-                        $('#nama_pelanggan').val(response.data.nama_pelanggan);
-                        $('#latitude').text(response.data.latitude);
-                        $('#longitude').text(response.data.longitude);
-                        $('#no_hp_pelanggan').text(response.data.no_hp_pelanggan);
-                        $('#limit_pelanggan_text').text(convertToRupiah(response.data
-                            .limit_pelanggan));
-                        $('#limit_pelanggan').val(response.data.limit_pelanggan);
-                        $('#alamat_pelanggan').text(response.data.alamat_pelanggan);
-                        let fileFoto = response.data.foto;
-                        checkFileExistence(fileFoto);
-                        //Data Salesman
-                        $('#kode_salesman').val(response.data.kode_salesman);
-                        $('#nama_salesman').val(response.data.nama_salesman);
-                        $("#saldo_voucher_text").text(response.saldo_voucher);
-                        saldo_voucher = response.saldo_voucher
-                        //Get Piutang
-                        getPiutang(kode_pelanggan);
-                        //Get FaktuR Kredit
-                        getFakturkredit(kode_pelanggan);
-                        generatenofaktur();
-                        //open modal
-                        $('#modalPelanggan').modal('hide');
-                        buttonEnable();
-                    }
+                    // if (status_aktif_pelanggan === '0') {
+                    //     Swal.fire({
+                    //         title: "Oops!",
+                    //         text: "Pelanggan Tidak Dapat Bertransaksi, Silahkan Hubungi Admin Untuk Mengaktifkan Pelanggan !",
+                    //         icon: "warning",
+                    //         showConfirmButton: true,
+                    //     });
+                    // } else {
+                    //     $('#kode_pelanggan').val(response.data.kode_pelanggan);
+                    //     $('#nama_pelanggan').val(response.data.nama_pelanggan);
+                    //     $('#latitude').text(response.data.latitude);
+                    //     $('#longitude').text(response.data.longitude);
+                    //     $('#no_hp_pelanggan').text(response.data.no_hp_pelanggan);
+                    //     $('#limit_pelanggan_text').text(convertToRupiah(response.data
+                    //         .limit_pelanggan));
+                    //     $('#limit_pelanggan').val(response.data.limit_pelanggan);
+                    //     $('#alamat_pelanggan').text(response.data.alamat_pelanggan);
+                    //     let fileFoto = response.data.foto;
+                    //     checkFileExistence(fileFoto);
+                    //     //Data Salesman
+                    //     $('#kode_salesman').val(response.data.kode_salesman);
+                    //     $('#nama_salesman').val(response.data.nama_salesman);
+
+                    //     //Get Piutang
+                    //     getPiutang(kode_pelanggan);
+                    //     //Get FaktuR Kredit
+                    //     getFakturkredit(kode_pelanggan);
+
+                    //     //open modal
+                    //     $('#modalPelanggan').modal('hide');
+                    //     buttonEnable();
+                    // }
+                    $('#kode_pelanggan').val(response.data.kode_pelanggan);
+                    kode_cabang_pelanggan = response.data.kode_cabang;
+                    kode_pel = response.data.kode_pelanggan;
+                    $('#nama_pelanggan').val(response.data.nama_pelanggan);
+                    $('#latitude').text(response.data.latitude);
+                    $('#longitude').text(response.data.longitude);
+                    $('#no_hp_pelanggan').text(response.data.no_hp_pelanggan);
+                    $('#limit_pelanggan_text').text(convertToRupiah(response.data
+                        .limit_pelanggan));
+                    $('#limit_pelanggan').val(response.data.limit_pelanggan);
+                    $('#alamat_pelanggan').text(response.data.alamat_pelanggan);
+                    let fileFoto = response.data.foto;
+                    checkFileExistence(fileFoto);
+                    //Data Salesman
+                    $('#kode_salesman').val(response.data.kode_salesman);
+                    $('#nama_salesman').val(response.data.nama_salesman);
+
+                    //Get Piutang
+                    getPiutang(kode_pelanggan);
+                    //Get FaktuR Kredit
+                    getFakturkredit(kode_pelanggan);
+
+                    //open modal
+                    $('#modalPelanggan').modal('hide');
+                    buttonEnable();
 
                 }
             });
         }
-        //Pilih Pelanggan
-        $('#tabelpelanggan tbody').on('click', '.pilihpelanggan', function(e) {
-            e.preventDefault();
-            let kode_pelanggan = $(this).attr('kode_pelanggan');
-            getPelanggan(kode_pelanggan);
-            $("#loadproduk").html('');
-            $("#potongan_swan").val(0);
-            $("#potongan_aida").val(0);
-            $("#potongan_sp").val(0);
-            $("#potongan_stick").val(0);
-            $("#potongan_sambal").val(0);
-            loadsubtotal();
 
-        });
+        getPelanggan(kode_pelanggan);
 
 
         //GetProduk
@@ -756,8 +804,7 @@
             } else {
                 $("#jml_pack").prop('disabled', false);
             }
-            if (nama_pelanggan.includes('KPBN') || nama_pelanggan.includes('RSB') || kode_cabang_user ==
-                'PST') {
+            if (nama_pelanggan.includes('KPBN') || nama_pelanggan.includes('RSB')) {
                 $("#harga_dus").prop('disabled', false);
                 if (isi_pcs_pack == "" || isi_pcs_pack === '0') {
                     $("#harga_pack").prop('disabled', true);
@@ -890,12 +937,12 @@
                     <tr id="index_${index}" class="${bgcolor}">
                         <td>
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
-                            <input type="hidden" name="kode_produk[]" value="${kode_produk}" class="kode_produk"/>
+                            <input type="hidden" name="kode_produk_produk[]" value="${kode_produk}" class="kode_produk"/>
                             <input type="hidden" name="status_promosi_produk[]" class="status_promosi" value="${status_promosi}"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
-                            <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}"/>
-                            <input type="hidden" name="isi_pcs_pack_produk[]" value="${isi_pcs_pack}"/>
+                            <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}" class="isi_pcs_dus"/>
+                            <input type="hidden" name="isi_pcs_pack_produk[]" value="${isi_pcs_pack}" class="isi_pcs_pack"/>
                             ${kode_harga}
                         </td>
                         <td>${nama_produk}</td>
@@ -937,6 +984,7 @@
                 //append to table
                 $('#loadproduk').append(produk);
                 $("#kode_harga").val("");
+                $("#kode_produk").val("");
                 $("#nama_produk").val("");
                 $("#jml_dus").val("");
                 $("#jml_pack").val("");
@@ -1022,6 +1070,9 @@
             let subtotal = currentRow.find('td:eq(8)').text();
             let kode_pelanggan = $("#kode_pelanggan").val();
             let status_promosi = currentRow.find('.status_promosi').val();
+            let isi_pcs_dus = currentRow.find('.isi_pcs_dus').val();
+            let isi_pcs_pack = currentRow.find('.isi_pcs_pack').val();
+            let kode_kategori_diskon = currentRow.find('.kode_kategori_diskon').val();
             let index_old = kode_harga + "" + status_promosi;
             console.log(kode_harga);
             console.log(status_promosi);
@@ -1039,6 +1090,9 @@
                 'jml_pcs': jml_pcs,
                 'harga_pcs': harga_pcs,
                 'status_promosi': status_promosi,
+                'isi_pcs_dus': isi_pcs_dus,
+                'isi_pcs_pack': isi_pcs_pack,
+                'kode_kategori_diskon': kode_kategori_diskon,
                 'index_old': index_old
             };
             $.ajax({
@@ -1061,7 +1115,7 @@
             event.preventDefault();
             let kode_harga = $(this).find("#kode_harga").val();
             let kode_produk = $(this).find("#kode_produk").val();
-            let nama_produk = $(this).find("#kode_harga").find(':selected').text();
+            let nama_produk = $(this).find("#nama_produk_label").val();
             let jml_dus = $(this).find("#jml_dus").val();
             let jml_pack = $(this).find("#jml_pack").val();
             let jml_pcs = $(this).find("#jml_pcs").val();
@@ -1126,12 +1180,12 @@
                     <tr id="index_${index}" class="${bgcolor}">
                         <td>
                             <input type="hidden" name="kode_harga_produk[]" value="${kode_harga}" class="kode_harga"/>
-                            <input type="hidden" name="kode_produk[]" value="${kode_produk}" class="kode_produk"/>
+                            <input type="hidden" name="kode_produk_produk[]" value="${kode_produk}" class="kode_produk"/>
                             <input type="hidden" name="status_promosi_produk[]" value="${status_promosi}" class="status_promosi"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
-                            <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}"/>
-                            <input type="hidden" name="isi_pcs_pack_produk[]" value="${isi_pcs_pack}"/>
+                            <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}" class="isi_pcs_dus"/>
+                            <input type="hidden" name="isi_pcs_pack_produk[]" value="${isi_pcs_pack}" class="isi_pcs_pack"/>
                             ${kode_harga}
                         </td>
                         <td>${nama_produk}</td>
@@ -1227,7 +1281,7 @@
         }
 
 
-
+        //   loadsubtotal();
         // Function to calculate total quantity based on category
         function calculateTotalQuantityByCategory(category) {
             let totalQuantity = 0;
@@ -1261,6 +1315,7 @@
             // console.log(category + ': ' + totalQuantity);
             return totalQuantity || 0;
         }
+
 
         function calculateDiscount(totalQuantity, category) {
             let discount = 0;
@@ -1300,24 +1355,6 @@
             showhidekredit();
         });
 
-        function handleStatusSampel() {
-            if ($("#status_sampel").is(":checked")) {
-                $("#jenis_transaksi").val("T").trigger("change");
-                $("#jenis_bayar").val("TN").trigger("change");
-                $("#jenis_transaksi").prop("disabled", true);
-                $("#jenis_bayar").prop("disabled", true);
-            } else {
-                $("#jenis_transaksi").prop("disabled", false);
-                $("#jenis_bayar").prop("disabled", false);
-            }
-        }
-
-        $("#status_sampel").change(function() {
-            handleStatusSampel();
-        });
-
-        handleStatusSampel();
-
         function hitungdiskonAida() {
             let totalQuantity = calculateTotalQuantityByCategory('D002');
             let diskon = calculateDiscount(totalQuantity, 'D002');
@@ -1325,13 +1362,13 @@
             return diskon;
         }
 
+
         function hitungdiskonProductBP500() {
             let totalQuantity = calculateTotalQuantityByProduct('BP500');
             let diskon = totalQuantity * 2000;
             return diskon;
 
         }
-
 
         function hitungdiskonSPPP500() {
             let totalQuantity = calculateTotalQuantityByCategory('D008');
@@ -1491,14 +1528,10 @@
 
         }
 
-
-        function hitungdskonSAOSME() {
-            const kode_cabang_diskon_saosme = ['BTN', 'CRB','SKB','TSM','BKI','KLT','PWK','BDG'];
+        function hitungdiskonSAOSME() {
+            let kode_cabang_diskon_saosme = ['BTN', 'CRB'];
             let totalQuantity = calculateTotalQuantityByCategory('D010');
             let diskon = calculateDiscount(totalQuantity, 'D010');
-            // Baris berikut memeriksa apakah kode_cabang_pelanggan termasuk dalam daftar kode_cabang_diskon_saosme.
-            // Jika iya, maka nilai diskon tetap (tidak diubah). Sebenarnya, penugasan diskon = diskon; tidak melakukan perubahan apapun,
-            // sehingga baris ini hanya sebagai placeholder atau untuk menandai bahwa diskon hanya berlaku untuk cabang tertentu.
             if (kode_cabang_diskon_saosme.includes(kode_cabang_pelanggan)) {
                 diskon = diskon;
                 //alert('YES');
@@ -1509,8 +1542,8 @@
 
             //alert(diskon);
             return diskon;
-
         }
+
 
         function hitungdiskonSwan() {
             let totalQuantity = calculateTotalQuantityByCategory('D001');
@@ -1518,17 +1551,22 @@
             let diskonbp500 = hitungdiskonProductBP500();
             let diskonSPPP500 = hitungdiskonSPPP500();
             let diskonSPPP1000 = hitungdiskonSPPP1000();
-            let diskonSAOSME = hitungdskonSAOSME();
+            let diskonSAOSME = hitungdiskonSAOSME();
             let totaldiskon = parseInt(diskon) + parseInt(diskonbp500) + parseInt(diskonSPPP500) + parseInt(
                 diskonSPPP1000) + parseInt(
                 diskonSAOSME);
             $("#potongan_swan").val(convertToRupiah(totaldiskon));
             return totaldiskon;
         }
+        // function hitungdiskonSwan() {
+        //     let totalQuantity = calculateTotalQuantityByCategory('D001');
+        //     let diskon = calculateDiscount(totalQuantity, 'D001');
+        //     $("#potongan_swan").val(convertToRupiah(diskon));
+        //     return diskon;
+        // }
 
         function hitungdiskonStick() {
             let blacklist_pelanggan = [];
-
             let totalQuantity = calculateTotalQuantityByCategory('D003');
             let diskon = calculateDiscount(totalQuantity, 'D003');
 
@@ -1538,8 +1576,6 @@
 
             $("#potongan_stick").val(convertToRupiah(diskon));
         }
-
-
 
         function hitungdiskonSP() {
             let totalQuantity = calculateTotalQuantityByCategory('D004');
@@ -1607,6 +1643,8 @@
             console.log(grandtotal);
         }
 
+        calculateGrandtotal();
+
         $("#potongan_aida, #potongan_swan, #potongan_stick, #potongan_sambal, #potis_aida, #potis_swan, #potis_stick, #peny_aida, #peny_swan, #peny_stick ")
             .on('keyup keydown', function() {
                 calculateGrandtotal();
@@ -1638,7 +1676,6 @@
 
 
         $("#formPenjualan").submit(function(e) {
-            // e.preventDefault();
             const no_faktur = $("#no_faktur").val();
             const tanggal = $("#tanggal").val();
             const kode_pelanggan = $("#kode_pelanggan").val();
@@ -1647,14 +1684,12 @@
             const gt = $("#grandtotal").val();
             const grandtotal = gt != "" ? parseInt(gt.replace(/\./g, '')) : 0;
             const totalPiutang = parseInt(sisa_piutang) + parseInt(grandtotal);
-            let limit_pelanggan = $("#limit_pelanggan").val() == "" ? 0 : $("#limit_pelanggan").val();
-            // alert(limit_pelanggan);
+            const limit_pelanggan = $("#limit_pelanggan").val();
             const siklus_pembayaran = $("#siklus_pembayaran").val();
             const max_kredit = $("#max_kredit").val();
             const jenis_transaksi = $("#jenis_transaksi").val();
             const jenis_bayar = $("#jenis_bayar").val();
             const keterangan = $("#keterangan").val();
-            const voucher = $("#voucher").val().replace(/\./g, '');
             if (no_faktur == '') {
                 SwalWarning('no_faktur', 'No. Faktur Tidak Boleh Kosong');
                 return false;
@@ -1676,58 +1711,24 @@
             } else if (jenis_transaksi == "T" && jenis_bayar == "") {
                 SwalWarning('jenis_bayar', 'Jenis Bayar Tidak Boleh Kosong');
                 return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
-                parseInt(limit_pelanggan)) {
-                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-                return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
-                parseInt(limit_pelanggan)) {
-                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-                return false;
-            } else if (jenis_transaksi == "K" && jmlfakturbelumlunas >= jmlfakturmax) {
-                SwalWarning('keterangan', 'Melebihi Batas Jumlah Faktur Kredit !');
-                return false;
-            } else if (voucher > saldo_voucher) {
-                SwalWarning('voucher', 'Melebihi Saldo Voucher !');
-                return false;
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
             } else {
-                $("#jenis_transaksi").prop("disabled", false);
-                $("#jenis_bayar").prop("disabled", false);
                 buttonDisable();
             }
+            // else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
+            //     parseInt(limit_pelanggan)) {
+            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+            //     return false;
+            // } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
+            //     parseInt(limit_pelanggan)) {
+            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+            //     return false;
+
+            // }
         });
 
-        function generatenofaktur() {
-            var tanggal = $("#tanggal").val();
-            var kode_salesman = $("#kode_salesman").val();
-            buttonDisable();
-            $.ajax({
-                type: 'POST',
-                url: '/penjualan/generatenofaktur',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    tanggal: tanggal,
-                    kode_salesman: kode_salesman
-                },
-                cache: false,
-                success: function(respond) {
-                    buttonEnable();
-                    if (respond !== '0') {
-                        $("#no_faktur").val(respond);
-                        // $("#no_faktur").prop('readonly', true);
-                        console.log(respond);
-                    }
-
-                }
-            });
-        }
-
-        $("#tanggal,#kode_salesman").change(function() {
-            generatenofaktur();
-        });
     });
 </script>
 @endpush
