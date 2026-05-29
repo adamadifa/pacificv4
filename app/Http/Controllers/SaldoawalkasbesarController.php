@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Jenssegers\Agent\Agent;
 
 class SaldoawalkasbesarController extends Controller
 {
@@ -47,6 +48,12 @@ class SaldoawalkasbesarController extends Controller
         $query->orderBy('tahun', 'desc');
         $query->orderBy('bulan');
         $saldo_awal = $query->get();
+
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            return view('keuangan.kasbesar.saldoawal.index_mobile', compact('list_bulan', 'start_year', 'saldo_awal', 'nama_bulan'));
+        }
+
         return view('keuangan.kasbesar.saldoawal.index', compact('list_bulan', 'start_year', 'saldo_awal', 'nama_bulan'));
     }
 

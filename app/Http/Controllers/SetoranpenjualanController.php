@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Jenssegers\Agent\Agent;
 
 class SetoranpenjualanController extends Controller
 {
@@ -34,6 +35,12 @@ class SetoranpenjualanController extends Controller
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
+
+        $agent = new Agent();
+        if ($agent->isMobile()) {
+            return view('keuangan.kasbesar.setoranpenjualan.index_mobile', $data);
+        }
+
         return view('keuangan.kasbesar.setoranpenjualan.index', $data);
     }
 
