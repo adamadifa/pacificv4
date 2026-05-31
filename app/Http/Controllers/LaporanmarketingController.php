@@ -1899,7 +1899,7 @@ class LaporanmarketingController extends Controller
 
 
 
-            $query =  Penjualan::query();
+            $query = Penjualan::query();
             $query->select(
                 'marketing_penjualan.kode_pelanggan',
                 'nama_pelanggan',
@@ -2087,7 +2087,7 @@ class LaporanmarketingController extends Controller
             $qdetailpenjualan->groupBy('marketing_penjualan_detail.no_faktur');
             $subqueryDetailpenjualan = $qdetailpenjualan;
 
-            $query =  Penjualan::query();
+            $query = Penjualan::query();
             $query->select(
                 'marketing_penjualan.kode_pelanggan',
                 'nama_pelanggan',
@@ -2392,7 +2392,7 @@ class LaporanmarketingController extends Controller
 
 
         for ($i = 1; $i <= 12; $i++) {
-            $selectColumns[] =  DB::raw('SUM(IF(MONTH(tanggal)=' . $i . ', (SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn, 0)) as bulan_' . $i);
+            $selectColumns[] = DB::raw('SUM(IF(MONTH(tanggal)=' . $i . ', (SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn, 0)) as bulan_' . $i);
         }
         $query = Penjualan::query();
         $query->select(
@@ -3104,7 +3104,7 @@ class LaporanmarketingController extends Controller
 
 
 
-        $data['kartupiutang'] =  $querykartupiutang;
+        $data['kartupiutang'] = $querykartupiutang;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
         $data['dari'] = $request->dari;
@@ -3370,38 +3370,38 @@ class LaporanmarketingController extends Controller
                     'ljt' => $item->first()->ljt,
 
                     'umur_0_15' => $item->sum(function ($row) {
-                        return  $row->umur_0_15;
+                        return $row->umur_0_15;
                     }),
                     'umur_16_31' => $item->sum(function ($row) {
-                        return  $row->umur_16_31;
+                        return $row->umur_16_31;
                     }),
 
                     'umur_32_45' => $item->sum(function ($row) {
-                        return  $row->umur_32_45;
+                        return $row->umur_32_45;
                     }),
                     'umur_46_60' => $item->sum(function ($row) {
-                        return  $row->umur_46_60;
+                        return $row->umur_46_60;
                     }),
                     'umur_61_90' => $item->sum(function ($row) {
-                        return  $row->umur_61_90;
+                        return $row->umur_61_90;
                     }),
                     'umur_91_180' => $item->sum(function ($row) {
-                        return  $row->umur_91_180;
+                        return $row->umur_91_180;
                     }),
                     'umur_181_360' => $item->sum(function ($row) {
-                        return  $row->umur_181_360;
+                        return $row->umur_181_360;
                     }),
 
                     'umur_361_720' => $item->sum(function ($row) {
-                        return  $row->umur_361_720;
+                        return $row->umur_361_720;
                     }),
 
                     'umur_lebih_720' => $item->sum(function ($row) {
-                        return  $row->umur_lebih_720;
+                        return $row->umur_lebih_720;
                     }),
 
                     'total' => $item->sum(function ($row) {
-                        return  $row->total;
+                        return $row->total;
                     }),
 
                 ];
@@ -3846,7 +3846,7 @@ class LaporanmarketingController extends Controller
 
         $dppp = $qdppp->groupBy('kode_cabang', 'nama_cabang')
             ->map(function ($item) use ($produk) {
-                $result =  [
+                $result = [
                     'kode_cabang' => $item->first()->kode_cabang,
                     'nama_cabang' => $item->first()->nama_cabang,
                 ];
@@ -3979,7 +3979,7 @@ class LaporanmarketingController extends Controller
 
         $dppp = $qdppp->groupBy('kode_salesman', 'nama_salesman')
             ->map(function ($item) use ($produk) {
-                $result =  [
+                $result = [
                     'kode_salesman' => $item->first()->kode_salesman,
                     'nama_salesman' => $item->first()->nama_salesman,
                 ];
@@ -4402,7 +4402,11 @@ class LaporanmarketingController extends Controller
             ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$dari, $sampai])
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
-            ->select('kode_salesman_baru', ...$selectColumnRealisasi)
+            ->select(
+                'kode_salesman_baru',
+                DB::raw("SUM(IF(produk_harga.kode_produk='BR500',jumlah,0)) as `realisasi_BR500`"),
+                ...$selectColumnRealisasi
+            )
             ->groupBy('kode_salesman_baru');
 
         $subqueryKendaraan = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
@@ -4614,6 +4618,7 @@ class LaporanmarketingController extends Controller
             'realisasi_penjvsavg',
             'jmlkunjungan',
             'jmlsesuaijadwal',
+            'realisasi_BR500',
             // 'realisasi_cashin',
             DB::raw('IFNULL(total_lhp, 0) + IFNULL(totalbelumsetor_bulanlalu, 0) + IFNULL(totalgiro_bulanlalu, 0) - IFNULL(totalgiro_bulanini, 0) - IFNULL(totalbelumsetor_bulanini, 0) as realisasi_cashin'),
             DB::raw('IFNULL(saldo_awal_piutang,0) + IFNULL(bruto,0) - IFNULL(penyesuaian,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) + IFNULL(ppn,0) - IFNULL(retur,0) - IFNULL(jmlbayar,0) as saldo_akhir_piutang'),
@@ -5126,38 +5131,38 @@ class LaporanmarketingController extends Controller
                     'nama_salesman' => $item->first()->nama_salesman,
                     'kode_cabang' => $item->first()->kode_cabang,
                     'umur_0_15' => $item->sum(function ($row) {
-                        return  $row->umur_0_15;
+                        return $row->umur_0_15;
                     }),
                     'umur_16_31' => $item->sum(function ($row) {
-                        return  $row->umur_16_31;
+                        return $row->umur_16_31;
                     }),
 
                     'umur_32_45' => $item->sum(function ($row) {
-                        return  $row->umur_32_45;
+                        return $row->umur_32_45;
                     }),
                     'umur_46_60' => $item->sum(function ($row) {
-                        return  $row->umur_46_60;
+                        return $row->umur_46_60;
                     }),
                     'umur_61_90' => $item->sum(function ($row) {
-                        return  $row->umur_61_90;
+                        return $row->umur_61_90;
                     }),
                     'umur_91_180' => $item->sum(function ($row) {
-                        return  $row->umur_91_180;
+                        return $row->umur_91_180;
                     }),
                     'umur_181_360' => $item->sum(function ($row) {
-                        return  $row->umur_181_360;
+                        return $row->umur_181_360;
                     }),
 
                     'umur_361_720' => $item->sum(function ($row) {
-                        return  $row->umur_361_720;
+                        return $row->umur_361_720;
                     }),
 
                     'umur_lebih_720' => $item->sum(function ($row) {
-                        return  $row->umur_lebih_720;
+                        return $row->umur_lebih_720;
                     }),
 
                     'total' => $item->sum(function ($row) {
-                        return  $row->total;
+                        return $row->total;
                     }),
 
                 ];
@@ -5819,7 +5824,7 @@ class LaporanmarketingController extends Controller
             ->map(function ($item) use ($produk) {
                 $result = [
                     'kode_salesman' => $item->first()->kode_salesman,
-                    'kode_cabang' =>  $item->first()->kode_cabang,
+                    'kode_cabang' => $item->first()->kode_cabang,
                     'nama_salesman' => $item->first()->nama_salesman,
                     'potongan' => $item->sum('potongan'),
                     'potongan_istimewa' => $item->sum('potongan_istimewa'),
@@ -6972,22 +6977,22 @@ class LaporanmarketingController extends Controller
 
         try {
             $penjualan = Penjualan::findOrFail($request->no_faktur);
-            
+
             // Ambil base URL dari .env
             $baseUrl = env('SYNC_API_BASE_URL');
-            
+
             if (empty($baseUrl)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'SYNC_API_BASE_URL tidak di-set di konfigurasi'
                 ], 500);
             }
-            
+
             // Jika status_pajak = 1 (dicentang), kirim data ke API external terlebih dahulu
             if ($request->status_pajak == 1) {
-                
+
                 $kode_salesman_to_send = $penjualan->kode_salesman;
-                
+
 
                 // Cek Kode Cabang PKP Pelanggan
                 $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
@@ -7009,21 +7014,32 @@ class LaporanmarketingController extends Controller
                 }
                 // Ambil detail penjualan lengkap dengan info produk & harga untuk auto-sync di Portax
                 $details = Detailpenjualan::select(
-                        'marketing_penjualan_detail.*', 
-                        'produk_harga.kode_produk', 
-                        'produk_harga.harga_retur_dus', 'produk_harga.harga_retur_pack', 'produk_harga.harga_retur_pcs',
-                        'produk_harga.status_aktif_harga', 'produk_harga.status_ppn', 'produk_harga.status_promo',
-                        'produk_harga.kode_cabang as kode_cabang_harga', 
-                        'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 
-                        'produk_harga.kode_pelanggan as kode_pelanggan_harga',
-                        'produk.nama_produk', 'produk.satuan', 'produk.isi_pcs_dus', 'produk.isi_pack_dus', 'produk.isi_pcs_pack',
-                        'produk.kode_kategori_produk', 'produk.kode_jenis_produk', 'produk.status_aktif_produk',
-                        'produk.kode_sku', 'produk.kode_kategori_diskon'
-                    )
+                    'marketing_penjualan_detail.*',
+                    'produk_harga.kode_produk',
+                    'produk_harga.harga_retur_dus',
+                    'produk_harga.harga_retur_pack',
+                    'produk_harga.harga_retur_pcs',
+                    'produk_harga.status_aktif_harga',
+                    'produk_harga.status_ppn',
+                    'produk_harga.status_promo',
+                    'produk_harga.kode_cabang as kode_cabang_harga',
+                    'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga',
+                    'produk_harga.kode_pelanggan as kode_pelanggan_harga',
+                    'produk.nama_produk',
+                    'produk.satuan',
+                    'produk.isi_pcs_dus',
+                    'produk.isi_pack_dus',
+                    'produk.isi_pcs_pack',
+                    'produk.kode_kategori_produk',
+                    'produk.kode_jenis_produk',
+                    'produk.status_aktif_produk',
+                    'produk.kode_sku',
+                    'produk.kode_kategori_diskon'
+                )
                     ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                     ->where('no_faktur', $request->no_faktur)->get();
-                
+
                 if ($details->isEmpty()) {
                     return response()->json([
                         'success' => false,
@@ -7133,7 +7149,7 @@ class LaporanmarketingController extends Controller
                 if (!$response->successful()) {
                     $errorMessage = 'Gagal sync ke API';
                     $responseData = $response->json();
-                    
+
                     if ($response->status() == 422) {
                         $errors = $response->json('errors');
                         if ($errors) {
@@ -7152,24 +7168,24 @@ class LaporanmarketingController extends Controller
                         if (isset($responseData['sql_error'])) {
                             $errorMessage .= ' | SQL: ' . $responseData['sql_error'];
                         }
-                        
+
                         if (empty($responseData)) {
                             $errorMessage .= ' - ' . substr($response->body(), 0, 150);
                         }
                     }
-                    
+
                     // Log error untuk debugging
                     Log::error("Sync penjualan gagal: {$request->no_faktur}", [
                         'status' => $response->status(),
                         'response' => $responseData ?? $response->body()
                     ]);
-                    
+
                     return response()->json([
                         'success' => false,
                         'message' => $errorMessage
                     ], 422);
                 }
-                
+
                 // Log success
                 Log::info("Sync penjualan berhasil: {$request->no_faktur}");
             }
@@ -7183,7 +7199,7 @@ class LaporanmarketingController extends Controller
                 // Cek response dari API
                 if (!$response->successful()) {
                     $errorMessage = 'Gagal menghapus data dari API';
-                    
+
                     if ($response->status() == 404) {
                         // Data tidak ditemukan di API, tapi tetap update status_pajak = 0
                         Log::warning("Data tidak ditemukan di API saat delete: {$request->no_faktur}");
@@ -7192,20 +7208,20 @@ class LaporanmarketingController extends Controller
                         if ($response->json('message')) {
                             $errorMessage .= ' - ' . $response->json('message');
                         }
-                        
+
                         // Log error
                         Log::error("Delete penjualan gagal: {$request->no_faktur}", [
                             'status' => $response->status(),
                             'response' => $response->json()
                         ]);
-                        
+
                         return response()->json([
                             'success' => false,
                             'message' => $errorMessage
                         ], 422);
                     }
                 }
-                
+
                 // Log success
                 Log::info("Delete penjualan berhasil: {$request->no_faktur}");
             }
@@ -7226,12 +7242,12 @@ class LaporanmarketingController extends Controller
                 'message' => $message,
                 'status_pajak' => $penjualan->status_pajak
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error("Error updatestatuspajak: {$request->no_faktur}", [
                 'error' => $e->getMessage()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengupdate status pajak: ' . $e->getMessage()
@@ -7241,8 +7257,8 @@ class LaporanmarketingController extends Controller
 
     public function syncAllPajak(Request $request)
     {
-        
-        set_time_limit(0); 
+
+        set_time_limit(0);
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
 
@@ -7285,12 +7301,12 @@ class LaporanmarketingController extends Controller
                     $query->where('marketing_penjualan.jenis_transaksi', $request->jenis_transaksi);
                 }
             }
-            
+
             $fakturs = $query->get();
-            
+
             $baseUrl = env('SYNC_API_BASE_URL');
             if (empty($baseUrl)) {
-                 return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
+                return response()->json(['success' => false, 'message' => 'SYNC_API_BASE_URL not configured'], 500);
             }
 
             // Pre-Delete: Hapus data lama di server sebelum batch sync
@@ -7314,7 +7330,7 @@ class LaporanmarketingController extends Controller
 
             if (!empty($preDeletePayload)) {
                 $preDeleteResponse = Http::timeout(60)->post($baseUrl . '/penjualan/pre-delete', $preDeletePayload);
-                
+
                 if (!$preDeleteResponse->successful()) {
                     $preDeleteError = $preDeleteResponse->json('message') ?? $preDeleteResponse->body();
                     return response()->json([
@@ -7334,25 +7350,38 @@ class LaporanmarketingController extends Controller
 
             foreach ($fakturs as $faktur) {
                 $penjualan = Penjualan::find($faktur->no_faktur);
-                if(!$penjualan) continue;
+                if (!$penjualan)
+                    continue;
 
-                 // Prepare Payload (Same as multipleStatusPajak)
-                 $details = Detailpenjualan::select(
-                        'marketing_penjualan_detail.*', 
-                        'produk_harga.kode_produk', 
-                        'produk_harga.harga_retur_dus', 'produk_harga.harga_retur_pack', 'produk_harga.harga_retur_pcs',
-                        'produk_harga.status_aktif_harga', 'produk_harga.status_ppn', 'produk_harga.status_promo',
-                        'produk_harga.kode_cabang as kode_cabang_harga', 
-                        'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga', 
-                        'produk_harga.kode_pelanggan as kode_pelanggan_harga',
-                        'produk.nama_produk', 'produk.satuan', 'produk.isi_pcs_dus', 'produk.isi_pack_dus', 'produk.isi_pcs_pack',
-                        'produk.kode_kategori_produk', 'produk.kode_jenis_produk', 'produk.status_aktif_produk',
-                        'produk.kode_sku', 'produk.kode_kategori_diskon'
-                    )
+                // Prepare Payload (Same as multipleStatusPajak)
+                $details = Detailpenjualan::select(
+                    'marketing_penjualan_detail.*',
+                    'produk_harga.kode_produk',
+                    'produk_harga.harga_retur_dus',
+                    'produk_harga.harga_retur_pack',
+                    'produk_harga.harga_retur_pcs',
+                    'produk_harga.status_aktif_harga',
+                    'produk_harga.status_ppn',
+                    'produk_harga.status_promo',
+                    'produk_harga.kode_cabang as kode_cabang_harga',
+                    'produk_harga.kode_kategori_salesman as kode_kategori_salesman_harga',
+                    'produk_harga.kode_pelanggan as kode_pelanggan_harga',
+                    'produk.nama_produk',
+                    'produk.satuan',
+                    'produk.isi_pcs_dus',
+                    'produk.isi_pack_dus',
+                    'produk.isi_pcs_pack',
+                    'produk.kode_kategori_produk',
+                    'produk.kode_jenis_produk',
+                    'produk.status_aktif_produk',
+                    'produk.kode_sku',
+                    'produk.kode_kategori_diskon'
+                )
                     ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                     ->where('no_faktur', $penjualan->no_faktur)->get();
-                if ($details->isEmpty()) continue;
+                if ($details->isEmpty())
+                    continue;
 
                 // Cek Kode Cabang PKP Pelanggan - hanya ubah kode_salesman yang dikirim ke API
                 $kode_salesman_to_send = $penjualan->kode_salesman;
@@ -7360,8 +7389,8 @@ class LaporanmarketingController extends Controller
                 $salesmanAsal = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
 
                 if ($pelangganPkp != null && !empty($pelangganPkp->kode_cabang_pkp) && $pelangganPkp->kode_cabang_pkp != NULL) {
-                     // Jika kode_cabang_pkp sama dengan cabang asal, jangan ubah salesman
-                     if ($salesmanAsal != null && $pelangganPkp->kode_cabang_pkp != $salesmanAsal->kode_cabang) {
+                    // Jika kode_cabang_pkp sama dengan cabang asal, jangan ubah salesman
+                    if ($salesmanAsal != null && $pelangganPkp->kode_cabang_pkp != $salesmanAsal->kode_cabang) {
                         $salesmanNonSales = Salesman::where('kode_cabang', $pelangganPkp->kode_cabang_pkp)
                             ->where(function ($query) {
                                 $query->where('nama_salesman', 'LIKE', '%Non Sales%')
@@ -7464,74 +7493,74 @@ class LaporanmarketingController extends Controller
                         'id_user' => $bayar->id_user
                     ];
                 }
-                
+
                 $batchData[] = $data;
             }
 
             // Process Batches (Chunk data to avoid payload too large)
-            $chunks = array_chunk($batchData, 50); 
+            $chunks = array_chunk($batchData, 50);
 
             foreach ($chunks as $chunk) {
                 try {
-                     // Use the new Batch Endpoint
-                     $response = Http::timeout(60)->post($baseUrl . '/penjualan/batch', ['data' => $chunk]);
-                     
-                     if ($response->successful()) {
-                         $result = $response->json();
-                         $debugInfo = $response->json('debug');
-                         if (isset($result['summary'])) {
-                             $successCount += $result['summary']['success'];
-                             $failCount += $result['summary']['failed'];
-                         } else {
-                             // Fallback assumes all success if 200 OK and no summary
-                             $successCount += count($chunk);
-                         }
+                    // Use the new Batch Endpoint
+                    $response = Http::timeout(60)->post($baseUrl . '/penjualan/batch', ['data' => $chunk]);
 
-                         if (isset($result['results'])) {
-                             foreach ($result['results'] as $res) {
-                                 if (isset($res['status']) && $res['status'] === 'failed') {
-                                     $errorMsg = ($res['no_faktur'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
-                                     if (isset($res['error'])) {
-                                         $errorMsg .= ' | Error: ' . $res['error'];
-                                     }
-                                     if (isset($res['sql_error'])) {
-                                         $errorMsg .= ' | SQL: ' . $res['sql_error'];
-                                     }
-                                     if (!empty($debugInfo)) {
-                                         $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
-                                     }
-                                     $errors[] = $errorMsg;
-                                 }
-                             }
-                         }
-                     } else {
-                         // Batch Request Failed
-                         $failCount += count($chunk);
-                         $responseData = $response->json();
-                         $errorMsg = 'Status ' . $response->status();
-                         
-                         if(isset($responseData['message'])) {
-                             $errorMsg .= ' - ' . $responseData['message'];
-                         }
-                         if(isset($responseData['error'])) {
-                             $errorMsg .= ' | Error: ' . $responseData['error'];
-                         }
-                         if(isset($responseData['sql_error'])) {
-                             $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
-                         }
-                         
-                         $debugInfo = $response->json('debug');
-                         if (!empty($debugInfo)) {
-                             $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
-                         }
-                         
-                         if (empty($responseData)) {
-                             $errorMsg .= ' - ' . substr($response->body(), 0, 150);
-                         }
-                         
-                         $errors[] = "Batch Failed: " . $errorMsg;
-                         Log::error("Batch sync failed: " . $errorMsg);
-                     }
+                    if ($response->successful()) {
+                        $result = $response->json();
+                        $debugInfo = $response->json('debug');
+                        if (isset($result['summary'])) {
+                            $successCount += $result['summary']['success'];
+                            $failCount += $result['summary']['failed'];
+                        } else {
+                            // Fallback assumes all success if 200 OK and no summary
+                            $successCount += count($chunk);
+                        }
+
+                        if (isset($result['results'])) {
+                            foreach ($result['results'] as $res) {
+                                if (isset($res['status']) && $res['status'] === 'failed') {
+                                    $errorMsg = ($res['no_faktur'] ?? 'Unknown') . ": " . ($res['message'] ?? 'Unknown error');
+                                    if (isset($res['error'])) {
+                                        $errorMsg .= ' | Error: ' . $res['error'];
+                                    }
+                                    if (isset($res['sql_error'])) {
+                                        $errorMsg .= ' | SQL: ' . $res['sql_error'];
+                                    }
+                                    if (!empty($debugInfo)) {
+                                        $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
+                                    }
+                                    $errors[] = $errorMsg;
+                                }
+                            }
+                        }
+                    } else {
+                        // Batch Request Failed
+                        $failCount += count($chunk);
+                        $responseData = $response->json();
+                        $errorMsg = 'Status ' . $response->status();
+
+                        if (isset($responseData['message'])) {
+                            $errorMsg .= ' - ' . $responseData['message'];
+                        }
+                        if (isset($responseData['error'])) {
+                            $errorMsg .= ' | Error: ' . $responseData['error'];
+                        }
+                        if (isset($responseData['sql_error'])) {
+                            $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
+                        }
+
+                        $debugInfo = $response->json('debug');
+                        if (!empty($debugInfo)) {
+                            $errorMsg .= ' | Debug: ' . json_encode($debugInfo);
+                        }
+
+                        if (empty($responseData)) {
+                            $errorMsg .= ' - ' . substr($response->body(), 0, 150);
+                        }
+
+                        $errors[] = "Batch Failed: " . $errorMsg;
+                        Log::error("Batch sync failed: " . $errorMsg);
+                    }
                 } catch (\Exception $e) {
                     $failCount += count($chunk);
                     $errors[] = "Batch Exception: " . $e->getMessage();
@@ -7540,9 +7569,9 @@ class LaporanmarketingController extends Controller
             }
 
             $message = "Sync selesai. Berhasil: $successCount, Gagal: $failCount";
-            if(count($errors) > 0) {
+            if (count($errors) > 0) {
                 $message .= "\nDetail Error:\n" . implode("\n", array_slice($errors, 0, 10)); // Show max 10 errors
-                if(count($errors) > 10) {
+                if (count($errors) > 10) {
                     $message .= "\n...dan " . (count($errors) - 10) . " lainnya.";
                 }
             }
@@ -7554,7 +7583,7 @@ class LaporanmarketingController extends Controller
             ]);
 
         } catch (\Exception $e) {
-             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -7649,21 +7678,21 @@ class LaporanmarketingController extends Controller
                         $failCount += count($chunk);
                         $responseData = $response->json();
                         $errorMsg = 'Status ' . $response->status();
-                        
-                        if(isset($responseData['message'])) {
+
+                        if (isset($responseData['message'])) {
                             $errorMsg .= ' - ' . $responseData['message'];
                         }
-                        if(isset($responseData['error'])) {
+                        if (isset($responseData['error'])) {
                             $errorMsg .= ' | Error: ' . $responseData['error'];
                         }
-                        if(isset($responseData['sql_error'])) {
+                        if (isset($responseData['sql_error'])) {
                             $errorMsg .= ' | SQL: ' . $responseData['sql_error'];
                         }
-                        
+
                         if (empty($responseData)) {
                             $errorMsg .= ' - ' . substr($response->body(), 0, 150);
                         }
-                        
+
                         $errors[] = "Batch Failed: " . $errorMsg;
                     }
                 } catch (\Exception $e) {

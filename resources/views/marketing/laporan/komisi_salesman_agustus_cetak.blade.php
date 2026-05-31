@@ -92,7 +92,9 @@
                         <th rowspan="3">Kode</th>
                         <th rowspan="3">Nama Salesman</th>
                         @foreach ($kategori_komisi as $d)
-                            <th colspan="3" class="green">{{ $d->deskripsi }}</th>
+                            <th colspan="3" class="green">{{ $d->deskripsi }}
+                                {{ $d->kode_kategori == 'KKQ07' ? '+ BR500' : '' }}
+                            </th>
                         @endforeach
                         <th rowspan="2" colspan="2" class="orange">Total Poin</th>
                         <th rowspan="2" colspan="5" class="biru1">OMSET RO VS BULAN LALU</th>
@@ -176,8 +178,10 @@
                             @endphp
                             @foreach ($kategori_komisi as $k)
                                 @php
+                                    $realisasiBR500 = !empty($d->realisasi_BR500) ? $d->realisasi_BR500 * 500 / 2880 : 0;
+                                    $realisasi_kategori = $k->kode_kategori == 'KKQ07' ? ($d->{"realisasi_$k->kode_kategori"} ?? 0) + ($realisasiBR500 ?? 0) : ($d->{"realisasi_$k->kode_kategori"} ?? 0);
                                     $ratio_target = !empty($d->{"target_$k->kode_kategori"})
-                                        ? $d->{"realisasi_$k->kode_kategori"} / $d->{"target_$k->kode_kategori"}
+                                        ? $realisasi_kategori / $d->{"target_$k->kode_kategori"}
                                         : 0;
 
                                     // if (in_array($k->kode_kategori, ['KKQ03', 'KKQ06', 'KKQ07'])) {
@@ -202,11 +206,13 @@
 
                                     $total_poin += $poin;
                                     ${"total_target_$k->kode_kategori"} += $d->{"target_$k->kode_kategori"};
-                                    ${"total_realisasi_$k->kode_kategori"} += $d->{"realisasi_$k->kode_kategori"};
+                                    ${"total_realisasi_$k->kode_kategori"} += $realisasi_kategori;
                                     ${"total_poin_$k->kode_kategori"} += $poin;
                                 @endphp
                                 <td class="right">{{ formatAngkaDesimal($d->{"target_$k->kode_kategori"}) }}</td>
-                                <td class="right">{{ formatAngkaDesimal($d->{"realisasi_$k->kode_kategori"}) }}</td>
+                                <td class="right">
+                                    {{ formatAngkaDesimal($realisasi_kategori) }}
+                                </td>
                                 <td class="center">{{ formatAngkaDesimal($poin) }}</td>
                             @endforeach
                             <td class="right">{{ formatAngkaDesimal($total_poin) }}</td>
@@ -270,8 +276,8 @@
                                 @php
                                     $reward_penjvsavg =
                                         $d->status_komisi == 1 && $persentase_ro >= 80
-                                            ? $d->realisasi_penjvsavg * 10000
-                                            : 0;
+                                        ? $d->realisasi_penjvsavg * 10000
+                                        : 0;
                                     $total_reward_penjvsavg += $reward_penjvsavg;
                                 @endphp
                                 {{ formatAngka($reward_penjvsavg) }}
@@ -459,7 +465,7 @@
                                 @endphp
                             @endif
                             {{-- @php
-                                $reward_qty_smm = ($total_reward_qty / count($komisi)) * 2;
+                            $reward_qty_smm = ($total_reward_qty / count($komisi)) * 2;
                             @endphp --}}
                             {{ formatAngka($reward_qty_smm) }}
                         </th>
@@ -511,7 +517,8 @@
 </body>
 
 </html>
-{{-- <script>
+{{--
+<script>
     $(".freeze-table").freezeTable({
         'scrollable': true,
         'columnNum': 5,
