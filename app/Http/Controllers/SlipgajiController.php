@@ -95,19 +95,15 @@ class SlipgajiController extends Controller
     public function cetakslipgaji($nik, $bulan, $tahun)
     {
         $nik = Crypt::decrypt($nik);
-        $response = Http::get('https://app.portalmp.com/api/slipgaji/' . $bulan * 1 . '/' . $tahun . '/' . $nik);
-        $data = $response->json(); // Mengubah response ke array
-        $data['start_date'] = $data['start_date'];
-        $data['end_date'] = $data['end_date'];
+        $apiController = new \App\Http\Controllers\Api\SlipgajiController();
+        $response = $apiController->show($bulan, $tahun, $nik);
+        $data = json_decode($response->getContent(), true);
 
-        $data['dataliburnasional'] = $data['dataliburnasional'];
-        $data['datadirumahkan'] = $data['datadirumahkan'];
-        $data['dataliburpengganti'] = $data['dataliburpengganti'];
-        $data['dataminggumasuk'] = $data['dataminggumasuk'];
-        $data['datatanggallimajam'] = $data['datatanggallimajam'];
-        $data['datalembur'] = $data['datalembur'];
-        $data['datalemburharilibur'] = $data['datalemburharilibur'];
-        $data['jmlhari'] = $data['jmlhari'] + 1;
+        if (!$data || (isset($data['success']) && !$data['success'])) {
+            return Redirect::back()->with(messageError($data['message'] ?? 'Data tidak ditemukan'));
+        }
+
+
         $privillage_karyawan = [
             '16.11.266',
             '22.08.339',

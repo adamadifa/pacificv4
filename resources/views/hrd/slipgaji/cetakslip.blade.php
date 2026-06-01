@@ -607,286 +607,377 @@
         $jmlbersih = $bruto - $jml_potongan_upah + $jml_penambah;
     @endphp
     <style>
-        .slip-container {
-            max-width: 800px;
-            margin: 20px auto;
+        body {
+            background-color: #f3f4f6;
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ddd;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            color: #000;
+        }
+
+        .slip-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        .slip-container {
+            width: 380px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            box-sizing: border-box;
         }
 
         .slip-header {
             text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #333;
-        }
-
-        .slip-table {
-            width: 100%;
-            border-collapse: collapse;
             margin-bottom: 15px;
         }
 
-        .slip-table th,
-        .slip-table td {
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .slip-table th {
-            background-color: #f5f5f5;
+        .company-name {
+            font-size: 16px;
             font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
         }
 
-        .amount-column {
-            text-align: right;
-        }
-
-        .total-row {
+        .slip-title {
+            font-size: 13px;
             font-weight: bold;
-            background-color: #f8f9fa;
+            margin-bottom: 4px;
+        }
+
+        .slip-period {
+            font-size: 11px;
+            color: #4b5563;
+        }
+
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+        }
+
+        .double-divider {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            height: 3px;
+            margin: 8px 0;
+        }
+
+        .slip-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .slip-info-table td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .slip-info-table td.label-col {
+            width: 110px;
+        }
+
+        .slip-info-table td.separator-col {
+            width: 10px;
         }
 
         .section-title {
-            background-color: #333;
-            color: white;
-            padding: 8px;
-            text-align: center;
+            font-size: 12px;
             font-weight: bold;
+            margin: 12px 0 6px 0;
+            text-transform: uppercase;
         }
 
         .salary-component {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 8px;
-            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 2px 0;
         }
 
         .salary-label {
-            font-weight: 500;
             text-align: left;
+            padding-right: 10px;
         }
 
         .salary-value {
             text-align: right;
-            font-family: monospace;
+            white-space: nowrap;
         }
 
-        .salary-section {
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .total-row {
+            font-weight: bold;
+            border-top: 1px dashed #000;
+            margin-top: 4px;
+            padding-top: 4px;
+        }
+
+        .netto-row {
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding: 6px 0;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .insentif-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        @media print {
+            body {
+                background-color: transparent;
+                margin: 0;
+                padding: 0;
+            }
+
+            .slip-wrapper {
+                display: block;
+            }
+
+            .slip-container {
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                page-break-after: always;
+            }
         }
     </style>
 
-    <div class="slip-container">
-        <div class="slip-header">
-            <h2>SLIP GAJI KARYAWAN</h2>
-            <p>Periode: {{ date('d F Y', strtotime($start_date)) }} - {{ date('d F Y', strtotime($end_date)) }}</p>
-        </div>
-        <div class="row">
-            <div class="col">
-                <table class="slip-table">
-                    <tr>
-                        <th>NIK</th>
-                        <td>{{ $d['nik'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Nama Karyawan</th>
-                        <td>{{ $d['nama_karyawan'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Departemen</th>
-                        <td>{{ $d['kode_dept'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Kantor</th>
-                        <td>{{ $d['kode_cabang'] }}</td>
-                    </tr>
-                    <tr>
-                        <th>Jabatan</th>
-                        <td>{{ $d['nama_jabatan'] }}</td>
-                    </tr>
-                </table>
-                <div class="salary-section">
-                    <div class="salary-component">
-                        <div class="salary-label">Gaji Pokok</div>
-                        <div class="salary-value">{{ rupiah($d['gaji_pokok']) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Tunj. Jabatan</div>
-                        <div class="salary-value">{{ rupiah($d['t_jabatan']) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Tunj. Masa Kerja</div>
-                        <div class="salary-value">{{ rupiah($d['t_masakerja']) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Tunj. Tanggung Jawab</div>
-                        <div class="salary-value">{{ rupiah($d['t_tanggungjawab']) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Tunj. Makan</div>
-                        <div class="salary-value">{{ rupiah($d['t_makan']) }}</div>
-                    </div>
-                    @if ($d['kategori_jabatan'] == 'MJ')
-                        <div class="salary-component">
-                            <div class="salary-label">Tunj. Istri</div>
-                            <div class="salary-value">{{ rupiah($d['t_istri']) }}</div>
-                        </div>
-                    @endif
-                    <div class="salary-component">
-                        <div class="salary-label">Tunj. Skill</div>
-                        <div class="salary-value">{{ rupiah($d['t_skill']) }}</div>
-                    </div>
-
-
-
-                </div>
-                <div class="salary-section">
-                    <div class="section-title">INFORMASI JAM KERJA</div>
-                    <div class="salary-component">
-                        <div class="salary-label">∑ JAM KERJA BULAN INI</div>
-                        <div class="salary-value">{{ desimal($total_jam_kerja) }} JAM</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">UPAH / JAM</div>
-                        <div class="salary-value">{{ desimal($upah_perjam) }}</div>
-                    </div>
-                </div>
-                @php
-                    $upah_bulanini = $upah_perjam * $total_jam_kerja;
-                @endphp
-                <div class="salary-section">
-                    <div class="section-title">UPAH DAN LEMBUR</div>
-                    <div class="salary-component">
-                        <div class="salary-label">UPAH BULAN INI</div>
-                        <div class="salary-value">{{ rupiah($upah_bulanini) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Overtime 1 ({{ desimal($total_overtime_1) }} JAM)</div>
-                        <div class="salary-value">{{ rupiah($upah_overtime_1) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Overtime 2 ({{ desimal($total_overtime_2) }} JAM)</div>
-                        <div class="salary-value">{{ rupiah($upah_overtime_2) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Lembur Hari Libur ({{ desimal($total_overtime_libur) }} JAM)</div>
-                        <div class="salary-value">{{ rupiah($upah_overtime_libur) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Premi Shift 2 ({{ $total_premi_shift2 }} HARI)</div>
-                        <div class="salary-value">{{ rupiah($upah_premi_shift2) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Premi Shift 3 ({{ $total_premi_shift3 }} HARI)</div>
-                        <div class="salary-value">{{ rupiah($upah_premi_shift3) }}</div>
-                    </div>
-                    <div class="salary-component total-row">
-                        <div class="salary-label">TOTAL PENERIMAAN</div>
-                        <div class="salary-value">{{ rupiah($bruto) }}</div>
-                    </div>
-                </div>
-                <div class="salary-section">
-                    <div class="section-title">POTONGAN</div>
-                    <div class="salary-component">
-                        <div class="salary-label">Absensi</div>
-                        <div class="salary-value">{{ desimal($grand_total_potongan_jam) }} JAM</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Denda Keterlambatan</div>
-                        <div class="salary-value">{{ rupiah($total_denda) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Softloan</div>
-                        <div class="salary-value">{{ rupiah($cicilan_pjp) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Pinjaman Perusahaan</div>
-                        <div class="salary-value">{{ rupiah($cicilan_piutang) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Kasbon</div>
-                        <div class="salary-value">{{ rupiah($cicilan_kasbon) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">BPJS KES</div>
-                        <div class="salary-value">{{ rupiah($iuran_bpjs_kesehatan) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">BPJS TENAGA KERJA</div>
-                        <div class="salary-value">{{ rupiah($iuran_bpjs_tenagakerja) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">SPIP</div>
-                        <div class="salary-value">{{ rupiah($spip) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Pengurang</div>
-                        <div class="salary-value">{{ rupiah($jml_pengurang) }}</div>
-                    </div>
-                    <div class="salary-component">
-                        <div class="salary-label">Penambah</div>
-                        <div class="salary-value">{{ rupiah($jml_penambah) }}</div>
-                    </div>
-                    <div class="salary-component total-row">
-                        <div class="salary-label">TOTAL POTONGAN</div>
-                        <div class="salary-value">{{ rupiah($jml_potongan_upah) }}</div>
-                    </div>
-                </div>
-                <div class="salary-section">
-                    <div class="section-title">GAJI BERSIH</div>
-                    <div class="salary-component total-row">
-                        <div class="salary-label">TOTAL GAJI BERSIH</div>
-                        <div class="salary-value">{{ rupiah($jmlbersih) }}</div>
-                    </div>
-                </div>
-                <hr>
-                <table class="slip-table">
-                    <tr>
-                        <th colspan="2" class="text-center">INSENTIF</th>
-                    </tr>
-                    @if ($d['kategori_jabatan'] == 'MJ')
-                        <tr>
-                            <th>RUANG LINGKUP</th>
-                            <td class="text-right">{{ rupiah($d['im_ruanglingkup']) }}</td>
-                        </tr>
-                        <tr>
-                            <th>PENEMPATAN</th>
-                            <td class="text-right">{{ rupiah($d['im_penempatan']) }}</td>
-                        </tr>
-                        <tr>
-                            <th>KINERJA</th>
-                            <td class="text-right">{{ rupiah($d['im_kinerja']) }}</td>
-                        </tr>
-                        <tr>
-                            <th>KENDARAAN</th>
-                            <td class="text-right">{{ rupiah($d['im_kendaraan']) }}</td>
-                        </tr>
-                    @else
-                        <tr>
-                            <th>MASA KERJA</th>
-                            <td class="text-right">{{ rupiah($d['iu_masakerja']) }}</td>
-                        </tr>
-                        <tr>
-                            <th>LEMBUR</th>
-                            <td class="text-right">{{ rupiah($d['iu_lembur']) }}</td>
-                        </tr>
-                        <tr>
-                            <th>PENEMPATAN</th>
-                            <td class="text-right">{{ rupiah($d['iu_penempatan']) }}</td>
-                        </tr>
-                        <tr>
-                            <th>KPI</th>
-                            <td class="text-right">{{ rupiah($d['iu_kpi']) }}</td>
-                        </tr>
-                    @endif
-
-                </table>
+    <div class="slip-wrapper">
+        <div class="slip-container">
+            <div class="slip-header">
+                <div class="company-name">PACIFIC PORTAL</div>
+                <div class="slip-title">SLIP GAJI KARYAWAN</div>
+                <div class="slip-period">Periode: {{ DateToIndo($start_date) }} - {{ DateToIndo($end_date) }}</div>
             </div>
+
+            <div class="divider"></div>
+
+            <table class="slip-info-table">
+                <tr>
+                    <td class="label-col">NIK</td>
+                    <td class="separator-col">:</td>
+                    <td>{{ $d['nik'] }}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Nama Karyawan</td>
+                    <td class="separator-col">:</td>
+                    <td>{{ $d['nama_karyawan'] }}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Departemen</td>
+                    <td class="separator-col">:</td>
+                    <td>{{ $d['kode_dept'] }}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Kantor</td>
+                    <td class="separator-col">:</td>
+                    <td>{{ $d['kode_cabang'] }}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Jabatan</td>
+                    <td class="separator-col">:</td>
+                    <td>{{ $d['nama_jabatan'] }}</td>
+                </tr>
+            </table>
+
+            <div class="double-divider"></div>
+
+            <div class="salary-section">
+                <div class="salary-component">
+                    <div class="salary-label">Gaji Pokok</div>
+                    <div class="salary-value">{{ rupiah($d['gaji_pokok']) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Tunj. Jabatan</div>
+                    <div class="salary-value">{{ rupiah($d['t_jabatan']) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Tunj. Masa Kerja</div>
+                    <div class="salary-value">{{ rupiah($d['t_masakerja']) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Tunj. Tanggung Jawab</div>
+                    <div class="salary-value">{{ rupiah($d['t_tanggungjawab']) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Tunj. Makan</div>
+                    <div class="salary-value">{{ rupiah($d['t_makan']) }}</div>
+                </div>
+                @if ($d['kategori_jabatan'] == 'MJ')
+                    <div class="salary-component">
+                        <div class="salary-label">Tunj. Istri</div>
+                        <div class="salary-value">{{ rupiah($d['t_istri']) }}</div>
+                    </div>
+                @endif
+                <div class="salary-component">
+                    <div class="salary-label">Tunj. Skill</div>
+                    <div class="salary-value">{{ rupiah($d['t_skill']) }}</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="salary-section">
+                <div class="section-title">Informasi Jam Kerja</div>
+                <div class="salary-component">
+                    <div class="salary-label">∑ Jam Kerja Bulan Ini</div>
+                    <div class="salary-value">{{ desimal($total_jam_kerja) }} JAM</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Upah / Jam</div>
+                    <div class="salary-value">{{ desimal($upah_perjam) }}</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            @php
+                $upah_bulanini = $upah_perjam * $total_jam_kerja;
+            @endphp
+            <div class="salary-section">
+                <div class="section-title">Upah dan Lembur</div>
+                <div class="salary-component">
+                    <div class="salary-label">Upah Bulan Ini</div>
+                    <div class="salary-value">{{ rupiah($upah_bulanini) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Overtime 1 ({{ desimal($total_overtime_1) }} JAM)</div>
+                    <div class="salary-value">{{ rupiah($upah_overtime_1) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Overtime 2 ({{ desimal($total_overtime_2) }} JAM)</div>
+                    <div class="salary-value">{{ rupiah($upah_overtime_2) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Lembur Hari Libur ({{ desimal($total_overtime_libur) }} JAM)</div>
+                    <div class="salary-value">{{ rupiah($upah_overtime_libur) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Premi Shift 2 ({{ $total_premi_shift2 }} HARI)</div>
+                    <div class="salary-value">{{ rupiah($upah_premi_shift2) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Premi Shift 3 ({{ $total_premi_shift3 }} HARI)</div>
+                    <div class="salary-value">{{ rupiah($upah_premi_shift3) }}</div>
+                </div>
+                <div class="salary-component total-row">
+                    <div class="salary-label">TOTAL PENERIMAAN</div>
+                    <div class="salary-value">{{ rupiah($bruto) }}</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="salary-section">
+                <div class="section-title">Potongan</div>
+                <div class="salary-component">
+                    <div class="salary-label">Absensi</div>
+                    <div class="salary-value">{{ desimal($grand_total_potongan_jam) }} JAM</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Denda Keterlambatan</div>
+                    <div class="salary-value">{{ rupiah($total_denda) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Softloan</div>
+                    <div class="salary-value">{{ rupiah($cicilan_pjp) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Pinjaman Perusahaan</div>
+                    <div class="salary-value">{{ rupiah($cicilan_piutang) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Kasbon</div>
+                    <div class="salary-value">{{ rupiah($cicilan_kasbon) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">BPJS KES</div>
+                    <div class="salary-value">{{ rupiah($iuran_bpjs_kesehatan) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">BPJS TENAGA KERJA</div>
+                    <div class="salary-value">{{ rupiah($iuran_bpjs_tenagakerja) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">SPIP</div>
+                    <div class="salary-value">{{ rupiah($spip) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Pengurang</div>
+                    <div class="salary-value">{{ rupiah($jml_pengurang) }}</div>
+                </div>
+                <div class="salary-component">
+                    <div class="salary-label">Penambah</div>
+                    <div class="salary-value">{{ rupiah($jml_penambah) }}</div>
+                </div>
+                <div class="salary-component total-row">
+                    <div class="salary-label">TOTAL POTONGAN</div>
+                    <div class="salary-value">{{ rupiah($jml_potongan_upah) }}</div>
+                </div>
+            </div>
+
+            <div class="netto-row">
+                <div class="salary-label">TOTAL GAJI BERSIH</div>
+                <div class="salary-value">{{ rupiah($jmlbersih) }}</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="salary-section">
+                <div class="insentif-title">INSENTIF</div>
+                @if ($d['kategori_jabatan'] == 'MJ')
+                    <div class="salary-component">
+                        <div class="salary-label">Ruang Lingkup</div>
+                        <div class="salary-value">{{ rupiah($d['im_ruanglingkup']) }}</div>
+                    </div>
+                    <div class="salary-component">
+                        <div class="salary-label">Penempatan</div>
+                        <div class="salary-value">{{ rupiah($d['im_penempatan']) }}</div>
+                    </div>
+                    <div class="salary-component">
+                        <div class="salary-label">Kinerja</div>
+                        <div class="salary-value">{{ rupiah($d['im_kinerja']) }}</div>
+                    </div>
+                    <div class="salary-component">
+                        <div class="salary-label">Kendaraan</div>
+                        <div class="salary-value">{{ rupiah($d['im_kendaraan']) }}</div>
+                    </div>
+                @else
+                    <div class="salary-component">
+                        <div class="salary-label">Masa Kerja</div>
+                        <div class="salary-value">{{ rupiah($d['iu_masakerja']) }}</div>
+                    </div>
+                    <div class="salary-component">
+                        <div class="salary-label">Lembur</div>
+                        <div class="salary-value">{{ rupiah($d['iu_lembur']) }}</div>
+                    </div>
+                    <div class="salary-component">
+                        <div class="salary-label">Penempatan</div>
+                        <div class="salary-value">{{ rupiah($d['iu_penempatan']) }}</div>
+                    </div>
+                    <div class="salary-component">
+                        <div class="salary-label">KPI</div>
+                        <div class="salary-value">{{ rupiah($d['iu_kpi']) }}</div>
+                    </div>
+                @endif
+            </div>
+
+            <div class="double-divider"></div>
         </div>
+    </div>
 @endforeach

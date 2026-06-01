@@ -174,8 +174,8 @@ class LaporanhrdController extends Controller
 
         $kode_potongan = "GJ" . $request->bulan . $request->tahun;
 
-        $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
-        $bulan = $request->bulan < 10 ? '0' . $request->bulan : $request->bulan;
+        $lastbulan = sprintf('%02d', (int)$lastbulan);
+        $bulan = sprintf('%02d', (int)$request->bulan);
         if ($request->periode_laporan == 2) {
             $dari = $request->tahun . "-" . $bulan  . "-01";
             $sampai = date("Y-m-t", strtotime($dari));
@@ -742,8 +742,8 @@ class LaporanhrdController extends Controller
 
         $kode_potongan = "GJ" . $request->bulan . $request->tahun;
 
-        $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
-        $bulan = $request->bulan < 10 ? '0' . $request->bulan : $request->bulan;
+        $lastbulan = sprintf('%02d', (int)$lastbulan);
+        $bulan = sprintf('%02d', (int)$request->bulan);
         if ($request->periode_laporan == 2) {
             $dari = $request->tahun . "-" . $bulan  . "-01";
             $sampai = date("Y-m-t", strtotime($dari));

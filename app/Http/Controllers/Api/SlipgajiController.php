@@ -62,8 +62,8 @@ class SlipgajiController extends Controller
 
         $kode_potongan = "GJ" . $bulangaji . $tahungaji;
 
-        $lastbulan = $lastbulan < 10 ? '0' . $lastbulan : $lastbulan;
-        $bulan = $bulangaji < 10 ? '0' . $bulangaji : $bulangaji;
+        $lastbulan = sprintf('%02d', (int)$lastbulan);
+        $bulan = sprintf('%02d', (int)$bulangaji);
         $dari = $lasttahun . "-" . $lastbulan . "-21";
         $sampai = $tahungaji . "-" . $bulan . "-20";
 
@@ -695,6 +695,15 @@ class SlipgajiController extends Controller
                 'employee' => $d,
                 'start_date'  => $start_date,
                 'end_date'    => $end_date,
+                'presensi'    => $datapresensi,
+                'dataliburnasional' => $dataliburnasional,
+                'datadirumahkan' => $datadirumahkan,
+                'dataliburpengganti' => $dataliburpengganti,
+                'dataminggumasuk' => $dataminggumasuk,
+                'datatanggallimajam' => $datatanggallimajam,
+                'datalembur' => $datalembur,
+                'datalemburharilibur' => $datalemburharilibur,
+                'jmlhari' => $jmlhari,
             ]
         );
     }
