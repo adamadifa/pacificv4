@@ -90,6 +90,12 @@ class SaldoawalgudanglogistikController extends Controller
         } else if (empty($kode_barang)) {
             return Redirect::back()->with(messageError('Silahkan Get Saldo Terlebih Dahulu !'));
         }
+
+        if (!is_array($kode_barang) || !is_array($jumlah) || !is_array($harga) ||
+            count($kode_barang) !== count($jumlah) || count($kode_barang) !== count($harga)) {
+            return Redirect::back()->with(messageError('Gagal menyimpan. Jumlah input barang, jumlah, dan harga tidak sama. Silakan naikkan batas "max_input_vars" di php.ini server Anda.'));
+        }
+
         DB::beginTransaction();
         try {
             // Cek Saldo Bulan Berikutnya
@@ -134,7 +140,7 @@ class SaldoawalgudanglogistikController extends Controller
                 'kode_kategori' => $request->kode_kategori
             ]);
 
-            $chunks_buffer = array_chunk($detail_saldo, 5);
+            $chunks_buffer = array_chunk($detail_saldo, 100);
             foreach ($chunks_buffer as $chunk_buffer) {
                 Detailsaldoawalgudanglogistik::insert($chunk_buffer);
             }
