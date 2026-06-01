@@ -111,9 +111,9 @@
             $total_overtime_2 += $lembur['overtime_2'];
 
             if (!empty($cekliburnasional)) {
-                if($d['kode_jabatan'] == 'J20'){
+                if ($d['kode_jabatan'] == 'J20') {
                     $overtime_libur = $lembur_libur['overtime_libur'] * 2;
-                }else{
+                } else {
                     $overtime_libur = $lembur_libur['overtime_libur'];
                 }
                 $total_overtime_libur_nasional += $overtime_libur;
@@ -155,15 +155,15 @@
                 //Jadwal SPG
                 //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal atau Hari Minggu Absen
                 $is_spg_spm = in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21');
-                
+
                 $jam_mulai =
                     $is_spg_spm || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
-                        ? $jam_in
-                        : $j_mulai;
+                    ? $jam_in
+                    : $j_mulai;
                 $jam_selesai =
                     $is_spg_spm || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
-                        ? $jam_out
-                        : $j_selesai;
+                    ? $jam_out
+                    : $j_selesai;
             @endphp
             @if ($d[$tanggal_presensi]['status'] == 'h')
                 <!-- Jika Hari Minggu -->
@@ -259,8 +259,8 @@
                     //Total Jam Kerja
                     $total_jam =
                         !empty($d[$tanggal_presensi]['jam_in']) && !empty($d[$tanggal_presensi]['jam_out'])
-                            ? $total_jam_jadwal - $total_potongan_jam
-                            : 0;
+                        ? $total_jam_jadwal - $total_potongan_jam
+                        : 0;
 
                     //Denda
                     $jumlah_denda = $denda['denda'] + ($tanggal_presensi >= '2026-05-01' && !empty($d[$tanggal_presensi]['status_denda']) ? 5000 : 0);
@@ -760,7 +760,7 @@
     <div class="slip-wrapper">
         <div class="slip-container">
             <div class="slip-header">
-                <div class="company-name">PACIFIC PORTAL</div>
+                <div class="company-name">MAKMUR PERMATA</div>
                 <div class="slip-title">SLIP GAJI KARYAWAN</div>
                 <div class="slip-period">Periode: {{ DateToIndo($start_date) }} - {{ DateToIndo($end_date) }}</div>
             </div>
