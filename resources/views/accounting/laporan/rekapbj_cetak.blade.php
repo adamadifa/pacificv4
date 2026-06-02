@@ -77,6 +77,7 @@
                                     ? ($d->saldoawal_produksi * $d->hargaawal_produksi +
                                         $d->produksi_bpbj * $d->harga_hpp) / ($d->saldoawal_produksi + $d->produksi_bpbj)
                                     : 0;
+                            $harga_gudang = empty($harga_gudang) ? $d->harga_hpp : $harga_gudang;
 
                             $harga_kirim_cabang =
                                 $d->saldoawal_gudangjadi + $d->gudangjadi_fsthp + $d->gudangjadi_repack + $d->gudangjadi_lainlain_in != 0
@@ -86,6 +87,7 @@
                                             $d->gudangjadi_lainlain_in * $harga_gudang) /
                                         ($d->saldoawal_gudangjadi + $d->gudangjadi_fsthp + $d->gudangjadi_repack + $d->gudangjadi_lainlain_in)
                                     : 0;
+                            $harga_kirim_cabang = empty($harga_kirim_cabang) ? $d->harga_hpp : $harga_kirim_cabang;
 
                             $saldoakhir_gudangpusat =
                                 $d->saldoawal_gudangjadi +
@@ -140,6 +142,7 @@
                                         $harga_repack_cabang;
 
                                     $harga_akhir_cabang = !empty($total_qty_cabang) ? ROUND($total_harga_cabang / $total_qty_cabang, 9) : 0;
+                                    $harga_akhir_cabang = empty($harga_akhir_cabang) ? $d->harga_hpp : $harga_akhir_cabang;
                                     $total_harga = ROUND($saldoakhir_cabang_desimal, 2) * ROUND($harga_akhir_cabang);
 
                                     $total_harga_allcabang += $total_harga;
@@ -159,6 +162,7 @@
                                     $saldo_akhir_harga = !empty($total_qty_allcabang + $saldoakhir_gudangpusat)
                                         ? ($total_harga_allcabang + $total_harga_gudang) / ($total_qty_allcabang + $saldoakhir_gudangpusat)
                                         : 0;
+                                    $saldo_akhir_harga = empty($saldo_akhir_harga) ? $d->harga_hpp : $saldo_akhir_harga;
                                 @endphp
                                 {{ formatAngka($saldo_akhir_harga) }}
                             </td>
