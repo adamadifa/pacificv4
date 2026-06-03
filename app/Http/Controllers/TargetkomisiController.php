@@ -383,7 +383,17 @@ class TargetkomisiController extends Controller
                 $join->on('marketing_komisi_target_detail.kode_salesman', '=', 'lasttarget.kode_salesman');
             })
             ->where('kode_target', $kode_target)
-            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)
+            ->groupBy(
+                'marketing_komisi_target_detail.kode_salesman',
+                'nama_salesman',
+                'salesman.nik',
+                'tanggal_masuk',
+                ...$s_target_last,
+                ...$s_penjualan,
+                ...$s_penjualan_tiga_bulan,
+                ...$s_penjualan_dua_bulan,
+                ...$s_penjualan_last_bulan
+            )
             ->get();
 
         $data['produk'] = $produk;
@@ -545,7 +555,17 @@ class TargetkomisiController extends Controller
             })
 
             ->where('kode_target', $kode_target)
-            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)
+            ->groupBy(
+                'marketing_komisi_target_detail.kode_salesman',
+                'nama_salesman',
+                'salesman.nik',
+                'tanggal_masuk',
+                ...$s_target_last,
+                ...$s_penjualan,
+                ...$s_penjualan_tiga_bulan,
+                ...$s_penjualan_dua_bulan,
+                ...$s_penjualan_last_bulan
+            )
             ->get();
 
 
@@ -927,7 +947,17 @@ class TargetkomisiController extends Controller
                 $join->on('salesman.kode_salesman', '=', 'lasttarget.kode_salesman');
             })
             ->where('kode_target', $kode_target)
-            ->groupBy('marketing_komisi_target_detail.kode_salesman', 'nama_salesman', ...$s_penjualan)
+            ->groupBy(
+                'marketing_komisi_target_detail.kode_salesman',
+                'nama_salesman',
+                'salesman.nik',
+                'tanggal_masuk',
+                ...$s_target_last,
+                ...$s_penjualan,
+                ...$s_penjualan_tiga_bulan,
+                ...$s_penjualan_dua_bulan,
+                ...$s_penjualan_last_bulan
+            )
             ->get();
 
         $data['produk'] = $produk;
