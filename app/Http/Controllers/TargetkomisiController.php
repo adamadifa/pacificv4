@@ -367,7 +367,6 @@ class TargetkomisiController extends Controller
             ...$select_target_rsm,
             ...$select_target_gm,
             ...$select_target_dirut,
-            ...$select_produk_last,
             ...$s_penjualan,
             ...$s_penjualan_tiga_bulan,
             ...$s_penjualan_dua_bulan,
