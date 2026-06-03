@@ -437,7 +437,7 @@ class TargetkomisiController extends Controller
         $produk = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_produk', 'isi_pcs_dus')
             ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
             ->orderBy('marketing_komisi_target_detail.kode_produk')
-            ->groupBy('marketing_komisi_target_detail.kode_produk')
+            ->groupBy('marketing_komisi_target_detail.kode_produk', 'produk.isi_pcs_dus')
             ->where('kode_target', $kode_target)
             ->get();
 
@@ -820,7 +820,7 @@ class TargetkomisiController extends Controller
         $produk = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_produk', 'isi_pcs_dus')
             ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
             ->orderBy('marketing_komisi_target_detail.kode_produk')
-            ->groupBy('marketing_komisi_target_detail.kode_produk')
+            ->groupBy('marketing_komisi_target_detail.kode_produk', 'produk.isi_pcs_dus')
             ->where('kode_target', $kode_target)
             ->get();
 
