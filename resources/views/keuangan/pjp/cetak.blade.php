@@ -167,7 +167,7 @@
                         <span style="font-family:'Times New Roman'">Jl. Perintis Kemerdekaan No. 160
                             Tasikmalaya</span><br>
                         <span style="font-size: 12px">Telp (0265) 336794 Fax (0265) 332329</span><br>
-                        <span style="font-size: 11px">e-mail : pacific.tasikmalaya@gmail.com</span>
+                        <span style="font-size: 11px">e-mail : cvmakmurpermatatasikmalaya@gmail.com</span>
                     </td>
                 </tr>
             </table>
