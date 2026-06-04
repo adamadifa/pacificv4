@@ -60,11 +60,13 @@ class SetoranpenjualanController extends Controller
             DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TP',jumlah,0)) as lhp_tagihan"),
             DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TN',jumlah,0)) as lhp_tunai")
         )
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
             ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti')
             ->whereNull('kode_giro')
             ->whereNull('kode_transfer')
             ->where('voucher', 0)
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan_historibayar.tanggal', $request->tanggal)
             ->groupBy('marketing_penjualan_historibayar.kode_salesman')
@@ -75,6 +77,8 @@ class SetoranpenjualanController extends Controller
             DB::raw("SUM(jumlah) as lhp_giro")
         )
             ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('marketing_penjualan', 'marketing_penjualan_giro_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_giro.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan_giro.tanggal', $request->tanggal)
             ->groupBy('marketing_penjualan_giro.kode_salesman')
@@ -85,6 +89,7 @@ class SetoranpenjualanController extends Controller
             DB::raw("SUM(jumlah) as lhp_transfer")
         )
             ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('marketing_penjualan', 'marketing_penjualan_transfer_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin(
                 DB::raw("(
                     SELECT marketing_penjualan_historibayar_transfer.no_bukti,kode_transfer,no_faktur,tanggal,giro_to_cash
@@ -97,6 +102,7 @@ class SetoranpenjualanController extends Controller
                     $join->on('marketing_penjualan_transfer_detail.no_faktur', '=', 'historibayartransfer.no_faktur');
                 }
             )
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_transfer.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan_transfer.tanggal', $request->tanggal)
             ->whereNull('giro_to_cash')
@@ -108,8 +114,10 @@ class SetoranpenjualanController extends Controller
             'marketing_penjualan_historibayar.kode_salesman',
             DB::raw('SUM(jumlah) as girotocash')
         )
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
             ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti')
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan_historibayar.tanggal', $request->tanggal)
             ->where('giro_to_cash', 1)
@@ -122,8 +130,10 @@ class SetoranpenjualanController extends Controller
             'marketing_penjualan_historibayar.kode_salesman',
             DB::raw("SUM(jumlah) as girototransfer")
         )
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
             ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti')
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan_historibayar.tanggal', $request->tanggal)
             ->where('giro_to_cash', 1)
@@ -227,6 +237,7 @@ class SetoranpenjualanController extends Controller
             ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
             ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti')
             ->where('voucher', 0)
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_historibayar.tanggal', $request->tanggal)
             ->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman)
             ->whereNotIn('marketing_penjualan_historibayar.jenis_bayar', ['TR', 'GR'])
@@ -253,6 +264,7 @@ class SetoranpenjualanController extends Controller
             ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
             ->join('marketing_penjualan', 'marketing_penjualan_giro_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_giro.tanggal', $request->tanggal)
             ->where('marketing_penjualan_giro.kode_salesman', $request->kode_salesman)
             ->groupBy(
@@ -292,6 +304,7 @@ class SetoranpenjualanController extends Controller
                 }
             )
 
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->where('marketing_penjualan_transfer.tanggal', $request->tanggal)
             ->where('marketing_penjualan_transfer.kode_salesman', $request->kode_salesman)
             ->groupBy(
