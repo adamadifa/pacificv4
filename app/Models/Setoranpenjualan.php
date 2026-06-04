@@ -37,9 +37,11 @@ class Setoranpenjualan extends Model
             DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar='TP' AND giro_to_cash IS NULL AND voucher = 0,jumlah,0)) as cek_lhp_tagihan"),
             DB::raw("SUM(IF(giro_to_cash ='1',jumlah,0)) AS cek_giro_to_cash_transfer")
         )
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin('marketing_penjualan_historibayar_giro', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_giro.no_bukti')
             ->leftJoin('marketing_penjualan_historibayar_transfer', 'marketing_penjualan_historibayar.no_bukti', '=', 'marketing_penjualan_historibayar_transfer.no_bukti')
             ->where('voucher', 0)
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai])
             ->groupBy('marketing_penjualan_historibayar.kode_salesman', 'marketing_penjualan_historibayar.tanggal');
 
@@ -50,6 +52,8 @@ class Setoranpenjualan extends Model
             DB::raw("SUM(jumlah) as cek_lhp_giro")
         )
             ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('marketing_penjualan', 'marketing_penjualan_giro_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->whereBetween('marketing_penjualan_giro.tanggal', [$request->dari, $request->sampai])
             ->groupBy('marketing_penjualan_giro.kode_salesman', 'marketing_penjualan_giro.tanggal');
 
@@ -60,6 +64,7 @@ class Setoranpenjualan extends Model
             DB::raw("SUM(jumlah) as cek_lhp_transfer")
         )
             ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('marketing_penjualan', 'marketing_penjualan_transfer_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin(
                 DB::raw("(
                         SELECT marketing_penjualan_historibayar_transfer.no_bukti,kode_transfer,no_faktur,tanggal,giro_to_cash
@@ -73,6 +78,7 @@ class Setoranpenjualan extends Model
                 }
             )
 
+            ->where('marketing_penjualan.status_sampel', '!=', 1)
             ->whereBetween('marketing_penjualan_transfer.tanggal', [$request->dari, $request->sampai])
             ->whereNull('giro_to_cash')
             ->groupBy('marketing_penjualan_transfer.kode_salesman', 'marketing_penjualan_transfer.tanggal');
