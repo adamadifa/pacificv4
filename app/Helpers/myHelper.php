@@ -152,9 +152,9 @@ function DateToIndo($date2)
     if (!empty($date2)) {
         $tahun2 = substr($date2, 0, 4); // memisahkan format tahun menggunakan substring
         $bulan2 = substr($date2, 5, 2); // memisahkan format bulan menggunakan substring
-        $tgl2   = substr($date2, 8, 2); // memisahkan format tanggal menggunakan substring
+        $tgl2 = substr($date2, 8, 2); // memisahkan format tanggal menggunakan substring
 
-        $result = $tgl2 . " " . $BulanIndo2[(int)$bulan2 - 1] . " " . $tahun2;
+        $result = $tgl2 . " " . $BulanIndo2[(int) $bulan2 - 1] . " " . $tahun2;
         return ($result);
     } else {
         return "";
@@ -197,7 +197,7 @@ function getbulandantahunlalu($bulan, $tahun, $show)
 function getbulandantahunberikutnya($bulan, $tahun, $show)
 {
     if ($bulan == 12) {
-        $bulanberikutnya =  1;
+        $bulanberikutnya = 1;
         $tahunberikutnya = $tahun + 1;
     } else {
         $bulanberikutnya = $bulan + 1;
@@ -555,7 +555,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'PWT' => 'Yeni Listiana S',
         'TGR' => 'Robertus David',
         'BDG' => 'Dasep Reski Soejani',
-        'SKB' => 'Muhamad Yusuf Saefudin',
+        'SKB' => 'Muhamad Yusuf Saepudin',
         'TGL' => 'Imam Syafangat',
         'SBY' => 'Angga Wahyu',
         'SMR' => 'Muhammad Luthfi Amri',
@@ -565,7 +565,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'BKI' => 'Sumarido Tanjung',
         'PWK' => 'M. Ridwan Nugraha',
         'TSM' => 'Aceng Saepul Anwar',
-        'BTN' => 'Mauldy',
+        'BTN' => 'Rizki Dwi Maulana',
         'CRB' => 'Asep Ramdani'
     ];
 
