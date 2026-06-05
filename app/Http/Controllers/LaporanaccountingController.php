@@ -1142,11 +1142,19 @@ class LaporanaccountingController extends Controller
             })->sum('jumlah');
 
             $expenses = $data->filter(function($item) {
-                return preg_match('/^[6789]-/', $item->kode_akun);
+                return preg_match('/^[67]-/', $item->kode_akun);
+            })->sum('jumlah');
+
+            $other_income = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '8-');
+            })->sum('jumlah');
+
+            $other_expenses = $data->filter(function($item) {
+                return str_starts_with($item->kode_akun, '9-');
             })->sum('jumlah');
 
             $gross_profit = $sales - $cogs;
-            $net_profit = $sales - $cogs - $expenses;
+            $net_profit = $sales - $cogs - $expenses + $other_income - $other_expenses;
 
             $ratios[$i] = [
                 'current_ratio' => $current_liabilities != 0 ? ($current_assets / $current_liabilities) * 100 : 0,
