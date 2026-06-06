@@ -15,9 +15,9 @@ class Pelanggan extends Component
             ->where('pelanggan.kode_salesman', auth()->user()->kode_salesman)
             ->where('pelanggan.kode_cabang', auth()->user()->kode_cabang)
             ->when($this->namapelanggan_search, function ($query) {
-                $query->where(function($q) {
+                $query->where(function ($q) {
                     $q->where('nama_pelanggan', 'like', '%' . $this->namapelanggan_search . '%')
-                      ->orWhere('kode_pelanggan', 'like', '%' . $this->namapelanggan_search . '%');
+                        ->orWhere('kode_pelanggan', 'like', '%' . $this->namapelanggan_search . '%');
                 });
             })
             ->orderBy('tanggal_register', 'desc')

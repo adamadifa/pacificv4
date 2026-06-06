@@ -240,7 +240,7 @@
              </div>
              <div class="user-role-wrapper">
                  <i class="ti ti-shield role-icon"></i>
-                 <span class="user-role">{{ strtolower($level_user) }}</span>
+                 <span class="user-role">{{ strtolower($level_user) }} <br>{{ auth()->user()->kode_salesman }}<br>{{ auth()->user()->kode_cabang }}</span>
              </div>
          </div>
      </div>
