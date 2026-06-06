@@ -13,7 +13,7 @@ class Pelanggan extends Component
     {
         $this->datapelanggan = MPelanggan::join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
             ->where('pelanggan.kode_salesman', auth()->user()->kode_salesman)
-            ->where('pelanggan.kode_cabang', auth()->user()->kode_cabang)
+            ->where('pelanggan.kode_cabangd', auth()->user()->kode_cabang)
             ->when($this->namapelanggan_search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('nama_pelanggan', 'like', '%' . $this->namapelanggan_search . '%')
