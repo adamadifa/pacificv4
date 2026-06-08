@@ -119,7 +119,7 @@
                         <div>Monitoring Presensi</div>
                     </a>
                 </li>
-                @if (auth()->user()->hasRole(['super admin', 'spv presensi']))
+                @if (auth()->user()->hasRole(['super admin', 'spv presensi','asst. manager hrd']))
                     <li class="menu-item {{ request()->is(['presensi/logerror']) ? 'active' : '' }}">
                         <a href="{{ route('presensi.logerror') }}" class="menu-link">
                             <div>Log Error Presensi</div>
