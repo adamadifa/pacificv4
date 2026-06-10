@@ -15,9 +15,9 @@ use Carbon\Carbon;
 class AdmsController extends Controller
 {
     /**
-     * Method to handle JSON data from machine (e.g. Fingerspot)
+     * Backup capture method dengan validasi SN wajib terdaftar
      */
-    public function capture(Request $request)
+    public function captureV2(Request $request)
     {
         // 1. Identify Serial Number (Support Multi-Format)
         $devId = $request->header('dev-id') ??
@@ -79,6 +79,103 @@ class AdmsController extends Controller
             ->header('Content-Type', 'application/octet-stream; charset=utf-8')
             ->header('response_code', 'OK')
             ->header('Connection', 'close');
+    }
+
+    /**
+     * Method to handle JSON data from machine (e.g. Fingerspot)
+     */
+    public function capture(Request $request)
+    {
+        // 1. Identify Serial Number (Support Multi-Format)
+        $devId = $request->header('dev-id') ??
+            $request->header('dev_id') ??
+            $request->header('X-Dev-Id') ??
+            $_SERVER['HTTP_DEV_ID'] ??
+            $_SERVER['DEV_ID'] ??
+            $request->query('sn') ??
+            '';
+
+        $rawBody = $request->getContent();
+
+        // 2. Parse JSON from body
+        $jsonStart = strpos($rawBody, '{');
+        $jsonEnd = strrpos($rawBody, '}');
+        $jsonData = [];
+        if ($jsonStart !== false && $jsonEnd !== false) {
+            $jsonString = substr($rawBody, $jsonStart, $jsonEnd - $jsonStart + 1);
+            $jsonData = json_decode($jsonString, true) ?? [];
+        }
+
+        // 3. Find Machine
+        $mesin = MesinFingerprint::where('sn', $devId)->where('status', 'Aktif')->first();
+        
+        // Jika tidak ditemukan berdasarkan SN, gunakan mesin aktif pertama sebagai fallback
+        if (!$mesin) {
+            $mesin = MesinFingerprint::where('status', 'Aktif')->first();
+        }
+
+        if (!$mesin) {
+            Log::warning('No active machine found in database to process data', [
+                'sn' => $devId,
+                'ip' => $request->ip()
+            ]);
+
+            header('Content-Type: application/octet-stream; charset=utf-8');
+            header('response_code: OK');
+            header('Connection: close');
+            echo "OK";
+            exit;
+        }
+
+        // 4. Handle Heartbeat
+        if (empty($jsonData)) {
+            $transId = $request->header('trans-id') ?? $request->header('trans_id') ?? 'undefined';
+            $cmdCode = $request->header('cmd-code') ?? $request->header('cmd_code') ?? 'undefined';
+
+            header('Content-Type: application/octet-stream; charset=utf-8');
+            header('response_code: OK');
+            header('trans_id: ' . $transId);
+            header('cmd_code: ' . $cmdCode);
+            header('Connection: close');
+            echo "OK";
+            exit;
+        }
+
+        // 5. Process Attendance Data
+        if (isset($jsonData['user_id']) && isset($jsonData['io_time'])) {
+            // Format: 20260326011015 -> 2026-03-26 01:10:15
+            $io_time_str = $jsonData['io_time'];
+            $scan = (strlen($io_time_str) == 14)
+                ? substr($io_time_str, 0, 4) . '-' . substr($io_time_str, 4, 2) . '-' . substr($io_time_str, 6, 2) . ' ' . substr($io_time_str, 8, 2) . ':' . substr($io_time_str, 10, 2) . ':' . substr($io_time_str, 12, 2)
+                : date('Y-m-d H:i:s');
+
+            $io_mode = $jsonData['io_mode'] ?? 0;
+            $status_scan = ($io_mode >= 16777216) ? ($io_mode / 16777216) - 1 : ($jsonData['status_scan'] ?? 0);
+
+            $this->processAttendance($jsonData['user_id'], $scan, $status_scan, $mesin);
+        }
+
+        $transId = $request->header('trans-id') ?? $request->header('trans_id') ?? 'undefined';
+        $cmdCode = $request->header('cmd-code') ?? $request->header('cmd_code') ?? 'undefined';
+        $blkNo = $request->header('blk-no') ?? $request->header('blk_no');
+        $blkLen = $request->header('blk-len') ?? $request->header('blk_len');
+
+        // Bypass Laravel/Symfony Response Header Normalization to preserve underscores
+        header('Content-Type: application/octet-stream; charset=utf-8');
+        header('response_code: OK');
+        header('trans_id: ' . $transId);
+        header('cmd_code: ' . $cmdCode);
+        header('Connection: close');
+
+        if ($blkNo !== null) {
+            header('blk_no: ' . $blkNo);
+        }
+        if ($blkLen !== null) {
+            header('blk_len: ' . $blkLen);
+        }
+
+        echo "OK";
+        exit;
     }
 
     /**
