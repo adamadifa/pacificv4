@@ -981,7 +981,7 @@ class SfaControler extends Controller
             // $printer->text("Wajib Ditandatangani \n");
             // $printer->text("kedua belah pihak,\n");
             $printer->text("Apabila pembayaran dilakukan \n");
-            $printer->text("ke rekening pribadi salesman \n");
+            $printer->text("ke selain rekening perusahaan \n");
             $printer->text("atau dibayarkan tanpa \n");
             $printer->text("faktur asli maka pelanggan \n");
             $printer->text("bersedia dinyatakan \n");
@@ -1170,7 +1170,7 @@ class SfaControler extends Controller
             // $printer->text("Wajib Ditandatangani \n");
             // $printer->text("kedua belah pihak,\n");
             $printer->text("Apabila pembayaran dilakukan \n");
-            $printer->text("ke rekening pribadi salesman \n");
+            $printer->text("ke selain rekening perusahaan \n");
             $printer->text("atau dibayarkan tanpa \n");
             $printer->text("faktur asli maka pelanggan \n");
             $printer->text("bersedia dinyatakan \n");
@@ -1348,7 +1348,7 @@ class SfaControler extends Controller
                 // $printer->text("Wajib Ditandatangani \n");
                 // $printer->text("kedua belah pihak,\n");
                 $printer->text("Apabila pembayaran dilakukan \n");
-                $printer->text("ke rekening pribadi salesman \n");
+                $printer->text("ke selain rekening perusahaan \n");
                 $printer->text("atau dibayarkan tanpa \n");
                 $printer->text("faktur asli maka pelanggan \n");
                 $printer->text("bersedia dinyatakan \n");
