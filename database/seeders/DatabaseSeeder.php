@@ -76,7 +76,8 @@ class DatabaseSeeder extends Seeder
             Saldoawalledgerpermissionseeder::class,
             Mutasibankpermissionseeder::class,
             Saldoawalrekeningpermissionseeder::class,
-            LemburApprovalConfigSeeder::class
+            LemburApprovalConfigSeeder::class,
+            Dokumenopnamepermissionseeder::class,
         ]);
     }
 }

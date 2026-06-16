@@ -309,7 +309,7 @@
          @if (auth()->user()->hasAnyPermission(['sfa.penjualan']))
              <li class="menu-item {{ request()->is(['sfa/penjualan']) ? 'active' : '' }}">
                  <a href="{{ route('sfa.penjualan') }}" class="menu-link">
-                     <i class="menu-icon tf-icons ti ti-shopping-cart-check"></i>
+                     <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
                      <div>Penjualan</div>
                  </a>
              </li>

@@ -172,7 +172,15 @@ class SfaControler extends Controller
             'alamat_pelanggan' => 'required',
             'alamat_toko' => 'required',
             'kode_wilayah' => 'required',
-            'hari' => 'required'
+            'hari' => 'required',
+            'no_hp_pelanggan' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value !== 'NA' && strlen($value) < 10) {
+                        $fail('No. HP minimal harus 10 karakter.');
+                    }
+                },
+            ],
         ]);
 
 
@@ -280,7 +288,15 @@ class SfaControler extends Controller
             'alamat_pelanggan' => 'required',
             'alamat_toko' => 'required',
             'kode_wilayah' => 'required',
-            'hari' => 'required'
+            'hari' => 'required',
+            'no_hp_pelanggan' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value !== 'NA' && strlen($value) < 10) {
+                        $fail('No. HP minimal harus 10 karakter.');
+                    }
+                },
+            ],
         ]);
 
 

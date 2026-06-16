@@ -46,10 +46,6 @@ use Illuminate\Support\Facades\Redirect;
 
 class LaporanmarketingController extends Controller
 {
-    public function __construct()
-    {
-    }
-
     public function index()
     {
         $data['list_bulan'] = config('global.list_bulan');
@@ -240,7 +236,7 @@ class LaporanmarketingController extends Controller
 
         // dd($subqueryRetur->get());
 
-        $status_sampel_query = " AND marketing_penjualan.status_sampel = 0";
+        $status_sampel_query = "";
         if (!empty($request->status_sampel)) {
             if ($request->status_sampel == '1') {
                 $status_sampel_query = " AND marketing_penjualan.status_sampel = 1";
@@ -968,7 +964,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -998,7 +993,6 @@ class LaporanmarketingController extends Controller
         $query->orderBy('marketing_penjualan_historibayar.tanggal');
         $query->orderBy('marketing_penjualan_historibayar.no_faktur');
         $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
 
         if (!$user->hasRole($roles_access_all_cabang)) {
             if (empty($kode_cabang)) {
@@ -1062,7 +1056,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -1072,7 +1065,6 @@ class LaporanmarketingController extends Controller
         $qvoucher->join('cabang', 'pindahfaktur.kode_cabang_baru', '=', 'cabang.kode_cabang');
         $qvoucher->join('jenis_voucher', 'marketing_penjualan_historibayar.jenis_voucher', '=', 'jenis_voucher.id');
         $qvoucher->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        $qvoucher->where('marketing_penjualan.status_sampel', 0);
         $qvoucher->where('voucher', 1);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if (empty($kode_cabang)) {
@@ -1142,9 +1134,7 @@ class LaporanmarketingController extends Controller
             );
             $query->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
             $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
-            $query->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
             $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-            $query->where('marketing_penjualan.status_sampel', 0);
             if (!$user->hasRole($roles_access_all_cabang)) {
                 if ($user->hasRole('regional sales manager')) {
                     $query->where('cabang.kode_regional', $user->kode_regional);
@@ -1177,9 +1167,7 @@ class LaporanmarketingController extends Controller
                 DB::raw("SUM(jumlah) as total"),
             );
             $query->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
-            $query->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
             $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-            $query->where('marketing_penjualan.status_sampel', 0);
 
             if (!$user->hasRole($roles_access_all_cabang)) {
                 if ($user->hasRole('regional sales manager')) {
@@ -1247,7 +1235,6 @@ class LaporanmarketingController extends Controller
         $query->orderBy('marketing_penjualan_historibayar.no_faktur');
 
         $query->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('voucher', 0);
         $query->whereNull('marketing_penjualan_historibayar_giro.kode_giro');
         $query->whereNull('marketing_penjualan_historibayar_transfer.kode_transfer');
@@ -1282,7 +1269,6 @@ class LaporanmarketingController extends Controller
 
 
         $query->orwhereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('voucher', 0);
         $query->whereNotNull('marketing_penjualan_historibayar_giro.kode_giro');
         $query->whereNull('marketing_penjualan_historibayar_transfer.kode_transfer');
@@ -1333,7 +1319,6 @@ class LaporanmarketingController extends Controller
         $querygiro->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman');
         $querygiro->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $querygiro->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $querygiro->where('marketing_penjualan.status_sampel', 0);
         $querygiro->whereBetween('marketing_penjualan_giro.tanggal', [$request->dari, $request->sampai]);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if (empty($kode_cabang)) {
@@ -1389,7 +1374,6 @@ class LaporanmarketingController extends Controller
         $querytransfer->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman');
         $querytransfer->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $querytransfer->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
-        $querytransfer->where('marketing_penjualan.status_sampel', 0);
         $querytransfer->whereBetween('marketing_penjualan_transfer.tanggal', [$request->dari, $request->sampai]);
         if (!$user->hasRole($roles_access_all_cabang)) {
             if (empty($kode_cabang)) {
@@ -1438,7 +1422,6 @@ class LaporanmarketingController extends Controller
         $queryvoucher->orderBy('marketing_penjualan_historibayar.no_faktur');
 
         $queryvoucher->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
-        $queryvoucher->where('marketing_penjualan.status_sampel', 0);
         $queryvoucher->where('voucher', 1);
 
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -1547,7 +1530,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -1562,7 +1544,6 @@ class LaporanmarketingController extends Controller
 
 
         $qretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
-        $qretur->where('marketing_penjualan.status_sampel', 0);
         if (!empty($kode_cabang)) {
             $qretur->where('salesman.kode_cabang', $kode_cabang);
         } else {
@@ -1640,7 +1621,6 @@ class LaporanmarketingController extends Controller
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('status_promosi', 0);
         $query->where('status_batal', 0);
         if (!empty($kode_cabang)) {
@@ -1690,7 +1670,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->dari'  GROUP BY no_faktur)
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_retur.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -1735,7 +1714,6 @@ class LaporanmarketingController extends Controller
         $queryPotongan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $queryPotongan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
         $queryPotongan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $queryPotongan->where('marketing_penjualan.status_sampel', 0);
         $queryPotongan->where('status_batal', 0);
         if (!empty($kode_cabang)) {
             $queryPotongan->where('salesman.kode_cabang', $kode_cabang);
@@ -1790,7 +1768,6 @@ class LaporanmarketingController extends Controller
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->when(!empty($kode_cabang), function ($query) use ($kode_cabang) {
                 return $query->where('salesman.kode_cabang', $kode_cabang);
             })
@@ -1821,7 +1798,6 @@ class LaporanmarketingController extends Controller
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('status_batal', 0);
         if (!empty($kode_cabang)) {
             $query->where('salesman.kode_cabang', $kode_cabang);
@@ -1900,7 +1876,6 @@ class LaporanmarketingController extends Controller
             $qdetailpenjualan->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
             $qdetailpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
             $qdetailpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-            $qdetailpenjualan->where('marketing_penjualan.status_sampel', 0);
             if (!empty($kode_cabang)) {
                 $qdetailpenjualan->where('salesman.kode_cabang', $kode_cabang);
             } else {
@@ -1938,7 +1913,6 @@ class LaporanmarketingController extends Controller
             $qretur->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
             $qretur->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
             $qretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
-            $qretur->where('marketing_penjualan.status_sampel', 0);
 
             $qretur->where('jenis_retur', 'PF');
 
@@ -1996,7 +1970,6 @@ class LaporanmarketingController extends Controller
                 $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
             });
             $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-            $query->where('marketing_penjualan.status_sampel', 0);
             $query->where('status_batal', 0);
             if (!empty($kode_cabang)) {
                 $query->where('salesman.kode_cabang', $kode_cabang);
@@ -2133,7 +2106,6 @@ class LaporanmarketingController extends Controller
             $qdetailpenjualan->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
             $qdetailpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
             $qdetailpenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-            $qdetailpenjualan->where('marketing_penjualan.status_sampel', 0);
             if (!empty($kode_cabang)) {
                 $qdetailpenjualan->where('salesman.kode_cabang', $kode_cabang);
             } else {
@@ -2195,7 +2167,6 @@ class LaporanmarketingController extends Controller
             });
 
             $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-            $query->where('marketing_penjualan.status_sampel', 0);
             $query->where('status_batal', 0);
             if (!empty($kode_cabang)) {
                 $query->where('salesman.kode_cabang', $kode_cabang);
@@ -2263,7 +2234,6 @@ class LaporanmarketingController extends Controller
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->when(!empty($kode_cabang), function ($query) use ($kode_cabang) {
                 return $query->where('salesman.kode_cabang', $kode_cabang);
             })
@@ -2296,7 +2266,6 @@ class LaporanmarketingController extends Controller
         $query->leftjoin('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->leftjoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', '=', 'marketing_klasifikasi_outlet.kode_klasifikasi');
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('status_batal', 0);
         if (!empty($kode_cabang)) {
             $query->where('salesman.kode_cabang', $kode_cabang);
@@ -2478,7 +2447,6 @@ class LaporanmarketingController extends Controller
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('salesman.kode_cabang', $kode_cabang);
         $query->where('status_batal', 0);
         $query->groupBy('pelanggan.kode_wilayah', 'nama_wilayah');
@@ -2560,7 +2528,6 @@ class LaporanmarketingController extends Controller
         $querypenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         if (!empty($kode_cabang)) {
             $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
         }
@@ -2617,7 +2584,6 @@ class LaporanmarketingController extends Controller
         $querypembayaran->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypembayaran->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $querypembayaran->whereBetween('marketing_penjualan_historibayar.tanggal', [$dari, $sampai]);
-        $querypembayaran->where('marketing_penjualan.status_sampel', 0);
         if (!empty($kode_cabang)) {
             $querypembayaran->where('salesman.kode_cabang', $kode_cabang);
         }
@@ -2676,7 +2642,6 @@ class LaporanmarketingController extends Controller
         $queryqty->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $queryqty->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $queryqty->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
-        $queryqty->where('marketing_penjualan.status_sampel', 0);
         if (!empty($kode_cabang)) {
             $queryqty->where('salesman.kode_cabang', $kode_cabang);
         }
@@ -2783,7 +2748,6 @@ class LaporanmarketingController extends Controller
             }
         );
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         $query->where('jenis_transaksi', 'T');
         $query->where('marketing_penjualan.jenis_bayar', 'TR');
         $query->where('marketing_penjualan.status_batal', 0);
@@ -2844,7 +2808,6 @@ class LaporanmarketingController extends Controller
             );
             $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
             $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-            $query->where('marketing_penjualan.status_sampel', 0);
             $query->where('salesman.kode_cabang', $kode_cabang);
             $query->where('status_batal', 0);
             $query->groupBy('marketing_penjualan.kode_salesman', 'salesman.nama_salesman');
@@ -2858,7 +2821,6 @@ class LaporanmarketingController extends Controller
                 ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                 ->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai])
-                ->where('marketing_penjualan.status_sampel', 0)
                 ->where('salesman.kode_cabang', $kode_cabang)
                 ->orderBy('produk_harga.kode_produk')
                 ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
@@ -2879,7 +2841,6 @@ class LaporanmarketingController extends Controller
             $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
             $query->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
             $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-            $query->where('marketing_penjualan.status_sampel', 0);
             $query->where('status_promosi', 0);
             $query->where('status_batal', 0);
             $query->where('salesman.kode_cabang', $kode_cabang);
@@ -2967,7 +2928,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->dari' GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -2978,7 +2938,6 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         // $querysaldoawal->where('bulan', $bulan);
         // $querysaldoawal->where('tahun', $tahun);
-        $querysaldoawal->where('marketing_penjualan.status_sampel', 0);
         $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal->kode_saldo_awal);
         $querysaldoawal->whereRaw("IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)- IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
             INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal >= '$saldoawal_date' AND marketing_retur.tanggal < '$request->dari'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal >= '$saldoawal_date' AND marketing_penjualan_historibayar.tanggal < '$request->dari'),0) != 0");
@@ -3060,7 +3019,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->dari'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -3071,7 +3029,6 @@ class LaporanmarketingController extends Controller
         $querysaldoawalbulanini->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $querysaldoawalbulanini->where('marketing_penjualan.tanggal', '>=', $saldoawal_date);
         $querysaldoawalbulanini->where('marketing_penjualan.tanggal', '<', $request->dari);
-        $querysaldoawalbulanini->where('marketing_penjualan.status_sampel', 0);
         $querysaldoawalbulanini->where('jenis_transaksi', 'K');
         $querysaldoawalbulanini->where('status_batal', 0);
         $querysaldoawalbulanini->whereRaw("IFNULL((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur),0) - potongan - potongan_istimewa - penyesuaian + ppn -  IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
@@ -3161,7 +3118,6 @@ class LaporanmarketingController extends Controller
         $querypenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypenjualan->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         $querypenjualan->where('jenis_transaksi', 'K');
         $querypenjualan->where('status_batal', 0);
         if (!empty($kode_cabang)) {
@@ -3306,7 +3262,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -3319,7 +3274,6 @@ class LaporanmarketingController extends Controller
         // $querysaldoawal->where('bulan', $bulan);
         // $querysaldoawal->where('tahun', $tahun);
         $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal->kode_saldo_awal);
-        $querysaldoawal->where('marketing_penjualan.status_sampel', 0);
         if (!empty($kode_cabang)) {
             $querysaldoawal->where('kode_cabang_baru', $kode_cabang);
         }
@@ -3413,7 +3367,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -3423,7 +3376,6 @@ class LaporanmarketingController extends Controller
         $querypenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypenjualan->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$saldoawal_date, $request->tanggal]);
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         $querypenjualan->where('jenis_transaksi', 'K');
         $querypenjualan->where('status_batal', 0);
         if (!empty($kode_cabang)) {
@@ -3536,7 +3488,6 @@ class LaporanmarketingController extends Controller
         $qpelangganBelumlunas2faktur->groupBy('kode_pelanggan');
         $qpelangganBelumlunas2faktur->join('salesman', 'salesman.kode_salesman', '=', 'marketing_penjualan.kode_salesman');
         $qpelangganBelumlunas2faktur->where('status_batal', 0);
-        $qpelangganBelumlunas2faktur->where('marketing_penjualan.status_sampel', 0);
         // $qpelangganBelumlunas2faktur->where('status', 0);
         $qpelangganBelumlunas2faktur->whereRaw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal <= '$request->tanggal'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal <= '$request->tanggal'),0)  > 0");
         $qpelangganBelumlunas2faktur->where('marketing_penjualan.tanggal', '<=', $request->tanggal);
@@ -3572,7 +3523,6 @@ class LaporanmarketingController extends Controller
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $query->where('status_batal', 0);
-        $query->where('marketing_penjualan.status_sampel', 0);
 
         $query->whereRaw("(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - penyesuaian - potongan_istimewa + ppn - IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal <= '$request->tanggal'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal <= '$request->tanggal'),0)  > 0");
 
@@ -3615,7 +3565,6 @@ class LaporanmarketingController extends Controller
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->where('marketing_penjualan.tanggal', $request->tanggal)
             ->where('marketing_penjualan.kode_salesman', $request->kode_salesman)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->orderBy('produk_harga.kode_produk')
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
             ->get();
@@ -3649,7 +3598,6 @@ class LaporanmarketingController extends Controller
         $qdetailpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
         $qdetailpenjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         $qdetailpenjualan->where('marketing_penjualan.tanggal', $request->tanggal);
-        $qdetailpenjualan->where('marketing_penjualan.status_sampel', 0);
         $qdetailpenjualan->groupBy(
             'marketing_penjualan_detail.no_faktur',
             'nama_pelanggan',
@@ -3683,7 +3631,6 @@ class LaporanmarketingController extends Controller
 
         $qhistoribayar->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman);
         $qhistoribayar->where('marketing_penjualan_historibayar.tanggal', $request->tanggal);
-        $qhistoribayar->where('marketing_penjualan.status_sampel', 0);
         $qhistoribayar->groupBy('marketing_penjualan_historibayar.no_faktur', 'nama_pelanggan', 'status_batal');
 
 
@@ -3755,7 +3702,6 @@ class LaporanmarketingController extends Controller
             ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', DB::raw('SUM(jumlah) as qty'))
             ->where('marketing_penjualan.kode_salesman', $request->kode_salesman)
             ->where('marketing_penjualan.tanggal', $request->tanggal)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->where('status_batal', 0)
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
             ->orderBy('produk_harga.kode_produk')
@@ -3799,7 +3745,6 @@ class LaporanmarketingController extends Controller
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->orderBy('produk_harga.kode_produk')
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack');
 
@@ -3808,7 +3753,6 @@ class LaporanmarketingController extends Controller
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$start_date_lastyear, $end_date_lastyear])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->orderBy('produk_harga.kode_produk')
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack');
 
@@ -3901,7 +3845,6 @@ class LaporanmarketingController extends Controller
             })
             ->where('status_promosi', 0)
             ->where('marketing_penjualan.status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->groupBy('salesman.kode_cabang', 'nama_cabang');
 
         //dd($penjualanlastyear->get());
@@ -3922,7 +3865,6 @@ class LaporanmarketingController extends Controller
             })
             ->where('status_promosi', 0)
             ->where('marketing_penjualan.status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->groupBy('salesman.kode_cabang', 'nama_cabang');
 
         $target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
@@ -4037,7 +3979,6 @@ class LaporanmarketingController extends Controller
             ->where('salesman.kode_cabang', $kode_cabang)
             ->where('status_promosi', 0)
             ->where('marketing_penjualan.status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->groupBy('marketing_penjualan.kode_salesman', 'nama_salesman');
 
         //dd($penjualanlastyear->get());
@@ -4056,7 +3997,9 @@ class LaporanmarketingController extends Controller
             ->where('salesman.kode_cabang', $kode_cabang)
             ->where('status_promosi', 0)
             ->where('marketing_penjualan.status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
+            ->groupBy('marketing_penjualan.kode_salesman', 'nama_salesman')
+            ->where('status_promosi', 0)
+            ->where('marketing_penjualan.status_batal', 0)
             ->groupBy('marketing_penjualan.kode_salesman', 'nama_salesman');
 
         $target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
@@ -4120,7 +4063,6 @@ class LaporanmarketingController extends Controller
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->orderBy('produk_harga.kode_produk')
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_produk')
             ->get();
@@ -4154,7 +4096,6 @@ class LaporanmarketingController extends Controller
             ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->where('status_promosi', 0)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->first();
 
         $penjualan = Penjualan::select(
@@ -4167,7 +4108,6 @@ class LaporanmarketingController extends Controller
 
         )
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('status_sampel', 0)
             ->first();
 
 
@@ -4175,10 +4115,8 @@ class LaporanmarketingController extends Controller
             ...$selectColumnkodeprodukretur
         )
             ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
-            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->whereBetween('marketing_retur.tanggal', [$dari, $sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->first();
 
         $data['detail'] = $detail;
@@ -4436,7 +4374,6 @@ class LaporanmarketingController extends Controller
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->where('salesman.kode_cabang', $kode_cabang)
             ->orderBy('produk_harga.kode_produk')
             ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
@@ -4497,7 +4434,6 @@ class LaporanmarketingController extends Controller
                         INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                     WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$dari'
                     ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                    WHERE marketing_penjualan.status_sampel = 0
                 ) pindahfaktur"),
                 function ($join) {
                     $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -4507,7 +4443,6 @@ class LaporanmarketingController extends Controller
             ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$dari, $sampai])
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->select(
                 'kode_salesman_baru',
                 DB::raw("SUM(IF(produk_harga.kode_produk='BR500',jumlah,0)) as `realisasi_BR500`"),
@@ -4521,7 +4456,6 @@ class LaporanmarketingController extends Controller
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('status_promosi', 0)
             ->where('status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->select('marketing_penjualan.kode_salesman', ...$selectColumnRealisasikendaraan)
@@ -4534,7 +4468,6 @@ class LaporanmarketingController extends Controller
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
             ->where('status_batal', 0)
-            ->where('status_sampel', 0)
             ->groupBy('pelanggan.kode_salesman');
 
         $subqueryOA3bulan = Penjualan::select('pelanggan.kode_salesman', DB::raw('COUNT(DISTINCT(marketing_penjualan.kode_pelanggan)) as realisasi_oa3bulan'))
@@ -4543,7 +4476,6 @@ class LaporanmarketingController extends Controller
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$start_tigabulanlalu, $end_date_bulanlalu])
             ->where('status_batal', 0)
-            ->where('status_sampel', 0)
             ->groupBy('pelanggan.kode_salesman');
 
         //Penjualan vs AVG
@@ -4586,7 +4518,6 @@ class LaporanmarketingController extends Controller
                     marketing_penjualan
                 WHERE
                     marketing_penjualan.tanggal BETWEEN '$dari' AND '$sampai'
-                    AND marketing_penjualan.status_sampel = 0
                 GROUP BY
                     marketing_penjualan.kode_pelanggan,
                     marketing_penjualan.kode_salesman
@@ -4598,7 +4529,6 @@ class LaporanmarketingController extends Controller
             ->join('salesman', 'salesbulanini.kode_salesman', '=', 'salesman.kode_salesman')
             ->where('salesman.kode_cabang', $kode_cabang)
             ->whereBetween('marketing_penjualan.tanggal', [$start_date_bulanlalu, $sampai])
-            ->where('marketing_penjualan.status_sampel', 0)
             ->where('status_batal', 0)
             ->groupBy('marketing_penjualan.kode_pelanggan', 'salesbulanini.kode_salesman');
 
@@ -4647,7 +4577,6 @@ class LaporanmarketingController extends Controller
                         INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                     WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
                     ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                    WHERE marketing_penjualan.status_sampel = 0
                 ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -4658,7 +4587,6 @@ class LaporanmarketingController extends Controller
         // $querysaldoawal->where('bulan', $bulan);
         // $querysaldoawal->where('tahun', $tahun);
         $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal->kode_saldo_awal);
-        $querysaldoawal->where('marketing_penjualan.status_sampel', 0);
 
         $querysaldoawal->whereRaw("IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)- IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
                 INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$dari' AND '$sampai'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur  AND marketing_penjualan_historibayar.tanggal BETWEEN '$dari' AND '$sampai'),0) != 0");
@@ -4704,7 +4632,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -4712,7 +4639,6 @@ class LaporanmarketingController extends Controller
         );
         $querypenjualan->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         $querypenjualan->where('jenis_transaksi', 'K');
         $querypenjualan->where('status_batal', 0);
         $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
@@ -4809,7 +4735,7 @@ class LaporanmarketingController extends Controller
                     FROM
                     `marketing_penjualan`
                     INNER JOIN `salesman` ON `marketing_penjualan`.`kode_salesman` = `salesman`.`kode_salesman`
-                    WHERE `tanggal` BETWEEN '$dari' AND '$sampai' AND `status_batal` = '0' AND marketing_penjualan.status_sampel = 0 AND salesman.kode_cabang = '$kode_cabang'
+                    WHERE `tanggal` BETWEEN '$dari' AND '$sampai' AND `status_batal` = '0' AND salesman.kode_cabang = '$kode_cabang'
                     GROUP BY
                         marketing_penjualan.kode_salesman
                 ) kunjungan"),
@@ -5113,7 +5039,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->tanggal' GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -5126,7 +5051,6 @@ class LaporanmarketingController extends Controller
         // $querysaldoawal->where('bulan', $bulan);
         // $querysaldoawal->where('tahun', $tahun);
         $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal->kode_saldo_awal);
-        $querysaldoawal->where('marketing_penjualan.status_sampel', 0);
         if (!empty($kode_cabang)) {
             $querysaldoawal->where('kode_cabang_baru', $kode_cabang);
         }
@@ -5213,7 +5137,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$request->tanggal'
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -5223,7 +5146,6 @@ class LaporanmarketingController extends Controller
         $querypenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypenjualan->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$saldoawal_date, $request->tanggal]);
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         $querypenjualan->where('jenis_transaksi', 'K');
         $querypenjualan->where('status_batal', 0);
         if (!empty($kode_cabang)) {
@@ -5324,7 +5246,6 @@ class LaporanmarketingController extends Controller
         $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         if (!empty($request->kode_cabang)) {
             $query->where('salesman.kode_cabang', $kode_cabang);
         }
@@ -5344,7 +5265,6 @@ class LaporanmarketingController extends Controller
         );
         $querypenjualan->whereBetween('tanggal', [$request->dari, $request->sampai]);
         $querypenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         if ($request->kode_cabang != "") {
             $querypenjualan->where('salesman.kode_cabang', $request->kode_cabang);
         }
@@ -5360,7 +5280,6 @@ class LaporanmarketingController extends Controller
         $queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $queryretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $queryretur->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
-        $queryretur->where('marketing_penjualan.status_sampel', 0);
         if (!empty($request->kode_cabang)) {
             $queryretur->where('salesman.kode_cabang', $kode_cabang);
         }
@@ -5421,7 +5340,6 @@ class LaporanmarketingController extends Controller
         $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         if (!empty($request->kode_cabang)) {
             $query->where('salesman.kode_cabang', $request->kode_cabang);
         }
@@ -5453,7 +5371,6 @@ class LaporanmarketingController extends Controller
         $qproduk->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $qproduk->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
-        $qproduk->where('marketing_penjualan.status_sampel', 0);
         if (!empty($request->kode_cabang)) {
             $qproduk->where('salesman.kode_cabang', $request->kode_cabang);
         }
@@ -5484,7 +5401,6 @@ class LaporanmarketingController extends Controller
         $query->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->whereBetween('marketing_retur.tanggal', [$request->dari, $request->sampai]);
-        $query->where('marketing_penjualan.status_sampel', 0);
         if (!empty($request->kode_cabang)) {
             $query->where('salesman.kode_cabang', $request->kode_cabang);
         }
@@ -5517,7 +5433,6 @@ class LaporanmarketingController extends Controller
         $qproduk->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $qproduk->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $qproduk->where('marketing_penjualan.status_sampel', 0);
         if (!empty($request->kode_cabang)) {
             $qproduk->where('salesman.kode_cabang', $request->kode_cabang);
         }
@@ -5566,7 +5481,6 @@ class LaporanmarketingController extends Controller
         $querydetail->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $querydetail->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $querydetail->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $querydetail->where('marketing_penjualan.status_sampel', 0);
         $querydetail->where('status_batal', 0);
         if (!empty($kode_cabang)) {
             $querydetail->where('salesman.kode_cabang', $kode_cabang);
@@ -5607,7 +5521,6 @@ class LaporanmarketingController extends Controller
         $querypenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $querypenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
-        $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         $querypenjualan->where('status_batal', 0);
         $querypenjualan->where('nama_pelanggan', '!=', 'BATAL');
         if (!empty($kode_cabang)) {
@@ -5666,7 +5579,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->dari'  GROUP BY no_faktur)
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_retur.no_faktur', '=', 'pindahfaktur.no_faktur');
@@ -5713,8 +5625,6 @@ class LaporanmarketingController extends Controller
             ...$selectColumproductNull
         );
         $queryhistoribayar->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
-        $queryhistoribayar->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $queryhistoribayar->where('marketing_penjualan.status_sampel', 0);
         $queryhistoribayar->whereBetween('marketing_penjualan_historibayar.tanggal', [$request->dari, $request->sampai]);
         if (!empty($kode_cabang)) {
             $queryhistoribayar->where('salesman.kode_cabang', $kode_cabang);
@@ -5723,6 +5633,7 @@ class LaporanmarketingController extends Controller
             $queryhistoribayar->where('marketing_penjualan_historibayar.kode_salesman', $request->kode_salesman);
         }
         $queryhistoribayar->groupBy('marketing_penjualan_historibayar.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
+
 
 
         $bulan = date('m', strtotime($request->dari));
@@ -5816,7 +5727,6 @@ class LaporanmarketingController extends Controller
                     INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
                 WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$request->dari' GROUP BY no_faktur)
                 ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                WHERE marketing_penjualan.status_sampel = 0
             ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan_historibayar.no_faktur', '=', 'pindahfaktur.no_faktur');

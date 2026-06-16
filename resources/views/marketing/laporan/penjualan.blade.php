@@ -44,6 +44,13 @@
         ]" key="kode" textShow="nama"
             hideLabel="true" selected="2" />
     </div>
+    <div class="form-group mb-3">
+        <x-select label="Status Sampel" name="status_sampel" id="status_sampel" :data="[
+            (object) ['kode' => '1', 'nama' => 'Sampel'],
+            (object) ['kode' => '2', 'nama' => 'Tanpa Status Sampel'],
+        ]" key="kode" textShow="nama"
+            hideLabel="true" selected="2" />
+    </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />

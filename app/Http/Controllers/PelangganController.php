@@ -132,7 +132,15 @@ class PelangganController extends Controller
                 'kode_cabang' => 'required',
                 'kode_salesman' => 'required',
                 'kode_wilayah' => 'required',
-                'hari' => 'required'
+                'hari' => 'required',
+                'no_hp_pelanggan' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if ($value !== 'NA' && strlen($value) < 10) {
+                            $fail('No. HP minimal harus 10 karakter.');
+                        }
+                    },
+                ],
             ]);
         } else {
             $kode_cabang = auth()->user()->kode_cabang;
@@ -142,7 +150,15 @@ class PelangganController extends Controller
                 'alamat_toko' => 'required',
                 'kode_salesman' => 'required',
                 'kode_wilayah' => 'required',
-                'hari' => 'required'
+                'hari' => 'required',
+                'no_hp_pelanggan' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if ($value !== 'NA' && strlen($value) < 10) {
+                            $fail('No. HP minimal harus 10 karakter.');
+                        }
+                    },
+                ],
             ]);
         }
 
@@ -264,7 +280,15 @@ class PelangganController extends Controller
                 'kode_cabang' => 'required',
                 'kode_salesman' => 'required',
                 'kode_wilayah' => 'required',
-                'hari' => 'required'
+                'hari' => 'required',
+                'no_hp_pelanggan' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if ($value !== 'NA' && strlen($value) < 10) {
+                            $fail('No. HP minimal harus 10 karakter.');
+                        }
+                    },
+                ],
             ]);
         } else {
             $kode_cabang = auth()->user()->kode_cabang;
@@ -274,7 +298,15 @@ class PelangganController extends Controller
                 'alamat_toko' => 'required',
                 'kode_salesman' => 'required',
                 'kode_wilayah' => 'required',
-                'hari' => 'required'
+                'hari' => 'required',
+                'no_hp_pelanggan' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if ($value !== 'NA' && strlen($value) < 10) {
+                            $fail('No. HP minimal harus 10 karakter.');
+                        }
+                    },
+                ],
             ]);
         }
 

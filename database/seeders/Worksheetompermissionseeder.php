@@ -84,10 +84,20 @@ class Worksheetompermissionseeder extends Seeder
             'id_permission_group' => $permissiongroup->id
         ]);
 
+        Permission::create([
+            'name' => 'worksheetom.dokumenopname',
+            'id_permission_group' => $permissiongroup->id
+        ]);
+
 
         $permissions = Permission::where('id_permission_group', $permissiongroup->id)->get();
         $roleID = 1;
         $role = Role::findById($roleID);
         $role->givePermissionTo($permissions);
+
+        $omRole = Role::where('name', 'operation manager')->first();
+        if ($omRole) {
+            $omRole->givePermissionTo('worksheetom.dokumenopname');
+        }
     }
 }

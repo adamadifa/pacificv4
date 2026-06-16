@@ -1,4 +1,5 @@
-@if (auth()->user()->hasAnyPermission([
+@if (
+        auth()->user()->hasAnyPermission([
             'worksheetom.oman',
             'worksheetom.komisisalesman',
             'worksheetom.insentifom',
@@ -12,14 +13,15 @@
             'worksheetom.evaluasisharing',
             'worksheetom.bbm',
             'worksheetom.ratiobs',
+            'worksheetom.dokumenopname',
             'ajuanprogramikatan.index',
             'pencairanprogramikt.index',
             'pencairanprogram.index',
             'ajuankumulatif.index',
             'programikatan2026.index',
-        ]))
-    <li
-        class="menu-item {{ request()->is([
+        ])
+    )
+    <li class="menu-item {{ request()->is([
             'worksheetom/omancabang',
             'worksheetom/oman',
             'worksheetom/komisisalesman',
@@ -34,6 +36,8 @@
             'worksheetom/evaluasisharing',
             'worksheetom/bbm',
             'worksheetom/ratiobs',
+            'worksheetom/dokumenopname',
+            'worksheetom/dokumenopname/*',
             'worksheetom/*',
             'ajuanprogramikatan',
             'ajuanprogramikatan/*',
@@ -104,7 +108,7 @@
                 <li class="menu-item {{ request()->is('visitpelanggan') ? 'active' : '' }}">
                     <a href="{{ route('worksheetom.visitpelanggan') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
-                        <div>Visit Pelanggan</div>
+                        <div>Validasi Faktur</div>
                     </a>
                 </li>
             @endcan
@@ -119,22 +123,21 @@
             @endcan
 
             @can('monitoringprogram.index')
-                <li
-                    class="menu-item {{ request()->is(
-                        'monitoringprogram',
-                        'ajuanprogramikatan',
-                        'ajuanprogramikatan/*',
-                        'pencairanprogram',
-                        'pencairanprogram/*',
-                        'pencairanprogramikatan',
-                        'pencairanprogramikatan/*',
-                        'ajuankumulatif',
-                        'ajuankumulatif/*',
-                        'programikatan2026',
-                        'programikatan2026/*',
-                    )
-                        ? 'active'
-                        : '' }}">
+                <li class="menu-item {{ request()->is(
+                    'monitoringprogram',
+                    'ajuanprogramikatan',
+                    'ajuanprogramikatan/*',
+                    'pencairanprogram',
+                    'pencairanprogram/*',
+                    'pencairanprogramikatan',
+                    'pencairanprogramikatan/*',
+                    'ajuankumulatif',
+                    'ajuankumulatif/*',
+                    'programikatan2026',
+                    'programikatan2026/*',
+                )
+                    ? 'active'
+                    : '' }}">
                     @if ($level_user == 'manager keuangan' || $level_user == 'staff keuangan')
                         <a href="{{ route('programmarketing.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-box"></i>
@@ -191,6 +194,15 @@
                     <a href="{{ route('worksheetom.ratiobs') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-box"></i>
                         <div>Ratio BS</div>
+                    </a>
+                </li>
+            @endcan
+
+            @can('worksheetom.dokumenopname')
+                <li class="menu-item {{ request()->is('worksheetom/dokumenopname') ? 'active' : '' }}">
+                    <a href="{{ route('worksheetom.dokumenopname') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-box"></i>
+                        <div>Upload Dok. Opname</div>
                     </a>
                 </li>
             @endcan

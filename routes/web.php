@@ -190,6 +190,7 @@ use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\BPBController;
 use App\Http\Controllers\BPBPembelianController;
 use App\Http\Controllers\InternalMemoController;
+use App\Http\Controllers\DokumenopnameController;
 use App\Models\Barangkeluargudangbahan;
 use App\Models\Barangproduksi;
 use App\Models\Kontrabonpembelian;
@@ -2574,6 +2575,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/worksheetom/bbm', [WorksheetomController::class, 'bbm'])->name('worksheetom.bbm')->can('worksheetom.bbm');
     Route::get('/worksheetom/ratiobs', [LaporanmarketingController::class, 'ratiobs'])->name('worksheetom.ratiobs')->can('worksheetom.ratiobs');
     Route::get('/worksheetom/bbm', [BBMController::class, 'index'])->name('worksheetom.bbm')->can('worksheetom.bbm');
+
+    Route::controller(DokumenopnameController::class)->group(function () {
+        Route::get('/worksheetom/dokumenopname', 'index')->name('worksheetom.dokumenopname')->can('worksheetom.dokumenopname');
+        Route::get('/worksheetom/dokumenopname/create', 'create')->name('worksheetom.dokumenopname.create')->can('worksheetom.dokumenopname');
+        Route::post('/worksheetom/dokumenopname/store', 'store')->name('worksheetom.dokumenopname.store')->can('worksheetom.dokumenopname');
+        Route::delete('/worksheetom/dokumenopname/{kode_dokumen_opname}/delete', 'destroy')->name('worksheetom.dokumenopname.delete')->can('worksheetom.dokumenopname');
+    });
 
 
     Route::controller(SaldoawalbukubesarController::class)->group(function () {

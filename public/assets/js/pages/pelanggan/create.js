@@ -32,6 +32,16 @@
                     validators: {
                         notEmpty: {
                             message: 'No. HP Harus Diisi'
+                        },
+                        callback: {
+                            message: 'No. HP Minimal 10 Karakter',
+                            callback: function(input) {
+                                const value = input.value;
+                                if (value === 'NA' || value.length >= 10) {
+                                    return true;
+                                }
+                                return false;
+                            }
                         }
                     },
 
