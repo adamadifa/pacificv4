@@ -25,6 +25,7 @@
                     <th>Nama Pelanggan</th>
                     <th>Alamat</th>
                     <th>Tgl Faktur</th>
+                    <th>Jenis Kunjungan</th>
                     <th>Hasil Konfirmasi</th>
                     <th>Note</th>
                     <th>Saran / Keluhan Produk</th>
@@ -41,6 +42,7 @@
                         <td>{{ $d->nama_pelanggan }}</td>
                         <td>{{ $d->alamat_pelanggan }}</td>
                         <td>{{ formatIndo($d->tanggal_faktur) }}</td>
+                        <td>{{ $d->jenis_kunjungan }}</td>
                         <td>{{ $d->hasil_konfirmasi }}</td>
                         <td>{{ $d->note }}</td>
                         <td>{{ $d->saran }}</td>

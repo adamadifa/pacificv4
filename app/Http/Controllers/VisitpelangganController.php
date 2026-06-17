@@ -126,6 +126,7 @@ class VisitpelangganController extends Controller
 
         $request->validate([
             'tanggal' => 'required',
+            'jenis_kunjungan' => 'required|in:OTD,OTS',
             'hasil_konfirmasi' => 'required',
             'note' => 'required',
             'saran' => 'required',
@@ -146,6 +147,7 @@ class VisitpelangganController extends Controller
                 'kode_visit' => $kode_visit,
                 'no_faktur' => $no_faktur,
                 'tanggal' => $request->tanggal,
+                'jenis_kunjungan' => $request->jenis_kunjungan,
                 'hasil_konfirmasi' => $request->hasil_konfirmasi,
                 'note' => $request->note,
                 'saran' => $request->saran,
@@ -174,6 +176,7 @@ class VisitpelangganController extends Controller
         $kode_visit = Crypt::decrypt($kode_visit);
         $request->validate([
             'tanggal' => 'required',
+            'jenis_kunjungan' => 'required|in:OTD,OTS',
             'hasil_konfirmasi' => 'required',
             'note' => 'required',
             'saran' => 'required',
@@ -182,6 +185,7 @@ class VisitpelangganController extends Controller
         try {
             Visitpelanggan::where('kode_visit', $kode_visit)->update([
                 'tanggal' => $request->tanggal,
+                'jenis_kunjungan' => $request->jenis_kunjungan,
                 'hasil_konfirmasi' => $request->hasil_konfirmasi,
                 'note' => $request->note,
                 'saran' => $request->saran,

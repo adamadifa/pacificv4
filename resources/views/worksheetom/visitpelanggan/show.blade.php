@@ -31,6 +31,12 @@
         <div class="col">
             <table>
                 <tr>
+                    <td class="fw-bold">Jenis Kunjungan</td>
+                </tr>
+                <tr>
+                    <td>{{ $visit->jenis_kunjungan == 'OTD' ? 'OTD (On The Desk)' : 'OTS (On the Spot)' }}</td>
+                </tr>
+                <tr>
                     <td class="fw-bold">Hasil Konfirmasi</td>
                 </tr>
                 <tr>

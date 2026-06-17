@@ -1,3 +1,11 @@
+<style>
+    .radio-checklist {
+        border-radius: .25em !important;
+    }
+    .radio-checklist:checked {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+    }
+</style>
 <form action="{{ route('visitpelanggan.update', Crypt::encrypt($visit->kode_visit)) }}" method="POST" id="frmvisitpelanggan">
     @csrf
     @method('PUT')
@@ -30,6 +38,23 @@
     <div class="row mt-2">
         <div class="col">
             <x-input-with-icon label="Tanggal" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ $visit->tanggal }}" hideLabel="true" />
+            <div class="form-group mb-3">
+                <label class="form-label">Jenis Kunjungan</label>
+                <div class="d-flex gap-3">
+                    <div class="form-check">
+                        <input class="form-check-input radio-checklist" type="radio" name="jenis_kunjungan" id="jenis_kunjungan_otd" value="OTD" {{ (isset($visit) && $visit->jenis_kunjungan == 'OTD') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="jenis_kunjungan_otd">
+                            OTD (On The Desk)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input radio-checklist" type="radio" name="jenis_kunjungan" id="jenis_kunjungan_ots" value="OTS" {{ (!isset($visit) || !$visit->jenis_kunjungan || $visit->jenis_kunjungan == 'OTS') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="jenis_kunjungan_ots">
+                            OTS (On the Spot)
+                        </label>
+                    </div>
+                </div>
+            </div>
             <x-textarea label="Hasil Konfirmasi" name="hasil_konfirmasi" value="{{ $visit->hasil_konfirmasi }}" hideLabel="true" />
             <x-textarea label="Note" name="note" value="{{ $visit->note }}" hideLabel="true" />
             <x-textarea label="Saran / Keluhan" name="saran" value="{{ $visit->saran }}" hideLabel="true" />

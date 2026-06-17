@@ -3,146 +3,156 @@
 
 @section('content')
 @section('navigasi')
-    <span>Visit Pelanggan</span>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0">Visit Pelanggan</h4>
+            <small class="text-muted">Manajemen visit pelanggan dan kunjungan sales.</small>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 13px">
+                <li class="breadcrumb-item">
+                    <a href="#"><i class="ti ti-settings me-1"></i>Worksheet OM</a>
+                </li>
+                <li class="breadcrumb-item active"><i class="ti ti-users me-1"></i>Visit Pelanggan</li>
+            </ol>
+        </nav>
+    </div>
 @endsection
+
 <div class="row">
-    <div class="col-lg-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-end">
-                    @can('pelanggan.show')
-                        <form action="/visitpelanggan/cetak" method="GET" id="formCetak" target="_blank">
-                            <input type="hidden" name="status_search" id='status_search' value="{{ Request('status_search') }}" />
-                            <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
-                            <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
-                            <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
-                            <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman_search') }}" />
-                            <input type="hidden" name="no_faktur" id="no_faktur_cetak" value="{{ Request('no_faktur_search') }}" />
-                            <input type="hidden" name="kode_pelanggan" id="kode_pelanggan_cetak" value="{{ Request('kode_pelanggan_search') }}" />
-                            <input type="hidden" name="nama_pelanggan" id="nama_pelanggan_cetak" value="{{ Request('nama_pelanggan_search') }}" />
-                            <button class="btn btn-primary"><i class="ti ti-printer me-1"></i>Cetak</button>
-                            <button class="btn btn-success" name="exportButton"><i class="ti ti-download me-1"></i>Export Excel</button>
-                        </form>
-                    @endcan
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{-- Filter Section --}}
+        <form action="{{ route('visitpelanggan.index') }}" id="formSearch">
+            <input type="hidden" name="status_search" id='status_search' value="1" />
+            <div class="row g-2 mb-1">
+                <div class="col-lg-6 col-sm-12 col-md-12">
+                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" hideLabel="true" />
+                </div>
+                <div class="col-lg-6 col-sm-12 col-md-12">
+                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
+                        datepicker="flatpickr-date" hideLabel="true" />
                 </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form action="{{ route('visitpelanggan.index') }}">
-                            <input type="hidden" name="status_search" id='status_search' value="1" />
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" hideLabel="true" />
-                                </div>
-                                <div class="col-lg-6 col-sm-12 col-md-12">
-                                    <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                        datepicker="flatpickr-date" hideLabel="true" />
-                                </div>
-                            </div>
-                            @hasanyrole($roles_show_cabang)
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
-                                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
-                                            select2="select2Kodecabangsearch" hideLabel="true" />
-                                    </div>
-                                </div>
-                            @endrole
-
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-12 col-md-12">
-                                    <x-select label="Salesman" name="kode_salesman_search" :data="[]" key="kode_salesman"
-                                        textShow="nama_salesman" select2="select2Kodesalesmansearch" hideLabel="true" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search"
-                                        icon="ti ti-barcode" hideLabel="true" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}"
-                                        name="kode_pelanggan_search" icon="ti ti-barcode" hideLabel="true" />
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
-                                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}"
-                                        name="nama_pelanggan_search" icon="ti ti-users" hideLabel="true" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <div class="form-group mb-3">
-                                        <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                            Data</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </form>
+            @hasanyrole($roles_show_cabang)
+                <div class="row g-2 mb-1">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
+                            textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
+                            select2="select2Kodecabangsearch" hideLabel="true" />
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive mb-2">
-                            <table class="table table-bordered ">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th style="width: 10%">No. Faktur</th>
-                                        <th style="width: 10%">Tanggal</th>
-                                        <th style="width: 15%">Nama Pelanggan</th>
-                                        <th>Salesman</th>
-                                        <th>Cabang</th>
-                                        <th>Tgl Faktur</th>
-                                        <th>Nilai Faktur</th>
-                                        <th>Tunai/Kredit</th>
-                                        <th style="width: 10%">#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($visit as $d)
-                                        <tr>
-                                            <td>{{ $d->no_faktur }}</td>
-                                            <td>{{ formatIndo($d->tanggal) }}</td>
-                                            <td>{{ $d->nama_pelanggan }}</td>
-                                            <td>{{ $d->nama_salesman }}</td>
-                                            <td>{{ $d->kode_cabang }}</td>
-                                            <td>{{ formatIndo($d->tanggal_faktur) }}</td>
-                                            <td class="text-end">{{ formatRupiah($d->total_netto) }}</td>
-                                            <td>{{ $d->jenis_transaksi == 'K' ? 'Kredit' : 'Tunai' }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @can('penjualan.edit')
-                                                        <a class="me-1 btnEdit" href="#" kode_visit = "{{ Crypt::encrypt($d->kode_visit) }}"><i
-                                                                class="ti ti-edit text-success"></i></a>
-                                                    @endcan
-                                                    @can('penjualan.show')
-                                                        <div>
-                                                            <a class="me-1 btnShow" href="#"
-                                                                kode_visit = "{{ Crypt::encrypt($d->kode_visit) }}"><i
-                                                                    class="ti ti-file-description text-info"></i></a>
-                                                        </div>
-                                                    @endcan
-                                                    @can('penjualan.delete')
-                                                        <form method="POST" name="deleteform" class="deleteform"
-                                                            action="/visitpelanggan/{{ Crypt::encrypt($d->kode_visit) }}/delete">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="#" class="delete-confirm me-1">
-                                                                <i class="ti ti-trash text-danger"></i>
-                                                            </a>
-                                                        </form>
-                                                    @endcan
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="float: right;">
-                            {{ $visit->links() }}
-                        </div>
+            @endrole
+
+            <div class="row g-2 mb-3 align-items-end">
+                <div class="col-lg-3 col-sm-12 col-md-12">
+                    <x-select label="Salesman" name="kode_salesman_search" :data="[]" key="kode_salesman"
+                        textShow="nama_salesman" select2="select2Kodesalesmansearch" hideLabel="true" />
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12">
+                    <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search"
+                        icon="ti ti-barcode" hideLabel="true" />
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12">
+                    <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}"
+                        name="kode_pelanggan_search" icon="ti ti-barcode" hideLabel="true" />
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12">
+                    <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}"
+                        name="nama_pelanggan_search" icon="ti ti-users" hideLabel="true" />
+                </div>
+                <div class="col-auto">
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary btn-sm"><i class="ti ti-search me-1"></i>Cari</button>
                     </div>
+                </div>
+            </div>
+        </form>
+
+        {{-- Card Data --}}
+        <div class="card shadow-sm border mt-2">
+            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Data Visit Pelanggan</h6>
+                    <div class="d-flex gap-2">
+                        @can('pelanggan.show')
+                            <form action="/visitpelanggan/cetak" method="GET" id="formCetak" target="_blank" class="d-flex gap-2">
+                                <input type="hidden" name="status_search" id='status_search' value="{{ Request('status_search') }}" />
+                                <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
+                                <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
+                                <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
+                                <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman_search') }}" />
+                                <input type="hidden" name="no_faktur" id="no_faktur_cetak" value="{{ Request('no_faktur_search') }}" />
+                                <input type="hidden" name="kode_pelanggan" id="kode_pelanggan_cetak" value="{{ Request('kode_pelanggan_search') }}" />
+                                <input type="hidden" name="nama_pelanggan" id="nama_pelanggan_cetak" value="{{ Request('nama_pelanggan_search') }}" />
+                                <button class="btn btn-primary btn-sm"><i class="ti ti-printer me-1"></i>Cetak</button>
+                                <button class="btn btn-success btn-sm" name="exportButton"><i class="ti ti-download me-1"></i>Export</button>
+                            </form>
+                        @endcan
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover">
+                    <thead style="background-color: #002e65;">
+                        <tr>
+                            <th class="text-white py-3" style="width: 10%">No. Faktur</th>
+                            <th class="text-white py-3" style="width: 10%">Tanggal</th>
+                            <th class="text-white py-3" style="width: 15%">Nama Pelanggan</th>
+                            <th class="text-white py-3">Salesman</th>
+                            <th class="text-white py-3">Cabang</th>
+                            <th class="text-white py-3">Tgl Faktur</th>
+                            <th class="text-white py-3">Nilai Faktur</th>
+                            <th class="text-white py-3">Tunai/Kredit</th>
+                            <th class="text-white py-3">JK</th>
+                            <th class="text-white text-center py-3" style="width: 10%">#</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach ($visit as $d)
+                            <tr>
+                                <td class="py-2">{{ $d->no_faktur }}</td>
+                                <td class="py-2">{{ formatIndo($d->tanggal) }}</td>
+                                <td class="py-2">{{ $d->nama_pelanggan }}</td>
+                                <td class="py-2">{{ $d->nama_salesman }}</td>
+                                <td class="py-2">{{ $d->kode_cabang }}</td>
+                                <td class="py-2">{{ formatIndo($d->tanggal_faktur) }}</td>
+                                <td class="py-2 text-end fw-bold">{{ formatRupiah($d->total_netto) }}</td>
+                                <td class="py-2">{{ $d->jenis_transaksi == 'K' ? 'Kredit' : 'Tunai' }}</td>
+                                <td class="py-2">{{ $d->jenis_kunjungan }}</td>
+                                <td class="py-2">
+                                    <div class="d-flex justify-content-center">
+                                        @can('penjualan.edit')
+                                            <a class="me-2 btnEdit text-success" href="#" kode_visit = "{{ Crypt::encrypt($d->kode_visit) }}"><i
+                                                    class="ti ti-edit fs-5"></i></a>
+                                        @endcan
+                                        @can('penjualan.show')
+                                            <a class="me-2 btnShow text-info" href="#"
+                                                kode_visit = "{{ Crypt::encrypt($d->kode_visit) }}"><i
+                                                    class="ti ti-file-description fs-5"></i></a>
+                                        @endcan
+                                        @can('penjualan.delete')
+                                            <form method="POST" name="deleteform" class="deleteform d-inline"
+                                                action="/visitpelanggan/{{ Crypt::encrypt($d->kode_visit) }}/delete">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="delete-confirm bg-transparent border-0 text-danger p-0"
+                                                    data-bs-toggle="tooltip" title="Hapus">
+                                                    <i class="ti ti-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer py-2">
+                <div style="float: right;">
+                    {{ $visit->links() }}
                 </div>
             </div>
         </div>
