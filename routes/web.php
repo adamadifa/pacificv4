@@ -2581,6 +2581,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/worksheetom/dokumenopname/create', 'create')->name('worksheetom.dokumenopname.create')->can('worksheetom.dokumenopname');
         Route::post('/worksheetom/dokumenopname/store', 'store')->name('worksheetom.dokumenopname.store')->can('worksheetom.dokumenopname');
         Route::delete('/worksheetom/dokumenopname/{kode_dokumen_opname}/delete', 'destroy')->name('worksheetom.dokumenopname.delete')->can('worksheetom.dokumenopname');
+        Route::post('/worksheetom/dokumenopname/{kode_dokumen_opname}/approve', 'approve')->name('worksheetom.dokumenopname.approve');
+        Route::post('/worksheetom/dokumenopname/{kode_dokumen_opname}/reject', 'reject')->name('worksheetom.dokumenopname.reject');
     });
 
 

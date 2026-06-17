@@ -10,32 +10,10 @@
             </select>
         </div>
     @endhasanyrole
-    <div class="row">
-        <div class="col">
-            <div class="form-group mb-3">
-                <select name="bulan" id="bulan" class="form-select">
-                    <option value="">Bulan</option>
-                    @foreach ($list_bulan as $d)
-                        <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="form-group mb-3">
-                <select name="tahun" id="tahun" class="form-select">
-                    <option value="">Tahun</option>
-                    @for ($t = $start_year; $t <= date('Y'); $t++)
-                        <option value="{{ $t }}">{{ $t }}</option>
-                    @endfor
-                </select>
-            </div>
-        </div>
-    </div>
     <x-input-with-icon label="Tanggal Dokumen" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" />
-    <x-input-file name="file_dokumen" label="File Dokumen (PDF, PNG, JPG, JPEG - Max 5MB)" />
+    <x-input-file name="file_persediaan" label="Opname Persediaan (PDF, PNG, JPG, JPEG - Max 5MB)" />
+    <x-input-file name="file_kas_kecil" label="Opname Kas Kecil (PDF, PNG, JPG, JPEG - Max 5MB)" />
+    <x-input-file name="file_kas_besar" label="Opname Kas Besar (PDF, PNG, JPG, JPEG - Max 5MB)" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Upload Dokumen</button>
     </div>
@@ -82,34 +60,12 @@
                     return false;
                 }
             }
-            const bulan = formDokumenopname.find("#bulan").val();
-            const tahun = formDokumenopname.find("#tahun").val();
             const tanggal = formDokumenopname.find("#tanggal").val();
-            const file_dokumen = formDokumenopname.find("#file_dokumen").val();
+            const file_persediaan = formDokumenopname.find("#file_persediaan").val();
+            const file_kas_kecil = formDokumenopname.find("#file_kas_kecil").val();
+            const file_kas_besar = formDokumenopname.find("#file_kas_besar").val();
 
-            if (bulan == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Bulan Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: () => {
-                        formDokumenopname.find("#bulan").focus();
-                    },
-                });
-                return false;
-            } else if (tahun == "") {
-                Swal.fire({
-                    title: "Oops!",
-                    text: "Tahun Harus Diisi !",
-                    icon: "warning",
-                    showConfirmButton: true,
-                    didClose: () => {
-                        formDokumenopname.find("#tahun").focus();
-                    },
-                });
-                return false;
-            } else if (tanggal == "") {
+            if (tanggal == "") {
                 Swal.fire({
                     title: "Oops!",
                     text: "Tanggal Harus Diisi !",
@@ -120,14 +76,36 @@
                     },
                 });
                 return false;
-            } else if (file_dokumen == "") {
+            } else if (file_persediaan == "") {
                 Swal.fire({
                     title: "Oops!",
-                    text: "File Dokumen Harus Dipilih !",
+                    text: "File Opname Persediaan Harus Dipilih !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
-                        formDokumenopname.find("#file_dokumen").focus();
+                        formDokumenopname.find("#file_persediaan").focus();
+                    },
+                });
+                return false;
+            } else if (file_kas_kecil == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "File Opname Kas Kecil Harus Dipilih !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formDokumenopname.find("#file_kas_kecil").focus();
+                    },
+                });
+                return false;
+            } else if (file_kas_besar == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "File Opname Kas Besar Harus Dipilih !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formDokumenopname.find("#file_kas_besar").focus();
                     },
                 });
                 return false;
