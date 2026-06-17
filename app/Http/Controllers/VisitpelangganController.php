@@ -133,6 +133,25 @@ class VisitpelangganController extends Controller
             'act_om' => 'required',
         ]);
 
+        if ($request->jenis_kunjungan == 'OTS') {
+            $visitDate = strtotime($request->tanggal);
+            $firstDayOfCurrentMonth = date('Y-m-01', $visitDate);
+            $prevMonthDate = strtotime('-1 month', strtotime($firstDayOfCurrentMonth));
+            $prevMonth = date('m', $prevMonthDate);
+            $prevYear = date('Y', $prevMonthDate);
+
+            $existsOTS = Visitpelanggan::join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->where('marketing_penjualan.kode_pelanggan', $faktur->kode_pelanggan)
+                ->where('worksheetom_visitpelanggan.jenis_kunjungan', 'OTS')
+                ->whereYear('worksheetom_visitpelanggan.tanggal', $prevYear)
+                ->whereMonth('worksheetom_visitpelanggan.tanggal', $prevMonth)
+                ->exists();
+
+            if ($existsOTS) {
+                return Redirect::back()->with(messageError('Tidak bisa melakukan OTS kembali pada pelanggan tersebut karena sudah dikunjungi secara OTS pada bulan sebelumnya.'));
+            }
+        }
+
         $lastvisit = Visitpelanggan::select('kode_visit')
             ->join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
@@ -182,6 +201,33 @@ class VisitpelangganController extends Controller
             'saran' => 'required',
             'act_om' => 'required',
         ]);
+
+        $visit = Visitpelanggan::where('kode_visit', $kode_visit)->first();
+        if (!$visit) {
+            return Redirect::back()->with(messageError('Data Visit tidak ditemukan.'));
+        }
+        $penjualan = new Penjualan();
+        $faktur = $penjualan->getFaktur($visit->no_faktur);
+
+        if ($request->jenis_kunjungan == 'OTS') {
+            $visitDate = strtotime($request->tanggal);
+            $firstDayOfCurrentMonth = date('Y-m-01', $visitDate);
+            $prevMonthDate = strtotime('-1 month', strtotime($firstDayOfCurrentMonth));
+            $prevMonth = date('m', $prevMonthDate);
+            $prevYear = date('Y', $prevMonthDate);
+
+            $existsOTS = Visitpelanggan::join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->where('marketing_penjualan.kode_pelanggan', $faktur->kode_pelanggan)
+                ->where('worksheetom_visitpelanggan.jenis_kunjungan', 'OTS')
+                ->where('worksheetom_visitpelanggan.kode_visit', '!=', $kode_visit)
+                ->whereYear('worksheetom_visitpelanggan.tanggal', $prevYear)
+                ->whereMonth('worksheetom_visitpelanggan.tanggal', $prevMonth)
+                ->exists();
+
+            if ($existsOTS) {
+                return Redirect::back()->with(messageError('Tidak bisa melakukan OTS kembali pada pelanggan tersebut karena sudah dikunjungi secara OTS pada bulan sebelumnya.'));
+            }
+        }
         try {
             Visitpelanggan::where('kode_visit', $kode_visit)->update([
                 'tanggal' => $request->tanggal,
