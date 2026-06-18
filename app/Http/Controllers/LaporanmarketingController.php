@@ -35,6 +35,7 @@ use App\Models\Setoranpenjualan;
 use App\Models\Setoranpusat;
 use App\Models\Targetkomisi;
 use App\Models\User;
+use App\Models\Wilayah;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -7215,7 +7216,8 @@ class LaporanmarketingController extends Controller
                     'status_batal' => $penjualan->status_batal ?? '0',
                     'lock_print' => $penjualan->lock_print ?? '0',
                     'salesman' => Salesman::where('kode_salesman', $penjualan->kode_salesman)->first(),
-                    'pelanggan' => Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first(),
+                    'pelanggan' => $pelanggan,
+                    'wilayah' => ($pelanggan != null && !empty($pelanggan->kode_wilayah)) ? Wilayah::where('kode_wilayah', $pelanggan->kode_wilayah)->first() : null,
                     'detail' => [],
                     'historibayar' => []
                 ];
@@ -7570,7 +7572,8 @@ class LaporanmarketingController extends Controller
                     'status_batal' => $penjualan->status_batal ?? '0',
                     'lock_print' => $penjualan->lock_print ?? '0',
                     'salesman' => Salesman::where('kode_salesman', $kode_salesman_to_send)->first(),
-                    'pelanggan' => Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first(),
+                    'pelanggan' => $pelangganPkp,
+                    'wilayah' => ($pelangganPkp != null && !empty($pelangganPkp->kode_wilayah)) ? Wilayah::where('kode_wilayah', $pelangganPkp->kode_wilayah)->first() : null,
                     'detail' => [],
                     'historibayar' => []
                 ];
