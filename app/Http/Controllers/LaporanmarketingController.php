@@ -36,6 +36,8 @@ use App\Models\Setoranpusat;
 use App\Models\Targetkomisi;
 use App\Models\User;
 use App\Models\Wilayah;
+use App\Models\Visitpelanggan;
+use App\Models\Dokumenopname;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -6105,6 +6107,10 @@ class LaporanmarketingController extends Controller
 
     public function cetakinsentifom(Request $request)
     {
+        if ($request->format == 'perjuli2026') {
+            return $this->cetakinsentifomperjuli2026($request);
+        }
+
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $user = User::findorfail(auth()->user()->id);
 
@@ -6370,7 +6376,7 @@ class LaporanmarketingController extends Controller
 
         $saldoawal = Saldoawalpiutangpelanggan::where('bulan', $request->bulan)
             ->where('tahun', $request->tahun)->first();
-        $saldoawal_date = $saldoawal->tanggal;
+        $saldoawal_date = $saldoawal ? $saldoawal->tanggal : $dari;
         $saldoawal_enddate = date('Y-m-t', strtotime($saldoawal_date));
         // dd($saldoawal->kode_saldo_awal);
         $querysaldoawal = Detailsaldoawalpiutangpelanggan::query();
@@ -6411,7 +6417,7 @@ class LaporanmarketingController extends Controller
 
         // $querysaldoawal->where('bulan', $bulan);
         // $querysaldoawal->where('tahun', $tahun);
-        $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal->kode_saldo_awal);
+        $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal ? $saldoawal->kode_saldo_awal : '');
 
         $querysaldoawal->whereRaw("IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)- IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
                 INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$dari' AND '$sampai'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur  AND marketing_penjualan_historibayar.tanggal BETWEEN '$dari' AND '$sampai'),0) != 0");
@@ -6681,6 +6687,583 @@ class LaporanmarketingController extends Controller
             header("Content-Disposition: attachment; filename=Insentif Omset $request->dari-$request->sampai.xls");
         }
         return view('marketing.laporan.insentifom_cetak', $data);
+    }
+
+
+    public function cetakinsentifomperjuli2026(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $bulanlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'bulan');
+        $tahunlalu = getbulandantahunlalu($request->bulan, $request->tahun, 'tahun');
+
+        if ($bulanlalu == 1) {
+            $blnlast1 = 12;
+            $thnlast1 = $request->tahun - 1;
+        } else {
+            $blnlast1 = $bulanlalu - 1;
+            $thnlast1 = $request->tahun;
+        }
+
+        if ($request->bulan == 12) {
+            $bln = 1;
+            $thn = $request->tahun + 1;
+        } else {
+            $bln = $request->bulan + 1;
+            $thn = $request->tahun;
+        }
+
+        $start_date_bulanlalu = $tahunlalu . "-" . $bulanlalu . "-01";
+        $end_date_bulanlalu = date('Y-m-t', strtotime($start_date_bulanlalu));
+        $hariini = date('Y-m-d');
+        $dari = $request->tahun . "-" . $request->bulan . "-01";
+        $sampai = date('Y-m-t', strtotime($dari));
+        // $sampai = $hari
+
+        if ($hariini < $sampai) {
+            $sampai = $hariini;
+        } else {
+            $sampai = $sampai;
+        }
+
+
+
+        $lastmonth = date('Y-m-d', strtotime(date($dari) . '- 1 month'));
+        $enddate_until_lastmonth = date('Y-m-t', strtotime($lastmonth));
+        // if (date("d", strtotime($enddate)) == 31) {
+        //     $enddate = date("Y-m", strtotime($enddate)) . "-30";
+        // }
+
+
+        //dd($lastdateofmonth);
+        // $last3month = date('Y-m-d', strtotime('-3 month', strtotime($sampai)));
+        $bulansampai = date('m', strtotime($sampai));
+        $tahunsampai = date('Y', strtotime($sampai));
+        $startmonth = $bulansampai - 3;
+        $startyear = $tahunsampai;
+        if ($startmonth <= 0) {
+            $startmonth = $startmonth + 12;
+            $startyear = $startyear - 1;
+        } else {
+            $startmonth = $startmonth;
+            $startyear = $startyear;
+        }
+
+        $startmonth = $startmonth < 10 ? "0" . $startmonth : $startmonth;
+        // $date = explode("-", $last3month);
+        // dd($last3month);
+        $startdate_from_3months = $startyear . "-" . $startmonth . "-01";
+
+        // $ceknextBulan = DB::table('keuangan_setoranpusat')->where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+        //     ->select('keuangan_ledger.tanggal as tgl_diterimapusat')
+        //     ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+        //     ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+        //     ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $bln)
+        //     ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $thn)
+        //     ->where('kode_cabang', $kode_cabang)
+        //     ->orderBy('tgl_diterimapusat', 'desc')
+        //     ->first();
+
+        // if ($ceknextBulan ==  null) {
+        //     $end = date("Y-m-t", strtotime($dari));
+        // } else {
+        //     $end = $ceknextBulan->tgl_diterimapusat;
+        // }
+
+        //REALISASI CASHIN
+
+
+        $setoran_dari = $request->tahun . "-" . $request->bulan . "-01";
+        $setoran_sampai = date('Y-m-t', strtotime($setoran_dari));
+        $tgl_awal_setoran = $setoran_dari;
+        $tgl_akhir_setoran = $setoran_sampai;
+
+
+        $nextbulan = getbulandantahunberikutnya($request->bulan, $request->tahun, "bulan");
+        $nexttahun = getbulandantahunberikutnya($request->bulan, $request->tahun, "tahun");
+
+        $lastbulan = getbulandantahunlalu($request->bulan, $request->tahun, "bulan");
+        $lasttahun = getbulandantahunlalu($request->bulan, $request->tahun, "tahun");
+        $dari_lastbulan = $lasttahun . "-" . $lastbulan . "-01";
+        $sampai_lastbulan = date('Y-m-t', strtotime($dari_lastbulan));
+
+        $lastduabulan = getbulandantahunlalu($lastbulan, $lasttahun, "bulan");
+        $lastduabulantahun = getbulandantahunlalu($lastbulan, $lasttahun, "tahun");
+        $dari_lastduabulan = $lastduabulantahun . "-" . $lastduabulan . "-01";
+        $sampai_lastduabulan = date('Y-m-t', strtotime($dari_lastduabulan));
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Berikutnya
+        $ceksetordibulanberikutnya = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $nextbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $nexttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanberikutnya) {
+            $setoran_sampai = $ceksetordibulanberikutnya->tanggal;
+        }
+
+
+        //Jika Ada Setoran Omset Bulan Ini yang disetorkan di Bulan Lalu
+        $ceksetordibulanlalu = Setoranpusat::where('omset_bulan', $request->bulan)->where('omset_tahun', $request->tahun)
+            ->select('keuangan_ledger.tanggal as tanggal')
+            ->leftJoin('keuangan_ledger_setoranpusat', 'keuangan_setoranpusat.kode_setoran', '=', 'keuangan_ledger_setoranpusat.kode_setoran')
+            ->leftJoin('keuangan_ledger', 'keuangan_ledger_setoranpusat.no_bukti', '=', 'keuangan_ledger.no_bukti')
+            ->whereRaw('MONTH(keuangan_ledger.tanggal) = ' . $lastbulan)
+            ->whereRaw('YEAR(keuangan_ledger.tanggal) = ' . $lasttahun)
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('keuangan_ledger.tanggal', 'desc')
+            ->first();
+
+        if ($ceksetordibulanlalu) {
+            $setoran_dari = $ceksetordibulanlalu->tanggal;
+        }
+
+
+        $querylhp = Setoranpenjualan::select('salesman.kode_cabang', DB::raw('SUM(lhp_tunai + lhp_tagihan) as total_lhp'))
+            ->join('salesman', 'keuangan_setoranpenjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('keuangan_setoranpenjualan.tanggal', [$tgl_awal_setoran, $setoran_sampai])
+            ->groupBy('salesman.kode_cabang');
+
+
+
+        $querygirobulanlalu = Detailgiro::join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin(
+                DB::raw("(SELECT kode_giro,marketing_penjualan_historibayar.kode_salesman,salesman.kode_cabang,marketing_penjualan_historibayar.tanggal
+            FROM marketing_penjualan_historibayar_giro
+            INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_giro.no_bukti = marketing_penjualan_historibayar.no_bukti
+            INNER JOIN salesman  ON marketing_penjualan_historibayar.kode_salesman = salesman.kode_salesman
+            GROUP BY kode_giro,kode_salesman,salesman.kode_cabang,marketing_penjualan_historibayar.tanggal
+            ) historibayar"),
+                function ($join) {
+                    $join->on('marketing_penjualan_giro.kode_giro', '=', 'historibayar.kode_giro');
+                }
+            )
+
+            ->select(
+                DB::raw('IFNULL(historibayar.kode_cabang,salesman.kode_cabang) as kode_cabang'),
+                DB::raw('SUM(jumlah) as totalgiro_bulanlalu')
+            )
+            ->whereBetween('marketing_penjualan_giro.tanggal', [$dari_lastduabulan, $sampai_lastbulan])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->where('omset_bulan', $request->bulan)
+            ->where('omset_tahun', $request->tahun)
+            ->orWherebetween('marketing_penjualan_giro.tanggal', [$dari_lastbulan, $sampai_lastbulan])
+            ->whereBetween('historibayar.tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            // ->where('salesman.kode_cabang', $kode_cabang)
+            ->groupByRaw('IFNULL(historibayar.kode_cabang,salesman.kode_cabang)');
+
+
+        // dd($querygirobulanlalu->get());
+
+        $querygirobulanini = Detailgiro::join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->leftJoin(
+                DB::raw("(SELECT kode_giro,kode_salesman,marketing_penjualan_historibayar.tanggal
+            FROM marketing_penjualan_historibayar_giro
+            INNER JOIN marketing_penjualan_historibayar ON marketing_penjualan_historibayar_giro.no_bukti = marketing_penjualan_historibayar.no_bukti
+            GROUP BY kode_giro,kode_salesman,marketing_penjualan_historibayar.tanggal
+            ) historibayar"),
+                function ($join) {
+                    $join->on('marketing_penjualan_giro.kode_giro', '=', 'historibayar.kode_giro');
+                }
+            )
+            ->leftJoin('salesman as salesmanhb', 'historibayar.kode_salesman', '=', 'salesmanhb.kode_salesman')
+            ->select(
+                DB::raw('IFNULL(salesmanhb.kode_cabang,salesman.kode_cabang) as kode_cabang'),
+                DB::raw('SUM(jumlah) as totalgiro_bulanini')
+            )
+            ->whereBetween('marketing_penjualan_giro.tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereNull('historibayar.tanggal')
+            ->whereNull('omset_bulan')
+            ->whereNull('omset_tahun')
+            ->whereNull('penggantian')
+            ->orWherebetween('marketing_penjualan_giro.tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            ->where('historibayar.tanggal', '>', $tgl_akhir_setoran)
+            // ->where('salesman.kode_cabang', $kode_cabang)
+            //Tambahkan Where Jika $request->bulan == 12
+            ->where(function ($query) use ($request) {
+                if ($request->bulan == 12) {
+                    $query->where('omset_bulan', '>=', 1);
+                    $query->where('omset_tahun', '>=', $request->tahun);
+                } else {
+                    $query->where('omset_bulan', '>', $request->bulan);
+                    $query->where('omset_tahun', '>=', $request->tahun);
+                }
+            })
+            ->whereNull('penggantian')
+            ->orWherebetween('marketing_penjualan_giro.tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            ->whereNull('historibayar.tanggal')
+            // ->where('salesman.kode_cabang', $kode_cabang)
+            ->where(function ($query) use ($request) {
+                if ($request->bulan == 12) {
+                    $query->where('omset_bulan', '>=', 1);
+                    $query->where('omset_tahun', '>=', $request->tahun);
+                } else {
+                    $query->where('omset_bulan', '>', $request->bulan);
+                    $query->where('omset_tahun', '>=', $request->tahun);
+                }
+            })
+            ->where('penggantian', 1)
+            ->orWherebetween('marketing_penjualan_giro.tanggal', [$tgl_awal_setoran, $tgl_akhir_setoran])
+            ->where('historibayar.tanggal', '>', $tgl_akhir_setoran)
+            // ->where('salesman.kode_cabang', $kode_cabang)
+            ->whereNull('omset_bulan')
+            ->whereNull('omset_tahun')
+            ->whereNull('penggantian')
+            ->groupByRaw('IFNULL(salesmanhb.kode_cabang,salesman.kode_cabang)');
+
+
+
+        $querybelumsetorbulanini = Detailbelumsetor::select('salesman.kode_cabang', DB::raw('SUM(jumlah) as totalbelumsetor_bulanini'))
+            ->join('salesman', 'keuangan_belumsetor_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('keuangan_belumsetor', 'keuangan_belumsetor_detail.kode_belumsetor', '=', 'keuangan_belumsetor.kode_belumsetor')
+            // ->where('kode_cabang', $kode_cabang)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->groupBy('salesman.kode_cabang');
+
+
+
+        $querybelumsetorbulanlalu = Detailbelumsetor::select('salesman.kode_cabang', DB::raw('SUM(jumlah) as totalbelumsetor_bulanlalu'))
+            ->join('salesman', 'keuangan_belumsetor_detail.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('keuangan_belumsetor', 'keuangan_belumsetor_detail.kode_belumsetor', '=', 'keuangan_belumsetor.kode_belumsetor')
+            // ->where('kode_cabang', $kode_cabang)
+            ->where('bulan', $lastbulan)
+            ->where('tahun', $lasttahun)
+            ->groupBy('salesman.kode_cabang');
+
+
+
+        //LJT
+
+        $saldoawal = Saldoawalpiutangpelanggan::where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)->first();
+        $saldoawal_date = $saldoawal ? $saldoawal->tanggal : $dari;
+        $saldoawal_enddate = date('Y-m-t', strtotime($saldoawal_date));
+        // dd($saldoawal->kode_saldo_awal);
+        $querysaldoawal = Detailsaldoawalpiutangpelanggan::query();
+        $querysaldoawal->select(
+            'kode_cabang_baru',
+
+            DB::raw("SUM(IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)-
+                IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
+                INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$dari' AND '$sampai'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal BETWEEN '$dari' AND '$sampai'),0)) as saldo_awal_piutang"),
+        );
+        $querysaldoawal->join('marketing_saldoawal_piutang', 'marketing_saldoawal_piutang_detail.kode_saldo_awal', '=', 'marketing_saldoawal_piutang.kode_saldo_awal');
+        $querysaldoawal->join('marketing_penjualan', 'marketing_saldoawal_piutang_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $querysaldoawal->leftJoin(
+            DB::raw("(
+                     SELECT
+                        marketing_penjualan.no_faktur,
+                        IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                        IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                    FROM
+                        marketing_penjualan
+                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                    LEFT JOIN (
+                    SELECT
+                        no_faktur,
+                        marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                        salesman.kode_cabang AS cabangbaru
+                    FROM
+                        marketing_penjualan_movefaktur
+                        INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                    WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
+                    ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+                ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $querysaldoawal->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
+
+        // $querysaldoawal->where('bulan', $bulan);
+        // $querysaldoawal->where('tahun', $tahun);
+        $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal ? $saldoawal->kode_saldo_awal : '');
+
+        $querysaldoawal->whereRaw("IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)- IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
+                INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$dari' AND '$sampai'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur  AND marketing_penjualan_historibayar.tanggal BETWEEN '$dari' AND '$sampai'),0) != 0");
+        // $querysaldoawal->where('salesman.kode_cabang', $kode_cabang);
+        $querysaldoawal->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
+        $querysaldoawal->groupBy('kode_cabang_baru');
+
+
+        $querypenjualan = Penjualan::query();
+        $querypenjualan->select(
+            'kode_cabang_baru as kode_cabang',
+            DB::raw('SUM((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur)) as bruto'),
+            DB::raw('SUM(penyesuaian) as penyesuaian'),
+            DB::raw('SUM(potongan) as potongan'),
+            DB::raw('SUM(potongan_istimewa) as potongan_istimewa'),
+            DB::raw('SUM(ppn) as ppn'),
+
+            DB::raw("SUM((SELECT SUM(subtotal) FROM marketing_retur_detail
+            INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$dari' AND '$sampai')) as retur"),
+
+            DB::raw("SUM((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur AND marketing_penjualan_historibayar.tanggal BETWEEN '$dari' AND '$sampai')) as jmlbayar"),
+
+
+        );
+        $querypenjualan->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $querypenjualan->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
+        $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
+        $querypenjualan->where('jenis_transaksi', 'K');
+        $querypenjualan->where('status_batal', 0);
+        // $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
+        $querypenjualan->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
+        $querypenjualan->groupBy('kode_cabang_baru');
+
+
+        $produk = Produk::orderby('kode_produk')->get();
+        $selectColumretur = [];
+        $selectColumnmutasi = [];
+        $fieldRetur = [];
+        $fieldMutasi = [];
+        foreach ($produk as $p) {
+            $selectColumretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RM',jumlah/isi_pcs_dus,0)) as `reject_mobil_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RG',jumlah/isi_pcs_dus,0)) as `reject_gudang_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RP',jumlah/isi_pcs_dus,0)) as `reject_pasar_" . $p->kode_produk . "`");
+            $selectColumnmutasi[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RK',jumlah/isi_pcs_dus,0)) as `repack_" . $p->kode_produk . "`");
+            $fieldRetur[] = "total_retur_" . $p->kode_produk;
+            $fieldMutasi[] = "retur_" . $p->kode_produk;
+            $fieldMutasi[] = "reject_mobil_" . $p->kode_produk;
+            $fieldMutasi[] = "reject_gudang_" . $p->kode_produk;
+            $fieldMutasi[] = "reject_pasar_" . $p->kode_produk;
+            $fieldMutasi[] = "repack_" . $p->kode_produk;
+        }
+        //Retur
+        $queryretur = Detailretur::query();
+        $queryretur->select('salesman.kode_cabang', ...$selectColumretur);
+        $queryretur->join('produk_harga', 'marketing_retur_detail.kode_harga', 'produk_harga.kode_harga');
+        $queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', 'marketing_retur.no_retur');
+        $queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', 'marketing_penjualan.no_faktur');
+        $queryretur->join('salesman', 'marketing_penjualan.kode_salesman', 'salesman.kode_salesman');
+        $queryretur->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+        $queryretur->groupBy('salesman.kode_cabang');
+
+
+        $querymutasi = Detailmutasigudangcabang::query();
+        $querymutasi->select('gudang_cabang_mutasi.kode_cabang', ...$selectColumnmutasi);
+        $querymutasi->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+        $querymutasi->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', 'gudang_cabang_mutasi.no_mutasi');
+        $querymutasi->whereBetween('gudang_cabang_mutasi.tanggal', [$dari, $sampai]);
+        $querymutasi->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+        $querymutasi->groupBy('gudang_cabang_mutasi.kode_cabang');
+
+        $queryvisit = Visitpelanggan::query()
+            ->join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT
+                        marketing_penjualan.no_faktur,
+                        IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                        IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                    FROM
+                        marketing_penjualan
+                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                    LEFT JOIN (
+                    SELECT
+                        no_faktur,
+                        marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                        salesman.kode_cabang AS cabangbaru
+                    FROM
+                        marketing_penjualan_movefaktur
+                        INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                    WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
+                    ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+                ) pindahfaktur"),
+                function ($join) {
+                    $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+                }
+            )
+            ->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman')
+            ->select(
+                'kode_cabang_baru as kode_cabang',
+                DB::raw('COUNT(DISTINCT marketing_penjualan.kode_pelanggan) as total_validasi_kunjungan')
+            )
+            ->whereBetween('worksheetom_visitpelanggan.tanggal', [$dari, $sampai])
+            ->where('worksheetom_visitpelanggan.jenis_kunjungan', 'OTS')
+            ->where(function($q) {
+                $q->where(function($q2) {
+                    $q2->where('marketing_penjualan.jenis_transaksi', 'K')
+                       ->whereRaw('((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn) >= 1000000');
+                })->orWhere(function($q2) {
+                    $q2->where('marketing_penjualan.jenis_transaksi', 'T')
+                       ->where(function($q3) {
+                           $q3->where('marketing_penjualan.potongan', '>', 0)
+                              ->orWhere('marketing_penjualan.potongan_istimewa', '>', 0);
+                       });
+                });
+            })
+            ->groupBy('kode_cabang_baru');
+
+        $queryopname = Dokumenopname::query()
+            ->select(
+                'kode_cabang',
+                DB::raw('COUNT(DISTINCT tanggal) as total_opname_harian')
+            )
+            ->whereBetween('tanggal', [$dari, $sampai])
+            ->where('status_approval', 1)
+            ->groupBy('kode_cabang');
+
+        $query = Cabang::query();
+        $query->select(
+            'cabang.kode_cabang',
+            'nama_cabang',
+            'penjualanbulanberjalan',
+            'lama_lpc',
+            'jam_lpc',
+            'total_validasi_kunjungan',
+            'total_opname_harian',
+            DB::raw('IFNULL(total_lhp, 0) + IFNULL(totalbelumsetor_bulanlalu, 0) + IFNULL(totalgiro_bulanlalu, 0) - IFNULL(totalgiro_bulanini, 0) - IFNULL(totalbelumsetor_bulanini, 0) as realisasi_cashin'),
+            DB::raw('IFNULL(saldo_awal_piutang,0) + IFNULL(bruto,0) - IFNULL(penyesuaian,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) + IFNULL(ppn,0) - IFNULL(retur,0) - IFNULL(jmlbayar,0) as saldo_akhir_piutang'),
+            'jml_biaya',
+            ...$fieldRetur,
+            ...$fieldMutasi
+        );
+
+        $query->leftjoin(
+            DB::raw("(
+                SELECT salesman.kode_cabang,
+                 SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' , (SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa  - penyesuaian + ppn,0)) as penjualanbulanberjalan
+                FROM marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                WHERE tanggal BETWEEN '$dari_lastbulan' AND '$sampai'
+                GROUP BY salesman.kode_cabang
+            ) penjualan"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'penjualan.kode_cabang');
+            }
+        );
+
+        $query->leftjoin(
+            DB::raw("(
+                SELECT kode_cabang,datediff(tanggal,'$sampai') as lama_lpc,jam as jam_lpc
+                FROM kirim_lpc
+                WHERE bulan ='$request->bulan' AND tahun = '$request->tahun'
+            ) lpc"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'lpc.kode_cabang');
+            }
+        );
+
+        $query->leftJoinsub($querylhp, 'lhp', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'lhp.kode_cabang');
+        });
+
+        $query->leftJoinsub($querygirobulanlalu, 'girobulanlalu', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'girobulanlalu.kode_cabang');
+        });
+
+        $query->leftJoinsub($querygirobulanini, 'girobulanini', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'girobulanini.kode_cabang');
+        });
+
+        $query->leftJoinsub($querybelumsetorbulanini, 'belumsetorbulanini', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'belumsetorbulanini.kode_cabang');
+        });
+
+        $query->leftJoinsub($querybelumsetorbulanlalu, 'belumsetorbulanlalu', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'belumsetorbulanlalu.kode_cabang');
+        });
+
+        $query->leftjoinSub($querysaldoawal, 'saldoawalpiutang', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'saldoawalpiutang.kode_cabang_baru');
+        });
+
+        $query->leftjoinSub($querypenjualan, 'penjualanpiutang', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'penjualanpiutang.kode_cabang');
+        });
+
+        $query->leftjoinSub($queryretur, 'retur', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
+        });
+
+        $query->leftjoinSub($querymutasi, 'mutasi', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'mutasi.kode_cabang');
+        });
+
+        $query->leftjoinSub($queryvisit, 'validasikunjungan', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'validasikunjungan.kode_cabang');
+        });
+
+        $query->leftjoinSub($queryopname, 'opnameharian', function ($join) {
+            $join->on('cabang.kode_cabang', '=', 'opnameharian.kode_cabang');
+        });
+
+
+
+        $query->leftJoin(
+            DB::raw("(
+                SELECT accounting_costratio.kode_cabang,SUM(jumlah) as jml_biaya
+                FROM accounting_costratio
+                WHERE tanggal BETWEEN '$dari' AND '$sampai'
+                GROUP BY accounting_costratio.kode_cabang
+            ) costratio"),
+            function ($join) {
+                $join->on('cabang.kode_cabang', '=', 'costratio.kode_cabang');
+            }
+        );
+
+        if (!empty($kode_cabang)) {
+            $query->where('cabang.kode_cabang', $kode_cabang);
+        }
+
+        $data['produk'] = $produk;
+        $data['insentif'] = $query->get();
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+            header("Content-Disposition: attachment; filename=Insentif Omset $request->dari-$request->sampai.xls");
+        }
+        return view('marketing.laporan.insentifom_perjuli2026_cetak', $data);
     }
 
 

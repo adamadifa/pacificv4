@@ -44,6 +44,18 @@
                                         key="tahun" textShow="tahun" hideLabel="true" />
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col">
+                                    @php
+                                        $format_data = [
+                                            (object) ['kode_format' => 'standar', 'nama_format' => 'Format Standar'],
+                                            (object) ['kode_format' => 'perjuli2026', 'nama_format' => 'Format Per Juli 2026']
+                                        ];
+                                    @endphp
+                                    <x-select label="Format" name="format" id="format" :data="collect($format_data)"
+                                        key="kode_format" textShow="nama_format" hideLabel="true" />
+                                </div>
+                            </div>
 
 
 
@@ -90,6 +102,7 @@
             const kode_cabang = formInsentifom.find('#kode_cabang').val();
             const bulan = formInsentifom.find('#bulan').val();
             const tahun = formInsentifom.find('#tahun').val();
+            const format = formInsentifom.find('#format').val();
             if (bulan == "") {
                 Swal.fire({
                     title: "Oops!",
@@ -109,6 +122,17 @@
                     showConfirmButton: true,
                     didClose: (e) => {
                         $(this).find("#tahun").focus();
+                    },
+                })
+                return false;
+            } else if (format == "") {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Format Harus Diisi !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: (e) => {
+                        $(this).find("#format").focus();
                     },
                 })
                 return false;

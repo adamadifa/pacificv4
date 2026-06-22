@@ -25,13 +25,23 @@
         <form action="{{ route('visitpelanggan.index') }}" id="formSearch">
             <input type="hidden" name="status_search" id='status_search' value="1" />
             <div class="row g-2 mb-1">
-                <div class="col-lg-6 col-sm-12 col-md-12">
+                <div class="col-lg-4 col-sm-12 col-md-12">
                     <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
                         datepicker="flatpickr-date" hideLabel="true" />
                 </div>
-                <div class="col-lg-6 col-sm-12 col-md-12">
+                <div class="col-lg-4 col-sm-12 col-md-12">
                     <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
                         datepicker="flatpickr-date" hideLabel="true" />
+                </div>
+                <div class="col-lg-4 col-sm-12 col-md-12">
+                    @php
+                        $berdasarkan_data = [
+                            (object) ['kode' => 'tanggal_kunjungan', 'nama' => 'Berdasarkan Tanggal Kunjungan'],
+                            (object) ['kode' => 'tanggal_faktur', 'nama' => 'Berdasarkan Tanggal Faktur']
+                        ];
+                    @endphp
+                    <x-select label="Berdasarkan" name="berdasarkan_tanggal" :data="collect($berdasarkan_data)" key="kode"
+                        textShow="nama" selected="{{ Request('berdasarkan_tanggal') ?? 'tanggal_kunjungan' }}" hideLabel="true" />
                 </div>
             </div>
             @hasanyrole($roles_show_cabang)
@@ -80,6 +90,7 @@
                                 <input type="hidden" name="status_search" id='status_search' value="{{ Request('status_search') }}" />
                                 <input type="hidden" name="dari" id='dari_cetak' value="{{ Request('dari') }}" />
                                 <input type="hidden" name="sampai" id="sampai_cetak" value="{{ Request('sampai') }}" />
+                                <input type="hidden" name="berdasarkan_tanggal" id="berdasarkan_tanggal_cetak" value="{{ Request('berdasarkan_tanggal') }}" />
                                 <input type="hidden" name="kode_cabang" id="kode_cabang_cetak" value="{{ Request('kode_cabang_search') }}" />
                                 <input type="hidden" name="kode_salesman" id="kode_salesman_cetak" value="{{ Request('kode_salesman_search') }}" />
                                 <input type="hidden" name="no_faktur" id="no_faktur_cetak" value="{{ Request('no_faktur_search') }}" />

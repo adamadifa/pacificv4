@@ -76,10 +76,12 @@ class VisitpelangganController extends Controller
             }
         }
 
+        $tanggal_column = $request->berdasarkan_tanggal == 'tanggal_faktur' ? 'marketing_penjualan.tanggal' : 'worksheetom_visitpelanggan.tanggal';
+
         if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+            $query->whereBetween($tanggal_column, [$request->dari, $request->sampai]);
         } else {
-            $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+            $query->whereBetween($tanggal_column, [$start_date, $end_date]);
         }
 
         if (!empty($request->no_faktur_search)) {
@@ -333,10 +335,12 @@ class VisitpelangganController extends Controller
             }
         }
 
+        $tanggal_column = $request->berdasarkan_tanggal == 'tanggal_faktur' ? 'marketing_penjualan.tanggal' : 'worksheetom_visitpelanggan.tanggal';
+
         if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
+            $query->whereBetween($tanggal_column, [$request->dari, $request->sampai]);
         } else {
-            $query->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date]);
+            $query->whereBetween($tanggal_column, [$start_date, $end_date]);
         }
 
         if (!empty($request->no_faktur)) {
