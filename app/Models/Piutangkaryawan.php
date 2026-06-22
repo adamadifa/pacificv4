@@ -65,6 +65,10 @@ class Piutangkaryawan extends Model
             $query->where('hrd_karyawan.kode_dept', $request->kode_dept_piutangkaryawan);
         }
 
+        if ($request->has('status_aktif_piutangkaryawan') && $request->status_aktif_piutangkaryawan !== null && $request->status_aktif_piutangkaryawan !== '') {
+            $query->where('keuangan_piutangkaryawan.kategori', $request->status_aktif_piutangkaryawan);
+        }
+
 
         if (!empty($request->nama_karyawan_search)) {
             $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
