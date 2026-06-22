@@ -42,10 +42,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <div class="form-group mb-3">
-                                            <button class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari
-                                                Data</button>
+                                            <button type="submit" class="btn btn-primary w-100"><i class="ti ti-search me-1"></i>Cari Data</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group mb-3">
+                                            <button type="submit" name="export" value="true" class="btn btn-success w-100"><i class="ti ti-download me-1"></i> Cetak Excel</button>
                                         </div>
                                     </div>
                                 </div>
@@ -116,11 +120,15 @@
                                             {{-- Target vs Realisasi (Col-6) --}}
                                             <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 mt-2 mt-lg-0">
                                                 <div class="row mb-2">
-                                                     <div class="col-4 text-center">
+                                                     <div class="col-3 text-center">
+                                                        <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">Rata-rata</small>
+                                                        <span class="fw-bold fs-5 {{ $color_reward ? 'text-white' : '' }}">{{ formatAngka($avg_target) }}</span>
+                                                     </div>
+                                                     <div class="col-3 text-center">
                                                         <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">Target</small>
                                                         <span class="fw-bold fs-5 {{ $color_reward ? 'text-white' : '' }}">{{ formatAngka($total_target) }}</span>
                                                      </div>
-                                                     <div class="col-4 text-center">
+                                                     <div class="col-3 text-center">
                                                         <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">Realisasi</small>
                                                         <span class="fw-bold fs-5 btnDetailRealisasi cursor-pointer {{ $color_reward ? 'text-white text-decoration-underline' : 'text-primary text-decoration-underline' }}"
                                                               no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}"
@@ -128,7 +136,7 @@
                                                             {{ formatAngka($d->realisasi) }}
                                                         </span>
                                                      </div>
-                                                      <div class="col-4 text-center">
+                                                      <div class="col-3 text-center">
                                                         <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">%</small>
                                                         @if($persentase >= 100)
                                                             <span class="badge bg-white text-success fs-6">{{ formatAngkaDesimal($persentase) }}%</span>
@@ -179,23 +187,27 @@
                     </div>
 
                     {{-- TABLE VIEW CONTAINER --}}
-                    <div id="table-view-container" class="d-none">
-                        <div class="card shadow-sm border p-0 mb-3">
+                    <div id="table-view-container" class="d-none mt-2">
+                        <div class="card shadow-sm border mb-3">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Realisasi Program</h6>
+                            </div>
                             <div class="table-responsive text-nowrap">
-                                <table class="table table-bordered table-striped table-hover mb-0">
-                                    <thead class="table-dark">
+                                <table class="table table-hover table-bordered mb-0">
+                                    <thead style="background-color: #002e65;">
                                         <tr>
-                                            <th style="width: 50px;">No.</th>
-                                            <th>No. Ajuan</th>
-                                            <th>Pelanggan</th>
-                                            <th>Program</th>
-                                            <th>Cabang & Sales</th>
-                                            <th class="text-end">Target</th>
-                                            <th class="text-end">Realisasi</th>
-                                            <th class="text-end">%</th>
-                                            <th class="text-end">Rate</th>
-                                            <th class="text-end">Reward</th>
-                                            <th class="text-center">Status</th>
+                                            <th class="text-white text-center" style="width: 50px;">No.</th>
+                                            <th class="text-white">No. Ajuan</th>
+                                            <th class="text-white">Pelanggan</th>
+                                            <th class="text-white">Program</th>
+                                            <th class="text-white">Cabang & Sales</th>
+                                            <th class="text-white text-end">Rata-rata</th>
+                                            <th class="text-white text-end">Target</th>
+                                            <th class="text-white text-end">Realisasi</th>
+                                            <th class="text-white text-end">%</th>
+                                            <th class="text-white text-end">Rate</th>
+                                            <th class="text-white text-end">Reward</th>
+                                            <th class="text-white text-center">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -222,6 +234,7 @@
                                                 <td><span class="fw-bold text-dark">{{ $d->nama_pelanggan }}</span></td>
                                                 <td><small class="fw-bold text-truncate d-inline-block" style="max-width: 200px;" title="{{ $d->nama_program }}">{{ $d->nama_program }}</small><br><small class="text-muted">{{ date('M Y', strtotime($d->periode_dari)) }} - {{ date('M Y', strtotime($d->periode_sampai)) }}</small></td>
                                                 <td><small class="text-uppercase fw-semibold">{{ $d->nama_cabang }}</small><br><small class="text-secondary">{{ $d->nama_salesman }}</small></td>
+                                                <td class="text-end fw-bold">{{ formatAngka($avg_target) }}</td>
                                                 <td class="text-end fw-bold">{{ formatAngka($total_target) }}</td>
                                                 <td class="text-end">
                                                     <span class="fw-bold btnDetailRealisasi text-primary text-decoration-underline cursor-pointer"

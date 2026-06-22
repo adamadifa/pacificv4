@@ -949,8 +949,12 @@ class ProgramIkatan2026Controller extends Controller
 
 
 
-        $monitoring_data = $query->paginate(15);
-        $monitoring_data->appends(request()->all());
+        if ($request->has('export')) {
+            $monitoring_data = $query->get();
+        } else {
+            $monitoring_data = $query->paginate(15);
+            $monitoring_data->appends(request()->all());
+        }
 
         // Optimize: Fetch all unique programs in the result to batch load rewards
         $kode_programs = $monitoring_data->pluck('kode_program')->unique();
@@ -1049,6 +1053,12 @@ class ProgramIkatan2026Controller extends Controller
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         $data['monitoring_data'] = $monitoring_data;
         $data['roles_access_all_cabang'] = $roles_access_all_cabang;
+
+        if ($request->has('export')) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Monitoring_Program_Ikatan_2026.xls");
+            return view('worksheetom.programikatan2026.export_excel', $data);
+        }
 
         return view('worksheetom.programikatan2026.monitoring', $data);
     }
