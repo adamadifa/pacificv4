@@ -323,11 +323,14 @@ class PencairanProgramIkatan2026Controller extends Controller
         }
         $produk = json_decode($pencairanprogram->produk, true) ?? [];
 
-        $detailpenjualan = Detailpenjualan::select(
+        // Subquery to get sum of pcs and tunai/kredit per customer and product
+        $subQuery = Detailpenjualan::select(
             'marketing_penjualan.kode_pelanggan',
-            DB::raw('SUM(floor(jumlah/isi_pcs_dus)) as jml_dus'),
-            DB::raw('SUM(IF(jenis_transaksi = "T", floor(jumlah/isi_pcs_dus), 0)) as jml_tunai'),
-            DB::raw('SUM(IF(jenis_transaksi = "K", floor(jumlah/isi_pcs_dus), 0)) as jml_kredit'),
+            'produk.kode_produk',
+            'produk.isi_pcs_dus',
+            DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs'),
+            DB::raw('SUM(IF(jenis_transaksi = "T", marketing_penjualan_detail.jumlah, 0)) as total_tunai'),
+            DB::raw('SUM(IF(jenis_transaksi = "K", marketing_penjualan_detail.jumlah, 0)) as total_kredit')
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -338,10 +341,20 @@ class PencairanProgramIkatan2026Controller extends Controller
                 $join->on('marketing_penjualan.kode_pelanggan', '=', 'listpelangganikatan.kode_pelanggan');
             })
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-             ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
+            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
-            ->groupBy('marketing_penjualan.kode_pelanggan');
+            ->groupBy('marketing_penjualan.kode_pelanggan', 'produk.kode_produk', 'produk.isi_pcs_dus');
+
+        $detailpenjualan = DB::table(DB::raw("({$subQuery->toSql()}) as sub"))
+            ->mergeBindings($subQuery->getQuery())
+            ->select(
+                'kode_pelanggan',
+                DB::raw('SUM(FLOOR(total_pcs / isi_pcs_dus)) as jml_dus'),
+                DB::raw('SUM(FLOOR(total_tunai / isi_pcs_dus)) as jml_tunai'),
+                DB::raw('SUM(FLOOR(total_kredit / isi_pcs_dus)) as jml_kredit')
+            )
+            ->groupBy('kode_pelanggan');
 
 
         $target_ikatan = MktIkatanTarget2026::select(
@@ -527,7 +540,10 @@ class PencairanProgramIkatan2026Controller extends Controller
             'marketing_penjualan.jenis_transaksi',
             'marketing_penjualan.kode_pelanggan',
             'nama_pelanggan',
-            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus'),
+            'produk.nama_produk',
+            'produk.kode_produk',
+            'produk.isi_pcs_dus',
+            'marketing_penjualan_detail.jumlah'
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')

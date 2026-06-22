@@ -958,7 +958,7 @@ class ProgramIkatan2026Controller extends Controller
 
         foreach ($monitoring_data as $d) {
             $produk = json_decode($d->produk, true) ?? [];
-            $realisasi = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            $realisasi_details = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
                 ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
                 ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                 ->whereIn('produk_harga.kode_produk', $produk)
@@ -966,7 +966,14 @@ class ProgramIkatan2026Controller extends Controller
                 ->where('marketing_penjualan.kode_pelanggan', $d->kode_pelanggan)
                 ->where('status_promosi', 0)
                 ->where('status_batal', 0)
-                ->sum(DB::raw('FLOOR(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus)'));
+                ->select('produk.kode_produk', 'produk.isi_pcs_dus', DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs'))
+                ->groupBy('produk.kode_produk', 'produk.isi_pcs_dus')
+                ->get();
+
+            $realisasi = 0;
+            foreach ($realisasi_details as $rd) {
+                $realisasi += floor($rd->total_pcs / $rd->isi_pcs_dus);
+            }
 
             $d->realisasi = $realisasi;
 
@@ -1064,7 +1071,9 @@ class ProgramIkatan2026Controller extends Controller
             'marketing_penjualan.tanggal_pelunasan',
             'marketing_penjualan.jenis_transaksi',
             'produk.nama_produk',
-            DB::raw('floor(jumlah/isi_pcs_dus) as jml_dus')
+            'produk.kode_produk',
+            'produk.isi_pcs_dus',
+            'marketing_penjualan_detail.jumlah'
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
