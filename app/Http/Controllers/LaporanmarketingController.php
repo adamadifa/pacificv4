@@ -210,8 +210,16 @@ class LaporanmarketingController extends Controller
                 $qpenjualan->where('marketing_penjualan.status_sampel', 0);
             }
         }
+
+        if ($request->status_pajak_pelanggan === '1') {
+            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+        } elseif ($request->status_pajak_pelanggan === '0') {
+            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+        }
+
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
         $qpenjualan->orderBy('marketing_penjualan.no_faktur');
+
 
 
 
@@ -452,8 +460,15 @@ class LaporanmarketingController extends Controller
             }
         }
 
+        if ($request->status_pajak_pelanggan === '1') {
+            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+        } elseif ($request->status_pajak_pelanggan === '0') {
+            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+        }
+
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
         $qpenjualan->orderBy('marketing_penjualan.no_faktur');
+
         $qpenjualan->groupBy(
             'marketing_penjualan_detail.no_faktur',
             'marketing_penjualan.no_faktur',
@@ -669,8 +684,16 @@ class LaporanmarketingController extends Controller
                 $qpenjualan->where('marketing_penjualan.status_sampel', 0);
             }
         }
+
+        if ($request->status_pajak_pelanggan === '1') {
+            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+        } elseif ($request->status_pajak_pelanggan === '0') {
+            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+        }
+
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
         $qpenjualan->orderBy('marketing_penjualan.no_faktur');
+
         $qpenjualan->groupBy(
             'marketing_penjualan_detail.no_faktur',
             'marketing_penjualan.no_faktur',
@@ -831,8 +854,16 @@ class LaporanmarketingController extends Controller
                 $qpenjualan->where('marketing_penjualan.status_sampel', 0);
             }
         }
+
+        if ($request->status_pajak_pelanggan === '1') {
+            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+        } elseif ($request->status_pajak_pelanggan === '0') {
+            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+        }
+
         $qpenjualan->orderBy('marketing_penjualan.created_at');
         $qpenjualan->orderBy('marketing_penjualan.no_faktur');
+
         $qpenjualan->groupBy(
             'marketing_penjualan_detail.no_faktur',
             'marketing_penjualan.no_faktur',

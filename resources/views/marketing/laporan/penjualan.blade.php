@@ -51,6 +51,13 @@
         ]" key="kode" textShow="nama"
             hideLabel="true" selected="2" />
     </div>
+    <div class="form-group mb-3">
+        <x-select label="Status Faktur Pajak" name="status_pajak_pelanggan" id="status_pajak_pelanggan" :data="[
+            (object) ['kode' => '1', 'nama' => 'Faktur Pajak'],
+            (object) ['kode' => '0', 'nama' => 'Non Faktur Pajak'],
+        ]" key="kode" textShow="nama"
+            hideLabel="true" allOption="true" allOptionLabel="Semua (FP & Non FP)" />
+    </div>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
