@@ -72,17 +72,22 @@
                     $persentase = $total_target > 0 ? ($d->realisasi / $total_target) : 0;
                     
                     $status = '';
+                    $row_style = '';
                     if ($d->realisasi >= $total_target) {
                         $status = 'Target Achieved';
+                        $row_style = 'background-color: #d4edda; color: #155724;';
                     } elseif ($d->realisasi >= $avg_target) {
                         $status = 'Avg Achieved';
+                        $row_style = 'background-color: #cce5ff; color: #004085;';
                     } elseif ($d->realisasi >= ($avg_target - ($avg_target * 0.10))) {
                         $status = 'Near Avg';
+                        $row_style = 'background-color: #fff3cd; color: #856404;';
                     } else {
                         $status = 'Below Target';
+                        $row_style = 'background-color: #f8d7da; color: #721c24;';
                     }
                 @endphp
-                <tr>
+                <tr style="{{ $row_style }}">
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td class="str">#{{ $d->no_pengajuan }}</td>
                     <td class="text-center">{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
@@ -97,7 +102,7 @@
                     <td class="text-end num">{{ $avg_target }}</td>
                     <td class="text-end num">{{ $total_target }}</td>
                     <td class="text-end num">{{ $d->realisasi }}</td>
-                    <td class="text-end pct">{{ $persentase }}</td>
+                    <td class="text-end str">{{ formatAngkaDesimal($persentase * 100) }}%</td>
                     <td class="text-end num">{{ $d->reward_rate }}</td>
                     <td class="text-end num">{{ $d->calculated_reward_total }}</td>
                     <td class="text-center">{{ $status }}</td>
