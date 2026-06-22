@@ -421,7 +421,7 @@ class PencairanProgramIkatan2026Controller extends Controller
                     if ($jml_dus >= $total_target_pencapaian) {
                         $rate = $tier->reward_tidak_minus;
                         if ($item->kode_program == 'PRIK003') {
-                            $cap = 800000;
+                            $cap = 4800000;
                         }
                     } else {
                         $rate = 0;
@@ -430,13 +430,13 @@ class PencairanProgramIkatan2026Controller extends Controller
                     if ($item->kode_program == 'PRIK003') {
                         if ($jml_dus >= $total_target_pencapaian) {
                             $rate = $tier->reward_ach_target;
-                            $cap = 1200000;
+                            $cap = 7200000;
                         } elseif ($jml_dus >= $avg) {
                             $rate = $tier->reward_tidak_minus;
-                            $cap = 800000;
+                            $cap = 4800000;
                         } elseif ($jml_dus >= $avg - ($avg * 0.05)) {
                             $rate = $tier->reward_minus;
-                            $cap = 400000;
+                            $cap = 2400000;
                         }
                     } else {
                         if ($jml_dus >= $total_target_pencapaian) {
