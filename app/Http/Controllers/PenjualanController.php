@@ -40,7 +40,7 @@ class PenjualanController extends Controller
         }
         $query = Penjualan::query();
         if (empty($request->no_faktur_search)) {
-             $query->fromRaw('marketing_penjualan FORCE INDEX (idx_penjualan_tanggal_nofaktur)');
+            $query->fromRaw('marketing_penjualan FORCE INDEX (idx_penjualan_tanggal_nofaktur)');
         }
         $query->select(
             'marketing_penjualan.*',
@@ -498,7 +498,7 @@ class PenjualanController extends Controller
         $kode_faktur = substr($cekpenjualan->no_faktur, 3, 1);
         $nomor_awal = substr($cekpenjualan->no_faktur, 4);
         $jmlchar = strlen($nomor_awal);
-        $no_faktur_auto  =  buatkode($last_no_faktur, $kode_cabang . $kode_faktur, $jmlchar);
+        $no_faktur_auto = buatkode($last_no_faktur, $kode_cabang . $kode_faktur, $jmlchar);
 
         $kode_sales = $salesman->kode_sales;
         $kode_pt = $salesman->kode_pt;
@@ -624,7 +624,7 @@ class PenjualanController extends Controller
         $potongan_swan = toNumber($request->potongan_swan);
         $potongan_stick = toNumber($request->potongan_stick);
         $potongan_sambal = toNumber($request->potongan_sambal);
-        $total_potongan =  $potongan_aida + $potongan_swan + $potongan_stick + $potongan_sambal;
+        $total_potongan = $potongan_aida + $potongan_swan + $potongan_stick + $potongan_sambal;
 
         //Potongan Istimewa
         $potis_aida = toNumber($request->potis_aida);
@@ -707,7 +707,7 @@ class PenjualanController extends Controller
                     $last_no_faktur = $lastransaksi != NULL ? $lastransaksi->no_faktur : "";
                     $no_faktur = buatkode($last_no_faktur, $salesman->kode_pt . $tahun . $salesman->kode_sales, 6);
                 } else {
-                    $no_faktur =  $request->no_faktur;
+                    $no_faktur = $request->no_faktur;
                 }
             }
 
@@ -757,7 +757,7 @@ class PenjualanController extends Controller
             $total_netto = $total_bruto - $total_potongan - $total_potongan_istimewa - $total_penyesuaian;
             $total_piutang = $sisa_piutang + $total_netto;
 
-            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan &&  $siklus_pembayaran === '0') {
+            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan && $siklus_pembayaran === '0') {
                 return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
             } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
                 return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
@@ -772,7 +772,7 @@ class PenjualanController extends Controller
                 ->orderBy("no_bukti", "desc")
                 ->first();
             $last_no_bukti = $lastbayar != null ? $lastbayar->no_bukti : '';
-            $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
+            $no_bukti = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
 
 
             //Insert Penjualan
@@ -915,7 +915,7 @@ class PenjualanController extends Controller
             return DataTables::of($pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $button =   '<a href="#" kode_pelanggan="' . Crypt::encrypt($item->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
+                    $button = '<a href="#" kode_pelanggan="' . Crypt::encrypt($item->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $button;
                 })
                 ->make();
@@ -1104,7 +1104,7 @@ class PenjualanController extends Controller
         $potongan_swan = toNumber($request->potongan_swan);
         $potongan_stick = toNumber($request->potongan_stick);
         $potongan_sambal = toNumber($request->potongan_sambal);
-        $total_potongan =  $potongan_aida + $potongan_swan + $potongan_stick + $potongan_sambal;
+        $total_potongan = $potongan_aida + $potongan_swan + $potongan_stick + $potongan_sambal;
 
         //Potongan Istimewa
         $potis_aida = toNumber($request->potis_aida);
@@ -1220,7 +1220,7 @@ class PenjualanController extends Controller
             $total_netto = $total_bruto - $total_potongan - $total_potongan_istimewa - $total_penyesuaian;
             $total_piutang = $sisa_piutang + $total_netto;
 
-            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan &&  $siklus_pembayaran === '0') {
+            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan && $siklus_pembayaran === '0') {
                 return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
             } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
                 return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
@@ -1233,7 +1233,7 @@ class PenjualanController extends Controller
                 ->orderBy("no_bukti", "desc")
                 ->first();
             $last_no_bukti = $lastbayar != null ? $lastbayar->no_bukti : '';
-            $no_bukti  = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
+            $no_bukti = buatkode($last_no_bukti, $salesman->kode_cabang . date('y') . "-", 6);
             $datapenjualan = Penjualan::where('no_faktur', $no_faktur)->first();
             //dd($datapenjualan);
             //Hapus Detail Penjualan Sebelmnya
@@ -1401,8 +1401,9 @@ class PenjualanController extends Controller
 
     public function getfakturbypelanggan(Request $request)
     {
-        $kode_pelanggan  = $request->kode_pelanggan;
+        $kode_pelanggan = $request->kode_pelanggan;
         $listfaktur = Penjualan::where('kode_pelanggan', $kode_pelanggan)
+            ->where('jenis_transaksi', 'K')
             ->where('status_batal', 0)
             ->orderBy('created_at', 'desc')->limit(10)->get();
         echo "<option value=''>Pilih Faktur</option>";
@@ -1418,7 +1419,7 @@ class PenjualanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Piutang Faktur',
-            'data'    => $penjualan
+            'data' => $penjualan
         ]);
     }
     public function destroy($no_faktur)
@@ -1456,7 +1457,7 @@ class PenjualanController extends Controller
     {
         $no_faktur = Crypt::decrypt($no_faktur);
         $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
-        $lock_print =  $penjualan->lock_print == 0 ? 1 : 0;
+        $lock_print = $penjualan->lock_print == 0 ? 1 : 0;
         Penjualan::where('no_faktur', $no_faktur)->update([
             'lock_print' => $lock_print
         ]);
