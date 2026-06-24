@@ -1403,7 +1403,7 @@ class PenjualanController extends Controller
     {
         $kode_pelanggan = $request->kode_pelanggan;
         $listfaktur = Penjualan::where('kode_pelanggan', $kode_pelanggan)
-            ->where('jenis_transaksi', 'K')
+            // ->where('jenis_transaksi', 'K')
             ->where('status_batal', 0)
             ->orderBy('created_at', 'desc')->limit(10)->get();
         echo "<option value=''>Pilih Faktur</option>";
