@@ -1552,6 +1552,7 @@ class LaporanaccountingController extends Controller
         }
         $piutangcabang->where('marketing_penjualan_historibayar.voucher', 0);
         $piutangcabang->where('marketing_penjualan.status_batal', 0);
+        $piutangcabang->where('marketing_penjualan.status_sampel', 0);
         $piutangcabang->orderBy('coa_piutangcabang.kode_akun');
         $piutangcabang->orderBy('marketing_penjualan_historibayar.tanggal');
         $piutangcabang->orderBy('marketing_penjualan_historibayar.no_bukti');
@@ -1581,6 +1582,7 @@ class LaporanaccountingController extends Controller
             $penjualan_produk->whereBetween('produk.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $penjualan_produk->where('marketing_penjualan.status_batal', 0);
+        $penjualan_produk->where('marketing_penjualan.status_sampel', 0);
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
         $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
@@ -1602,6 +1604,7 @@ class LaporanaccountingController extends Controller
         $detailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $detailpenjualan->whereBetween('marketing_penjualan.tanggal', [$start_date, $request->sampai]);
         $detailpenjualan->where('status_batal', 0);
+        $detailpenjualan->where('marketing_penjualan.status_sampel', 0);
         $detailpenjualan->groupBy('marketing_penjualan.no_faktur');
 
         $penjualannetto = Penjualan::query();
@@ -1626,6 +1629,7 @@ class LaporanaccountingController extends Controller
             $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
         });
         $penjualannetto->where('marketing_penjualan.status_batal', 0);
+        $penjualannetto->where('marketing_penjualan.status_sampel', 0);
         $penjualannetto->whereBetween('marketing_penjualan.tanggal', [$start_date, $request->sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $penjualannetto->whereBetween('marketing_penjualan.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
@@ -1659,6 +1663,7 @@ class LaporanaccountingController extends Controller
             $kasbesarpiutangdagang->whereBetween('marketing_penjualan_historibayar.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $kasbesarpiutangdagang->where('voucher', 0);
+        $kasbesarpiutangdagang->where('marketing_penjualan.status_sampel', 0);
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.kode_akun');
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.tanggal');
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.no_bukti');
@@ -1686,6 +1691,7 @@ class LaporanaccountingController extends Controller
         $returpenjualanpiutangdagang->where('jenis_retur', 'PF');
         $returpenjualanpiutangdagang->whereBetween('marketing_retur.tanggal', [$start_date, $request->sampai]);
         $returpenjualanpiutangdagang->where('marketing_penjualan.status_batal', 0);
+        $returpenjualanpiutangdagang->where('marketing_penjualan.status_sampel', 0);
         $returpenjualanpiutangdagang->where('marketing_penjualan.tanggal', '<', $start_date);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $returpenjualanpiutangdagang->whereBetween('marketing_retur.kode_akun_piutang_dagang', [$request->kode_akun_dari, $request->kode_akun_sampai]);
@@ -1718,6 +1724,7 @@ class LaporanaccountingController extends Controller
             $retur_penjualan->whereBetween('marketing_retur.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $retur_penjualan->where('marketing_retur.jenis_retur', 'PF');
+        $retur_penjualan->where('marketing_penjualan.status_sampel', 0);
         $retur_penjualan->orderBy('marketing_retur.tanggal');
         $retur_penjualan->orderBy('marketing_retur.no_retur');
 
@@ -1740,6 +1747,7 @@ class LaporanaccountingController extends Controller
         $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $potongan_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $potongan_penjualan->where('marketing_penjualan.status_batal', 0);
+        $potongan_penjualan->where('marketing_penjualan.status_sampel', 0);
         $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
         $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
@@ -1767,6 +1775,7 @@ class LaporanaccountingController extends Controller
         $penyesuaian_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$request->dari, $request->sampai]);
         $penyesuaian_penjualan->where('marketing_penjualan.status_batal', 0);
+        $penyesuaian_penjualan->where('marketing_penjualan.status_sampel', 0);
         $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
         $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
