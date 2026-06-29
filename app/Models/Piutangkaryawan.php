@@ -48,30 +48,31 @@ class Piutangkaryawan extends Model
             }
         );
 
-        if (!empty($request->dari) && !empty($request->sampai)) {
-            $query->whereBetween('keuangan_piutangkaryawan.tanggal', [$request->dari, $request->sampai]);
-        }
+        if ($request) {
+            if (!empty($request->dari) && !empty($request->sampai)) {
+                $query->whereBetween('keuangan_piutangkaryawan.tanggal', [$request->dari, $request->sampai]);
+            }
 
-        if (!empty($request->kode_cabang_search)) {
-            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_search);
-        }
+            if (!empty($request->kode_cabang_search)) {
+                $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_search);
+            }
 
-        //Report Piutang Karyawan
-        if (!empty($request->kode_cabang_piutangkaryawan)) {
-            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_piutangkaryawan);
-        }
+            //Report Piutang Karyawan
+            if (!empty($request->kode_cabang_piutangkaryawan)) {
+                $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_piutangkaryawan);
+            }
 
-        if (!empty($request->kode_dept_piutangkaryawan)) {
-            $query->where('hrd_karyawan.kode_dept', $request->kode_dept_piutangkaryawan);
-        }
+            if (!empty($request->kode_dept_piutangkaryawan)) {
+                $query->where('hrd_karyawan.kode_dept', $request->kode_dept_piutangkaryawan);
+            }
 
-        if ($request->has('status_aktif_piutangkaryawan') && $request->status_aktif_piutangkaryawan !== null && $request->status_aktif_piutangkaryawan !== '') {
-            $query->where('keuangan_piutangkaryawan.kategori', $request->status_aktif_piutangkaryawan);
-        }
+            if ($request->has('status_aktif_piutangkaryawan') && $request->status_aktif_piutangkaryawan !== null && $request->status_aktif_piutangkaryawan !== '') {
+                $query->where('keuangan_piutangkaryawan.kategori', $request->status_aktif_piutangkaryawan);
+            }
 
-
-        if (!empty($request->nama_karyawan_search)) {
-            $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
+            if (!empty($request->nama_karyawan_search)) {
+                $query->where('nama_karyawan', 'like', '%' . $request->nama_karyawan_search . '%');
+            }
         }
 
         // if ($request->status === "1" || $request->status === 0) {

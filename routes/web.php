@@ -2690,6 +2690,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/trackingtruck', [TrackingtruckController::class, 'index'])->name('trackingtruck.index')->can('trackingtruck.index');
+    Route::post('/trackingtruck/import', [TrackingtruckController::class, 'import'])->name('trackingtruck.import')->can('trackingtruck.index');
+    Route::delete('/trackingtruck/delete-period', [TrackingtruckController::class, 'destroyPeriod'])->name('trackingtruck.delete-period')->can('trackingtruck.index');
+    Route::get('/trackingtruck/{id}', [TrackingtruckController::class, 'show'])->name('trackingtruck.show')->can('trackingtruck.index');
 });
 
 
