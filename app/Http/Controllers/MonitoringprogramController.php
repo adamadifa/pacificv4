@@ -375,7 +375,13 @@ class MonitoringprogramController extends Controller
         // $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
         $query->where('marketing_program_pencairan.status', 1);
         $query->where('metode_pembayaran', 'VC');
-        $query->groupBy('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan');
+        $query->groupBy(
+            'marketing_program_pencairan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            'total_bayar_voucher'
+        );
         $query->orderBy('nama_pelanggan');
         $saldovoucher = $query->paginate(20);
         $saldovoucher->appends(request()->query());
