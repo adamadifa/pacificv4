@@ -1092,9 +1092,8 @@ class LaporanaccountingController extends Controller
     public function cetakanalisarasio(Request $request)
     {
         $tahun = $request->tahun;
-        $sampai_bulan = $request->sampai_bulan ?? 12;
         
-        // Fetch monthly data for the year up to sampai_bulan (NC and LB)
+        // Fetch all monthly data for the year (NC and LB)
         $monthly_data = DB::table('laporan_keuangan_detail')
             ->join('laporan_keuangan', 'laporan_keuangan_detail.kode_lk', '=', 'laporan_keuangan.kode_lk')
             ->select(
@@ -1103,12 +1102,11 @@ class LaporanaccountingController extends Controller
                 'laporan_keuangan_detail.jumlah'
             )
             ->where('laporan_keuangan.tahun', $tahun)
-            ->where('laporan_keuangan.bulan', '<=', $sampai_bulan)
             ->whereIn('laporan_keuangan.kategori', ['NC', 'LB'])
             ->get();
 
         $ratios = [];
-        for ($i = 1; $i <= $sampai_bulan; $i++) {
+        for ($i = 1; $i <= 12; $i++) {
             $data = $monthly_data->where('bulan', $i);
             
             $current_assets = $data->filter(function($item) {
@@ -1182,42 +1180,9 @@ class LaporanaccountingController extends Controller
             ];
         }
 
-        // Calculate Averages
-        $avg_current_assets = collect($ratios)->avg('current_assets');
-        $avg_current_liabilities = collect($ratios)->avg('current_liabilities');
-        $avg_cash_bank = collect($ratios)->avg('cash_bank');
-        $avg_total_assets = collect($ratios)->avg('total_assets');
-        $avg_total_liabilities = collect($ratios)->avg('total_liabilities');
-        $avg_total_equity = collect($ratios)->avg('total_equity');
-        $avg_sales = collect($ratios)->avg('sales');
-        $avg_cogs = collect($ratios)->avg('cogs');
-        $avg_gross_profit = collect($ratios)->avg('gross_profit');
-        $avg_net_profit = collect($ratios)->avg('net_profit');
-
-        $averages = [
-            'current_assets' => $avg_current_assets,
-            'current_liabilities' => $avg_current_liabilities,
-            'cash_bank' => $avg_cash_bank,
-            'total_assets' => $avg_total_assets,
-            'total_liabilities' => $avg_total_liabilities,
-            'total_equity' => $avg_total_equity,
-            'sales' => $avg_sales,
-            'cogs' => $avg_cogs,
-            'gross_profit' => $avg_gross_profit,
-            'net_profit' => $avg_net_profit,
-            'current_ratio' => $avg_current_liabilities != 0 ? ($avg_current_assets / $avg_current_liabilities) * 100 : 0,
-            'cash_ratio' => $avg_current_liabilities != 0 ? ($avg_cash_bank / $avg_current_liabilities) * 100 : 0,
-            'dar' => $avg_total_assets != 0 ? ($avg_total_liabilities / $avg_total_assets) * 100 : 0,
-            'der' => $avg_total_equity != 0 ? ($avg_total_liabilities / $avg_total_equity) * 100 : 0,
-            'gross_profit_margin' => $avg_sales != 0 ? ($avg_gross_profit / $avg_sales) * 100 : 0,
-            'net_profit_margin' => $avg_sales != 0 ? ($avg_net_profit / $avg_sales) * 100 : 0,
-        ];
-
         $data = [
             'tahun' => $tahun,
-            'sampai_bulan' => $sampai_bulan,
             'ratios' => $ratios,
-            'averages' => $averages,
             'is_export' => isset($_POST['exportButton'])
         ];
 

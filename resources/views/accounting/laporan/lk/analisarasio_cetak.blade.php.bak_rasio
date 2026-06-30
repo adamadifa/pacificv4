@@ -242,18 +242,15 @@
                     <th rowspan="2" class="sticky-col sticky-col-header col-2">RASIO KEUANGAN</th>
                     <th rowspan="2" class="sticky-col sticky-col-header col-3">JENIS RASIO</th>
                     <th rowspan="2" class="sticky-col sticky-col-header col-4">FORMULA RASIO</th>
-                    @for ($i = 1; $i <= $sampai_bulan; $i++)
+                    @for ($i = 1; $i <= 12; $i++)
                         <th colspan="2" class="text-center">{{ strtoupper(config('global.nama_bulan_singkat')[$i]) }}</th>
                     @endfor
-                    <th colspan="2" class="text-center" style="background-color: #2e7d32 !important; color: white !important;">RATA-RATA SD {{ strtoupper(config('global.nama_bulan')[$sampai_bulan]) }} {{ $tahun }}</th>
                 </tr>
                 <tr>
-                    @for ($i = 1; $i <= $sampai_bulan; $i++)
+                    @for ($i = 1; $i <= 12; $i++)
                         <th class="text-center">PERHITUNGAN</th>
                         <th class="text-center">RASIO</th>
                     @endfor
-                    <th class="text-center" style="background-color: #2e7d32 !important; color: white !important;">RHITUNGAN</th>
-                    <th class="text-center" style="background-color: #2e7d32 !important; color: white !important;">RASIO</th>
                 </tr>
             </thead>
             <tbody>
@@ -291,20 +288,6 @@
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['current_ratio'] / 100) }}</td>
                     @endforeach
-                    <td class="text-right" style="background-color: #f1f8e9;">
-                        @if ($is_export)
-                            <table width="100%">
-                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $averages['current_assets'] != 0 ? formatAngka($averages['current_assets']) : '-' }}</td></tr>
-                                <tr><td style="text-align: center;">{{ $averages['current_liabilities'] != 0 ? formatAngka($averages['current_liabilities']) : '-' }}</td></tr>
-                            </table>
-                        @else
-                            <div class="fraction">
-                                <span class="numerator">{{ $averages['current_assets'] != 0 ? formatAngka($averages['current_assets']) : '-' }}</span>
-                                <span class="denominator">{{ $averages['current_liabilities'] != 0 ? formatAngka($averages['current_liabilities']) : '-' }}</span>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="text-center fw-bold" style="color: #2e7d32; background-color: #f1f8e9;">{{ round($averages['current_ratio'] / 100) }}</td>
                 </tr>
 
                 {{-- 2. SOLVABILITAS --}}
@@ -341,20 +324,6 @@
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['dar']) }}%</td>
                     @endforeach
-                    <td class="text-right" style="background-color: #f1f8e9;">
-                        @if ($is_export)
-                            <table width="100%">
-                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $averages['total_liabilities'] != 0 ? formatAngka($averages['total_liabilities']) : '-' }}</td></tr>
-                                <tr><td style="text-align: center;">{{ $averages['total_assets'] != 0 ? formatAngka($averages['total_assets']) : '-' }}</td></tr>
-                            </table>
-                        @else
-                            <div class="fraction">
-                                <span class="numerator">{{ $averages['total_liabilities'] != 0 ? formatAngka($averages['total_liabilities']) : '-' }}</span>
-                                <span class="denominator">{{ $averages['total_assets'] != 0 ? formatAngka($averages['total_assets']) : '-' }}</span>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="text-center fw-bold" style="color: #2e7d32; background-color: #f1f8e9;">{{ round($averages['dar']) }}%</td>
                 </tr>
                 <tr>
                     <td class="sticky-col col-3">2. Debt to Equity Ratio</td>
@@ -387,20 +356,6 @@
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['der']) }}%</td>
                     @endforeach
-                    <td class="text-right" style="background-color: #f1f8e9;">
-                        @if ($is_export)
-                            <table width="100%">
-                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $averages['total_liabilities'] != 0 ? formatAngka($averages['total_liabilities']) : '-' }}</td></tr>
-                                <tr><td style="text-align: center;">{{ $averages['total_equity'] != 0 ? formatAngka($averages['total_equity']) : '-' }}</td></tr>
-                            </table>
-                        @else
-                            <div class="fraction">
-                                <span class="numerator">{{ $averages['total_liabilities'] != 0 ? formatAngka($averages['total_liabilities']) : '-' }}</span>
-                                <span class="denominator">{{ $averages['total_equity'] != 0 ? formatAngka($averages['total_equity']) : '-' }}</span>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="text-center fw-bold" style="color: #2e7d32; background-color: #f1f8e9;">{{ round($averages['der']) }}%</td>
                 </tr>
 
                 {{-- 3. RENTABILITAS --}}
@@ -437,20 +392,6 @@
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['gross_profit_margin']) }}%</td>
                     @endforeach
-                    <td class="text-right" style="background-color: #f1f8e9;">
-                        @if ($is_export)
-                            <table width="100%">
-                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $averages['gross_profit'] != 0 ? formatAngka($averages['gross_profit']) : '-' }}</td></tr>
-                                <tr><td style="text-align: center;">{{ $averages['sales'] != 0 ? formatAngka($averages['sales']) : '-' }}</td></tr>
-                            </table>
-                        @else
-                            <div class="fraction">
-                                <span class="numerator">{{ $averages['gross_profit'] != 0 ? formatAngka($averages['gross_profit']) : '-' }}</span>
-                                <span class="denominator">{{ $averages['sales'] != 0 ? formatAngka($averages['sales']) : '-' }}</span>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="text-center fw-bold" style="color: #2e7d32; background-color: #f1f8e9;">{{ round($averages['gross_profit_margin']) }}%</td>
                 </tr>
                 <tr>
                     <td class="sticky-col col-3">2. Net Profit Margin</td>
@@ -483,20 +424,6 @@
                         </td>
                         <td class="text-center fw-bold" style="color: var(--primary-color)">{{ round($r['net_profit_margin']) }}%</td>
                     @endforeach
-                    <td class="text-right" style="background-color: #f1f8e9;">
-                        @if ($is_export)
-                            <table width="100%">
-                                <tr><td style="border-bottom: 1px solid #333; text-align: center;">{{ $averages['net_profit'] != 0 ? formatAngka($averages['net_profit']) : '-' }}</td></tr>
-                                <tr><td style="text-align: center;">{{ $averages['sales'] != 0 ? formatAngka($averages['sales']) : '-' }}</td></tr>
-                            </table>
-                        @else
-                            <div class="fraction">
-                                <span class="numerator">{{ $averages['net_profit'] != 0 ? formatAngka($averages['net_profit']) : '-' }}</span>
-                                <span class="denominator">{{ $averages['sales'] != 0 ? formatAngka($averages['sales']) : '-' }}</span>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="text-center fw-bold" style="color: #2e7d32; background-color: #f1f8e9;">{{ round($averages['net_profit_margin']) }}%</td>
                 </tr>
             </tbody>
         </table>

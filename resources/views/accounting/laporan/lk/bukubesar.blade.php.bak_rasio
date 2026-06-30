@@ -76,14 +76,6 @@
             @endfor
         </select>
     </div>
-    <div class="form-group mb-3" id="row_sampai_bulan" style="display: none;">
-        <select name="sampai_bulan" id="sampai_bulan" class="form-select">
-            <option value="">Sampai Bulan</option>
-            @for ($m = 1; $m <= 12; $m++)
-                <option value="{{ $m }}">{{ config('global.nama_bulan')[$m] }}</option>
-            @endfor
-        </select>
-    </div>
     <div class="row mt-3">
         <div class="col-lg-10 col-md-10 col-sm-12 pe-1">
             <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButton">

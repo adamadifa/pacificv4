@@ -121,7 +121,6 @@
                     $("#formatcetak_container").hide();
                     $("#row_periode").show();
                     $("#row_tahun").hide();
-                    $("#row_sampai_bulan").hide();
                 } else if(formatlaporan == '2' || formatlaporan == '3'){
                     $("#jenislaporan_container").hide();
                     $("#coa").hide();
@@ -130,18 +129,12 @@
                     formLedger.find("#kode_akun_sampai").val("").trigger('change');
                     $("#row_periode").show();
                     $("#row_tahun").hide();
-                    $("#row_sampai_bulan").hide();
                 } else if (formatlaporan == '4' || formatlaporan == '5' || formatlaporan == '6') {
                     $("#jenislaporan_container").hide();
                     $("#coa").hide();
                     $("#formatcetak_container").hide();
                     $("#row_periode").hide();
                     $("#row_tahun").show();
-                    if (formatlaporan == '6') {
-                        $("#row_sampai_bulan").show();
-                    } else {
-                        $("#row_sampai_bulan").hide();
-                    }
                     formLedger.find("#kode_akun_dari").val("").trigger('change');
                     formLedger.find("#kode_akun_sampai").val("").trigger('change');
                 } else {
@@ -150,7 +143,6 @@
                     $("#formatcetak_container").hide();
                     $("#row_periode").show();
                     $("#row_tahun").hide();
-                    $("#row_sampai_bulan").hide();
                 }
             }
 
