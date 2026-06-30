@@ -1,19 +1,19 @@
 @extends('layouts.app')
-@section('titlepage', 'Piutang Karyawan')
+@section('titlepage', $kategori == 'EK' ? 'Piutang Eks Karyawan' : 'Piutang Karyawan')
 
 @section('content')
 @section('navigasi')
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <h4 class="mb-0">Piutang Karyawan</h4>
-            <small class="text-muted">Manajemen data piutang dan pinjaman karyawan.</small>
+            <h4 class="mb-0">{{ $kategori == 'EK' ? 'Piutang Eks Karyawan' : 'Piutang Karyawan' }}</h4>
+            <small class="text-muted">Manajemen data piutang dan pinjaman {{ $kategori == 'EK' ? 'eks karyawan' : 'karyawan' }}.</small>
         </div>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size: 13px">
                 <li class="breadcrumb-item">
                     <a href="#"><i class="ti ti-cash me-1"></i>Keuangan</a>
                 </li>
-                <li class="breadcrumb-item active"><i class="ti ti-users me-1"></i>Piutang Karyawan</li>
+                <li class="breadcrumb-item active"><i class="ti ti-users me-1"></i>{{ $kategori == 'EK' ? 'Piutang Eks Karyawan' : 'Piutang Karyawan' }}</li>
             </ol>
         </nav>
     </div>
@@ -22,7 +22,7 @@
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         {{-- Filter Section --}}
-        <form action="{{ route('piutangkaryawan.index') }}" id="formSearch">
+        <form action="{{ $kategori == 'EK' ? route('piutangkaryawan.indexekskaryawan') : route('piutangkaryawan.index') }}" id="formSearch">
             <div class="card shadow-none border-0 bg-transparent mb-3">
                 <div class="card-body p-0">
                     <div class="row g-2 align-items-end">
@@ -59,7 +59,7 @@
             <div class="card-header border-bottom py-3"
                 style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Data Piutang Karyawan</h6>
+                    <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Data {{ $kategori == 'EK' ? 'Piutang Eks Karyawan' : 'Piutang Karyawan' }}</h6>
                     @can('piutangkaryawan.create')
                         <a href="#" class="btn btn-primary btn-sm shadow-sm" id="btnCreate">
                             <i class="ti ti-plus me-1"></i> Input Piutang
@@ -219,8 +219,8 @@
             e.preventDefault();
             loading();
             $("#modal").modal("show");
-            $("#modal").find(".modal-title").text('Input Piutang Karyawan');
-            $("#loadmodal").load('/piutangkaryawan/create');
+            $("#modal").find(".modal-title").text('{{ $kategori == "EK" ? "Input Piutang Eks Karyawan" : "Input Piutang Karyawan" }}');
+            $("#loadmodal").load('/piutangkaryawan/create?kategori={{ $kategori }}');
             $("#modal").find(".modal-dialog").removeClass("modal-xl");
         });
 

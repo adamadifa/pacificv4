@@ -19,7 +19,7 @@ class Piutangkaryawan extends Model
     {
 
         $user = User::findorfail(auth()->user()->id);
-        $roles_access_all_pjp = config('global.roles_access_all_pjp');
+        $roles_access_all_piutang = config('global.roles_access_all_piutang');
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $dept_access = json_decode($user->dept_access, true) != null  ? json_decode($user->dept_access, true) : [];
         $query = Piutangkaryawan::query();
@@ -79,7 +79,7 @@ class Piutangkaryawan extends Model
         //     $query->where('pjp.status', $request->status);
         // }
 
-        if (!$user->hasRole($roles_access_all_pjp)) {
+        if (!$user->hasRole($roles_access_all_piutang)) {
             $query->where('keuangan_piutangkaryawan.status', '0');
         }
 

@@ -1690,7 +1690,7 @@ class LaporankeuanganController extends Controller
         $tanggal_potongan = $tahunpotongan . '-' . $bulanpotongan . '-01';
 
         $user = User::findorfail(auth()->user()->id);
-        $roles_access_all_pjp = config('global.roles_access_all_pjp');
+        $roles_access_all_piutang = config('global.roles_access_all_piutang');
         $roles_access_all_cabang = config('global.roles_access_all_cabang');
         $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
 
@@ -1719,27 +1719,6 @@ class LaporankeuanganController extends Controller
             }
         );
 
-        // $query->leftJoin(
-        //     DB::raw("(
-        //     SELECT no_pinjaman,SUM(jumlah) as totalpelunasanlast FROM keuangan_piutangkaryawan_historibayar
-        //     WHERE tanggal < '$dari' AND kode_potongan IS NULL
-        //     GROUP BY no_pinjaman
-        // ) hbpllast"),
-        //     function ($join) {
-        //         $join->on('keuangan_piutangkaryawan.no_pinjaman', '=', 'hbpllast.no_pinjaman');
-        //     }
-        // );
-
-        // $query->leftJoin(
-        //     DB::raw("(
-        //     SELECT no_pinjaman,SUM(jumlah) as totalpelunasannow FROM keuangan_piutangkaryawan_historibayar
-        //     WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-        //     GROUP BY no_pinjaman
-        // ) hbplnow"),
-        //     function ($join) {
-        //         $join->on('keuangan_piutangkaryawan.no_pinjaman', '=', 'hbplnow.no_pinjaman');
-        //     }
-        // );
         $query->leftJoin(
             DB::raw("(
             SELECT no_pinjaman,
@@ -1764,36 +1743,38 @@ class LaporankeuanganController extends Controller
             $query->where('hrd_karyawan.kode_dept', $request->kode_dept_kartupiutangkaryawan);
         }
 
+        if ($request->has('status_aktif_piutangkaryawan') && $request->status_aktif_piutangkaryawan !== null && $request->status_aktif_piutangkaryawan !== '') {
+            $query->where('keuangan_piutangkaryawan.kategori', $request->status_aktif_piutangkaryawan);
+        }
+
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', $user->kode_regional);
                 $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             } else {
                 $query->where('hrd_jabatan.kategori', 'NM');
                 $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-                // $query->where('hrd_karyawan.kode_dept', $user->kode_dept);
             }
         } else {
-            if (!$user->hasRole($roles_access_all_pjp)) {
+            if (!$user->hasRole($roles_access_all_piutang)) {
                 $query->where('keuangan_piutangkaryawan.status', '0');
             }
         }
 
-        // $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
         $query->groupByRaw('keuangan_piutangkaryawan.nik,nama_karyawan');
         $query->orderBy('nama_karyawan');
 
         $data['piutangkaryawan'] = $query->get();
-        // dd($data['piutangkaryawan']);
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_kartupiutangkaryawan)->first();
         $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_kartupiutangkaryawan)->first();
+        $data['kategori'] = $request->status_aktif_piutangkaryawan;
+
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
-            // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-            header("Content-Disposition: attachment; filename=Kartu Piutang karyawan.xls");
+            $filename = $request->status_aktif_piutangkaryawan == 'EK' ? 'Kartu Piutang Eks Karyawan' : 'Kartu Piutang Karyawan';
+            header("Content-Disposition: attachment; filename=$filename.xls");
         }
         return view('keuangan.laporan.kartupiutangkaryawan_cetak', $data);
     }

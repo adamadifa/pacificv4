@@ -1520,6 +1520,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PiutangkaryawanController::class)->group(function () {
         Route::get('/piutangkaryawan', 'index')->name('piutangkaryawan.index')->can('piutangkaryawan.index');
+        Route::get('/piutangekskaryawan', 'indexekskaryawan')->name('piutangkaryawan.indexekskaryawan')->can('piutangekskaryawan.index');
         Route::get('/piutangkaryawan/create', 'create')->name('piutangkaryawan.create')->can('piutangkaryawan.create');
         Route::post('/piutangkaryawan/store', 'store')->name('piutangkaryawan.store')->can('piutangkaryawan.store');
         Route::delete('/piutangkaryawan/{no_pinjaman}/delete', 'destroy')->name('piutangkaryawan.delete')->can('piutangkaryawan.delete');

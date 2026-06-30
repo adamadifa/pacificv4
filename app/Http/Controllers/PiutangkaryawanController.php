@@ -13,21 +13,36 @@ class PiutangkaryawanController extends Controller
 {
     public function index(Request $request)
     {
+        $request->merge(['status_aktif_piutangkaryawan' => 'KA']);
         $pk = new Piutangkaryawan();
         $piutangkaryawan = $pk->getPiutangkaryawan(request: $request)->paginate(15);
         $piutangkaryawan->appends(request()->all());
         $data['piutangkaryawan'] = $piutangkaryawan;
 
-
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
+        $data['kategori'] = 'KA';
         return view('keuangan.piutangkaryawan.index', $data);
     }
 
-
-    public function create()
+    public function indexekskaryawan(Request $request)
     {
-        return view('keuangan.piutangkaryawan.create');
+        $request->merge(['status_aktif_piutangkaryawan' => 'EK']);
+        $pk = new Piutangkaryawan();
+        $piutangkaryawan = $pk->getPiutangkaryawan(request: $request)->paginate(15);
+        $piutangkaryawan->appends(request()->all());
+        $data['piutangkaryawan'] = $piutangkaryawan;
+
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['kategori'] = 'EK';
+        return view('keuangan.piutangkaryawan.index', $data);
+    }
+
+    public function create(Request $request)
+    {
+        $data['kategori'] = $request->kategori;
+        return view('keuangan.piutangkaryawan.create', $data);
     }
 
     public function store(Request $request)

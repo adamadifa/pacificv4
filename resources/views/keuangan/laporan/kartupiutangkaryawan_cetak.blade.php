@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>KARTU PIUTANG KARYAWAN{{ date('Y-m-d H:i:s') }}</title>
+    <title>KARTU PIUTANG {{ $kategori == 'EK' ? 'EKS KARYAWAN' : 'KARYAWAN' }} {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
 
     <style>
@@ -23,7 +23,7 @@
 <body>
     <div class="header">
         <h4 class="title">
-            KARTU PIUTANG KARYAWAN <br>
+            KARTU PIUTANG {{ $kategori == 'EK' ? 'EKS KARYAWAN' : 'KARYAWAN' }} <br>
         </h4>
         <h4>PERIODE : {{ $namabulan[$bulan] }} {{ $tahun }}</h4>
         @if ($cabang != null)

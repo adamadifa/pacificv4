@@ -14,6 +14,7 @@
             'kasbon.index',
             'pembayarankasbon.index',
             'piutangkaryawan.index',
+            'piutangekskaryawan.index',
             'kontrabonpembelian.index',
             // 'kontrabonangkutan.index',
             'keu.kaskecil',
@@ -56,6 +57,7 @@
             'kasbon',
             'pembayarankasbon',
             'piutangkaryawan',
+            'piutangekskaryawan',
             'kontrabonkeuangan',
             'kontrabonkeuangan/*',
             'laporankeuangan',
@@ -148,6 +150,13 @@
                 <li class="menu-item {{ request()->is(['piutangkaryawan']) ? 'active' : '' }}">
                     <a href="{{ route('piutangkaryawan.index') }}" class="menu-link">
                         <div>Piutang Karyawan</div>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->hasAnyPermission(['piutangekskaryawan.index']))
+                <li class="menu-item {{ request()->is(['piutangekskaryawan']) ? 'active' : '' }}">
+                    <a href="{{ route('piutangkaryawan.indexekskaryawan') }}" class="menu-link">
+                        <div>Piutang Eks Karyawan</div>
                     </a>
                 </li>
             @endif

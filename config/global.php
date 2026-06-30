@@ -138,6 +138,14 @@ return  [
         'staff keuangan',
 
     ],
+    'roles_access_all_piutang' => [
+        'super admin',
+        'gm administrasi',
+        'manager keuangan',
+        'direktur',
+        'gm marketing',
+        'gm operasional',
+    ],
     'roles_access_all_kasbon' => [
         'super admin',
         'gm administrasi',

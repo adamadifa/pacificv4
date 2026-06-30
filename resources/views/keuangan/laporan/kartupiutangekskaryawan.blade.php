@@ -1,13 +1,13 @@
-<form action="{{ route('laporankeuangan.cetakkartupiutangkaryawan') }}" id="formKartupiutangkaryawan" target="_blank" method="POST">
+<form action="{{ route('laporankeuangan.cetakkartupiutangkaryawan') }}" id="formKartupiutangekskaryawan" target="_blank" method="POST">
     @csrf
     @hasanyrole($roles_show_cabang)
         <x-select label="Semua Cabang" name="kode_cabang_kartupiutangkaryawan" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2Kodecabangkartupiutangkaryawan" hideLabel="true" />
+            select2="select2Kodecabangkartupiutangekskaryawan" hideLabel="true" />
         <x-select label="Semua Departemen" name="kode_dept_kartupiutangkaryawan" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
-            select2="select2Kodedeptkartupiutangkaryawan" hideLabel="true" />
+            select2="select2Kodedeptkartupiutangekskaryawan" hideLabel="true" />
     @endrole
 
-    <input type="hidden" name="status_aktif_piutangkaryawan" value="KA">
+    <input type="hidden" name="status_aktif_piutangkaryawan" value="EK">
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
@@ -48,10 +48,10 @@
 @push('myscript')
     <script>
         $(function() {
-            const formKartupiutangkaryawan = $("#formKartupiutangkaryawan");
-            const select2Kodecabangkartupiutangkaryawan = $(".select2Kodecabangkartupiutangkaryawan");
-            if (select2Kodecabangkartupiutangkaryawan.length) {
-                select2Kodecabangkartupiutangkaryawan.each(function() {
+            const formKartupiutangekskaryawan = $("#formKartupiutangekskaryawan");
+            const select2Kodecabangkartupiutangekskaryawan = $(".select2Kodecabangkartupiutangekskaryawan");
+            if (select2Kodecabangkartupiutangekskaryawan.length) {
+                select2Kodecabangkartupiutangekskaryawan.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Cabang',
@@ -61,9 +61,9 @@
                 });
             }
 
-            formKartupiutangkaryawan.submit(function(e) {
-                const bulan = formKartupiutangkaryawan.find("#bulan").val();
-                const tahun = formKartupiutangkaryawan.find("#tahun").val();
+            formKartupiutangekskaryawan.submit(function(e) {
+                const bulan = formKartupiutangekskaryawan.find("#bulan").val();
+                const tahun = formKartupiutangekskaryawan.find("#tahun").val();
                 if (bulan == "") {
                     Swal.fire({
                         title: "Oops!",
@@ -71,7 +71,7 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            formKartupiutangkaryawan.find("#bulan").focus();
+                            formKartupiutangekskaryawan.find("#bulan").focus();
                         },
                     });
                     return false;
@@ -82,7 +82,7 @@
                         icon: "warning",
                         showConfirmButton: true,
                         didClose: (e) => {
-                            formKartupiutangkaryawan.find("#tahun").focus();
+                            formKartupiutangekskaryawan.find("#tahun").focus();
                         },
                     });
                     return false;

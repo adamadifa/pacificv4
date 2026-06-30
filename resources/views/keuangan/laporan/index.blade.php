@@ -123,6 +123,12 @@
                             <i class="ti ti-user-minus me-2"></i> Piutang Karyawan
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#piutangekskaryawan"
+                            aria-controls="piutangekskaryawan" aria-selected="false" tabindex="-1">
+                            <i class="ti ti-user-minus me-2"></i> Piutang Eks Karyawan
+                        </button>
+                    </li>
                 @endcan
                 @can('keu.kartupinjaman')
                     <li class="nav-item" role="presentation">
@@ -145,6 +151,12 @@
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartupiutangkaryawan"
                             aria-controls="kartupiutangkaryawan" aria-selected="false" tabindex="-1">
                             <i class="ti ti-id-badge me-2"></i> Kartu Piutang Karyawan
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartupiutangekskaryawan"
+                            aria-controls="kartupiutangekskaryawan" aria-selected="false" tabindex="-1">
+                            <i class="ti ti-id-badge me-2"></i> Kartu Piutang Eks Karyawan
                         </button>
                     </li>
                 @endcan
@@ -301,6 +313,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="piutangekskaryawan" role="tabpanel">
+                        <div class="card shadow-none border">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-user-minus me-2"></i>Laporan Piutang Eks Karyawan</h6>
+                            </div>
+                            <div class="card-body pt-4">
+                                @include('keuangan.laporan.piutangekskaryawan')
+                            </div>
+                        </div>
+                    </div>
                 @endcan
                 @can('keu.kartupinjaman')
                     <div class="tab-pane fade" id="kartupinjaman" role="tabpanel">
@@ -334,6 +356,16 @@
                             </div>
                             <div class="card-body pt-4">
                                 @include('keuangan.laporan.kartupiutangkaryawan')
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="kartupiutangekskaryawan" role="tabpanel">
+                        <div class="card shadow-none border">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-id-badge me-2"></i>Kartu Piutang Eks Karyawan</h6>
+                            </div>
+                            <div class="card-body pt-4">
+                                @include('keuangan.laporan.kartupiutangekskaryawan')
                             </div>
                         </div>
                     </div>

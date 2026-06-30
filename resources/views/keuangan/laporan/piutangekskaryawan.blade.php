@@ -1,13 +1,13 @@
-<form action="{{ route('laporankeuangan.cetakpiutangkaryawan') }}" id="formPiutangkaryawan" target="_blank" method="POST">
+<form action="{{ route('laporankeuangan.cetakpiutangkaryawan') }}" id="formPiutangekskaryawan" target="_blank" method="POST">
     @csrf
     @hasanyrole($roles_show_cabang)
         <x-select label="Semua Cabang" name="kode_cabang_piutangkaryawan" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
-            select2="select2Kodecabangpiutangkaryawan" hideLabel="true" />
+            select2="select2Kodecabangpiutangekskaryawan" hideLabel="true" />
         <x-select label="Semua Departemen" name="kode_dept_piutangkaryawan" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
-            select2="select2Kodedeptpiutangkaryawan" hideLabel="true" />
+            select2="select2Kodedeptpiutangekskaryawan" hideLabel="true" />
     @endrole
 
-    <input type="hidden" name="status_aktif_piutangkaryawan" value="KA">
+    <input type="hidden" name="status_aktif_piutangkaryawan" value="EK">
 
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
@@ -33,10 +33,10 @@
 @push('myscript')
     <script>
         $(function() {
-            const formPiutangkaryawan = $("#formPiutangkaryawan");
-            const select2Kodecabangpiutangkaryawan = $(".select2Kodecabangpiutangkaryawan");
-            if (select2Kodecabangpiutangkaryawan.length) {
-                select2Kodecabangpiutangkaryawan.each(function() {
+            const formPiutangekskaryawan = $("#formPiutangekskaryawan");
+            const select2Kodecabangpiutangekskaryawan = $(".select2Kodecabangpiutangekskaryawan");
+            if (select2Kodecabangpiutangekskaryawan.length) {
+                select2Kodecabangpiutangekskaryawan.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Cabang',
@@ -48,10 +48,10 @@
 
 
 
-            formPiutangkaryawan.submit(function(e) {
-                const kode_cabang = formPiutangkaryawan.find('#kode_cabang_piutangkaryawan').val();
-                const dari = formPiutangkaryawan.find('#dari').val();
-                const sampai = formPiutangkaryawan.find('#sampai').val();
+            formPiutangekskaryawan.submit(function(e) {
+                const kode_cabang = formPiutangekskaryawan.find('#kode_cabang_piutangkaryawan').val();
+                const dari = formPiutangekskaryawan.find('#dari').val();
+                const sampai = formPiutangekskaryawan.find('#sampai').val();
                 const start = new Date(dari);
                 const end = new Date(sampai);
                 if (dari == "") {
