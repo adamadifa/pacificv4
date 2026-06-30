@@ -418,7 +418,11 @@ class KaryawanController extends Controller
             if (!in_array('all', $dept_access)) {
                 $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
             }
-            $query->where('status_aktif_karyawan', 1);
+            if ($request->kategori == 'EK') {
+                $query->where('status_aktif_karyawan', 0);
+            } else {
+                $query->where('status_aktif_karyawan', 1);
+            }
             $karyawan = $query;
             return DataTables::of($karyawan)
                 ->addIndexColumn()

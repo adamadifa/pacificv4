@@ -69,12 +69,17 @@
     $(function() {
         const form = $("#formKasbon");
         const hariini = "{{ date('Y-m-d') }}";
-        $(".flatpickr-date").flatpickr({
-            enable: [{
-                from: hariini,
-                to: "{{ $end_periode }}"
-            }, ]
-        });
+        const kategori = "{{ $kategori }}";
+        if (kategori === 'EK') {
+            $(".flatpickr-date").flatpickr();
+        } else {
+            $(".flatpickr-date").flatpickr({
+                enable: [{
+                    from: hariini,
+                    to: "{{ $end_periode }}"
+                }, ]
+            });
+        }
         $(".money").maskMoney();
 
         //Get Mulai Cicilan

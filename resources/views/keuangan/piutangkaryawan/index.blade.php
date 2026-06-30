@@ -250,7 +250,7 @@
             order: [
                 [1, 'asc']
             ],
-            ajax: "{{ route('karyawan.getkaryawanpiutangkaryawanjson') }}",
+            ajax: "{{ route('karyawan.getkaryawanpiutangkaryawanjson') }}?kategori={{ $kategori }}",
             bAutoWidth: false,
             columns: [{
                     data: 'nik',

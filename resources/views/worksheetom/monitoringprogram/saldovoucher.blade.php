@@ -64,7 +64,7 @@
                                                 <td class="text-end">{{ formatAngka($saldo) }}</td>
                                                 <td>
                                                     <div class="d-flex">
-                                                        <a href="#" class="me-1">
+                                                        <a href="#" class="btnDetailfaktur me-1" kode_pelanggan="{{ $d->kode_pelanggan }}">
                                                             <i class="ti ti-file-description text-primary"></i>
                                                         </a>
                                                     </div>
