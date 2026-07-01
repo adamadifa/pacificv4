@@ -207,9 +207,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             'mkt_ikatan_detail_2026.tipe_reward',
             'mkt_ikatan_detail_2026.budget_smm',
             'mkt_ikatan_detail_2026.budget_rsm',
-            'mkt_ikatan_detail_2026.budget_gm',
-            'mkt_ikatan_2026.periode_dari',
-            'mkt_ikatan_2026.periode_sampai'
+            'mkt_ikatan_detail_2026.budget_gm'
         )
             ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
@@ -253,24 +251,18 @@ class PencairanProgramIkatan2026Controller extends Controller
                 'budget_smm',
                 'budget_rsm',
                 'budget_gm',
+                'budget_rsm',
+                'budget_gm',
                 'kode_program',
                 'avg',
-                'target_perbulan',
-                'pelangganprogram.periode_dari',
-                'pelangganprogram.periode_sampai'
+                'target_perbulan'
             )
             ->where('marketing_pencairan_ikatan_detail_2026.kode_pencairan', $kode_pencairan)
             ->orderBy('pelangganprogram.metode_pembayaran')
             ->get();
 
         $detail->transform(function ($item) {
-            $start = \Carbon\Carbon::parse($item->periode_dari);
-            $end = \Carbon\Carbon::parse($item->periode_sampai);
-            $durasi = $start->diffInMonths($end) + 1;
-            if ($durasi <= 0) {
-                $durasi = 6;
-            }
-            $item->kenaikan_per_bulan = ($item->target_perbulan ?? 0) / $durasi;
+            $item->kenaikan_per_bulan = ($item->target_perbulan ?? 0) / 6;
             // Map new columns to old names if view not updated yet? No, plan is to update view.
             return $item;
         });
@@ -382,15 +374,13 @@ class PencairanProgramIkatan2026Controller extends Controller
             'mkt_ikatan_detail_2026.budget_smm',
             'mkt_ikatan_detail_2026.budget_rsm',
             'mkt_ikatan_detail_2026.budget_gm',
-            'mkt_ikatan_detail_2026.qty_target',
-            'target_ikatan.avg',
-            'target_ikatan.target_perbulan',
+             'mkt_ikatan_detail_2026.qty_target',
+             'target_ikatan.avg',
+             'target_ikatan.target_perbulan',
             'detailpenjualan.jml_dus',
             'detailpenjualan.jml_tunai',
             'detailpenjualan.jml_kredit',
-            'mkt_ikatan_2026.kode_program',
-            'mkt_ikatan_2026.periode_dari',
-            'mkt_ikatan_2026.periode_sampai'
+            'mkt_ikatan_2026.kode_program'
         )
             ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
@@ -416,14 +406,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             $target_perbulan = $item->target_perbulan ?? 0;
             $jml_dus = $item->jml_dus ?? 0;
             $total_target_pencapaian = $avg + $target_perbulan;
-            
-            $start = \Carbon\Carbon::parse($item->periode_dari);
-            $end = \Carbon\Carbon::parse($item->periode_sampai);
-            $durasi = $start->diffInMonths($end) + 1;
-            if ($durasi <= 0) {
-                $durasi = 6;
-            }
-            $item->kenaikan_per_bulan = $target_perbulan / $durasi;
+            $item->kenaikan_per_bulan = $target_perbulan / 6;
 
             // Find Reward Tier based on Kenaikan Per Bulan (previously AVG)
             $kenaikan_per_bulan = $item->kenaikan_per_bulan;

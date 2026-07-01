@@ -985,14 +985,7 @@ class ProgramIkatan2026Controller extends Controller
             $avg = $d->avg_target ?? 0;
             $total_target = $d->total_target ?? 0; // Sum of avg + target_perbulan
             $target_perbulan = $total_target - $avg; // Deduce target_perbulan
-            
-            $start = \Carbon\Carbon::parse($d->periode_dari);
-            $end = \Carbon\Carbon::parse($d->periode_sampai);
-            $durasi = $start->diffInMonths($end) + 1;
-            if ($durasi <= 0) {
-                $durasi = 6;
-            }
-            $kenaikan_per_bulan = $target_perbulan / $durasi;
+            $kenaikan_per_bulan = $target_perbulan / 6;
             
             $jml_dus = $realisasi;
             $total_target_pencapaian = $total_target;
