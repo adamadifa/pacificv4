@@ -19,12 +19,12 @@
                             <div class="row align-items-center">
                                 <div class="col-lg-3 col-sm-12">
                                     <div class="form-group mb-3">
-                                        <x-input-with-icon label="Dari Tanggal" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ Request('dari') ?? $dari }}" />
+                                        <x-input-with-icon label="Dari Tanggal" name="dari" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ Request('dari') ?? $dari }}" hideLabel="true" />
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-12">
                                     <div class="form-group mb-3">
-                                        <x-input-with-icon label="Sampai Tanggal" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ Request('sampai') ?? $sampai }}" />
+                                        <x-input-with-icon label="Sampai Tanggal" name="sampai" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ Request('sampai') ?? $sampai }}" hideLabel="true" />
                                     </div>
                                 </div>
                                 @hasanyrole($roles_show_cabang)
