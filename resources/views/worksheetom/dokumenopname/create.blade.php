@@ -11,9 +11,9 @@
         </div>
     @endhasanyrole
     <x-input-with-icon label="Tanggal Dokumen" name="tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" value="{{ date('Y-m-d') }}" />
-    <x-input-file name="file_persediaan" label="Opname Persediaan (PDF, PNG, JPG, JPEG - Max 5MB)" />
-    <x-input-file name="file_kas_kecil" label="Opname Kas Kecil (PDF, PNG, JPG, JPEG - Max 5MB)" />
-    <x-input-file name="file_kas_besar" label="Opname Kas Besar (PDF, PNG, JPG, JPEG - Max 5MB)" />
+    <x-input-file name="file_persediaan" label="Opname Persediaan (PDF, PNG, JPG, JPEG - Max 300 KB)" />
+    <x-input-file name="file_kas_kecil" label="Opname Kas Kecil (PDF, PNG, JPG, JPEG - Max 300 KB)" />
+    <x-input-file name="file_kas_besar" label="Opname Kas Besar (PDF, PNG, JPG, JPEG - Max 300 KB)" />
     <div class="form-group mb-3">
         <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Upload Dokumen</button>
     </div>
@@ -109,9 +109,50 @@
                     },
                 });
                 return false;
-            } else {
-                buttonDisable();
             }
+
+            const input_persediaan = formDokumenopname.find("#file_persediaan")[0];
+            const input_kas_kecil = formDokumenopname.find("#file_kas_kecil")[0];
+            const input_kas_besar = formDokumenopname.find("#file_kas_besar")[0];
+
+            if (input_persediaan.files[0] && input_persediaan.files[0].size > 300 * 1024) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Ukuran File Opname Persediaan tidak boleh lebih dari 300 KB !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formDokumenopname.find("#file_persediaan").focus();
+                    },
+                });
+                return false;
+            }
+            if (input_kas_kecil.files[0] && input_kas_kecil.files[0].size > 300 * 1024) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Ukuran File Opname Kas Kecil tidak boleh lebih dari 300 KB !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formDokumenopname.find("#file_kas_kecil").focus();
+                    },
+                });
+                return false;
+            }
+            if (input_kas_besar.files[0] && input_kas_besar.files[0].size > 300 * 1024) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "Ukuran File Opname Kas Besar tidak boleh lebih dari 300 KB !",
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: () => {
+                        formDokumenopname.find("#file_kas_besar").focus();
+                    },
+                });
+                return false;
+            }
+
+            buttonDisable();
         });
     });
 </script>

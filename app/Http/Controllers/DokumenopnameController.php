@@ -64,17 +64,17 @@ class DokumenopnameController extends Controller
             $request->validate([
                 'kode_cabang' => 'required',
                 'tanggal' => 'required|date',
-                'file_persediaan' => 'required|mimes:pdf,png,jpg,jpeg|max:5120',
-                'file_kas_kecil' => 'required|mimes:pdf,png,jpg,jpeg|max:5120',
-                'file_kas_besar' => 'required|mimes:pdf,png,jpg,jpeg|max:5120',
+                'file_persediaan' => 'required|mimes:pdf,png,jpg,jpeg|max:300',
+                'file_kas_kecil' => 'required|mimes:pdf,png,jpg,jpeg|max:300',
+                'file_kas_besar' => 'required|mimes:pdf,png,jpg,jpeg|max:300',
             ]);
         } else {
             $kode_cabang = Auth::user()->kode_cabang;
             $request->validate([
                 'tanggal' => 'required|date',
-                'file_persediaan' => 'required|mimes:pdf,png,jpg,jpeg|max:5120',
-                'file_kas_kecil' => 'required|mimes:pdf,png,jpg,jpeg|max:5120',
-                'file_kas_besar' => 'required|mimes:pdf,png,jpg,jpeg|max:5120',
+                'file_persediaan' => 'required|mimes:pdf,png,jpg,jpeg|max:300',
+                'file_kas_kecil' => 'required|mimes:pdf,png,jpg,jpeg|max:300',
+                'file_kas_besar' => 'required|mimes:pdf,png,jpg,jpeg|max:300',
             ]);
         }
 
