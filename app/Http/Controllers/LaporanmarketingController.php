@@ -260,6 +260,13 @@ class LaporanmarketingController extends Controller
             }
         }
 
+        $status_pajak_query = "";
+        if ($request->status_pajak_pelanggan === '1') {
+            $status_pajak_query = " AND marketing_penjualan.status_pajak_faktur = 1";
+        } elseif ($request->status_pajak_pelanggan === '0') {
+            $status_pajak_query = " AND marketing_penjualan.status_pajak_faktur = 0";
+        }
+
         $qpenjualan = Cabang::query();
         $qpenjualan->select(
             'cabang.kode_cabang',
@@ -278,7 +285,7 @@ class LaporanmarketingController extends Controller
                     FROM marketing_penjualan_detail
                     INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai'" . $status_sampel_query . "
+                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai'" . $status_sampel_query . $status_pajak_query . "
                     GROUP BY salesman.kode_cabang
                 ) detailpenjualan"),
             function ($join) {
@@ -294,7 +301,7 @@ class LaporanmarketingController extends Controller
                     SUM(ppn) as total_ppn
                     FROM marketing_penjualan
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND status_batal = 0" . $status_sampel_query . "
+                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND status_batal = 0" . $status_sampel_query . $status_pajak_query . "
                     GROUP BY salesman.kode_cabang
                 ) penjualan"),
             function ($join) {
@@ -309,7 +316,7 @@ class LaporanmarketingController extends Controller
                     INNER JOIN marketing_penjualan ON marketing_retur.no_faktur = marketing_penjualan.no_faktur
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
                     WHERE marketing_retur.tanggal BETWEEN '$request->dari' AND '$request->sampai'
-                    AND jenis_retur = 'PF'" . $status_sampel_query . "
+                    AND jenis_retur = 'PF'" . $status_sampel_query . $status_pajak_query . "
                     GROUP BY salesman.kode_cabang
                 ) detailretur"),
             function ($join) {
