@@ -37,15 +37,6 @@
                                 <input class="form-check-input" name="status_sampel" type="checkbox" value="1" id="status_sampel">
                                 <label class="form-check-label" for="status_sampel">Status Sampel</label>
                             </div>
-                            <div class="alert alert-info mt-2" id="alert_siklus_pembayaran" style="display: none;">
-                                <div class="d-flex align-items-start">
-                                    <i class="ti ti-info-circle me-2 fs-4"></i>
-                                    <div>
-                                        <strong class="d-block">Siklus Bayar COD:</strong>
-                                        <span style="font-size: 11px;">Transaksi ini akan dilunasi saat turun barang.</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,10 +74,6 @@
                                 <tr>
                                     <th>Faktur Kredit</th>
                                     <td id="jmlfaktur_kredit"></td>
-                                </tr>
-                                <tr>
-                                    <th>Siklus Bayar</th>
-                                    <td id="siklus_pembayaran_text">-</td>
                                 </tr>
                                 <tr>
                                     <th>Saldo Voucher</th>
@@ -589,7 +576,6 @@
                     //     $('#alamat_pelanggan').text("");
                     //     $('#sisa_piutang_text').text("");
                     //     $("#jmlfaktur_kredit").text("");
-                    //     $("#siklus_pembayaran_text").text("-");
                     //     let fileFoto = "notfound.jpg";
                     //     checkFileExistence(fileFoto);
                     //     //Data Salesman
@@ -602,18 +588,6 @@
                     $("#jmlfaktur_kredit").text(response.data.unpaid_faktur);
                     $("#siklus_pembayaran").val(response.data.siklus_pembayaran);
                     $("#max_kredit").val(response.data.jml_faktur);
-
-                    if (response.data.siklus_pembayaran === '1') {
-                        $("#siklus_pembayaran_text").html('<span class="badge bg-warning text-dark">COD</span> <span class="d-block text-muted" style="font-size: 10px; font-weight: 500;">(Lunas saat barang turun)</span>');
-                        $("#alert_siklus_pembayaran").show();
-                    } else if (response.data.siklus_pembayaran === '0') {
-                        $("#siklus_pembayaran_text").html('<span class="badge bg-primary">Reguler (Mingguan)</span>');
-                        $("#alert_siklus_pembayaran").hide();
-                    } else {
-                        $("#siklus_pembayaran_text").html('<span class="badge bg-secondary">Biasa</span>');
-                        $("#alert_siklus_pembayaran").hide();
-                    }
-
                     buttonEnable();
                 }
             });
