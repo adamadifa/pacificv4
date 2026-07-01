@@ -1443,7 +1443,7 @@ class LaporankeuanganController extends Controller
                 GROUP BY no_pinjaman
             ) hbnow ON (keuangan_piutangkaryawan.no_pinjaman = hbnow.no_pinjaman)
 
-            WHERE tanggal <= '$sampai'
+            WHERE tanggal <= '$sampai' AND keuangan_piutangkaryawan.kategori != 'EK' AND keuangan_piutangkaryawan.status = '0'
             GROUP BY keuangan_piutangkaryawan.nik
         ) piutang"),
             function ($join) {
