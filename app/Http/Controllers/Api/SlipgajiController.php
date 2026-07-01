@@ -502,7 +502,8 @@ class SlipgajiController extends Controller
                 if ($row['status'] == 'h') {
                     $istirahat = $row['istirahat'];
                     $jam_mulai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_in'] : date('Y-m-d H:i:s', strtotime($tanggal_presensi . ' ' . $row['jam_mulai']));
-                    $jam_selesai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_out'] : date(($row['lintashari'] == '1' ? date('Y-m-d H:i:s', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi) . ' ' . $row['jam_selesai']);
+                    $jam_selesai = (in_array($d['kode_jabatan'], ['J22', 'J23']) || (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21')) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk)) ? $row['jam_out'] : date('Y-m-d H:i:s', strtotime(($row['lintashari'] == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi) . ' ' . $row['jam_selesai']));
+
 
                     $terlambat = presensiHitungJamTerlambat($row['jam_in'], $jam_mulai);
                     $denda = presensiHitungDenda($terlambat['jamterlambat'] ?? 0, $terlambat['menitterlambat'] ?? 0, $row['kode_izin_terlambat'], $d['kode_dept'], $d['kode_jabatan'], $tanggal_presensi, $terlambat['diffterlambat'] ?? 0);
