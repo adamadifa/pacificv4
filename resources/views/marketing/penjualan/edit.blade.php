@@ -37,6 +37,10 @@
                                 <input class="form-check-input" name="status_sampel" type="checkbox" value="1" id="status_sampel" {{ $penjualan->status_sampel == 1 ? 'checked' : '' }}>
                                 <label class="form-check-label" for="status_sampel">Status Sampel</label>
                             </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" name="status_pajak_faktur" type="checkbox" value="1" id="status_pajak_faktur" {{ $penjualan->status_pajak_faktur == 1 ? 'checked' : '' }}>
+                                <label class="form-check-label" for="status_pajak_faktur">Status Pajak Faktur</label>
+                            </div>
                         </div>
                     </div>
                 </div>

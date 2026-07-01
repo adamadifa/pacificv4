@@ -1253,6 +1253,7 @@ class PenjualanController extends Controller
                 'tanggal' => $request->tanggal,
                 'keterangan' => $keterangan,
                 'status_sampel' => $request->status_sampel ?? 0,
+                'status_pajak_faktur' => $request->status_pajak_faktur ?? 0,
 
                 'potongan_aida' => $potongan_aida,
                 'potongan_swan' => $potongan_swan,
