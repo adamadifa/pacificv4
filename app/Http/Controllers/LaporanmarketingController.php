@@ -212,9 +212,9 @@ class LaporanmarketingController extends Controller
         }
 
         if ($request->status_pajak_pelanggan === '1') {
-            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 1);
         } elseif ($request->status_pajak_pelanggan === '0') {
-            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 0);
         }
 
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
@@ -461,9 +461,9 @@ class LaporanmarketingController extends Controller
         }
 
         if ($request->status_pajak_pelanggan === '1') {
-            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 1);
         } elseif ($request->status_pajak_pelanggan === '0') {
-            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 0);
         }
 
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
@@ -686,9 +686,9 @@ class LaporanmarketingController extends Controller
         }
 
         if ($request->status_pajak_pelanggan === '1') {
-            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 1);
         } elseif ($request->status_pajak_pelanggan === '0') {
-            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 0);
         }
 
         $qpenjualan->orderBy('marketing_penjualan.tanggal');
@@ -856,9 +856,9 @@ class LaporanmarketingController extends Controller
         }
 
         if ($request->status_pajak_pelanggan === '1') {
-            $qpenjualan->whereNotNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 1);
         } elseif ($request->status_pajak_pelanggan === '0') {
-            $qpenjualan->whereNull('pelanggan.kode_cabang_pkp');
+            $qpenjualan->where('marketing_penjualan.status_pajak_faktur', 0);
         }
 
         $qpenjualan->orderBy('marketing_penjualan.created_at');
