@@ -122,6 +122,12 @@ class PenjualanController extends Controller
             $query->where('marketing_penjualan.no_faktur', 'NOT LIKE', '___PR%');
         }
 
+        if ($request->status_pajak_faktur_search === '1') {
+            $query->where('marketing_penjualan.status_pajak_faktur', 1);
+        } else if ($request->status_pajak_faktur_search === '0') {
+            $query->where('marketing_penjualan.status_pajak_faktur', 0);
+        }
+
         $query->orderBy('marketing_penjualan.tanggal', 'desc');
         $query->orderBy('marketing_penjualan.no_faktur', 'desc');
         $penjualan = $query->cursorPaginate();
@@ -783,6 +789,7 @@ class PenjualanController extends Controller
                 'kode_salesman' => $kode_salesman,
                 'keterangan' => $keterangan,
                 'status_sampel' => $request->status_sampel ?? 0,
+                'status_pajak_faktur' => $request->status_pajak_faktur ?? 0,
 
                 'potongan_aida' => $potongan_aida,
                 'potongan_swan' => $potongan_swan,

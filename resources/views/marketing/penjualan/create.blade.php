@@ -16,6 +16,7 @@
     <input type="hidden" name="sisa_piutang" id="sisa_piutang">
     <input type="hidden" name="siklus_pembayaran" id="siklus_pembayaran">
     <input type="hidden" name="max_kredit" id="max_kredit">
+    <input type="hidden" name="status_pajak_faktur" id="status_pajak_faktur_input" value="0">
 
     <div class="row">
         <div class="col-lg-3 col-sm-12 col-xs-12">
@@ -1663,6 +1664,7 @@
 
 
 
+        let isTaxConfirmed = false;
         $("#formPenjualan").submit(function(e) {
             // e.preventDefault();
             const no_faktur = $("#no_faktur").val();
@@ -1720,9 +1722,38 @@
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
             } else {
-                $("#jenis_transaksi").prop("disabled", false);
-                $("#jenis_bayar").prop("disabled", false);
-                buttonDisable();
+                if (!isTaxConfirmed) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Pilih Status Pajak',
+                        text: 'Apakah transaksi ini menggunakan Faktur Pajak?',
+                        icon: 'question',
+                        showDenyButton: true,
+                        confirmButtonText: 'Faktur Pajak',
+                        denyButtonText: 'Non Faktur Pajak',
+                        confirmButtonColor: '#28a745',
+                        denyButtonColor: '#6c757d',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $("#status_pajak_faktur_input").val(1);
+                            isTaxConfirmed = true;
+                            $("#jenis_transaksi").prop("disabled", false);
+                            $("#jenis_bayar").prop("disabled", false);
+                            buttonDisable();
+                            $("#formPenjualan").submit();
+                        } else if (result.isDenied) {
+                            $("#status_pajak_faktur_input").val(0);
+                            isTaxConfirmed = true;
+                            $("#jenis_transaksi").prop("disabled", false);
+                            $("#jenis_bayar").prop("disabled", false);
+                            buttonDisable();
+                            $("#formPenjualan").submit();
+                        }
+                    });
+                    return false;
+                }
             }
         });
 

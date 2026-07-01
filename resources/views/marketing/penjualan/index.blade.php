@@ -80,6 +80,14 @@
                 <p class="mb-0">
                     Silahkan Gunakan Icon <i class="ti ti-adjustments text-warning me-1 ms-1"></i> Untuk Generate No. Faktur
                 </p>
+                <hr class="my-2">
+                <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+                    <span class="badge" style="background-color: #ed9993; color: #000; font-size: 11px;">Faktur Batal</span>
+                    <span class="badge" style="background-color: #edd993; color: #000; font-size: 11px;">Ajuan Batal</span>
+                    <span class="badge" style="background-color: #e8d5f5; color: #000; font-size: 11px;">Faktur Pajak</span>
+                    <span class="badge" style="background-color: #d1e7dd; color: #0f5132; font-size: 11px;">Sampel</span>
+                    <span class="badge" style="background-color: #b0d9f1; color: #000; font-size: 11px;">PO (Pre-Order)</span>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
@@ -124,12 +132,21 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-group mb-1">
+                        <select name="status_pajak_faktur_search" id="status_pajak_faktur_search" class="form-select">
+                            <option value="">Pajak Faktur</option>
+                            <option value="1" {{ Request('status_pajak_faktur_search') === '1' ? 'selected' : '' }}>Faktur Pajak</option>
+                            <option value="0" {{ Request('status_pajak_faktur_search') === '0' ? 'selected' : '' }}>Non Faktur Pajak</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-input-with-icon label="No. Faktur" value="{{ Request('no_faktur_search') }}" name="no_faktur_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-input-with-icon label="Kode Pelanggan" value="{{ Request('kode_pelanggan_search') }}" name="kode_pelanggan_search" icon="ti ti-barcode" hideLabel="true" />
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <x-input-with-icon label="Nama Pelanggan" value="{{ Request('nama_pelanggan_search') }}" name="nama_pelanggan_search" icon="ti ti-users" hideLabel="true" />
                 </div>
                 <div class="col-auto">
@@ -181,6 +198,9 @@
                                     $color_text = '#000';
                                 } elseif ($d->status_batal == '2') {
                                     $color = '#edd993';
+                                    $color_text = '#000';
+                                } elseif ($d->status_pajak_faktur == '1') {
+                                    $color = '#e8d5f5'; // soft purple
                                     $color_text = '#000';
                                 } elseif ($d->status_sampel == '1') {
                                     $color = '#d1e7dd';
