@@ -503,7 +503,7 @@ class SaldoawalbukubesarController extends Controller
             DB::raw("'PENJUALAN' AS sumber"),
             DB::raw("CONCAT(' Penjualan ',pelanggan.nama_pelanggan) as keterangan"),
             DB::raw('0 as jml_kredit'),
-            DB::raw('(IFNULL(jml_bruto_penjualan,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) - IFNULL(jml_retur,0)) as jml_debet'),
+            DB::raw('(IFNULL(jml_bruto_penjualan,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) - IFNULL(penyesuaian,0) - IFNULL(jml_retur,0) + IFNULL(marketing_penjualan.ppn,0)) as jml_debet'),
             DB::raw('1 as urutan')
         );
         $penjualannetto->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
@@ -515,6 +515,8 @@ class SaldoawalbukubesarController extends Controller
             $join->on('marketing_penjualan.no_faktur', '=', 'detailpenjualan.no_faktur');
         });
         $penjualannetto->where('marketing_penjualan.status_batal', 0);
+        $penjualannetto->where('marketing_penjualan.status_sampel', 0);
+        $penjualannetto->where('marketing_penjualan.jenis_transaksi', 'K');
         $penjualannetto->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $penjualannetto->whereBetween('marketing_penjualan.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
