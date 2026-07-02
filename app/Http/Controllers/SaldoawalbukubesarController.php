@@ -382,6 +382,7 @@ class SaldoawalbukubesarController extends Controller
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $kaskecil_transaksi->whereBetween('keuangan_kaskecil.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
+        $kaskecil_transaksi->where('keuangan_kaskecil.kode_akun', '!=', '1-1104');
         $kaskecil_transaksi->where('keuangan_kaskecil.keterangan', '!=', 'Penerimaan Kas Kecil');
         $kaskecil_transaksi->join('coa', 'keuangan_kaskecil.kode_akun', '=', 'coa.kode_akun');
         $kaskecil_transaksi->orderBy('keuangan_kaskecil.kode_akun');
@@ -396,7 +397,7 @@ class SaldoawalbukubesarController extends Controller
             'nama_akun',
             'keuangan_kaskecil.tanggal',
             'keuangan_kaskecil.no_bukti',
-            DB::raw("'KAS KECIL' AS sumber"),
+            DB::raw("CONCAT('KAS KECIL ', keuangan_kaskecil.kode_cabang) AS sumber"),
             'keuangan_kaskecil.keterangan',
             DB::raw('IF(debet_kredit="K",jumlah,0) as jml_kredit'),
             DB::raw('IF(debet_kredit="D",jumlah,0) as jml_debet'),
