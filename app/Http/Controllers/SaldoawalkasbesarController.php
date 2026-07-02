@@ -146,6 +146,7 @@ class SaldoawalkasbesarController extends Controller
                 DB::raw("SUM(setoran_logam) as setoran_logam"),
                 DB::raw("SUM(setoran_transfer) as setoran_transfer"),
                 DB::raw("SUM(setoran_giro) as setoran_giro"),
+                DB::raw("SUM(setoran_lainnya) as setoran_lainnya"),
                 DB::raw("SUM(giro_to_cash) as giro_to_cash"),
                 DB::raw("SUM(giro_to_transfer) as giro_to_transfer")
             )
@@ -158,7 +159,8 @@ class SaldoawalkasbesarController extends Controller
                 DB::raw("SUM(setoran_kertas) as setoran_kertas"),
                 DB::raw("SUM(setoran_logam) as setoran_logam"),
                 DB::raw("SUM(setoran_transfer) as setoran_transfer"),
-                DB::raw("SUM(setoran_giro) as setoran_giro")
+                DB::raw("SUM(setoran_giro) as setoran_giro"),
+                DB::raw("SUM(setoran_lainnya) as setoran_lainnya")
             )
                 ->where('kode_cabang', $kode_cabang)
                 ->whereBetween('tanggal', [$dari, $sampai])
@@ -209,6 +211,7 @@ class SaldoawalkasbesarController extends Controller
             $setoran_penjualan_logam  = $setoranpenjualanbulanlalu->setoran_logam;
             $setoran_penjualan_giro  = $setoranpenjualanbulanlalu->setoran_giro;
             $setoran_penjualan_transfer   = $setoranpenjualanbulanlalu->setoran_transfer;
+            $setoran_penjualan_lainnya   = $setoranpenjualanbulanlalu->setoran_lainnya;
             $giro_to_cash  = $setoranpenjualanbulanlalu->giro_to_cash;
             $giro_to_transfer  = $setoranpenjualanbulanlalu->giro_to_transfer;
             //Kurang Lebih Setor
@@ -225,8 +228,9 @@ class SaldoawalkasbesarController extends Controller
             $setoranpusat_logam = $setoranpusatbulanlalu->setoran_logam;
             $setoranpusat_giro = $setoranpusatbulanlalu->setoran_giro;
             $setoranpusat_transfer = $setoranpusatbulanlalu->setoran_transfer;
+            $setoranpusat_lainnya = $setoranpusatbulanlalu->setoran_lainnya;
 
-            $uang_kertas = $saldo_kertas + $setoran_penjualan_kertas + $kurang_kertas - $lebih_kertas + $gantikertas + $giro_to_cash - $setoranpusat_kertas;
+            $uang_kertas = $saldo_kertas + $setoran_penjualan_kertas + $kurang_kertas - $lebih_kertas + $gantikertas + $giro_to_cash + $setoran_penjualan_lainnya - $setoranpusat_kertas - $setoranpusat_lainnya;
             $uang_logam = $saldo_logam + $setoran_penjualan_logam + $kurang_logam - $lebih_logam - $gantikertas - $setoranpusat_logam;
             $giro = $saldo_giro + $setoran_penjualan_giro - $setoranpusat_giro - $giro_to_cash - $giro_to_transfer;
             $transfer = $saldo_transfer + $setoran_penjualan_transfer - $setoranpusat_transfer + $giro_to_transfer;
