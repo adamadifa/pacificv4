@@ -516,7 +516,6 @@ class SaldoawalbukubesarController extends Controller
         });
         $penjualannetto->where('marketing_penjualan.status_batal', 0);
         $penjualannetto->where('marketing_penjualan.status_sampel', 0);
-        $penjualannetto->where('marketing_penjualan.jenis_transaksi', 'K');
         $penjualannetto->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $penjualannetto->whereBetween('marketing_penjualan.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
