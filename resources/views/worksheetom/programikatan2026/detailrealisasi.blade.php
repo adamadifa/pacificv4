@@ -9,6 +9,7 @@
             <th class="text-end">Isi/Dus</th>
             <th class="text-end">Qty (Dus)</th>
             <th>Jenis Transaksi</th>
+            <th>Keterangan</th>
         </tr>
     </thead>
     <tbody>
@@ -37,10 +38,27 @@
                         <span class="badge bg-danger">Kredit</span>
                     @endif
                 </td>
+                <td>
+                    @if ($d->jenis_transaksi == 'K')
+                        @php
+                            $start = \Carbon\Carbon::parse($d->tanggal);
+                            $end = !empty($d->tanggal_pelunasan) ? \Carbon\Carbon::parse($d->tanggal_pelunasan) : \Carbon\Carbon::now();
+                            $lama_bayar = $start->diffInDays($end);
+                            $is_lunas = !empty($d->tanggal_pelunasan);
+                        @endphp
+                        @if ($lama_bayar > ($top + 3))
+                            <span class="badge bg-danger">Melebihi TOP ({{ $lama_bayar }} Hari) {{ !$is_lunas ? '[Belum Lunas]' : '' }}</span>
+                        @else
+                            <span class="badge bg-secondary">Aman ({{ $lama_bayar }} Hari) {{ !$is_lunas ? '[Belum Lunas]' : '' }}</span>
+                        @endif
+                    @else
+                        <span class="text-muted">-</span>
+                    @endif
+                </td>
             </tr>
         @empty
             <tr>
-                <td colspan="8" class="text-center">Tidak ada data realisasi.</td>
+                <td colspan="9" class="text-center">Tidak ada data realisasi.</td>
             </tr>
         @endforelse
     </tbody>
@@ -50,6 +68,7 @@
             <td class="text-end">{{ formatAngka($total_pcs) }}</td>
             <td></td>
             <td class="text-end">{{ round($total_dus_equivalent, 2) }}</td>
+            <td></td>
             <td></td>
         </tr>
     </tfoot>

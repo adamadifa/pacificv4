@@ -1102,7 +1102,12 @@ class ProgramIkatan2026Controller extends Controller
             ->where('status_batal', 0)
             ->get();
 
-        return view('worksheetom.programikatan2026.detailrealisasi', compact('detailpenjualan'));
+        $detail_ikatan = MktIkatanDetail2026::where('no_pengajuan', $no_pengajuan)
+            ->where('kode_pelanggan', $kode_pelanggan)
+            ->first();
+        $top = $detail_ikatan ? $detail_ikatan->top : 30;
+
+        return view('worksheetom.programikatan2026.detailrealisasi', compact('detailpenjualan', 'top'));
     }
 }
 
