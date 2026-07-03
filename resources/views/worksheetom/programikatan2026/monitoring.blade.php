@@ -135,6 +135,11 @@
                                                               kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
                                                             {{ formatAngka($d->realisasi) }}
                                                         </span>
+                                                        @if(($d->realisasi_melebihi_top ?? 0) > 0)
+                                                             <small class="d-block {{ $color_reward ? 'text-white' : 'text-danger' }} fw-semibold" style="font-size: 0.75rem;">
+                                                                 -{{ formatAngka($d->realisasi_melebihi_top) }}
+                                                             </small>
+                                                         @endif
                                                      </div>
                                                       <div class="col-3 text-center">
                                                         <small class="d-block {{ $color_reward ? 'text-white' : 'text-muted' }}">%</small>
@@ -242,6 +247,11 @@
                                                           kode_pelanggan="{{ Crypt::encrypt($d->kode_pelanggan) }}">
                                                         {{ formatAngka($d->realisasi) }}
                                                     </span>
+                                                    @if(($d->realisasi_melebihi_top ?? 0) > 0)
+                                                        <br><small class="text-danger fw-semibold" style="font-size: 0.75rem;">
+                                                            -{{ formatAngka($d->realisasi_melebihi_top) }}
+                                                        </small>
+                                                    @endif
                                                 </td>
                                                 <td class="text-end">
                                                     <span class="badge {{ $persentase >= 100 ? 'bg-label-success' : 'bg-label-danger' }} fw-bold">

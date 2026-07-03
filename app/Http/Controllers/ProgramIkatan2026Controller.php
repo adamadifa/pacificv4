@@ -1000,6 +1000,7 @@ class ProgramIkatan2026Controller extends Controller
             }
 
             $d->realisasi = $realisasi;
+            $d->realisasi_melebihi_top = $realisasi_melebihi_top;
 
             // Reward Calculation
             $avg = $d->avg_target ?? 0;
