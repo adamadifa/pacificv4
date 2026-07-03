@@ -979,6 +979,26 @@ class ProgramIkatan2026Controller extends Controller
                 $realisasi += floor($rd->total_pcs / $rd->isi_pcs_dus);
             }
 
+            // Calculate quantity exceeding TOP (Credit and past TOP + 3 days limit)
+            $realisasi_melebihi_top_details = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->whereIn('produk_harga.kode_produk', $produk)
+                ->whereBetween('marketing_penjualan.tanggal', [$d->periode_dari, $d->periode_sampai])
+                ->where('marketing_penjualan.kode_pelanggan', $d->kode_pelanggan)
+                ->where('status_promosi', 0)
+                ->where('status_batal', 0)
+                ->where('marketing_penjualan.jenis_transaksi', 'K')
+                ->whereRaw("datediff(COALESCE(marketing_penjualan.tanggal_pelunasan, NOW()), marketing_penjualan.tanggal) > ?", [$d->top + 3])
+                ->select('produk.kode_produk', 'produk.isi_pcs_dus', DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs'))
+                ->groupBy('produk.kode_produk', 'produk.isi_pcs_dus')
+                ->get();
+
+            $realisasi_melebihi_top = 0;
+            foreach ($realisasi_melebihi_top_details as $rd) {
+                $realisasi_melebihi_top += floor($rd->total_pcs / $rd->isi_pcs_dus);
+            }
+
             $d->realisasi = $realisasi;
 
             // Reward Calculation
@@ -1043,10 +1063,12 @@ class ProgramIkatan2026Controller extends Controller
             $is_flat = $tier->is_flat ?? 0;
             $d->reward_rate = $rate;
 
+            $realisasi_untuk_reward = max(0, $realisasi - $realisasi_melebihi_top);
+
             if ($is_flat == 1) {
                 $d->calculated_reward_total = $rate;
             } else {
-                 $d->calculated_reward_total = $jml_dus * $rate;
+                 $d->calculated_reward_total = $realisasi_untuk_reward * $rate;
             }
 
             if ($cap != null && $d->calculated_reward_total > $cap) {

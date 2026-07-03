@@ -339,7 +339,8 @@ class PencairanProgramIkatan2026Controller extends Controller
             'produk.isi_pcs_dus',
             DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs'),
             DB::raw('SUM(IF(jenis_transaksi = "T", marketing_penjualan_detail.jumlah, 0)) as total_tunai'),
-            DB::raw('SUM(IF(jenis_transaksi = "K", marketing_penjualan_detail.jumlah, 0)) as total_kredit')
+            DB::raw('SUM(IF(jenis_transaksi = "K", marketing_penjualan_detail.jumlah, 0)) as total_kredit'),
+            DB::raw('SUM(IF(jenis_transaksi = "K" AND datediff(COALESCE(marketing_penjualan.tanggal_pelunasan, NOW()), marketing_penjualan.tanggal) > listpelangganikatan.top + 3, marketing_penjualan_detail.jumlah, 0)) as total_kredit_melebihi_top')
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -361,7 +362,8 @@ class PencairanProgramIkatan2026Controller extends Controller
                 'kode_pelanggan',
                 DB::raw('SUM(FLOOR(total_pcs / isi_pcs_dus)) as jml_dus'),
                 DB::raw('SUM(FLOOR(total_tunai / isi_pcs_dus)) as jml_tunai'),
-                DB::raw('SUM(FLOOR(total_kredit / isi_pcs_dus)) as jml_kredit')
+                DB::raw('SUM(FLOOR(total_kredit / isi_pcs_dus)) as jml_kredit'),
+                DB::raw('SUM(FLOOR(total_kredit_melebihi_top / isi_pcs_dus)) as jml_kredit_melebihi_top')
             )
             ->groupBy('kode_pelanggan');
 
@@ -389,6 +391,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             'detailpenjualan.jml_dus',
             'detailpenjualan.jml_tunai',
             'detailpenjualan.jml_kredit',
+            'detailpenjualan.jml_kredit_melebihi_top',
             'mkt_ikatan_2026.kode_program',
             'mkt_ikatan_2026.periode_dari',
             'mkt_ikatan_2026.periode_sampai'
@@ -471,12 +474,15 @@ class PencairanProgramIkatan2026Controller extends Controller
             $is_flat = $tier->is_flat ?? 0;
             $item->reward_rate = $rate;
 
+            $jml_kredit_melebihi_top = $item->jml_kredit_melebihi_top ?? 0;
+            $jml_dus_untuk_reward = max(0, $jml_dus - $jml_kredit_melebihi_top);
+
             if ($is_flat == 1) {
                 $item->calculated_reward_total = $rate;
             } else {
                 $item->calculated_reward_tunai = ($item->jml_tunai ?? 0) * $rate;
-                $item->calculated_reward_kredit = ($item->jml_kredit ?? 0) * $rate;
-                $item->calculated_reward_total = $jml_dus * $rate;
+                $item->calculated_reward_kredit = max(0, ($item->jml_kredit ?? 0) - $jml_kredit_melebihi_top) * $rate;
+                $item->calculated_reward_total = $jml_dus_untuk_reward * $rate;
             }
 
             if ($cap != null && $item->calculated_reward_total > $cap) {
