@@ -77,6 +77,7 @@ class PencairanProgramIkatan2026Controller extends Controller
         $data['cabang'] = $cbg->getCabang();
         $data['user'] = $user;
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
+        $data['roles_access_all_cabang'] = $roles_access_all_cabang;
         return view('worksheetom.pencairanprogramikatan2026.index', $data);
     }
 
@@ -349,7 +350,7 @@ class PencairanProgramIkatan2026Controller extends Controller
                 $join->on('marketing_penjualan.kode_pelanggan', '=', 'listpelangganikatan.kode_pelanggan');
             })
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
-            ->whereRaw("datediff(marketing_penjualan.tanggal_pelunasan, marketing_penjualan.tanggal) <= listpelangganikatan.top + 3")
+            ->where('status_promosi', 0)
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
             ->groupBy('marketing_penjualan.kode_pelanggan', 'produk.kode_produk', 'produk.isi_pcs_dus');
@@ -569,6 +570,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->whereBetween('marketing_penjualan.tanggal', [$start_date, $end_date])
             ->where('marketing_penjualan.kode_pelanggan', $kode_pelanggan)
+            ->where('status_promosi', 0)
             ->where('status_batal', 0)
             ->whereIn('produk_harga.kode_produk', $produk)
             ->get();

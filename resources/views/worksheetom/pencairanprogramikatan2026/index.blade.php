@@ -29,6 +29,17 @@
                                             icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                 </div>
+                                @hasanyrole($roles_access_all_cabang)
+                                    <div class="form-group mb-3">
+                                        <select name="kode_cabang" id="kode_cabang" class="form-select select2Kodecabang">
+                                            <option value="">Semua Cabang</option>
+                                            @foreach ($cabang as $d)
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }} value="{{ $d->kode_cabang }}">
+                                                    {{ textUpperCase($d->nama_cabang) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endrole
                                 <div class="form-group mb-3">
                                     <x-select label="Semua Status" name="status" :data="[
                                         (object)['kode' => 'pending', 'nama' => 'Pending'],

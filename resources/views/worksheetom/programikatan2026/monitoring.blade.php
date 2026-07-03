@@ -27,18 +27,18 @@
                                     </div>
                                 @endrole
                                 <x-select label="Semua Program" name="kode_program" :data="$programikatan" key="kode_program" textShow="nama_program"
-                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" />
+                                    select2="select2Kodeprogram" upperCase="true" selected="{{ Request('kode_program') }}" hideLabel="true" />
                                 <div class="form-group mb-3">
                                    <input type="text" class="form-control" name="nama_pelanggan" placeholder="Nama Pelanggan" value="{{ Request('nama_pelanggan') }}">
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Sampai" value="{{ Request('sampai') }}" name="sampai" icon="ti ti-calendar"
-                                            datepicker="flatpickr-date" />
+                                            datepicker="flatpickr-date" hideLabel="true" />
                                     </div>
                                 </div>
                                 <div class="row">
