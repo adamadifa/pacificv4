@@ -1061,6 +1061,10 @@ class ProgramIkatan2026Controller extends Controller
                 }
             }
 
+            if ($d->kode_program == 'PRIK002' && ($jml_dus / 6) < 10) {
+                $rate = 0;
+            }
+
             $is_flat = $tier->is_flat ?? 0;
             $d->reward_rate = $rate;
 

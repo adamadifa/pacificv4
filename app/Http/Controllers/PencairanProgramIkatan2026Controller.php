@@ -471,6 +471,10 @@ class PencairanProgramIkatan2026Controller extends Controller
                 }
             }
 
+            if ($item->kode_program == 'PRIK002' && ($jml_dus / 6) < 10) {
+                $rate = 0;
+            }
+
             $is_flat = $tier->is_flat ?? 0;
             $item->reward_rate = $rate;
 
