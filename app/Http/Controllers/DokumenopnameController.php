@@ -78,6 +78,14 @@ class DokumenopnameController extends Controller
             ]);
         }
 
+        if (!$user->hasRole(['super admin'])) {
+            $target_date = \Carbon\Carbon::parse($request->tanggal);
+            $today = \Carbon\Carbon::today();
+            if ($today->greaterThan($target_date->addDay())) {
+                return Redirect::back()->with(messageError('Batas waktu upload maksimal adalah H+1 dari tanggal dokumen opname!'));
+            }
+        }
+
         try {
             $kode_dokumen_opname = $kode_cabang . date('Ymd', strtotime($request->tanggal));
             $cek = Dokumenopname::where('kode_dokumen_opname', $kode_dokumen_opname)->count();
