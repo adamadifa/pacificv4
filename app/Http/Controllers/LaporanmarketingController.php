@@ -7165,16 +7165,16 @@ class LaporanmarketingController extends Controller
             )
             ->whereBetween('worksheetom_visitpelanggan.tanggal', [$dari, $sampai])
             ->where('worksheetom_visitpelanggan.jenis_kunjungan', 'OTS')
-            ->where(function($q) {
-                $q->where(function($q2) {
+            ->where(function ($q) {
+                $q->where(function ($q2) {
                     $q2->where('marketing_penjualan.jenis_transaksi', 'K')
-                       ->whereRaw('((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn) >= 1000000');
-                })->orWhere(function($q2) {
+                        ->whereRaw('((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn) >= 1000000');
+                })->orWhere(function ($q2) {
                     $q2->where('marketing_penjualan.jenis_transaksi', 'T')
-                       ->where(function($q3) {
-                           $q3->where('marketing_penjualan.potongan', '>', 0)
-                              ->orWhere('marketing_penjualan.potongan_istimewa', '>', 0);
-                       });
+                        ->where(function ($q3) {
+                            $q3->where('marketing_penjualan.potongan', '>', 0)
+                                ->orWhere('marketing_penjualan.potongan_istimewa', '>', 0);
+                        });
                 });
             })
             ->groupBy('kode_cabang_baru');
@@ -7410,6 +7410,156 @@ class LaporanmarketingController extends Controller
     //     return view('marketing.laporan.ratiobs_cetak', $data);
     // }
 
+    // public function cetakratiobs(Request $request)
+    // {
+
+    //     $roles_access_all_cabang = config('global.roles_access_all_cabang');
+    //     $user = User::findorfail(auth()->user()->id);
+
+    //     if (!$user->hasRole($roles_access_all_cabang)) {
+    //         if ($user->hasRole('regional sales manager')) {
+    //             $kode_cabang = $request->kode_cabang;
+    //         } else {
+    //             $kode_cabang = $user->kode_cabang;
+    //         }
+    //     } else {
+    //         $kode_cabang = $request->kode_cabang;
+    //     }
+
+    //     $dari = $request->tahun . '-' . $request->bulan . '-01';
+    //     $sampai = date('Y-m-t', strtotime($dari));
+    //     $dari_lalu = date('Y-m-01', strtotime('-1 month', strtotime($dari)));
+    //     $sampai_lalu = date('Y-m-t', strtotime($dari_lalu));
+
+    //     $qproduk = Detailretur::query();
+    //     $qproduk->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus');
+    //     $qproduk->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+    //     $qproduk->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
+    //     $qproduk->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+    //     $qproduk->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+    //     $qproduk->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+    //     $qproduk->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+    //     $qproduk->orderBy('produk_harga.kode_produk');
+    //     $qproduk->groupBy(
+    //         'produk_harga.kode_produk',
+    //         'produk.nama_produk',
+    //         'produk.isi_pcs_dus'
+    //     );
+    //     $produk = $qproduk->get();
+
+
+    //     $selectReject = [];
+    //     $fieldReject = [];
+    //     $selectTotalretur = [];
+    //     $fieldTotalretur = [];
+    //     $selectRejectLast = [];
+    //     $fieldRejectLast = [];
+    //     $selectTotalreturLast = [];
+    //     $fieldTotalreturLast = [];
+    //     foreach ($produk as $p) {
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RM',jumlah/isi_pcs_dus,0)) as `reject_mobil_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RG',jumlah/isi_pcs_dus,0)) as `reject_gudang_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RP',jumlah/isi_pcs_dus,0)) as `reject_pasar_" . $p->kode_produk . "`");
+    //         $selectReject[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RK',jumlah/isi_pcs_dus,0)) as `repack_" . $p->kode_produk . "`");
+    //         $fieldReject[] = "reject_mobil_" . $p->kode_produk;
+    //         $fieldReject[] = "reject_gudang_" . $p->kode_produk;
+    //         $fieldReject[] = "reject_pasar_" . $p->kode_produk;
+    //         $fieldReject[] = "repack_" . $p->kode_produk;
+    //         $selectTotalretur[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_" . $p->kode_produk . "`");
+    //         $fieldReject[] = "retur_" . $p->kode_produk;
+    //         $fieldTotalretur[] = "total_retur_" . $p->kode_produk;
+    //         // BULAN SEKARANG
+    //         $selectRejectLast[] = DB::raw("SUM(IF(gudang_cabang_mutasi_detail.kode_produk='$p->kode_produk' AND jenis_mutasi='RT',jumlah/isi_pcs_dus,0)) as `retur_lalu_" . $p->kode_produk . "`");
+    //         $fieldRejectLast[] = "retur_lalu_" . $p->kode_produk;
+    //         $selectTotalreturLast[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',subtotal,0)) as `total_retur_lalu_" . $p->kode_produk . "`");
+    //         $fieldTotalreturLast[] = "total_retur_lalu_" . $p->kode_produk;
+    //     }
+
+    //     $qreject = Detailmutasigudangcabang::query();
+    //     $qreject->select('gudang_cabang_mutasi.kode_cabang', ...$selectReject);
+    //     $qreject->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi');
+    //     $qreject->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+    //     $qreject->whereBetween('gudang_cabang_mutasi.tanggal', [$dari, $sampai]);
+    //     $qreject->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+    //     $qreject->groupBy('gudang_cabang_mutasi.kode_cabang');
+
+    //     $qreject_lalu = Detailmutasigudangcabang::query();
+    //     $qreject_lalu->select('gudang_cabang_mutasi.kode_cabang', ...$selectRejectLast);
+    //     $qreject_lalu->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', '=', 'gudang_cabang_mutasi.no_mutasi');
+    //     $qreject_lalu->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+    //     $qreject_lalu->whereBetween('gudang_cabang_mutasi.tanggal', [$dari_lalu, $sampai_lalu]);
+    //     $qreject->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+    //     $qreject_lalu->groupBy('gudang_cabang_mutasi.kode_cabang');
+
+    //     $qretur_lalu = Detailretur::query();
+    //     $qretur_lalu->select('salesman.kode_cabang', ...$selectTotalreturLast);
+    //     $qretur_lalu->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+    //     $qretur_lalu->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+    //     $qretur_lalu->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+    //     $qretur_lalu->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+    //     $qretur_lalu->whereBetween('marketing_retur.tanggal', [$dari_lalu, $sampai_lalu]);
+    //     $qretur_lalu->groupBy('salesman.kode_cabang');
+
+    //     $qretur = Detailretur::query();
+    //     $qretur->select('salesman.kode_cabang', ...$selectTotalretur);
+    //     $qretur->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga');
+    //     $qretur->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur');
+    //     $qretur->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur');
+    //     $qretur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+    //     $qretur->whereBetween('marketing_retur.tanggal', [$dari, $sampai]);
+    //     $qretur->groupBy('salesman.kode_cabang');
+
+    //     $query = Cabang::query();
+    //     $query->select(
+    //         'cabang.kode_cabang',
+    //         'nama_cabang',
+    //         ...$fieldReject,
+    //         ...$fieldTotalretur,
+    //         ...$fieldRejectLast,
+    //         ...$fieldTotalreturLast
+    //     );
+
+    //     $query->leftjoinSub($qreject_lalu, 'reject_lalu', function ($join) {
+    //         $join->on('cabang.kode_cabang', '=', 'reject_lalu.kode_cabang');
+    //     });
+
+    //     $query->leftjoinSub($qretur_lalu, 'retur_lalu', function ($join) {
+    //         $join->on('cabang.kode_cabang', '=', 'retur_lalu.kode_cabang');
+    //     });
+    //     $query->select(
+    //         'cabang.kode_cabang',
+    //         'nama_cabang',
+    //         ...$fieldReject,
+    //         ...$fieldTotalretur,
+    //         ...$fieldRejectLast,
+    //         ...$fieldTotalreturLast
+    //     );
+    //     $query->leftjoinSub($qreject, 'reject', function ($join) {
+    //         $join->on('cabang.kode_cabang', '=', 'reject.kode_cabang');
+    //     });
+    //     $query->leftjoinSub($qretur, 'retur', function ($join) {
+    //         $join->on('cabang.kode_cabang', '=', 'retur.kode_cabang');
+    //     });
+    //     $query->orderBy('cabang.kode_cabang');
+    //     if (!empty($kode_cabang)) {
+    //         $query->where('cabang.kode_cabang', $kode_cabang);
+    //     }
+    //     $ratiobs = $query->get();
+
+
+    //     $data['ratiobs'] = $ratiobs;
+    //     $data['bulan'] = $request->bulan;
+    //     $data['tahun'] = $request->tahun;
+    //     $data['produk'] = $produk;
+    //     if (isset($_POST['exportButton'])) {
+    //         header("Content-type: application/vnd-ms-excel");
+    //         // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
+    //         header("Content-Disposition: attachment; filename=Ratiobs.xls");
+    //     }
+    //     return view('marketing.laporan.ratiobs_cetak', $data);
+    // }
+
     public function cetakratiobs(Request $request)
     {
 
@@ -7547,11 +7697,28 @@ class LaporanmarketingController extends Controller
         }
         $ratiobs = $query->get();
 
+        $harga_master_cabang = DB::table('produk_harga')
+            ->select('kode_cabang', 'kode_produk', DB::raw('AVG(IFNULL(NULLIF(harga_retur_dus, 0), harga_dus)) as harga_rata_rata'))
+            ->groupBy('kode_cabang', 'kode_produk')
+            ->get()
+            ->groupBy('kode_cabang')
+            ->map(function ($items) {
+                return $items->pluck('harga_rata_rata', 'kode_produk');
+            })
+            ->toArray();
+
+        $harga_master_global = DB::table('produk_harga')
+            ->select('kode_produk', DB::raw('AVG(IFNULL(NULLIF(harga_retur_dus, 0), harga_dus)) as harga_rata_rata'))
+            ->groupBy('kode_produk')
+            ->pluck('harga_rata_rata', 'kode_produk')
+            ->toArray();
 
         $data['ratiobs'] = $ratiobs;
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['produk'] = $produk;
+        $data['harga_master_cabang'] = $harga_master_cabang;
+        $data['harga_master_global'] = $harga_master_global;
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
