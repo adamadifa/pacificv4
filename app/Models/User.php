@@ -40,7 +40,8 @@ class User extends Authenticatable
         'is_pic_presensi',
         'is_approval_presensi',
         'status',
-        'last_seen'
+        'last_seen',
+        'password_secure'
     ];
 
     /**

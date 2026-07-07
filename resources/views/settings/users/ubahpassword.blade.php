@@ -28,7 +28,16 @@
                         <div class="text-danger small mb-3 mt-n2">{{ $message }}</div>
                     @enderror
 
-                    <x-input-with-icon icon="ti ti-key" label="Password" name="password" type="password" />
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold" for="password">Password</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="ti ti-key"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" autocomplete="off" aria-autocomplete="none">
+                            <span class="input-group-text cursor-pointer" id="togglePassword" style="cursor: pointer;">
+                                <i class="ti ti-eye" id="eyeIcon"></i>
+                            </span>
+                        </div>
+                    </div>
                     @error('password')
                         <div class="text-danger small mb-3 mt-n2">{{ $message }}</div>
                     @enderror
@@ -125,6 +134,20 @@
                     req.el.removeClass('text-success').addClass('text-danger');
                     req.el.find('i').removeClass('ti-circle-check').addClass('ti-circle-x').removeClass('text-success').addClass('text-danger');
                 }
+            }
+        });
+
+        // Toggle Password Visibility
+        $('#togglePassword').on('click', function() {
+            const passwordField = $('#password');
+            const eyeIcon = $('#eyeIcon');
+            const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+            passwordField.attr('type', type);
+            
+            if (type === 'password') {
+                eyeIcon.removeClass('ti-eye-off').addClass('ti-eye');
+            } else {
+                eyeIcon.removeClass('ti-eye').addClass('ti-eye-off');
             }
         });
     });

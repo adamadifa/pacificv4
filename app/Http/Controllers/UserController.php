@@ -296,6 +296,7 @@ class UserController extends Controller
                     'username' => $request->username,
                     'email' => $request->email,
                     'password' => bcrypt($request->password),
+                    'password_secure' => 1,
                 ]);
             } else {
                 User::where('id', $id)->update([
