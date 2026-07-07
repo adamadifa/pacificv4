@@ -72,6 +72,7 @@
     </div>
     <!-- / Layout wrapper -->
     <!-- BEGIN: Customizer-->
+    @hasanyrole(['super admin', 'gm administrasi', 'direktur'])
     <div class="customizer d-none d-md-block"><a class="customizer-toggle d-flex align-items-center justify-content-center" href="#"><i
                 class="spinner-grow white"></i></a>
         <div class="customizer-content">
@@ -121,6 +122,7 @@
             @endforeach
         </div>
     </div>
+    @endhasanyrole
     <!-- Bottom Navigation -->
     @hasanyrole(['gm marketing', 'regional sales manager', 'sales marketing manager'])
         <nav class="navbar fixed-bottom navbar-light bg-white shadow d-md-none">

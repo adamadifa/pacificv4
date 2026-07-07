@@ -271,6 +271,23 @@ class UserController extends Controller
             'email' => 'required|email',
         ]);
 
+        if (isset($request->password)) {
+            $request->validate([
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',             // must be at least 8 characters
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/'  // must contain at least one special character
+                ]
+            ], [
+                'password.min' => 'Password harus minimal 8 karakter.',
+                'password.regex' => 'Password harus mengandung kombinasi huruf besar, huruf kecil, angka, dan karakter spesial/simbol (e.g. @$!%*#?&).',
+            ]);
+        }
+
         try {
 
             if (isset($request->password)) {
