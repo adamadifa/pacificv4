@@ -29,6 +29,7 @@ Route::get('/karyawan/{filename}', function ($filename) {
 });
 
 Route::post('/login-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'login']);
+Route::post('/sfa/login', [\App\Http\Controllers\Api\SfaApiController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -55,6 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Push Notification Subscriptions
     Route::post('/push-subscribe', [\App\Http\Controllers\Api\PushSubscriptionController::class, 'subscribe']);
     Route::post('/push-unsubscribe', [\App\Http\Controllers\Api\PushSubscriptionController::class, 'unsubscribe']);
+
+    // SFA Protected API Routes
+    Route::get('/sfa/dashboard', [\App\Http\Controllers\Api\SfaApiController::class, 'dashboard']);
+    Route::get('/sfa/pelanggan', [\App\Http\Controllers\Api\SfaApiController::class, 'pelanggan']);
+    Route::get('/sfa/produk', [\App\Http\Controllers\Api\SfaApiController::class, 'produk']);
+    Route::post('/sfa/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'penjualan']);
 });
 
 // API Sync Jurnal Umum

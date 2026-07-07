@@ -9,7 +9,7 @@
          </div>
          <div class="modal-body">
 
-            <div id="{{ $show }}"></div>
+            <div class="{{ $show }}" id="{{ $show }}"></div>
          </div>
       </div>
    </div>
