@@ -1,64 +1,83 @@
 <form action="{{ route('bpb.store') }}" method="post" id="formcreatebpb">
     @csrf
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" value="{{ Date('Y-m-d') }}"
-        datepicker="flatpickr-date" />
-    {{-- <select class="form-select select2KodeDept" name="tujuan" id="tujuan">
-        <option value="">Pilih Tujuan</option>
-        <option value="GDL" {{ Request('tujuan') == 'GDL' ? 'selected' : '' }}>Gudang Logistik</option>
-        <option value="GDB" {{ Request('tujuan') == 'GDB' ? 'selected' : '' }}>Gudang Bahan</option>
-        <option value="GAF" {{ Request('tujuan') == 'GAF' ? 'selected' : '' }}>General Afair</option>
-    </select> --}}
-    <div class="divider text-start">
-        <div class="divider-text">Detail Barang</div>
-    </div>
-    <div class="row">
-        <div class="col-lg-10 col-md-12 col-sm-12">
-            <select class="form-select select2Kodebarang" name="kode_barang" id="kode_barang">
-                <option value="">Pilih Barang</option>
-                @foreach ($barang as $b)
-                    <option value="{{ $b->kode_barang }}">
-                        {{ $b->kode_barang }}
-                        | {{ strtoupper($b->nama_barang) }}
-                        ({{ strtoupper($b->satuan) }})
-                    </option>
-                @endforeach
-            </select>
 
+    <div class="row mb-3">
+        <div class="col-md-6 col-sm-12">
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" value="{{ Date('Y-m-d') }}"
+                datepicker="flatpickr-date" />
         </div>
-        <div class="col-lg-2 col-md-12 col-sm-12">
+    </div>
+
+    <div class="divider text-start mt-4 mb-4">
+        <div class="divider-text fw-bold text-dark fs-6"><i class="ti ti-box me-1 text-primary"></i> Detail Barang</div>
+    </div>
+
+    <div class="row g-3 align-items-end mb-4">
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="form-group">
+                <label class="form-label fw-semibold text-dark mb-1">Pilih Barang</label>
+                <select class="form-select select2Kodebarang" name="kode_barang" id="kode_barang">
+                    <option value="">Pilih Barang</option>
+                    @foreach ($barang as $b)
+                        <option value="{{ $b->kode_barang }}">
+                            {{ $b->kode_barang }}
+                            | {{ strtoupper($b->nama_barang) }}
+                            ({{ strtoupper($b->satuan) }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
             <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
         </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-12">
+            <button type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1"
+                id="tambahproduk" style="height: 38px;">
+                <i class="ti ti-plus"></i> <span>Tambah</span>
+            </button>
+        </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
-    <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
-    <div class="row mt-2">
-        <div class="col">
-            <table class="table table-bordered" id="tabledetail">
-                <thead class="table-dark">
+
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
+                <i class="ti ti-list fs-4"></i>
+                <span>Daftar Barang yang Diajukan</span>
+            </h6>
+        </div>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-sm table-hover table-bordered align-middle mb-0" id="tabledetail">
+                <thead style="background-color: #002e65;">
                     <tr>
-                        <th style="width: 10%">Kode</th>
-                        <th style="width: 30%">Nama Barang</th>
-                        <th style="width: 5%">Jumlah</th>
-                        <th>Keterangan</th>
-                        <th style="width: 5%">#</th>
+                        <th class="text-white" style="width: 15%">Kode</th>
+                        <th class="text-white" style="width: 35%">Nama Barang</th>
+                        <th class="text-white text-end" style="width: 15%">Jumlah</th>
+                        <th class="text-white">Keterangan</th>
+                        <th class="text-white text-center" style="width: 10%">#</th>
                     </tr>
                 </thead>
-                <tbody id="loaddetail">
+                <tbody id="loaddetail" class="table-border-bottom-0">
                 </tbody>
             </table>
         </div>
     </div>
+
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
                 <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
-                    value="" id="defaultCheck3">
-                <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
+                    id="defaultCheck3">
+                <label class="form-check-label fw-semibold text-dark" for="defaultCheck3"> Yakin Akan Disimpan ?
+                </label>
             </div>
             <div class="form-group" id="saveButton">
-                <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
-                    <ion-icon name="send-outline" class="me-1"></ion-icon>
-                    Submit
+                <button class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1"
+                    type="submit" id="btnSimpan">
+                    <i class="ti ti-send"></i> <span>Submit</span>
                 </button>
             </div>
         </div>
@@ -126,19 +145,19 @@
                 <tr id="index_${kode_barang}">
                     <td>
                         <input type="hidden" name="kode_barang[]" value="${kode_barang}"/>
-                        ${kode_barang}
+                        <span class="badge bg-secondary text-white font-monospace shadow-xs">${kode_barang}</span>
                     </td>
-                    <td>${nama_barang[1]}</td>
-                    <td class="text-end">
+                    <td class="fw-semibold text-dark">${nama_barang[1]}</td>
+                    <td class="text-end fw-bold text-dark">
                         <input type="hidden" name="jml[]" value="${jumlah}" class="noborder-form text-end jumlah" />
                         ${jumlah}
                     </td>
                     <td>
                         <input type="hidden" name="ket[]" value="${keterangan}" class="noborder-form" />
-                        ${keterangan}
+                        <span class="text-muted small">${keterangan || '-'}</span>
                     </td>
                     <td class="text-center">
-                        <a href="#" kode_barang="${kode_barang}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                        <a href="#" kode_barang="${kode_barang}" class="delete text-danger d-inline-block p-1" title="Hapus"><i class="ti ti-trash fs-5"></i></a>
                     </td>
                 </tr>
             `;
@@ -182,22 +201,7 @@
                 });
 
             } else {
-                formCreate.find("#tambahproduk").prop('disabled', true);
                 addProduk();
-                // if (formCreate.find('#tabledetail').find('#index_' + kode_barang).length > 0) {
-                //     Swal.fire({
-                //         title: "Oops!",
-                //         text: "Data Sudah Ada!",
-                //         icon: "warning",
-                //         showConfirmButton: true,
-                //         didClose: (e) => {
-                //             formCreate.find("#kode_produk").focus();
-                //         },
-
-                //     });
-                // } else {
-                //     addProduk();
-                // }
             }
         });
 
@@ -216,7 +220,6 @@
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, Hapus Saja!"
             }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $(`#index_${kode_barang}`).remove();
                 }

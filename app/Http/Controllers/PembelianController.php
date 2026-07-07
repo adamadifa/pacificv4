@@ -84,6 +84,27 @@ class PembelianController extends Controller
         return view('pembelian.show', $data);
     }
 
+    public function cetak($no_bukti)
+    {
+        $no_bukti = Crypt::decrypt($no_bukti);
+        $pmb = new Pembelian();
+        $data['pembelian'] = $pmb->getPembelian(no_bukti: $no_bukti)->first();
+
+        $data['detail'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang')
+            ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->where('no_bukti', $no_bukti)
+            ->where('pembelian_detail.kode_transaksi', 'PMB')
+            ->get();
+
+        $data['potongan'] = Detailpembelian::select('pembelian_detail.*', 'nama_barang')
+            ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->where('no_bukti', $no_bukti)
+            ->where('pembelian_detail.kode_transaksi', 'PNJ')
+            ->get();
+
+        return view('pembelian.cetak', $data);
+    }
+
 
     public function create()
     {

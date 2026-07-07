@@ -1,54 +1,79 @@
 <form action="{{ route('bpb.update', Crypt::encrypt($bpb->no_bpb)) }}" method="post" id="formeditbpb">
     @csrf
     @method('PUT')
-    <x-input-with-icon icon="ti ti-barcode" label="No. BPB" name="no_bpb" value="{{ $bpb->no_bpb }}" />
-    <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
-        value="{{ $bpb->tanggal }}" />
-    <div class="divider text-start">
-        <div class="divider-text">Detail Barang</div>
+
+    <div class="row mb-3">
+        <div class="col-md-6 col-sm-12">
+            <x-input-with-icon icon="ti ti-barcode" label="No. BPB" name="no_bpb" value="{{ $bpb->no_bpb }}" readonly />
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <x-input-with-icon icon="ti ti-calendar" label="Tanggal" name="tanggal" datepicker="flatpickr-date"
+                value="{{ $bpb->tanggal }}" />
+        </div>
     </div>
-    <div class="row">
-        <div class="col-lg-10 col-md-12 col-sm-12">
+
+    <div class="divider text-start mt-4 mb-4">
+        <div class="divider-text fw-bold text-dark fs-6"><i class="ti ti-box me-1 text-primary"></i> Detail Barang</div>
+    </div>
+
+    <div class="row g-3 align-items-end mb-4">
+        <div class="col-lg-4 col-md-4 col-sm-12">
             <x-select label="Pilih Barang" name="kode_barang" :data="$barang" key="kode_barang" textShow="nama_barang"
                 upperCase="true" select2="select2Kodebarang" showKey="true" />
         </div>
-        <div class="col-lg-2 col-md-12 col-sm-12">
+        <div class="col-lg-2 col-md-2 col-sm-6">
             <x-input-with-icon icon="ti ti-box" label="Jumlah" name="jumlah" align="right" numberFormat="true" />
         </div>
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-12">
+            <button type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1"
+                id="tambahproduk" style="height: 38px;">
+                <i class="ti ti-plus"></i> <span>Tambah</span>
+            </button>
+        </div>
     </div>
-    <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" />
-    <a href="#" class="btn btn-primary w-100" id="tambahproduk"><i class="ti ti-plus me-1"></i>Tambah Produk</a>
-    <div class="row mt-2">
-        <div class="col">
-            <table class="table table-bordered" id="tabledetail">
-                <thead class="table-dark">
+
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
+                <i class="ti ti-list fs-4"></i>
+                <span>Daftar Barang yang Diajukan</span>
+            </h6>
+        </div>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-sm table-hover table-bordered align-middle mb-0" id="tabledetail">
+                <thead style="background-color: #002e65;">
                     <tr>
-                        <th style="width: 10%">Kode</th>
-                        <th style="width: 25%">Nama Barang</th>
-                        <th>Jumlah</th>
-                        <th style="width: 20%">Keterangan</th>
-                        <th>#</th>
+                        <th class="text-white" style="width: 15%">Kode</th>
+                        <th class="text-white" style="width: 35%">Nama Barang</th>
+                        <th class="text-white text-end" style="width: 15%">Jumlah</th>
+                        <th class="text-white" style="width: 25%">Keterangan</th>
+                        <th class="text-white text-center" style="width: 10%">#</th>
                     </tr>
                 </thead>
-                <tbody id="loaddetail">
+                <tbody id="loaddetail" class="table-border-bottom-0">
                     @foreach ($detail as $d)
                         <tr id="index_{{ $d->kode_barang }}">
                             <td>
                                 <input type="hidden" name="kode_barang[]" value="{{ $d->kode_barang }}">
-                                {{ $d->kode_barang }}
+                                <span
+                                    class="badge bg-secondary text-white font-monospace shadow-xs">{{ $d->kode_barang }}</span>
                             </td>
-                            <td>{{ textUpperCase($d->nama_barang) }}</td>
-                            <td class="text-end">
+                            <td class="fw-semibold text-dark">{{ textUpperCase($d->nama_barang) }}</td>
+                            <td class="text-end fw-bold text-dark">
                                 <input type="hidden" name="jml[]" value="{{ $d->jumlah }}">
                                 {{ formatAngkaDesimal($d->jumlah) }}
                             </td>
                             <td>
                                 <input type="hidden" name="ket[]" value="{{ $d->keterangan }}">
-                                {{ $d->keterangan }}
+                                <span class="text-muted small">{{ $d->keterangan ?: '-' }}</span>
                             </td>
                             <td class="text-center">
-                                <a href="#" kode_barang="{{ $d->kode_barang }}" class="delete"><i
-                                        class="ti ti-trash text-danger"></i></a>
+                                <a href="#" kode_barang="{{ $d->kode_barang }}"
+                                    class="delete text-danger d-inline-block p-1" title="Hapus"><i
+                                        class="ti ti-trash fs-5"></i></a>
                             </td>
                         </tr>
                     @endforeach
@@ -56,17 +81,19 @@
             </table>
         </div>
     </div>
+
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-check mt-3 mb-3">
                 <input class="form-check-input agreement" name="aggrement" value="aggrement" type="checkbox"
-                    value="" id="defaultCheck3">
-                <label class="form-check-label" for="defaultCheck3"> Yakin Akan Disimpan ? </label>
+                    id="defaultCheck3">
+                <label class="form-check-label fw-semibold text-dark" for="defaultCheck3"> Yakin Akan Disimpan ?
+                </label>
             </div>
             <div class="form-group" id="saveButton">
-                <button class="btn btn-primary w-100" type="submit" id="btnSimpan">
-                    <ion-icon name="send-outline" class="me-1"></ion-icon>
-                    Submit
+                <button class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1"
+                    type="submit" id="btnSimpan">
+                    <i class="ti ti-send"></i> <span>Submit</span>
                 </button>
             </div>
         </div>
@@ -154,19 +181,19 @@
                     <tr id="index_${kode_barang}">
                         <td>
                             <input type="hidden" name="kode_barang[]" value="${kode_barang}"/>
-                            ${kode_barang}
+                            <span class="badge bg-secondary text-white font-monospace shadow-xs">${kode_barang}</span>
                         </td>
-                        <td>${nama_barang[1]}</td>
-                        <td class="text-end">
+                        <td class="fw-semibold text-dark">${nama_barang[1]}</td>
+                        <td class="text-end fw-bold text-dark">
                             <input type="hidden" name="jml[]" value="${jumlah}" class="noborder-form text-end jumlah" />
                             ${jumlah}
                         </td>
                         <td>
                             <input type="hidden" name="ket[]" value="${keterangan}" class="noborder-form" />
-                            ${keterangan}
+                            <span class="text-muted small">${keterangan || '-'}</span>
                         </td>
                         <td class="text-center">
-                            <a href="#" kode_barang="${kode_barang}" class="delete"><i class="ti ti-trash text-danger"></i></a>
+                            <a href="#" kode_barang="${kode_barang}" class="delete text-danger d-inline-block p-1" title="Hapus"><i class="ti ti-trash fs-5"></i></a>
                         </td>
                     </tr>
                 `;
@@ -175,7 +202,6 @@
             $('#loaddetail').prepend(produk);
             $('.select2Kodebarang').val('').trigger("change");
             $("#jumlah").val("");
-            $("#keterangan").val("");
             $("#keterangan").val("");
             $("#kode_barang").focus();
         }
@@ -209,7 +235,6 @@
                 });
 
             } else {
-                form.find("#tambahproduk").prop('disabled', true);
                 if (form.find('#tabledetail').find('#index_' + kode_barang).length > 0) {
                     Swal.fire({
                         title: "Oops!",
@@ -242,7 +267,6 @@
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, Hapus Saja!"
             }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $(`#index_${kode_barang}`).remove();
                 }

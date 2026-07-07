@@ -214,6 +214,9 @@
                                             <a href="#" class="btnShow text-info" no_bukti="{{ Crypt::encrypt($d->no_bukti) }}" data-bs-toggle="tooltip" title="Detail">
                                                 <i class="ti ti-file-description fs-5"></i>
                                             </a>
+                                            <a href="{{ route('pembelian.cetak', Crypt::encrypt($d->no_bukti)) }}" target="_blank" class="text-primary" data-bs-toggle="tooltip" title="Cetak Claim Keuangan">
+                                                <i class="ti ti-printer fs-5"></i>
+                                            </a>
                                         @endcan
                                         @can('pembelian.delete')
                                             <form method="POST" name="deleteform" class="deleteform d-inline" action="{{ route('pembelian.delete', Crypt::encrypt($d->no_bukti)) }}">

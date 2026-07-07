@@ -51,6 +51,7 @@ class BPBController extends Controller
                  JOIN gudang_logistik_barang_keluar_detail std
                    ON std.no_bukti = st.no_bukti
                  WHERE st.no_ref = bpb.no_bpb
+                 AND st.diterima = 1
                 ) as total_serah_terima
             ')
             )
@@ -100,7 +101,7 @@ class BPBController extends Controller
 
         $data['cabang'] = Cabang::all();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
-        $data['barang'] = Barangpembelian::where('kode_group', 'GDL')->get();
+        $data['barang'] = Barangpembelian::where('kode_group', 'GDL')->where('status', 1)->get();
         return view('gudanglogistik.bpb.create', $data);
     }
 
@@ -201,7 +202,7 @@ class BPBController extends Controller
         $data['bpb'] = BPB::where('no_bpb', $no_bpb)->first();
         $data['detail'] = DetailBPB::join('pembelian_barang', 'bpb_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
             ->where('no_bpb', $no_bpb)->get();
-        $data['barang'] = Barangpembelian::where('kode_group', 'GDL')->get();
+        $data['barang'] = Barangpembelian::where('kode_group', 'GDL')->where('status', 1)->get();
         return view('gudanglogistik.bpb.edit', $data);
     }
 
@@ -391,6 +392,7 @@ class BPBController extends Controller
         $data['diserahkanTotal'] = DB::table('gudang_logistik_barang_keluar_detail')
             ->join('gudang_logistik_barang_keluar', 'gudang_logistik_barang_keluar.no_bukti', '=', 'gudang_logistik_barang_keluar_detail.no_bukti')
             ->where('gudang_logistik_barang_keluar.no_ref', $no_bpb)
+            ->where('gudang_logistik_barang_keluar.diterima', 1)
             ->select('kode_barang', DB::raw('SUM(jumlah) as total'))
             ->groupBy('kode_barang')
             ->pluck('total', 'kode_barang');

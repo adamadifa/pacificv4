@@ -173,6 +173,7 @@ use App\Http\Controllers\SuratjalanangkutanController;
 use App\Http\Controllers\SuratjalanController;
 use App\Http\Controllers\SuratperingatanController;
 use App\Http\Controllers\TargetkomisiController;
+use App\Http\Controllers\TicketCategoryController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketupdateController;
 use App\Http\Controllers\TransitinController;
@@ -1541,6 +1542,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pembelian', 'index')->name('pembelian.index')->can('pembelian.index');
         Route::get('/pembelian/create', 'create')->name('pembelian.create')->can('pembelian.create');
         Route::get('/pembelian/{no_bukti}/show', 'show')->name('pembelian.show')->can('pembelian.show');
+        Route::get('/pembelian/{no_bukti}/cetak', 'cetak')->name('pembelian.cetak')->can('pembelian.show');
         Route::get('/pembelian/{no_bukti}/approvegdl', 'approvegdl')->name('pembelian.approvegdl')->can('pembelian.approvegdl');
         Route::post('/pembelian/{no_bukti}/storeapprovegdl', 'storeapprovegdl')->name('pembelian.storeapprovegdl')->can('pembelian.approvegdl');
         Route::delete('/pembelian/{no_bukti}/cancelapprovegdl', 'cancelapprovegdl')->name('pembelian.cancelapprovegdl')->can('pembelian.approvegdl');
@@ -1562,6 +1564,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/pembelian/getbarangpembelian', 'getbarangpembelian')->name('pembelian.getbarangpembelian');
 
         Route::get('/po/by-supplier/{kode_supplier}', 'getPoBySupplier')->name('getPoBySupplier');
+
+
     });
 
     Route::controller(JurnalkoreksiController::class)->group(function () {
@@ -2514,17 +2518,30 @@ Route::middleware('auth')->group(function () {
         Route::post('/activitylog/prune', 'prune')->name('activitylog.prune')->can('activitylog.index');
     });
 
+    Route::controller(TicketCategoryController::class)->group(function () {
+        Route::get('/ticketcategory', 'index')->name('ticketcategory.index');
+        Route::get('/ticketcategory/create', 'create')->name('ticketcategory.create');
+        Route::post('/ticketcategory/store', 'store')->name('ticketcategory.store');
+        Route::get('/ticketcategory/{id}/edit', 'edit')->name('ticketcategory.edit');
+        Route::put('/ticketcategory/{id}/update', 'update')->name('ticketcategory.update');
+        Route::delete('/ticketcategory/{id}/destroy', 'destroy')->name('ticketcategory.delete');
+    });
+
     Route::controller(TicketController::class)->group(function () {
         Route::get('/ticket', 'index')->name('ticket.index');
         Route::get('/ticket/create', 'create')->name('ticket.create');
+        Route::get('/ticket/cetak-laporan', 'cetakLaporan')->name('ticket.cetaklaporan');
+        Route::get('/ticket/category-detail/{id}', 'getCategoryDetail')->name('ticket.categorydetail');
+        Route::get('/ticket/download-template/{id_kategori}', 'downloadTemplate')->name('ticket.downloadtemplate');
         Route::post('/ticket/store', 'store')->name('ticket.store');
         Route::get('/ticket/{kode_pengajuan}/edit', 'edit')->name('ticket.edit');
         Route::put('/ticket/{kode_pengajuan}/update', 'update')->name('ticket.update');
         Route::delete('/ticket/{no_pengajuan}/destroy', 'destroy')->name('ticket.delete');
-        Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve')->can('ticket.approve');
-        Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove')->can('ticket.approve');
+        Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve');
+        Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove');
         Route::get('/ticket/{no_pengajuan}/message', 'message')->name('ticket.message');
         Route::post('/ticket/{no_pengajuan}/storemessage', 'storemessage')->name('ticket.storemessage');
+        Route::get('/ticket/{no_pengajuan}/download-lampiran', 'downloadLampiran')->name('ticket.downloadlampiran');
     });
 
     Route::controller(TicketupdateController::class)->group(function () {

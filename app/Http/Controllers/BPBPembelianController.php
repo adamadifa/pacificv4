@@ -51,6 +51,7 @@ class BPBPembelianController extends Controller
              JOIN pembelian_detail pd
                ON pd.no_bukti = p.no_bukti
              WHERE p.no_bpb = bpb.no_bpb
+             AND p.diterima = 1
             ) as total_serah_terima
         ')
             )
@@ -163,6 +164,7 @@ class BPBPembelianController extends Controller
                 $join->on('bpb.no_bpb', '=', 'bd.no_bpb')
                     ->where('bpb.approve_gudang', '1');
             })
+            ->where('bp.status', '1')
 
             ->select(
                 'bp.kode_barang',
@@ -171,7 +173,7 @@ class BPBPembelianController extends Controller
                 'bp.kode_kategori',
                 'bp.kode_group',
                 'pbk.nama_kategori',
-                'bd.keterangan',
+                DB::raw('MAX(bd.keterangan) as keterangan'),
 
                 DB::raw('SUM(bd.jumlah) as total_bpb'),
 
@@ -179,17 +181,17 @@ class BPBPembelianController extends Controller
                     COALESCE((
                         SELECT SUM(gd.jumlah)
                         FROM gudang_logistik_barang_keluar_detail gd
-                        JOIN gudang_logistik_barang_keluar g
-                            ON g.no_bukti = gd.no_bukti
-                        WHERE g.no_ref = bd.no_bpb
-                        AND gd.kode_barang = bp.kode_barang
+                        JOIN gudang_logistik_barang_keluar g ON g.no_bukti = gd.no_bukti
+                        JOIN bpb ON bpb.no_bpb = g.no_ref
+                        WHERE gd.kode_barang = bp.kode_barang
+                        AND bpb.approve_gudang = "1"
                     ),0) as total_keluar
                 '),
                 DB::raw('
                     COALESCE((
                         SELECT SUM(bpd.jumlah - COALESCE(bpd.jumlah_diterima,0))
                         FROM bpb_pembelian_detail bpd
-                        JOIN bpb_pembelian bpbh
+                        JOIN bpb_pembelian bpbh ON bpd.no_bpb = bpbh.no_bpb
                         WHERE bpd.kode_barang = bp.kode_barang
                         AND bpd.jumlah_diterima IS NULL
                     ),0) as total_bpb_pembelian
@@ -202,15 +204,15 @@ class BPBPembelianController extends Controller
                     - COALESCE((
                         SELECT SUM(gd.jumlah)
                         FROM gudang_logistik_barang_keluar_detail gd
-                        JOIN gudang_logistik_barang_keluar g
-                            ON g.no_bukti = gd.no_bukti
-                        WHERE g.no_ref = bd.no_bpb
-                        AND gd.kode_barang = bp.kode_barang
+                        JOIN gudang_logistik_barang_keluar g ON g.no_bukti = gd.no_bukti
+                        JOIN bpb ON bpb.no_bpb = g.no_ref
+                        WHERE gd.kode_barang = bp.kode_barang
+                        AND bpb.approve_gudang = "1"
                     ),0)
                     - COALESCE((
                         SELECT SUM(bpd.jumlah - COALESCE(bpd.jumlah_diterima,0))
                         FROM bpb_pembelian_detail bpd
-                        JOIN bpb_pembelian bpbh
+                        JOIN bpb_pembelian bpbh ON bpd.no_bpb = bpbh.no_bpb
                         WHERE bpd.kode_barang = bp.kode_barang
                         AND bpd.jumlah_diterima IS NULL
                     ),0)
@@ -224,9 +226,7 @@ class BPBPembelianController extends Controller
                 'bp.kode_group',
                 'pbk.nama_kategori',
                 'bp.nama_barang',
-                'bp.satuan',
-                'bd.no_bpb',
-                'bd.keterangan'
+                'bp.satuan'
             )
 
             ->having('sisa', '>', 0)
@@ -334,7 +334,7 @@ class BPBPembelianController extends Controller
         $data['bpb'] = DB::table('bpb_pembelian')->where('no_bpb', $no_bpb)->first();
         $data['detail'] = DB::table('bpb_pembelian_detail')->join('pembelian_barang', 'bpb_pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
             ->where('no_bpb', $no_bpb)->get();
-        $data['barang'] = DB::table('pembelian_barang')->where('kode_group', 'GDL')->get();
+        $data['barang'] = DB::table('pembelian_barang')->where('kode_group', 'GDL')->where('status', '1')->get();
         return view('pembelian.bpb.edit', $data);
     }
 
@@ -501,7 +501,12 @@ class BPBPembelianController extends Controller
             )
             ->get();
 
-        $data['serahTerima'] = DB::table('gudang_logistik_barang_masuk')->where('gudang_logistik_barang_masuk.no_bpb', $no_bpb)->orderBy('tanggal')->get();
+        $data['serahTerima'] = DB::table('gudang_logistik_barang_masuk')
+            ->leftJoin('pembelian', 'gudang_logistik_barang_masuk.no_bukti', '=', 'pembelian.no_bukti')
+            ->where('gudang_logistik_barang_masuk.no_bpb', $no_bpb)
+            ->select('gudang_logistik_barang_masuk.*', 'pembelian.diterima')
+            ->orderBy('gudang_logistik_barang_masuk.tanggal')
+            ->get();
 
         // SERAH TERIMA DETAIL (GROUP BY NO SURAT)
         $data['historyDetail'] = DB::table('gudang_logistik_barang_masuk_detail')
@@ -524,8 +529,10 @@ class BPBPembelianController extends Controller
         // TOTAL SUDAH DISERAHKAN PER BARANG
         $data['diserahkanTotal'] = DB::table('gudang_logistik_barang_masuk_detail')
             ->join('gudang_logistik_barang_masuk', 'gudang_logistik_barang_masuk.no_bukti', '=', 'gudang_logistik_barang_masuk_detail.no_bukti')
+            ->join('pembelian', 'pembelian.no_bukti', '=', 'gudang_logistik_barang_masuk.no_bukti')
             ->where('gudang_logistik_barang_masuk.no_bpb', $no_bpb)
-            ->select('kode_barang', DB::raw('SUM(jumlah) as total'))
+            ->where('pembelian.diterima', 1)
+            ->select('kode_barang', DB::raw('SUM(gudang_logistik_barang_masuk_detail.jumlah) as total'))
             ->groupBy('kode_barang')
             ->pluck('total', 'kode_barang');
         return view('pembelian.bpb.show', $data);

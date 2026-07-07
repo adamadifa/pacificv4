@@ -40,14 +40,26 @@ class TicketupdateController extends Controller
                 $query->where('tickets_update_data.status', 1);
             }
         }
-        $query->orderBy('status');
-        $query->orderBy('kode_pengajuan', 'asc');
-        $ticket = $query->paginate(10);
+        $query->orderBy('tickets_update_data.status', 'asc');
+        $query->orderBy('tickets_update_data.updated_at', 'desc');
+        $query->orderBy('tickets_update_data.kode_pengajuan', 'desc');
+        $ticket = $query->paginate(15);
         $ticket->appends($request->all());
+
+        $statsBaseQuery = Ticketupdatedata::query()->join('users', 'tickets_update_data.id_user', '=', 'users.id');
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            $statsBaseQuery->where('users.kode_cabang', auth()->user()->kode_cabang);
+        }
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $data['ticket'] = $ticket;
+        $data['stats'] = [
+            'total' => (clone $statsBaseQuery)->count(),
+            'pending' => (clone $statsBaseQuery)->where('tickets_update_data.status', 0)->count(),
+            'selesai' => (clone $statsBaseQuery)->where('tickets_update_data.status', 1)->count(),
+            'ditolak' => (clone $statsBaseQuery)->where('tickets_update_data.status', 2)->count(),
+        ];
         return view('utilities.tickets_update.index', $data);
     }
 
