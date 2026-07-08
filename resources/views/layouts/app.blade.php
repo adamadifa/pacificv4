@@ -141,7 +141,6 @@
     <!-- Core JS -->
     @include('layouts.scripts')
     <!-- Page JS -->
-    @if (!request()->routeIs('users.ubahpassword'))
     @php
         $is_weak_password = false;
         if (Auth::check()) {
@@ -151,6 +150,7 @@
             }
         }
     @endphp
+    @if ($is_weak_password && !request()->routeIs('users.ubahpassword'))
     <!-- Modal Informasi Ganti Password Default -->
     <div class="modal fade" id="defaultCredentialsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
@@ -207,8 +207,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const isWeakPassword = {{ $is_weak_password ? 'true' : 'false' }};
-            if (isWeakPassword || !sessionStorage.getItem('dismissed_default_credentials_warning')) {
+            if (!sessionStorage.getItem('dismissed_default_credentials_warning')) {
                 var myModal = new bootstrap.Modal(document.getElementById('defaultCredentialsModal'), {
                     keyboard: false,
                     backdrop: 'static'
