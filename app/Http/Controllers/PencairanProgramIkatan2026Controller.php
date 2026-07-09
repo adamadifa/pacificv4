@@ -585,7 +585,152 @@ class PencairanProgramIkatan2026Controller extends Controller
             ->whereIn('produk_harga.kode_produk', $produk)
             ->get();
 
-         return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
+          return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
+    }
+
+    public function approve($kode_pencairan)
+    {
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        $query = PencairanProgramIkatan2026::query();
+        $query->select(
+            'marketing_pencairan_ikatan_2026.*',
+            'cabang.nama_cabang',
+            'nama_program',
+        );
+        $query->join('cabang', 'marketing_pencairan_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('program_ikatan', 'marketing_pencairan_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program');
+        $query->orderBy('marketing_pencairan_ikatan_2026.tanggal', 'desc');
+        $query->where('kode_pencairan', $kode_pencairan);
+        $pencairanprogramikatan = $query->first();
+
+        $pelangganprogram = \App\Models\MktIkatanDetail2026::select(
+            'mkt_ikatan_detail_2026.kode_pelanggan',
+            'mkt_ikatan_detail_2026.top',
+            'mkt_ikatan_detail_2026.metode_pembayaran',
+            'mkt_ikatan_detail_2026.qty_target',
+            'mkt_ikatan_detail_2026.reward',
+            'mkt_ikatan_detail_2026.tipe_reward',
+            'mkt_ikatan_detail_2026.budget_smm',
+            'mkt_ikatan_detail_2026.budget_rsm',
+            'mkt_ikatan_detail_2026.budget_gm',
+            'mkt_ikatan_2026.periode_dari',
+            'mkt_ikatan_2026.periode_sampai'
+        )
+            ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->where('mkt_ikatan_2026.status', 1)
+            ->where('mkt_ikatan_2026.kode_program', $pencairanprogramikatan->kode_program)
+            ->where('mkt_ikatan_2026.semester', $pencairanprogramikatan->semester)
+            ->where('mkt_ikatan_2026.kode_cabang', $pencairanprogramikatan->kode_cabang);
+
+        $target_ikatan = MktIkatanTarget2026::select(
+            'no_pengajuan',
+            'kode_pelanggan',
+            DB::raw('SUM(avg) as avg'),
+            DB::raw('SUM(target_perbulan) as target_perbulan')
+        )
+            ->groupBy('no_pengajuan', 'kode_pelanggan');
+
+        $pelangganprogram->leftJoinSub($target_ikatan, 'target_ikatan', function ($join) {
+            $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'target_ikatan.no_pengajuan');
+            $join->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'target_ikatan.kode_pelanggan');
+        });
+        
+        $pelangganprogram->addSelect('target_ikatan.avg', 'target_ikatan.target_perbulan');
+
+        $detail = \App\Models\DetailPencairanProgramIkatan2026::join('pelanggan', 'marketing_pencairan_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('marketing_pencairan_ikatan_2026', 'marketing_pencairan_ikatan_detail_2026.kode_pencairan', '=', 'marketing_pencairan_ikatan_2026.kode_pencairan')
+            ->leftJoinSub($pelangganprogram, 'pelangganprogram', function ($join) {
+                $join->on('marketing_pencairan_ikatan_detail_2026.kode_pelanggan', '=', 'pelangganprogram.kode_pelanggan');
+            })
+            ->select(
+                'marketing_pencairan_ikatan_detail_2026.*',
+                'pelanggan.nama_pelanggan',
+                'pelanggan.foto',
+                'pelanggan.bank',
+                'pelanggan.no_rekening',
+                'pelanggan.pemilik_rekening',
+                'top',
+                'metode_pembayaran',
+                'qty_target',
+                'marketing_pencairan_ikatan_detail_2026.rate',
+                'tipe_reward',
+                'budget_smm',
+                'budget_rsm',
+                'budget_gm',
+                'kode_program',
+                'avg',
+                'target_perbulan',
+                'pelangganprogram.periode_dari',
+                'pelangganprogram.periode_sampai'
+            )
+            ->where('marketing_pencairan_ikatan_detail_2026.kode_pencairan', $kode_pencairan)
+            ->orderBy('pelangganprogram.metode_pembayaran')
+            ->get();
+
+        $detail->transform(function ($item) {
+            $start = \Carbon\Carbon::parse($item->periode_dari);
+            $end = \Carbon\Carbon::parse($item->periode_sampai);
+            $durasi = $start->diffInMonths($end) + 1;
+            if ($durasi <= 0) {
+                $durasi = 6;
+            }
+            $item->kenaikan_per_bulan = ($item->target_perbulan ?? 0) / $durasi;
+            return $item;
+        });
+            
+        $data['pencairanprogram'] = $pencairanprogramikatan;
+        $data['detail'] = $detail;
+        $data['user'] = User::find(auth()->user()->id);
+        return view('worksheetom.pencairanprogramikatan2026.approve', $data);
+    }
+
+    public function storeapprove(Request $request, $kode_pencairan)
+    {
+        $user = User::find(auth()->user()->id);
+        
+        $field = '';
+        if ($user->hasRole('operation manager')) {
+            $field = 'om';
+        } else if ($user->hasRole('regional sales manager')) {
+            $field = 'rsm';
+        } else if ($user->hasRole('gm marketing')) {
+            $field = 'gm';
+        } else if ($user->hasRole('direktur')) {
+            $field = 'direktur';
+        } else if ($user->hasRole(['manager keuangan', 'staff keuangan'])) {
+            $field = 'keuangan';
+        }
+
+        if (isset($_POST['decline'])) {
+            $status  = 2;
+        } else {
+            $status = $user->hasRole(['direktur', 'super admin', 'manager keuangan', 'staff keuangan']) ? 1 : 0;
+        }
+
+        $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+        try {
+            if ($user->hasRole('super admin')) {
+                PencairanProgramIkatan2026::where('kode_pencairan', $kode_pencairan)
+                    ->update([
+                        'status' => $status
+                    ]);
+            } else {
+                $updateData = [
+                    'status' => $status
+                ];
+                if (isset($_POST['cancel'])) {
+                    $updateData[$field] = null;
+                } else {
+                    $updateData[$field] = auth()->user()->id;
+                }
+                PencairanProgramIkatan2026::where('kode_pencairan', $kode_pencairan)
+                    ->update($updateData);
+            }
+
+            return Redirect::back()->with(messageSuccess('Data Berhasil Di Approve'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }
-

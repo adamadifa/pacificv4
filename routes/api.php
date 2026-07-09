@@ -61,7 +61,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sfa/dashboard', [\App\Http\Controllers\Api\SfaApiController::class, 'dashboard']);
     Route::get('/sfa/pelanggan', [\App\Http\Controllers\Api\SfaApiController::class, 'pelanggan']);
     Route::get('/sfa/produk', [\App\Http\Controllers\Api\SfaApiController::class, 'produk']);
+    Route::get('/sfa/diskon', [\App\Http\Controllers\Api\SfaApiController::class, 'diskon']);
     Route::post('/sfa/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'penjualan']);
+    Route::get('/sfa/pelanggan/{kode_pelanggan}/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'historiPenjualan']);
+    Route::get('/sfa/pelanggan/{kode_pelanggan}/retur', [\App\Http\Controllers\Api\SfaApiController::class, 'historiRetur']);
+    Route::post('/sfa/pelanggan/update-foto', [\App\Http\Controllers\Api\SfaApiController::class, 'updateFoto']);
+    Route::get('/sfa/penjualan/detail', [\App\Http\Controllers\Api\SfaApiController::class, 'detailPenjualan']);
+    Route::post('/sfa/penjualan/signature', [\App\Http\Controllers\Api\SfaApiController::class, 'uploadSignature']);
 });
 
 // API Sync Jurnal Umum

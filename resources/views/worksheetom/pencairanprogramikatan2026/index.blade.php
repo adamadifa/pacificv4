@@ -116,6 +116,18 @@
                                             {{-- Actions --}}
                                             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 mt-2 mt-lg-0">
                                                 <div class="d-flex justify-content-lg-end justify-content-start gap-1">
+                                                    @if ($user->hasRole('super admin') || $user->can('ajuanprogramikatan.approve'))
+                                                        @if (($user->hasRole('operation manager') && $d->rsm == null) ||
+                                                            ($user->hasRole('regional sales manager') && $d->gm == null) ||
+                                                            ($user->hasRole('gm marketing') && $d->direktur == null) ||
+                                                            ($user->hasRole(['manager keuangan', 'staff keuangan']) && $d->status == 1) ||
+                                                            ($user->hasRole(['super admin', 'direktur'])))
+                                                            <a href="#" class="btn btn-icon btn-label-success btnApprove me-1"
+                                                                kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}" data-bs-toggle="tooltip" title="Approve">
+                                                                <i class="ti ti-external-link"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endif
                                                     @can('pencairanprogramikatan2026.edit')
                                                         <a href="{{ route('pencairanprogramikatan2026.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
                                                             class="btn btn-icon btn-label-primary me-1" data-bs-toggle="tooltip" title="Set Pencairan">
@@ -151,6 +163,7 @@
     </div>
 </div>
 <x-modal-form id="modal" size="" show="loadmodal" title="" />
+<x-modal-form id="modalApprove" size="modal-fullscreen" show="loadmodalapprove" title="" />
 @endsection
 @push('myscript')
 <script>
@@ -160,6 +173,22 @@
             $("#modal").find(".modal-title").text("Buat Pencairan Program Ikatan");
             $("#loadmodal").load("/pencairanprogramikatan2026/create");
         });
+
+        $(".btnApprove").click(function(e) {
+            e.preventDefault();
+            var kode_pencairan = $(this).attr("kode_pencairan");
+            $('#modalApprove').modal("show");
+            $("#modalApprove").find(".modal-title").text("Approve Pencairan Program Ikatan");
+            $("#loadmodalapprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+            $("#loadmodalapprove").load('/pencairanprogramikatan2026/' + kode_pencairan + '/approve');
+        });
+
         const select2Kodecabang = $(".select2Kodecabang");
          if (select2Kodecabang.length) {
             select2Kodecabang.each(function() {

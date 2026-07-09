@@ -77,10 +77,7 @@
             @endphp
             @foreach ($detail as $key => $d)
                 @php
-                    $total_reward =
-                        $d->reward > 1000000 && !in_array($d->kode_program, $bb_dep)
-                            ? 1000000
-                            : $d->reward;
+                    $total_reward = $d->reward;
                 @endphp
                 <div class="col-12 mb-2">
                     <div class="card shadow-sm border">
