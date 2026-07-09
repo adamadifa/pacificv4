@@ -6,13 +6,11 @@
 
     </div>
 
-    <div class="row mt-3">
-        <div class="col">
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block w-100" id="btnSimpan"><i
-                        class="ti ti-send me-1 "></i>Proses</button>
-            </div>
-        </div>
+    <!-- Floating Action Button for Submit -->
+    <div style="position: fixed; bottom: 30px; right: 30px; z-index: 1100; min-width: 180px;">
+        <button type="submit" class="btn btn-primary btn-lg shadow-lg w-100" id="btnSimpan" style="border-radius: 50px; padding: 12px 24px; font-weight: bold; border: 2px solid #fff;">
+            <i class="ti ti-send me-2"></i>Proses
+        </button>
     </div>
 </form>
 <script>

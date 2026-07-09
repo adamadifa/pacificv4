@@ -101,15 +101,56 @@
                                             </div>
                                              {{-- Status --}}
                                              <div class="col-xl-3 col-lg-2 col-md-4 col-sm-12 mb-2 mb-md-0">
-                                                <div class="d-flex justify-content-start align-items-center gap-2">
-                                                     @if ($d->status == '0')
-                                                        <span class="badge bg-label-warning text-warning d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-hourglass-empty fs-6"></i> Pending</span>
-                                                    @elseif ($d->status == '1')
-                                                        <span class="badge bg-success d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-check fs-6"></i> Disetujui</span>
-                                                    @elseif($d->status == '2')
-                                                        <span class="badge bg-danger d-flex align-items-center gap-1 px-2 py-1"><i class="ti ti-ban fs-6"></i> Ditolak</span>
-                                                    @endif
-                                                </div>
+                                                 <div class="d-flex justify-content-start align-items-center gap-3">
+                                                     {{-- OM --}}
+                                                     <div class="text-center position-relative">
+                                                         <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">OM</small>
+                                                         @if (empty($d->om)) 
+                                                             <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty" style="font-size: 0.8rem;"></i></span></div>
+                                                         @else 
+                                                             <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check" style="font-size: 0.8rem;"></i></span></div>
+                                                         @endif
+                                                     </div>
+                                                     {{-- RSM --}}
+                                                     <div class="text-center position-relative">
+                                                         <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">RSM</small>
+                                                         @if (empty($d->rsm)) 
+                                                             <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty" style="font-size: 0.8rem;"></i></span></div>
+                                                         @else 
+                                                             @if (empty($d->gm) && $d->status == '2') 
+                                                                 <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-danger text-white"><i class="ti ti-x" style="font-size: 0.8rem;"></i></span></div>
+                                                             @else 
+                                                                 <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check" style="font-size: 0.8rem;"></i></span></div>
+                                                             @endif
+                                                         @endif
+                                                     </div>
+                                                     {{-- GM --}}
+                                                     <div class="text-center position-relative">
+                                                         <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">GM</small>
+                                                         @if (empty($d->gm)) 
+                                                              <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty" style="font-size: 0.8rem;"></i></span></div>
+                                                         @else
+                                                             @if (empty($d->direktur) && $d->status == '2') 
+                                                                 <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-danger text-white"><i class="ti ti-x" style="font-size: 0.8rem;"></i></span></div>
+                                                             @else 
+                                                                 <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check" style="font-size: 0.8rem;"></i></span></div>
+                                                             @endif
+                                                         @endif
+                                                     </div>
+                                                     {{-- DIR --}}
+                                                     <div class="text-center position-relative">
+                                                         <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">DIR</small>
+                                                         @if (empty($d->direktur)) 
+                                                              <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty" style="font-size: 0.8rem;"></i></span></div>
+                                                         @else
+                                                             @if ($d->status == '2') 
+                                                                 <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-danger text-white"><i class="ti ti-x" style="font-size: 0.8rem;"></i></span></div>
+                                                             @else 
+                                                                 <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check" style="font-size: 0.8rem;"></i></span></div>
+                                                             @endif
+                                                         @endif
+                                                     </div>
+                                                 </div>
                                              </div>
 
 

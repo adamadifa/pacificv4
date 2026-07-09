@@ -19,6 +19,7 @@
             'pencairanprogram.index',
             'ajuankumulatif.index',
             'programikatan2026.index',
+            'programmarketing.index',
         ])
     )
     <li class="menu-item {{ request()->is([
@@ -122,7 +123,7 @@
                 </li>
             @endcan
 
-            @can('monitoringprogram.index')
+            @canany(['monitoringprogram.index', 'programmarketing.index'])
                 <li class="menu-item {{ request()->is(
                     'monitoringprogram',
                     'ajuanprogramikatan',
@@ -151,7 +152,7 @@
                     @endif
 
                 </li>
-            @endcan
+            @endcanany
 
             @can('worksheetom.kebutuhancabang')
                 <li class="menu-item {{ request()->is('worksheetom/kebutuhancabang') ? 'active' : '' }}">

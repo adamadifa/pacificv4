@@ -100,6 +100,11 @@
                             <div class="d-flex gap-4 border-end pe-3">
                                 <div class="text-center">
                                     <h6 class="mb-0 fw-bold text-warning">{{ formatAngka($d->realisasi) }}</h6>
+                                    @if(($d->kredit_melebihi_top ?? 0) > 0)
+                                        <small class="d-block fw-bold text-danger" style="font-size: 10px; margin-top: -2px;">
+                                            -{{ formatAngka($d->kredit_melebihi_top) }}
+                                        </small>
+                                    @endif
                                     <small class="text-muted" style="font-size: 0.7rem;">REALISASI</small>
                                 </div>
                                 <div class="text-center">

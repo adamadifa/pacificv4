@@ -191,6 +191,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             'marketing_pencairan_ikatan_2026.*',
             'cabang.nama_cabang',
             'nama_program',
+            'program_ikatan.produk'
         );
         $query->join('cabang', 'marketing_pencairan_ikatan_2026.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('program_ikatan', 'marketing_pencairan_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program');
@@ -249,7 +250,6 @@ class PencairanProgramIkatan2026Controller extends Controller
                 'metode_pembayaran',
                 'qty_target',
                 'marketing_pencairan_ikatan_detail_2026.rate',
-                // 'reward', // Ambiguous and covered by marketing_pencairan_ikatan_detail_2026.reward
                 'tipe_reward',
                 'budget_smm',
                 'budget_rsm',
@@ -272,7 +272,6 @@ class PencairanProgramIkatan2026Controller extends Controller
                 $durasi = 6;
             }
             $item->kenaikan_per_bulan = ($item->target_perbulan ?? 0) / $durasi;
-            // Map new columns to old names if view not updated yet? No, plan is to update view.
             return $item;
         });
             
@@ -520,7 +519,8 @@ class PencairanProgramIkatan2026Controller extends Controller
                         'realisasi' => toNumber($jumlah[$index]),
                         'reward' => toNumber($request->total_reward[$index]),
                         'rate' => toNumber($rate[$index]),
-                        'status_pencairan' => $status_pencairan[$index]
+                        'status_pencairan' => $status_pencairan[$index],
+                        'kredit_melebihi_top' => toNumber($request->kredit_melebihi_top[$index] ?? 0)
                     ]);
                      
                 } 
@@ -704,8 +704,10 @@ class PencairanProgramIkatan2026Controller extends Controller
 
         if (isset($_POST['decline'])) {
             $status  = 2;
+        } else if (isset($_POST['cancel'])) {
+            $status = 0;
         } else {
-            $status = $user->hasRole(['direktur', 'super admin', 'manager keuangan', 'staff keuangan']) ? 1 : 0;
+            $status = $user->hasRole(['direktur', 'super admin']) ? 1 : 0;
         }
 
         $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);

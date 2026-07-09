@@ -13,6 +13,7 @@ use App\Models\Penjualan;
 use App\Models\Detailpenjualan;
 use App\Models\Checkinpenjualan;
 use App\Models\Ajuanlimitkredit;
+use App\Models\Historibayarpenjualan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
@@ -191,6 +192,26 @@ class SfaApiController extends Controller
             ->where('status_aktif_pelanggan', 1)
             ->get()
             ->map(function($item) {
+                $saldo_voucher_program = \DB::table('marketing_program_pencairan_detail')
+                    ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
+                    ->select(\DB::raw("SUM(diskon_kumulatif - diskon_reguler) as jml_voucher"))
+                    ->where('kode_pelanggan', $item->kode_pelanggan)
+                    ->where('metode_pembayaran', 'VC')
+                    ->where('status', '1')
+                    ->first();
+
+                $tanggal_mulai = date('Y-m-d', strtotime("2025-01-01"));
+                $diskonprogram = \DB::table('marketing_penjualan_historibayar')
+                    ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                    ->select(\DB::raw("SUM(jumlah) as jml_voucher"))
+                    ->where('marketing_penjualan.kode_pelanggan', $item->kode_pelanggan)
+                    ->where('jenis_voucher', 2)
+                    ->where('voucher_reward', 1)
+                    ->where('marketing_penjualan_historibayar.tanggal', '>=', $tanggal_mulai)
+                    ->first();
+
+                $saldo_voucher = ($saldo_voucher_program->jml_voucher ?? 0) - ($diskonprogram->jml_voucher ?? 0);
+
                 return [
                     'kode_pelanggan' => $item->kode_pelanggan,
                     'nama_pelanggan' => $item->nama_pelanggan,
@@ -202,6 +223,7 @@ class SfaApiController extends Controller
                     'limit_kredit' => $item->limit_pelanggan ?? 0,
                     'foto' => $item->foto ?? '',
                     'encrypted_kode_pelanggan' => Crypt::encrypt($item->kode_pelanggan),
+                    'saldo_voucher' => $saldo_voucher,
                 ];
             });
 
@@ -331,6 +353,14 @@ class SfaApiController extends Controller
                 ], 400);
             }
 
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Periode Laporan Sudah Ditutup'
+                ], 400);
+            }
+
             $ljt = !empty($pelanggan->ljt) ? $pelanggan->ljt : 14;
             $jatuh_tempo = date("Y-m-d", strtotime("+$ljt day", strtotime($request->tanggal)));
 
@@ -385,6 +415,33 @@ class SfaApiController extends Controller
             }
 
             $total_netto = $total_bruto - $total_potongan;
+
+            $penjualan_model = new Penjualan();
+            $sisa_piutang = $penjualan_model->getPiutangpelanggan($request->kode_pelanggan);
+
+            $faktur_kredit = $penjualan_model->getFakturkredit($request->kode_pelanggan);
+            $max_faktur = $faktur_kredit['jml_faktur'];
+            $unpaid_faktur = $faktur_kredit['unpaid_faktur'];
+            $siklus_pembayaran = $faktur_kredit['siklus_pembayaran'];
+
+            $total_piutang = $sisa_piutang + $total_netto;
+
+            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan && $siklus_pembayaran === '0') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Melebihi Limit, Silahkan Ajukan Penambahan Limit'
+                ], 400);
+            } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Melebihi Limit, Silahkan Ajukan Penambahan Limit'
+                ], 400);
+            } else if ($unpaid_faktur > $max_faktur && $siklus_pembayaran === '0') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Melebihi Jumlah Faktur Kredit'
+                ], 400);
+            }
 
             $penjualan = Penjualan::create([
                 'no_faktur' => $no_faktur,

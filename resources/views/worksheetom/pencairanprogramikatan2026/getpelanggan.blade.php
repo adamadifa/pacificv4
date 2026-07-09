@@ -36,6 +36,7 @@
                 <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
                 <input type="hidden" name="rate[{{ $loop->index }}]" value="{{ $d->reward_rate }}">
                 <input type="hidden" name="status_pencairan[{{ $loop->index }}]" value="{{ $reward >= 100000 ? 1 : 0 }}">
+                <input type="hidden" name="kredit_melebihi_top[{{ $loop->index }}]" value="{{ $d->jml_kredit_melebihi_top ?? 0 }}">
                 
                  {{-- Pelanggan --}}
                 <div class="d-flex align-items-center" style="min-width: 250px;">
@@ -79,6 +80,11 @@
                             <i class="ti ti-chart-bar me-1"></i>Realisasi
                         </small>
                         <h6 class="mb-0 fw-bold {{ $color_reward ? 'text-white' : 'text-warning' }}">{{ empty($d->jml_dus) ? '0' : formatAngka($d->jml_dus) }}</h6>
+                        @if(($d->jml_kredit_melebihi_top ?? 0) > 0)
+                            <small class="d-block fw-bold {{ $color_reward ? 'text-white' : 'text-danger' }}" style="font-size: 10px;">
+                                -{{ formatAngka($d->jml_kredit_melebihi_top) }}
+                            </small>
+                        @endif
                 </div>
 
                 {{-- Reward --}}
