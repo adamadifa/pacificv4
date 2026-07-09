@@ -66,8 +66,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sfa/pelanggan/{kode_pelanggan}/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'historiPenjualan']);
     Route::get('/sfa/pelanggan/{kode_pelanggan}/retur', [\App\Http\Controllers\Api\SfaApiController::class, 'historiRetur']);
     Route::post('/sfa/pelanggan/update-foto', [\App\Http\Controllers\Api\SfaApiController::class, 'updateFoto']);
-    Route::get('/sfa/penjualan/detail', [\App\Http\Controllers\Api\SfaApiController::class, 'detailPenjualan']);
+    Route::post('/sfa/penjualan/detail', [\App\Http\Controllers\Api\SfaApiController::class, 'detailPenjualan']);
     Route::post('/sfa/penjualan/signature', [\App\Http\Controllers\Api\SfaApiController::class, 'uploadSignature']);
+    Route::post('/sfa/penjualan/pembayaran/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storePembayaran']);
+    Route::post('/sfa/penjualan/giro/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeGiro']);
+    Route::post('/sfa/penjualan/transfer/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeTransfer']);
 });
 
 // API Sync Jurnal Umum

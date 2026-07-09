@@ -39,6 +39,8 @@ class SfaApiController extends Controller
         // Generate Sanctum Token
         $token = $user->createToken('sfa_auth_token')->plainTextToken;
 
+        $salesman = DB::table('salesman')->where('kode_salesman', $user->kode_salesman)->first();
+
         return response()->json([
             'success' => true,
             'message' => 'Login berhasil.',
@@ -50,6 +52,7 @@ class SfaApiController extends Controller
                 'email' => $user->email ?? '',
                 'kode_cabang' => $user->kode_cabang ?? '',
                 'kode_dept' => $user->kode_dept ?? '',
+                'kategori_salesman' => $salesman->kode_kategori_salesman ?? '',
             ]
         ]);
     }
@@ -212,6 +215,10 @@ class SfaApiController extends Controller
 
                 $saldo_voucher = ($saldo_voucher_program->jml_voucher ?? 0) - ($diskonprogram->jml_voucher ?? 0);
 
+                $penjualan_model = new Penjualan();
+                $sisa_piutang = $penjualan_model->getPiutangpelanggan($item->kode_pelanggan);
+                $faktur_kredit = $penjualan_model->getFakturkredit($item->kode_pelanggan);
+
                 return [
                     'kode_pelanggan' => $item->kode_pelanggan,
                     'nama_pelanggan' => $item->nama_pelanggan,
@@ -221,6 +228,10 @@ class SfaApiController extends Controller
                     'latitude' => $item->latitude ?? -6.2000,
                     'longitude' => $item->longitude ?? 106.8166,
                     'limit_kredit' => $item->limit_pelanggan ?? 0,
+                    'sisa_piutang' => $sisa_piutang,
+                    'siklus_pembayaran' => $faktur_kredit['siklus_pembayaran'] ?? 0,
+                    'max_kredit' => $faktur_kredit['jml_faktur'] ?? 1,
+                    'unpaid_faktur' => $faktur_kredit['unpaid_faktur'] ?? 0,
                     'foto' => $item->foto ?? '',
                     'encrypted_kode_pelanggan' => Crypt::encrypt($item->kode_pelanggan),
                     'saldo_voucher' => $saldo_voucher,
@@ -258,6 +269,7 @@ class SfaApiController extends Controller
                 'harga_pack' => $item->harga_pack ?? 0.0,
                 'harga_pcs' => $item->harga_pcs ?? 0.0,
                 'kode_kategori_diskon' => $item->kode_kategori_diskon,
+                'kode_kategori_salesman' => $item->kode_kategori_salesman,
             ];
         });
 
@@ -378,15 +390,34 @@ class SfaApiController extends Controller
             $total_bruto = 0;
             $detail = [];
             foreach ($request->items as $item) {
+                $kode_kategori_salesman = $item['kode_kategori_salesman'] ?? $salesman->kode_kategori_salesman ?? 'TO';
+                if ($kode_kategori_salesman == 'TC') {
+                    $kode_kategori_salesman = 'TO';
+                }
+
+                // 1. Cek harga khusus pelanggan terlebih dahulu
                 $harga = DB::table('produk_harga')
                     ->select('produk_harga.*', 'produk.isi_pcs_pack', 'produk.isi_pcs_dus')
                     ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
                     ->where('produk_harga.kode_produk', $item['kode_produk'])
-                    ->where(function($q) use ($request, $user) {
-                        $q->where('kode_pelanggan', $request->kode_pelanggan)
-                          ->orWhere('kode_cabang', $user->kode_cabang);
-                    })
+                    ->where('kode_pelanggan', $request->kode_pelanggan)
+                    ->where('status_aktif_harga', 1)
+                    ->where('status_aktif_produk', 1)
                     ->first();
+
+                // 2. Jika tidak ada harga khusus pelanggan, cari berdasarkan cabang dan kategori salesman
+                if (!$harga) {
+                    $harga = DB::table('produk_harga')
+                        ->select('produk_harga.*', 'produk.isi_pcs_pack', 'produk.isi_pcs_dus')
+                        ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                        ->where('produk_harga.kode_produk', $item['kode_produk'])
+                        ->where('kode_cabang', $salesman->kode_cabang)
+                        ->where('kode_kategori_salesman', $kode_kategori_salesman)
+                        ->whereNull('kode_pelanggan')
+                        ->where('status_aktif_harga', 1)
+                        ->where('status_aktif_produk', 1)
+                        ->first();
+                }
 
                 if ($harga) {
                     $qty_dus = (int)$item['qty_dus'];
@@ -394,11 +425,11 @@ class SfaApiController extends Controller
                     $qty_pcs = (int)$item['qty_pcs'];
                     $status_promosi = (isset($item['status_promosi']) && $item['status_promosi'] == 1) ? 1 : 0;
 
-                    $harga_dus = $status_promosi ? 0 : (double)$harga->harga_dus;
-                    $harga_pack = $status_promosi ? 0 : (double)$harga->harga_pack;
-                    $harga_pcs = $status_promosi ? 0 : (double)$harga->harga_pcs;
+                    $harga_dus = $status_promosi ? 0 : (double)($item['harga_dus'] ?? $harga->harga_dus);
+                    $harga_pack = $status_promosi ? 0 : (double)($item['harga_pack'] ?? $harga->harga_pack);
+                    $harga_pcs = $status_promosi ? 0 : (double)($item['harga_pcs'] ?? $harga->harga_pcs);
 
-                    $subtotal = ($qty_dus * $harga_dus) + ($qty_pack * $harga_pack) + ($qty_pcs * $harga_pcs);
+                    $subtotal = isset($item['subtotal']) ? (double)$item['subtotal'] : (($qty_dus * $harga_dus) + ($qty_pack * $harga_pack) + ($qty_pcs * $harga_pcs));
                     $total_bruto += $subtotal;
 
                     $detail[] = [
@@ -414,7 +445,7 @@ class SfaApiController extends Controller
                 }
             }
 
-            $total_netto = $total_bruto - $total_potongan;
+            $total_netto = isset($request->total_bayar) ? (double)$request->total_bayar : ($total_bruto - $total_potongan);
 
             $penjualan_model = new Penjualan();
             $sisa_piutang = $penjualan_model->getPiutangpelanggan($request->kode_pelanggan);
@@ -426,21 +457,32 @@ class SfaApiController extends Controller
 
             $total_piutang = $sisa_piutang + $total_netto;
 
-            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan && $siklus_pembayaran === '0') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Melebihi Limit, Silahkan Ajukan Penambahan Limit'
-                ], 400);
-            } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Melebihi Limit, Silahkan Ajukan Penambahan Limit'
-                ], 400);
-            } else if ($unpaid_faktur > $max_faktur && $siklus_pembayaran === '0') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Melebihi Jumlah Faktur Kredit'
-                ], 400);
+            if ($jenis_transaksi == 'K') {
+                if ((string)$siklus_pembayaran === '0' && $total_piutang > $pelanggan->limit_pelanggan) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !'
+                    ], 400);
+                } else if ((string)$siklus_pembayaran === '1' && $total_netto > $pelanggan->limit_pelanggan) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !'
+                    ], 400);
+                }
+
+                if ($unpaid_faktur >= $max_faktur) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Melebihi Batas Jumlah Max. Faktur Kredit'
+                    ], 400);
+                }
+
+                if ($sisa_piutang > 0 && empty($request->keterangan)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Keterangan Harus Diisi !'
+                    ], 400);
+                }
             }
 
             $penjualan = Penjualan::create([
@@ -677,7 +719,7 @@ class SfaApiController extends Controller
 
     public function detailPenjualan(Request $request)
     {
-        $noFaktur = $request->query('no_faktur');
+        $noFaktur = $request->input('no_faktur');
         if (!$noFaktur) {
             return response()->json(['success' => false, 'message' => 'No faktur tidak ditemukan.'], 400);
         }
@@ -797,13 +839,24 @@ class SfaApiController extends Controller
             'data' => [
                 'no_faktur' => $penjualan->no_faktur,
                 'tanggal' => $penjualan->tanggal,
+                'created_at' => $penjualan->created_at,
                 'jenis_transaksi' => $penjualan->jenis_transaksi,
                 'ljt' => (int)$penjualan->ljt,
+                'jatuh_tempo' => $penjualan->jenis_transaksi == 'K'
+                    ? date("Y-m-d", strtotime("+{$penjualan->ljt} days", strtotime($penjualan->tanggal)))
+                    : null,
                 'status' => $penjualan->status,
                 'status_batal' => $penjualan->status_batal,
                 'signature' => $penjualan->signature,
+                'kode_pelanggan' => $penjualan->kode_pelanggan,
                 'nama_pelanggan' => $penjualan->nama_pelanggan,
+                'alamat_pelanggan' => $penjualan->alamat_pelanggan,
+                'kode_salesman' => $penjualan->kode_salesman,
                 'nama_salesman' => $penjualan->nama_salesman,
+                'nama_cabang' => $penjualan->nama_cabang,
+                'nama_pt' => $penjualan->nama_pt,
+                'alamat_cabang' => $penjualan->alamat_cabang,
+                'telepon_cabang' => $penjualan->telepon_cabang,
                 'total_bruto' => $total_bruto,
                 'potongan' => $potongan,
                 'potongan_istimewa' => $potongan_istimewa,
@@ -854,6 +907,179 @@ class SfaApiController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function storePembayaran(Request $request, $noFaktur)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'jumlah' => 'required|numeric',
+            'kode_salesman' => 'required|string',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $penjualan = Penjualan::where('no_faktur', $noFaktur)->firstOrFail();
+        $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->firstOrFail();
+        $jenis_transaksi = $penjualan->jenis_transaksi;
+        $jenis_bayar = $jenis_transaksi == 'T' ? 'TN' : 'TP';
+        $kode_cabang = $pelanggan->kode_cabang;
+        $tahun = date('y', strtotime($request->tanggal));
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return response()->json(['success' => false, 'message' => 'Periode Laporan Sudah Ditutup'], 422);
+            }
+
+            $lasthistoribayar = Historibayarpenjualan::select('no_bukti')
+                ->whereRaw('LEFT(no_bukti,6) = "' . $kode_cabang . $tahun . '-"')
+                ->orderBy("no_bukti", "desc")
+                ->first();
+
+            $last_no_bukti = $lasthistoribayar != null ? $lasthistoribayar->no_bukti : '';
+            $no_bukti  = buatkode($last_no_bukti, $kode_cabang . $tahun . "-", 6);
+
+            Historibayarpenjualan::create([
+                'no_bukti' => $no_bukti,
+                'tanggal' => $request->tanggal,
+                'no_faktur' => $noFaktur,
+                'jenis_bayar' => $jenis_bayar,
+                'jumlah' => $request->jumlah,
+                'voucher' => 0,
+                'jenis_voucher' => 0,
+                'voucher_reward' => 0,
+                'kode_salesman' => $request->kode_salesman,
+                'keterangan' => $request->keterangan,
+                'id_user' => Auth::user()->id
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Pembayaran berhasil disimpan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function storeGiro(Request $request, $noFaktur)
+    {
+        $request->validate([
+            'no_giro' => 'required|string',
+            'tanggal' => 'required|date',
+            'jumlah' => 'required|numeric',
+            'bank_pengirim' => 'required|string',
+            'jatuh_tempo' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $penjualan = Penjualan::where('no_faktur', $noFaktur)->firstOrFail();
+        $kode_salesman = $penjualan->kode_salesman;
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return response()->json(['success' => false, 'message' => 'Periode Laporan Sudah Ditutup'], 422);
+            }
+
+            // Generate Kode Giro
+            $tahun = date('y', strtotime($request->tanggal));
+            $lastgiro = DB::table('marketing_penjualan_giro')
+                ->whereRaw('LEFT(kode_giro,4) = "' . $tahun . 'GR"')
+                ->orderBy('kode_giro', 'desc')
+                ->first();
+            $last_kode_giro = $lastgiro != null ? $lastgiro->kode_giro : '';
+            $kode_giro = buatkode($last_kode_giro, $tahun . "GR", 4);
+
+            DB::table('marketing_penjualan_giro')->insert([
+                'kode_giro' => $kode_giro,
+                'tanggal' => $request->tanggal,
+                'no_giro' => $request->no_giro,
+                'bank_pengirim' => $request->bank_pengirim,
+                'jumlah' => $request->jumlah,
+                'jatuh_tempo' => $request->jatuh_tempo,
+                'keterangan' => $request->keterangan,
+                'status' => '0',
+                'kode_salesman' => $kode_salesman,
+                'id_user' => Auth::user()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::table('marketing_penjualan_giro_detail')->insert([
+                'kode_giro' => $kode_giro,
+                'no_faktur' => $noFaktur,
+                'jumlah' => $request->jumlah,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Giro berhasil diajukan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function storeTransfer(Request $request, $noFaktur)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'jumlah' => 'required|numeric',
+            'bank_pengirim' => 'required|string',
+            'jatuh_tempo' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $penjualan = Penjualan::where('no_faktur', $noFaktur)->firstOrFail();
+        $kode_salesman = $penjualan->kode_salesman;
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return response()->json(['success' => false, 'message' => 'Periode Laporan Sudah Ditutup'], 422);
+            }
+
+            // Generate Kode Transfer
+            $tahun = date('y', strtotime($request->tanggal));
+            $lasttransfer = DB::table('marketing_penjualan_transfer')
+                ->whereRaw('LEFT(kode_transfer,4) = "' . $tahun . 'TR"')
+                ->orderBy('kode_transfer', 'desc')
+                ->first();
+            $last_kode_transfer = $lasttransfer != null ? $lasttransfer->kode_transfer : '';
+            $kode_transfer = buatkode($last_kode_transfer, $tahun . "TR", 4);
+
+            DB::table('marketing_penjualan_transfer')->insert([
+                'kode_transfer' => $kode_transfer,
+                'tanggal' => $request->tanggal,
+                'bank_pengirim' => $request->bank_pengirim,
+                'jumlah' => $request->jumlah,
+                'jatuh_tempo' => $request->jatuh_tempo,
+                'keterangan' => $request->keterangan,
+                'status' => '0',
+                'kode_salesman' => $kode_salesman,
+                'id_user' => Auth::user()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::table('marketing_penjualan_transfer_detail')->insert([
+                'kode_transfer' => $kode_transfer,
+                'no_faktur' => $noFaktur,
+                'jumlah' => $request->jumlah,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Transfer berhasil diajukan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
