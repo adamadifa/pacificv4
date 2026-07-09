@@ -989,7 +989,10 @@ class ProgramIkatan2026Controller extends Controller
                 ->where('status_promosi', 0)
                 ->where('status_batal', 0)
                 ->where('marketing_penjualan.jenis_transaksi', 'K')
-                ->whereRaw("datediff(COALESCE(marketing_penjualan.tanggal_pelunasan, NOW()), marketing_penjualan.tanggal) > ?", [$d->top + 3])
+                ->where(function($query) use ($d) {
+                    $query->where('marketing_penjualan.status', 0)
+                          ->orWhereRaw("datediff(COALESCE(marketing_penjualan.tanggal_pelunasan, NOW()), marketing_penjualan.tanggal) > ?", [$d->top + 3]);
+                })
                 ->select('produk.kode_produk', 'produk.isi_pcs_dus', DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs'))
                 ->groupBy('produk.kode_produk', 'produk.isi_pcs_dus')
                 ->get();

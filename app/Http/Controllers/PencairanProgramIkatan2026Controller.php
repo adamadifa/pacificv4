@@ -339,7 +339,7 @@ class PencairanProgramIkatan2026Controller extends Controller
             DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs'),
             DB::raw('SUM(IF(jenis_transaksi = "T", marketing_penjualan_detail.jumlah, 0)) as total_tunai'),
             DB::raw('SUM(IF(jenis_transaksi = "K", marketing_penjualan_detail.jumlah, 0)) as total_kredit'),
-            DB::raw('SUM(IF(jenis_transaksi = "K" AND datediff(COALESCE(marketing_penjualan.tanggal_pelunasan, NOW()), marketing_penjualan.tanggal) > listpelangganikatan.top + 3, marketing_penjualan_detail.jumlah, 0)) as total_kredit_melebihi_top')
+            DB::raw('SUM(IF(jenis_transaksi = "K" AND (marketing_penjualan.status = 0 OR datediff(COALESCE(marketing_penjualan.tanggal_pelunasan, NOW()), marketing_penjualan.tanggal) > listpelangganikatan.top + 3), marketing_penjualan_detail.jumlah, 0)) as total_kredit_melebihi_top')
         )
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
