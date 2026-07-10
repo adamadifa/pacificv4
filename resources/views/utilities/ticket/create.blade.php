@@ -85,13 +85,13 @@
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div class="p-2 border rounded bg-white h-100">
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input" type="checkbox" name="perlu_smm" id="perlu_smm" value="1">
-                                <label class="form-check-label fw-bold text-dark" for="perlu_smm">Persetujuan
-                                    SMM</label>
-                            </div>
+                            <!-- <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" name="perlu_smm" id="perlu_smm" value="1">
+                                            <label class="form-check-label fw-bold text-dark" for="perlu_smm">Persetujuan
+                                                SMM</label>
+                                        </div> -->
                             <select name="id_smm" id="id_smm" class="form-select form-select-sm">
-                                <option value="">-- Pilih SMM --</option>
+                                <!-- <option value="">-- Pilih SMM --</option> -->
                                 @foreach ($smmList as $u)
                                     <option value="{{ $u->id }}" {{ $u->id == auth()->user()->id ? '' : 'selected' }}>
                                         {{ $u->name }}
@@ -101,30 +101,30 @@
                         </div>
                     </div>
                     <!-- <div class="col-md-4">
-                                <div class="p-2 border rounded bg-white h-100">
-                                    <div class="form-check form-switch mb-1">
-                                        <input class="form-check-input" type="checkbox" name="perlu_rsm" id="perlu_rsm"
-                                            value="1">
-                                        <label class="form-check-label fw-bold text-dark" for="perlu_rsm">Persetujuan
-                                            RSM</label>
-                                    </div>
-                                    <select name="id_rsm" id="id_rsm" class="form-select form-select-sm" disabled>
-                                        <option value="">-- Pilih RSM --</option>
-                                        @foreach ($rsmList as $u)
-                                            <option value="{{ $u->id }}" selected>{{ $u->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div> -->
+                                            <div class="p-2 border rounded bg-white h-100">
+                                                <div class="form-check form-switch mb-1">
+                                                    <input class="form-check-input" type="checkbox" name="perlu_rsm" id="perlu_rsm"
+                                                        value="1">
+                                                    <label class="form-check-label fw-bold text-dark" for="perlu_rsm">Persetujuan
+                                                        RSM</label>
+                                                </div>
+                                                <select name="id_rsm" id="id_rsm" class="form-select form-select-sm" disabled>
+                                                    <option value="">-- Pilih RSM --</option>
+                                                    @foreach ($rsmList as $u)
+                                                        <option value="{{ $u->id }}" selected>{{ $u->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div> -->
                     <div class="col-md-4">
                         <div class="p-2 border rounded bg-white h-100">
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input" type="checkbox" name="perlu_gm" id="perlu_gm" value="1">
-                                <label class="form-check-label fw-bold text-dark" for="perlu_gm">Persetujuan
-                                    GM</label>
-                            </div>
+                            <!-- <div class="form-check form-switch mb-1">
+                                            <input class="form-check-input" type="checkbox" name="perlu_gm" id="perlu_gm" value="1">
+                                            <label class="form-check-label fw-bold text-dark" for="perlu_gm">Persetujuan
+                                                GM</label>
+                                        </div> -->
                             <select name="id_gm" id="id_gm" class="form-select form-select-sm">
-                                <option value="">-- Pilih GM --</option>
+                                <!-- <option value="">-- Pilih GM --</option> -->
                                 @foreach ($gmList as $u)
                                     <option value="{{ $u->id }}" {{ $u->id == 20 ? 'selected' : '' }}>
                                         {{ $u->name }}
@@ -139,14 +139,14 @@
                 <div class="row g-2">
                     <div class="col-md-12">
                         <div class="p-2 border rounded bg-white h-100">
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input" type="checkbox" name="perlu_manager_dept"
-                                    id="perlu_manager_dept" value="1" checked>
-                                <label class="form-check-label fw-bold text-dark" for="perlu_manager_dept">Persetujuan
-                                    Manager Departemen</label>
-                            </div>
+                            <!-- <div class="form-check form-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" name="perlu_manager_dept"
+                                        id="perlu_manager_dept" value="1" checked>
+                                    <label class="form-check-label fw-bold text-dark" for="perlu_manager_dept">Persetujuan
+                                        Manager Departemen</label>
+                                </div> -->
                             <select name="id_manager_dept" id="id_manager_dept" class="form-select form-select-sm">
-                                <option value="">-- Pilih Manager --</option>
+                                <!-- <option value="">-- Pilih Manager --</option> -->
                                 @foreach ($managerList as $u)
                                     <option value="{{ $u->id }}" {{ $u->id == auth()->user()->id ? '' : 'selected' }}>
                                         {{ $u->name }}
