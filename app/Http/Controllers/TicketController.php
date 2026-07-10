@@ -114,7 +114,7 @@ class TicketController extends Controller
 
         // GM List
         $gmList = User::whereHas('roles', function ($q) {
-            $q->whereIn('name', ['gm marketing', 'gm administrasi', 'gm operasional']);
+            $q->whereIn('name', ['gm administrasi']);
         })->get();
 
         // Manager/Head List for PST

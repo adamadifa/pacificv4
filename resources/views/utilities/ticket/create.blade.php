@@ -2,8 +2,8 @@
     @csrf
     <div class="row">
         <div class="col-md-6 mb-3">
-            <x-input-with-icon label="Tanggal Pengajuan" name="tanggal" value="{{ date('Y-m-d') }}" icon="ti ti-calendar"
-                datepicker="flatpickr-date" readonly />
+            <x-input-with-icon label="Tanggal Pengajuan" name="tanggal" value="{{ date('Y-m-d') }}"
+                icon="ti ti-calendar" datepicker="flatpickr-date" readonly />
         </div>
         <div class="col-md-6 mb-3">
             <div class="form-group">
@@ -86,42 +86,40 @@
                     <div class="col-md-4">
                         <div class="p-2 border rounded bg-white h-100">
                             <div class="form-check form-switch mb-1">
-                                <input class="form-check-input" type="checkbox" name="perlu_smm" id="perlu_smm"
-                                    value="1">
+                                <input class="form-check-input" type="checkbox" name="perlu_smm" id="perlu_smm" value="1">
                                 <label class="form-check-label fw-bold text-dark" for="perlu_smm">Persetujuan
                                     SMM</label>
                             </div>
                             <select name="id_smm" id="id_smm" class="form-select form-select-sm" disabled>
                                 <option value="">-- Pilih SMM --</option>
                                 @foreach ($smmList as $u)
-                                    <option value="{{ $u->id }}"
-                                        {{ $u->id == auth()->user()->id ? '' : 'selected' }}>{{ $u->name }}
+                                    <option value="{{ $u->id }}" {{ $u->id == auth()->user()->id ? '' : 'selected' }}>
+                                        {{ $u->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="p-2 border rounded bg-white h-100">
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input" type="checkbox" name="perlu_rsm" id="perlu_rsm"
-                                    value="1">
-                                <label class="form-check-label fw-bold text-dark" for="perlu_rsm">Persetujuan
-                                    RSM</label>
+                    <!-- <div class="col-md-4">
+                            <div class="p-2 border rounded bg-white h-100">
+                                <div class="form-check form-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" name="perlu_rsm" id="perlu_rsm"
+                                        value="1">
+                                    <label class="form-check-label fw-bold text-dark" for="perlu_rsm">Persetujuan
+                                        RSM</label>
+                                </div>
+                                <select name="id_rsm" id="id_rsm" class="form-select form-select-sm" disabled>
+                                    <option value="">-- Pilih RSM --</option>
+                                    @foreach ($rsmList as $u)
+                                        <option value="{{ $u->id }}" selected>{{ $u->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <select name="id_rsm" id="id_rsm" class="form-select form-select-sm" disabled>
-                                <option value="">-- Pilih RSM --</option>
-                                @foreach ($rsmList as $u)
-                                    <option value="{{ $u->id }}" selected>{{ $u->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                        </div> -->
                     <div class="col-md-4">
                         <div class="p-2 border rounded bg-white h-100">
                             <div class="form-check form-switch mb-1">
-                                <input class="form-check-input" type="checkbox" name="perlu_gm" id="perlu_gm"
-                                    value="1">
+                                <input class="form-check-input" type="checkbox" name="perlu_gm" id="perlu_gm" value="1">
                                 <label class="form-check-label fw-bold text-dark" for="perlu_gm">Persetujuan
                                     GM</label>
                             </div>
@@ -144,13 +142,14 @@
                             <div class="form-check form-switch mb-1">
                                 <input class="form-check-input" type="checkbox" name="perlu_manager_dept"
                                     id="perlu_manager_dept" value="1" checked>
-                                <label class="form-check-label fw-bold text-dark" for="perlu_manager_dept">Persetujuan Manager Departemen</label>
+                                <label class="form-check-label fw-bold text-dark" for="perlu_manager_dept">Persetujuan
+                                    Manager Departemen</label>
                             </div>
                             <select name="id_manager_dept" id="id_manager_dept" class="form-select form-select-sm">
                                 <option value="">-- Pilih Manager --</option>
                                 @foreach ($managerList as $u)
-                                    <option value="{{ $u->id }}"
-                                        {{ $u->id == auth()->user()->id ? '' : 'selected' }}>{{ $u->name }}
+                                    <option value="{{ $u->id }}" {{ $u->id == auth()->user()->id ? '' : 'selected' }}>
+                                        {{ $u->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -174,17 +173,17 @@
 </form>
 
 <script>
-    $(function() {
+    $(function () {
         $(".flatpickr-date").flatpickr();
 
-        $("#id_kategori").change(function() {
+        $("#id_kategori").change(function () {
             let categoryId = $(this).val();
             if (categoryId != "") {
                 $.ajax({
                     url: "/ticket/category-detail/" + categoryId,
                     type: "GET",
                     dataType: "json",
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status == "success") {
                             let cat = response.data;
                             $("#categoryNoticeCard").removeClass("d-none");
@@ -194,7 +193,7 @@
                             if (cat.template_file) {
                                 $("#btnDownloadTemplate").attr("href",
                                     "/ticket/download-template/" + cat.id).removeClass(
-                                    "d-none");
+                                        "d-none");
                             } else {
                                 $("#btnDownloadTemplate").addClass("d-none");
                             }
@@ -229,20 +228,20 @@
             }
         });
 
-        $("#perlu_smm").change(function() {
+        $("#perlu_smm").change(function () {
             $("#id_smm").prop('disabled', !$(this).is(':checked'));
         });
-        $("#perlu_rsm").change(function() {
+        $("#perlu_rsm").change(function () {
             $("#id_rsm").prop('disabled', !$(this).is(':checked'));
         });
-        $("#perlu_gm").change(function() {
+        $("#perlu_gm").change(function () {
             $("#id_gm").prop('disabled', !$(this).is(':checked'));
         });
-        $("#perlu_manager_dept").change(function() {
+        $("#perlu_manager_dept").change(function () {
             $("#id_manager_dept").prop('disabled', !$(this).is(':checked'));
         });
 
-        $("#formTicket").submit(function(e) {
+        $("#formTicket").submit(function (e) {
             let id_kategori = $(this).find("#id_kategori").val();
             let judul = $(this).find("#judul").val();
             let keterangan = $(this).find("#keterangan").val();
