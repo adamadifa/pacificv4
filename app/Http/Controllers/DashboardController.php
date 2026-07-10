@@ -835,6 +835,10 @@ class DashboardController extends Controller
             $query->where('cabang.kode_regional', auth()->user()->kode_regional);
         }
 
+        if ($role == 'manager gudang') {
+            $query->whereNotIn('cabang.kode_cabang', ['PST', 'PWK']);
+        }
+
         $query->where('cabang.status_aktif_cabang', 1);
         $query->get();
         $results = $query->get();
