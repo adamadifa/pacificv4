@@ -169,12 +169,8 @@ class TicketController extends Controller
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
             $filename = 'lampiran_tk_' . time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $destinationPath = public_path('uploads/tickets');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $file->move($destinationPath, $filename);
-            $lampiranPath = 'uploads/tickets/' . $filename;
+            $file->storeAs('uploads/tickets', $filename, 'public');
+            $lampiranPath = 'storage/uploads/tickets/' . $filename;
         }
 
         $user = User::findOrFail(auth()->user()->id);
@@ -328,12 +324,8 @@ class TicketController extends Controller
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
             $filename = 'lampiran_tk_' . time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $destinationPath = public_path('uploads/tickets');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $file->move($destinationPath, $filename);
-            $data['lampiran'] = 'uploads/tickets/' . $filename;
+            $file->storeAs('uploads/tickets', $filename, 'public');
+            $data['lampiran'] = 'storage/uploads/tickets/' . $filename;
         }
 
         if ($ticket->status == '0') {
