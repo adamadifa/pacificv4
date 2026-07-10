@@ -821,6 +821,7 @@ class SfaApiController extends Controller
                     'nama_salesman' => $h->nama_salesman,
                     'no_giro' => $h->no_giro,
                     'nama_voucher' => $h->nama_voucher,
+                    'voucher' => (int)$h->voucher,
                 ];
             });
 
@@ -833,6 +834,121 @@ class SfaApiController extends Controller
         $total_retur = (double)($penjualan->total_retur ?? 0.0);
         $total_bayar = (double)($penjualan->total_bayar ?? 0.0);
         $sisa_piutang = $total_netto - $total_retur - $total_bayar;
+
+        $saldo_voucher_program = \DB::table('marketing_program_pencairan_detail')
+            ->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan')
+            ->select(\DB::raw("SUM(diskon_kumulatif - diskon_reguler) as jml_voucher"))
+            ->where('kode_pelanggan', $penjualan->kode_pelanggan)
+            ->where('metode_pembayaran', 'VC')
+            ->where('status', '1')
+            ->first();
+
+        $tanggal_mulai = date('Y-m-d', strtotime("2025-01-01"));
+        $diskonprogram = \DB::table('marketing_penjualan_historibayar')
+            ->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select(\DB::raw("SUM(jumlah) as jml_voucher"))
+            ->where('marketing_penjualan.kode_pelanggan', $penjualan->kode_pelanggan)
+            ->where('jenis_voucher', 2)
+            ->where('voucher_reward', 1)
+            ->where('marketing_penjualan_historibayar.tanggal', '>=', $tanggal_mulai)
+            ->first();
+
+        $saldo_voucher = ($saldo_voucher_program->jml_voucher ?? 0) - ($diskonprogram->jml_voucher ?? 0);
+
+        $jenis_voucher = \DB::table('jenis_voucher')->orderBy('id')->get()->map(function($v) {
+            return [
+                'id' => (int)$v->id,
+                'nama_voucher' => $v->nama_voucher
+            ];
+        });
+
+        $giroditolak = \DB::table('marketing_penjualan_giro_detail')
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->leftJoin(
+                \DB::raw("(
+                    SELECT
+                        kode_giro as cek_pembayaran_giro
+                    FROM
+                        marketing_penjualan_historibayar_giro
+                    GROUP BY kode_giro
+                ) pembayaran_giro"),
+                function ($join) {
+                    $join->on('marketing_penjualan_giro.kode_giro', '=', 'pembayaran_giro.cek_pembayaran_giro');
+                }
+            )
+            ->select('marketing_penjualan_giro_detail.kode_giro', 'no_giro')
+            ->where('marketing_penjualan_giro_detail.no_faktur', $noFaktur)
+            ->where('marketing_penjualan_giro.status', '2')
+            ->whereNull('cek_pembayaran_giro')
+            ->get()
+            ->map(function($g) {
+                return [
+                    'kode_giro' => $g->kode_giro,
+                    'no_giro' => $g->no_giro
+                ];
+            });
+
+        $giro = DB::table('marketing_penjualan_giro_detail')
+            ->select(
+                'marketing_penjualan_giro_detail.kode_giro',
+                'marketing_penjualan_giro.no_giro',
+                'marketing_penjualan_giro.tanggal',
+                'marketing_penjualan_giro.bank_pengirim',
+                'marketing_penjualan_giro_detail.jumlah',
+                'marketing_penjualan_giro.jatuh_tempo',
+                'marketing_penjualan_giro.status',
+                'marketing_penjualan_giro.keterangan',
+                'salesman.nama_salesman'
+            )
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->join('salesman', 'marketing_penjualan_giro.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan_giro_detail.no_faktur', $noFaktur)
+            ->orderBy('marketing_penjualan_giro.tanggal', 'desc')
+            ->get()
+            ->map(function($g) {
+                return [
+                    'no_bukti' => $g->kode_giro,
+                    'tanggal' => $g->tanggal,
+                    'jumlah' => (double)$g->jumlah,
+                    'cara_bayar' => 'GIRO',
+                    'nama_salesman' => $g->nama_salesman,
+                    'no_giro' => $g->no_giro,
+                    'bank_pengirim' => $g->bank_pengirim,
+                    'jatuh_tempo' => $g->jatuh_tempo,
+                    'status' => $g->status,
+                    'keterangan' => $g->keterangan,
+                ];
+            });
+
+        $transfer = DB::table('marketing_penjualan_transfer_detail')
+            ->select(
+                'marketing_penjualan_transfer_detail.kode_transfer',
+                'marketing_penjualan_transfer.tanggal',
+                'marketing_penjualan_transfer.bank_pengirim',
+                'marketing_penjualan_transfer_detail.jumlah',
+                'marketing_penjualan_transfer.jatuh_tempo',
+                'marketing_penjualan_transfer.status',
+                'marketing_penjualan_transfer.keterangan',
+                'salesman.nama_salesman'
+            )
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->join('salesman', 'marketing_penjualan_transfer.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan_transfer_detail.no_faktur', $noFaktur)
+            ->orderBy('marketing_penjualan_transfer.tanggal', 'desc')
+            ->get()
+            ->map(function($t) {
+                return [
+                    'no_bukti' => $t->kode_transfer,
+                    'tanggal' => $t->tanggal,
+                    'jumlah' => (double)$t->jumlah,
+                    'cara_bayar' => 'TRANSFER',
+                    'nama_salesman' => $t->nama_salesman,
+                    'bank_pengirim' => $t->bank_pengirim,
+                    'jatuh_tempo' => $t->jatuh_tempo,
+                    'status' => $t->status,
+                    'keterangan' => $t->keterangan,
+                ];
+            });
 
         return response()->json([
             'success' => true,
@@ -866,9 +982,14 @@ class SfaApiController extends Controller
                 'total_retur' => $total_retur,
                 'total_bayar' => $total_bayar,
                 'sisa_piutang' => $sisa_piutang > 0 ? $sisa_piutang : 0.0,
+                'saldo_voucher' => (double)$saldo_voucher,
+                'jenis_voucher' => $jenis_voucher,
+                'giroditolak' => $giroditolak,
                 'detail' => $detail,
                 'retur' => $retur,
-                'historibayar' => $historibayar
+                'historibayar' => $historibayar,
+                'giro' => $giro,
+                'transfer' => $transfer
             ]
         ]);
     }
@@ -917,6 +1038,10 @@ class SfaApiController extends Controller
             'jumlah' => 'required|numeric',
             'kode_salesman' => 'required|string',
             'keterangan' => 'nullable|string',
+            'agreementvoucher' => 'nullable',
+            'jenis_voucher' => 'nullable',
+            'agreementgiro' => 'nullable',
+            'kode_giro' => 'nullable|string',
         ]);
 
         $penjualan = Penjualan::where('no_faktur', $noFaktur)->firstOrFail();
@@ -925,6 +1050,18 @@ class SfaApiController extends Controller
         $jenis_bayar = $jenis_transaksi == 'T' ? 'TN' : 'TP';
         $kode_cabang = $pelanggan->kode_cabang;
         $tahun = date('y', strtotime($request->tanggal));
+
+        $voucher = 0;
+        $jenis_voucher = 0;
+        $voucher_reward = 0;
+
+        if ($request->agreementvoucher == 1 || $request->agreementvoucher == '1' || $request->agreementvoucher == true) {
+            $voucher = 1;
+            $jenis_voucher = $request->jenis_voucher;
+            if ($jenis_voucher == '2' || $jenis_voucher == 2) {
+                $voucher_reward = 1;
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -947,13 +1084,21 @@ class SfaApiController extends Controller
                 'no_faktur' => $noFaktur,
                 'jenis_bayar' => $jenis_bayar,
                 'jumlah' => $request->jumlah,
-                'voucher' => 0,
-                'jenis_voucher' => 0,
-                'voucher_reward' => 0,
+                'voucher' => $voucher,
+                'jenis_voucher' => $jenis_voucher,
+                'voucher_reward' => $voucher_reward,
                 'kode_salesman' => $request->kode_salesman,
                 'keterangan' => $request->keterangan,
                 'id_user' => Auth::user()->id
             ]);
+
+            if ($request->agreementgiro == 1 || $request->agreementgiro == '1' || $request->agreementgiro == true) {
+                DB::table('marketing_penjualan_historibayar_giro')->insert([
+                    'no_bukti' => $no_bukti,
+                    'kode_giro' => $request->kode_giro,
+                    'giro_to_cash' => 1,
+                ]);
+            }
 
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Pembayaran berhasil disimpan.']);
@@ -985,25 +1130,24 @@ class SfaApiController extends Controller
             }
 
             // Generate Kode Giro
-            $tahun = date('y', strtotime($request->tanggal));
+            $tahun = date('Y', strtotime($request->tanggal));
             $lastgiro = DB::table('marketing_penjualan_giro')
-                ->whereRaw('LEFT(kode_giro,4) = "' . $tahun . 'GR"')
+                ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
                 ->orderBy('kode_giro', 'desc')
                 ->first();
             $last_kode_giro = $lastgiro != null ? $lastgiro->kode_giro : '';
-            $kode_giro = buatkode($last_kode_giro, $tahun . "GR", 4);
+            $kode_giro = buatkode($last_kode_giro, "GR" . $tahun, 4);
 
             DB::table('marketing_penjualan_giro')->insert([
                 'kode_giro' => $kode_giro,
                 'tanggal' => $request->tanggal,
                 'no_giro' => $request->no_giro,
+                'kode_pelanggan' => $penjualan->kode_pelanggan,
                 'bank_pengirim' => $request->bank_pengirim,
-                'jumlah' => $request->jumlah,
                 'jatuh_tempo' => $request->jatuh_tempo,
                 'keterangan' => $request->keterangan,
                 'status' => '0',
                 'kode_salesman' => $kode_salesman,
-                'id_user' => Auth::user()->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -1045,24 +1189,23 @@ class SfaApiController extends Controller
             }
 
             // Generate Kode Transfer
-            $tahun = date('y', strtotime($request->tanggal));
+            $tahun = date('Y', strtotime($request->tanggal));
             $lasttransfer = DB::table('marketing_penjualan_transfer')
-                ->whereRaw('LEFT(kode_transfer,4) = "' . $tahun . 'TR"')
+                ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
                 ->orderBy('kode_transfer', 'desc')
                 ->first();
             $last_kode_transfer = $lasttransfer != null ? $lasttransfer->kode_transfer : '';
-            $kode_transfer = buatkode($last_kode_transfer, $tahun . "TR", 4);
+            $kode_transfer = buatkode($last_kode_transfer, "TR" . $tahun, 4);
 
             DB::table('marketing_penjualan_transfer')->insert([
                 'kode_transfer' => $kode_transfer,
                 'tanggal' => $request->tanggal,
+                'kode_pelanggan' => $penjualan->kode_pelanggan,
                 'bank_pengirim' => $request->bank_pengirim,
-                'jumlah' => $request->jumlah,
                 'jatuh_tempo' => $request->jatuh_tempo,
                 'keterangan' => $request->keterangan,
                 'status' => '0',
                 'kode_salesman' => $kode_salesman,
-                'id_user' => Auth::user()->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -1090,5 +1233,160 @@ class SfaApiController extends Controller
             'success' => true,
             'data' => $diskon
         ]);
+    }
+
+    public function deleteGiro($kodeGiro)
+    {
+        DB::beginTransaction();
+        try {
+            $giro = DB::table('marketing_penjualan_giro')->where('kode_giro', $kodeGiro)->first();
+            if (!$giro) {
+                return response()->json(['success' => false, 'message' => 'Giro tidak ditemukan.'], 404);
+            }
+            if ($giro->status != '0') {
+                return response()->json(['success' => false, 'message' => 'Giro yang sudah diproses tidak dapat dihapus.'], 422);
+            }
+
+            DB::table('marketing_penjualan_giro_detail')->where('kode_giro', $kodeGiro)->delete();
+            DB::table('marketing_penjualan_giro')->where('kode_giro', $kodeGiro)->delete();
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Giro berhasil dihapus.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteTransfer($kodeTransfer)
+    {
+        DB::beginTransaction();
+        try {
+            $transfer = DB::table('marketing_penjualan_transfer')->where('kode_transfer', $kodeTransfer)->first();
+            if (!$transfer) {
+                return response()->json(['success' => false, 'message' => 'Transfer tidak ditemukan.'], 404);
+            }
+            if ($transfer->status != '0') {
+                return response()->json(['success' => false, 'message' => 'Transfer yang sudah diproses tidak dapat dihapus.'], 422);
+            }
+
+            DB::table('marketing_penjualan_transfer_detail')->where('kode_transfer', $kodeTransfer)->delete();
+            DB::table('marketing_penjualan_transfer')->where('kode_transfer', $kodeTransfer)->delete();
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Transfer berhasil dihapus.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function pelangganOptions()
+    {
+        $user = Auth::user();
+        $kode_cabang = $user->kode_cabang;
+
+        $wilayah = DB::table('wilayah')
+            ->where('kode_cabang', $kode_cabang)
+            ->orderBy('nama_wilayah')
+            ->get();
+
+        $klasifikasi = DB::table('marketing_klasifikasi_outlet')
+            ->orderBy('kode_klasifikasi')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'wilayah' => $wilayah,
+                'klasifikasi' => $klasifikasi
+            ]
+        ]);
+    }
+
+    public function storePelanggan(Request $request)
+    {
+        $user = Auth::user();
+        $kode_cabang = $user->kode_cabang;
+
+        $request->validate([
+            'nama_pelanggan' => 'required|string',
+            'alamat_pelanggan' => 'required|string',
+            'alamat_toko' => 'required|string',
+            'kode_wilayah' => 'required|string',
+            'hari' => 'required|array',
+            'no_hp_pelanggan' => 'required|string',
+        ]);
+
+        $lastpelanggan = Pelanggan::whereRaw('left(kode_pelanggan,3)="' . $kode_cabang . '"')
+            ->orderBy('kode_pelanggan', 'desc')
+            ->first();
+        $last_kode_pelanggan = $lastpelanggan != null ? $lastpelanggan->kode_pelanggan : '';
+        $kode_pelanggan = buatkode($last_kode_pelanggan, $kode_cabang . '-', 5);
+
+        $foto = null;
+        if ($request->filled('foto')) {
+            $base64_image = $request->input('foto');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64_image, $type)) {
+                $base64_image = substr($base64_image, strpos($base64_image, ',') + 1);
+                $type = strtolower($type[1]);
+
+                if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
+                    return response()->json(['success' => false, 'message' => 'Format foto tidak valid.'], 422);
+                }
+                $base64_image = str_replace(' ', '+', $base64_image);
+                $foto_data = base64_decode($base64_image);
+                if ($foto_data === false) {
+                    return response()->json(['success' => false, 'message' => 'Dekode foto gagal.'], 422);
+                }
+
+                $foto_name = $kode_pelanggan . '.' . $type;
+                \Storage::put('public/pelanggan/' . $foto_name, $foto_data);
+                $foto = $foto_name;
+            }
+        }
+
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+
+        DB::beginTransaction();
+        try {
+            Pelanggan::create([
+                'kode_pelanggan' => $kode_pelanggan,
+                'tanggal_register' => date('Y-m-d'),
+                'nik' => $request->input('nik'),
+                'no_kk' => $request->input('no_kk'),
+                'nama_pelanggan' => $request->input('nama_pelanggan'),
+                'tanggal_lahir' => $request->input('tanggal_lahir'),
+                'alamat_pelanggan' => $request->input('alamat_pelanggan'),
+                'alamat_toko' => $request->input('alamat_toko'),
+                'no_hp_pelanggan' => $request->input('no_hp_pelanggan'),
+                'kode_cabang' => $kode_cabang,
+                'kode_salesman' => $user->kode_salesman,
+                'kode_wilayah' => $request->input('kode_wilayah'),
+                'hari' => implode(",", $request->input('hari')),
+                'limit_pelanggan' => $request->filled('limit_pelanggan') ? (double)$request->input('limit_pelanggan') : null,
+                'ljt' => $request->input('ljt'),
+                'kepemilikan' => $request->input('kepemilikan'),
+                'lama_berjualan' => $request->input('lama_berjualan'),
+                'status_outlet' => $request->input('status_outlet'),
+                'type_outlet' => $request->input('type_outlet'),
+                'kode_klasifikasi' => $request->input('kode_klasifikasi'),
+                'cara_pembayaran' => $request->input('cara_pembayaran'),
+                'lama_langganan' => $request->input('lama_langganan'),
+                'jaminan' => $request->input('jaminan'),
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'omset_toko' => $request->filled('omset_toko') ? (double)$request->input('omset_toko') : null,
+                'status_aktif_pelanggan' => 1,
+                'foto' => $foto
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Outlet baru berhasil didaftarkan.', 'kode_pelanggan' => $kode_pelanggan]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

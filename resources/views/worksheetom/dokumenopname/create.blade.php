@@ -115,10 +115,10 @@
             const input_kas_kecil = formDokumenopname.find("#file_kas_kecil")[0];
             const input_kas_besar = formDokumenopname.find("#file_kas_besar")[0];
 
-            if (input_persediaan.files[0] && input_persediaan.files[0].size > 300 * 1024) {
+            if (input_persediaan.files[0] && input_persediaan.files[0].size > 500 * 1024) {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Ukuran File Opname Persediaan tidak boleh lebih dari 300 KB !",
+                    text: "Ukuran File Opname Persediaan tidak boleh lebih dari 500 KB !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
@@ -127,10 +127,10 @@
                 });
                 return false;
             }
-            if (input_kas_kecil.files[0] && input_kas_kecil.files[0].size > 300 * 1024) {
+            if (input_kas_kecil.files[0] && input_kas_kecil.files[0].size > 500 * 1024) {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Ukuran File Opname Kas Kecil tidak boleh lebih dari 300 KB !",
+                    text: "Ukuran File Opname Kas Kecil tidak boleh lebih dari 500 KB !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {
@@ -139,10 +139,10 @@
                 });
                 return false;
             }
-            if (input_kas_besar.files[0] && input_kas_besar.files[0].size > 300 * 1024) {
+            if (input_kas_besar.files[0] && input_kas_besar.files[0].size > 500 * 1024) {
                 Swal.fire({
                     title: "Oops!",
-                    text: "Ukuran File Opname Kas Besar tidak boleh lebih dari 300 KB !",
+                    text: "Ukuran File Opname Kas Besar tidak boleh lebih dari 500 KB !",
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: () => {

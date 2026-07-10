@@ -60,6 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // SFA Protected API Routes
     Route::get('/sfa/dashboard', [\App\Http\Controllers\Api\SfaApiController::class, 'dashboard']);
     Route::get('/sfa/pelanggan', [\App\Http\Controllers\Api\SfaApiController::class, 'pelanggan']);
+    Route::get('/sfa/pelanggan/options', [\App\Http\Controllers\Api\SfaApiController::class, 'pelangganOptions']);
+    Route::post('/sfa/pelanggan/store', [\App\Http\Controllers\Api\SfaApiController::class, 'storePelanggan']);
     Route::get('/sfa/produk', [\App\Http\Controllers\Api\SfaApiController::class, 'produk']);
     Route::get('/sfa/diskon', [\App\Http\Controllers\Api\SfaApiController::class, 'diskon']);
     Route::post('/sfa/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'penjualan']);
@@ -71,6 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sfa/penjualan/pembayaran/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storePembayaran']);
     Route::post('/sfa/penjualan/giro/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeGiro']);
     Route::post('/sfa/penjualan/transfer/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeTransfer']);
+    Route::delete('/sfa/penjualan/giro/{kode_giro}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteGiro']);
+    Route::delete('/sfa/penjualan/transfer/{kode_transfer}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteTransfer']);
 });
 
 // API Sync Jurnal Umum
