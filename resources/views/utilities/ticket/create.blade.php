@@ -90,7 +90,7 @@
                                 <label class="form-check-label fw-bold text-dark" for="perlu_smm">Persetujuan
                                     SMM</label>
                             </div>
-                            <select name="id_smm" id="id_smm" class="form-select form-select-sm" disabled>
+                            <select name="id_smm" id="id_smm" class="form-select form-select-sm">
                                 <option value="">-- Pilih SMM --</option>
                                 @foreach ($smmList as $u)
                                     <option value="{{ $u->id }}" {{ $u->id == auth()->user()->id ? '' : 'selected' }}>
@@ -101,21 +101,21 @@
                         </div>
                     </div>
                     <!-- <div class="col-md-4">
-                            <div class="p-2 border rounded bg-white h-100">
-                                <div class="form-check form-switch mb-1">
-                                    <input class="form-check-input" type="checkbox" name="perlu_rsm" id="perlu_rsm"
-                                        value="1">
-                                    <label class="form-check-label fw-bold text-dark" for="perlu_rsm">Persetujuan
-                                        RSM</label>
+                                <div class="p-2 border rounded bg-white h-100">
+                                    <div class="form-check form-switch mb-1">
+                                        <input class="form-check-input" type="checkbox" name="perlu_rsm" id="perlu_rsm"
+                                            value="1">
+                                        <label class="form-check-label fw-bold text-dark" for="perlu_rsm">Persetujuan
+                                            RSM</label>
+                                    </div>
+                                    <select name="id_rsm" id="id_rsm" class="form-select form-select-sm" disabled>
+                                        <option value="">-- Pilih RSM --</option>
+                                        @foreach ($rsmList as $u)
+                                            <option value="{{ $u->id }}" selected>{{ $u->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <select name="id_rsm" id="id_rsm" class="form-select form-select-sm" disabled>
-                                    <option value="">-- Pilih RSM --</option>
-                                    @foreach ($rsmList as $u)
-                                        <option value="{{ $u->id }}" selected>{{ $u->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div> -->
+                            </div> -->
                     <div class="col-md-4">
                         <div class="p-2 border rounded bg-white h-100">
                             <div class="form-check form-switch mb-1">
@@ -123,7 +123,7 @@
                                 <label class="form-check-label fw-bold text-dark" for="perlu_gm">Persetujuan
                                     GM</label>
                             </div>
-                            <select name="id_gm" id="id_gm" class="form-select form-select-sm" disabled>
+                            <select name="id_gm" id="id_gm" class="form-select form-select-sm">
                                 <option value="">-- Pilih GM --</option>
                                 @foreach ($gmList as $u)
                                     <option value="{{ $u->id }}" {{ $u->id == 20 ? 'selected' : '' }}>
