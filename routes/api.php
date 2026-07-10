@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sfa/pelanggan', [\App\Http\Controllers\Api\SfaApiController::class, 'pelanggan']);
     Route::get('/sfa/pelanggan/options', [\App\Http\Controllers\Api\SfaApiController::class, 'pelangganOptions']);
     Route::post('/sfa/pelanggan/store', [\App\Http\Controllers\Api\SfaApiController::class, 'storePelanggan']);
+    Route::post('/sfa/pelanggan/ajuan-limit/{kode_pelanggan}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeAjuanLimit']);
     Route::get('/sfa/produk', [\App\Http\Controllers\Api\SfaApiController::class, 'produk']);
     Route::get('/sfa/diskon', [\App\Http\Controllers\Api\SfaApiController::class, 'diskon']);
     Route::post('/sfa/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'penjualan']);

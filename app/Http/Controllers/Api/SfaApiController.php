@@ -193,6 +193,7 @@ class SfaApiController extends Controller
         
         $pelanggan = Pelanggan::where('kode_salesman', $user->kode_salesman)
             ->where('status_aktif_pelanggan', 1)
+            ->orderBy('created_at', 'desc')
             ->get()
             ->map(function($item) {
                 $saldo_voucher_program = \DB::table('marketing_program_pencairan_detail')
@@ -1384,6 +1385,120 @@ class SfaApiController extends Controller
 
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Outlet baru berhasil didaftarkan.', 'kode_pelanggan' => $kode_pelanggan]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function storeAjuanLimit(Request $request, $kode_pelanggan)
+    {
+        $user = Auth::user();
+        $tanggal = date('Y-m-d');
+        DB::beginTransaction();
+        try {
+            $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->firstOrFail();
+            
+            // Generate Kode Pengajuan Limit
+            $last_ajuan_limit = \App\Models\Ajuanlimitkredit::select('no_pengajuan')
+                ->whereRaw('YEAR(tanggal) = "' . date('Y', strtotime($tanggal)) . '"')
+                ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
+                ->whereRaw('MID(no_pengajuan,7,2) = "' . date('y', strtotime($tanggal)) . '"')
+                ->orderBy('no_pengajuan', 'desc')
+                ->first();
+
+            if ($last_ajuan_limit == null) {
+                $last_no_pengajuan = 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($tanggal)), 2, 2) . '00000';
+            } else {
+                $last_no_pengajuan = $last_ajuan_limit->no_pengajuan;
+            }
+            $no_pengajuan = buatkode($last_no_pengajuan, 'PLK' . $pelanggan->kode_cabang . substr(date('Y', strtotime($tanggal)), 2, 2), 5);
+
+            // Update customer data
+            Pelanggan::where('kode_pelanggan', $kode_pelanggan)->update([
+                'nik' => $request->input('nik'),
+                'nama_pelanggan' => $request->input('nama_pelanggan'),
+                'alamat_pelanggan' => $request->input('alamat_pelanggan'),
+                'alamat_toko' => $request->input('alamat_toko'),
+                'no_hp_pelanggan' => $request->input('no_hp_pelanggan'),
+                'hari'  => is_array($request->input('hari')) ? implode(",", $request->input('hari')) : $request->input('hari'),
+                'status_outlet' => $request->input('status_outlet'),
+                'type_outlet' => $request->input('type_outlet'),
+                'cara_pembayaran' => $request->input('cara_pembayaran'),
+                'kepemilikan' => $request->input('kepemilikan'),
+                'lama_langganan' => $request->input('lama_langganan'),
+                'lama_berjualan' => $request->input('lama_berjualan'),
+                'jaminan' => $request->input('jaminan'),
+                'kode_klasifikasi' => $request->input('kode_klasifikasi'),
+                'omset_toko' => $request->filled('omset_toko') ? (double)$request->input('omset_toko') : null
+            ]);
+
+            $jumlah_ajuan = (double)$request->input('jumlah');
+            $config = \App\Models\AjuanlimitkreditConfig::where('min_limit', '<=', $jumlah_ajuan)
+                ->where('max_limit', '>=', $jumlah_ajuan)
+                ->first();
+
+            $roles = $config ? $config->roles : ['sales marketing manager', 'regional sales manager', 'gm marketing', 'direktur'];
+
+            // Insert pengajuan
+            \App\Models\Ajuanlimitkredit::create([
+                'no_pengajuan' => $no_pengajuan,
+                'tanggal' => date('Y-m-d'),
+                'kode_pelanggan' => $kode_pelanggan,
+                'limit_sebelumnya' => !empty($pelanggan->limit_pelanggan) ? $pelanggan->limit_pelanggan : 0,
+                'omset_sebelumnya' => !empty($pelanggan->omset_toko) ? $pelanggan->omset_toko : 0,
+                'jumlah'  => $jumlah_ajuan,
+                'ljt' => $request->input('ljt'),
+                'topup_terakhir' => $request->input('topup_terakhir'),
+                'lama_topup' => 1,
+                'jml_faktur' => $request->input('jml_faktur'),
+                'histori_transaksi' => $request->input('histori_transaksi'),
+                'status_outlet' => $request->input('status_outlet'),
+                'type_outlet' => $request->input('type_outlet'),
+                'cara_pembayaran' => $request->input('cara_pembayaran'),
+                'kepemilikan' => $request->input('kepemilikan'),
+                'lama_langganan' => $request->input('lama_langganan'),
+                'lama_berjualan' => $request->input('lama_berjualan'),
+                'jaminan' => $request->input('jaminan'),
+                'omset_toko' => $request->filled('omset_toko') ? (double)$request->input('omset_toko') : null,
+                'status' => 0,
+                'skor' => $request->input('skor'),
+                'kode_salesman' => $pelanggan->kode_salesman,
+                'id_user' => $user->id,
+                'posisi_ajuan' => !empty($roles[0]) ? $roles[0] : null
+            ]);
+
+            // Disposisi code generation
+            $tanggal_hariini = date('Y-m-d');
+            $lastdisposisi = \App\Models\Disposisiajuanlimitkredit::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+            $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+            $format = "DPLK" . date('Ymd');
+            $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+            $regional = \App\Models\Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
+            $next_role = !empty($roles[0]) ? $roles[0] : 'sales marketing manager';
+            $penerima = \App\Models\User::role($next_role)->where('kode_cabang', $pelanggan->kode_cabang)
+                ->when($next_role == 'regional sales manager' && $regional, function ($query) use ($regional) {
+                    return $query->where('kode_regional', $regional->kode_regional);
+                })
+                ->where('status', 1)
+                ->first();
+
+            $id_penerima = $penerima ? $penerima->id : 0;
+
+            \App\Models\Disposisiajuanlimitkredit::create([
+                'kode_disposisi' => $kode_disposisi,
+                'no_pengajuan' => $no_pengajuan,
+                'id_pengirim' => $user->id,
+                'id_penerima' => $id_penerima,
+                'uraian_analisa' => $request->input('uraian_analisa'),
+                'status' => 0
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Pengajuan limit kredit berhasil diajukan.', 'no_pengajuan' => $no_pengajuan]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

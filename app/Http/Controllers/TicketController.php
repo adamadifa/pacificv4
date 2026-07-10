@@ -169,7 +169,11 @@ class TicketController extends Controller
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
             $filename = 'lampiran_tk_' . time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $file->move(public_path('uploads/tickets'), $filename);
+            $destinationPath = public_path('uploads/tickets');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            $file->move($destinationPath, $filename);
             $lampiranPath = 'uploads/tickets/' . $filename;
         }
 
@@ -324,7 +328,11 @@ class TicketController extends Controller
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran');
             $filename = 'lampiran_tk_' . time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $file->move(public_path('uploads/tickets'), $filename);
+            $destinationPath = public_path('uploads/tickets');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            $file->move($destinationPath, $filename);
             $data['lampiran'] = 'uploads/tickets/' . $filename;
         }
 
