@@ -4656,9 +4656,21 @@ class LaporanmarketingController extends Controller
         // $saldoawal = Saldoawalpiutangpelanggan::where('bulan', $bulan)->where('tahun', $tahun)->first();
         $saldoawal = Saldoawalpiutangpelanggan::where('bulan', $request->bulan)
             ->where('tahun', $request->tahun)->first();
-        $saldoawal_date = $saldoawal->tanggal;
-        $saldoawal_enddate = date('Y-m-t', strtotime($saldoawal_date));
-        // dd($saldoawal->kode_saldo_awal);
+
+        if ($saldoawal == null) {
+            $saldoawal = Saldoawalpiutangpelanggan::orderBy('tanggal', 'desc')->first();
+        }
+
+        if ($saldoawal) {
+            $saldoawal_date = $saldoawal->tanggal;
+            $saldoawal_enddate = date('Y-m-t', strtotime($saldoawal_date));
+            $kode_saldo_awal = $saldoawal->kode_saldo_awal;
+        } else {
+            $saldoawal_date = $request->tahun . '-' . $request->bulan . '-01';
+            $saldoawal_enddate = date('Y-m-t', strtotime($saldoawal_date));
+            $kode_saldo_awal = null;
+        }
+
         $querysaldoawal = Detailsaldoawalpiutangpelanggan::query();
         $querysaldoawal->select(
             'kode_salesman_baru',
@@ -4672,24 +4684,24 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->leftJoin(
             DB::raw("(
                      SELECT
-                        marketing_penjualan.no_faktur,
-                        IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
-                        IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
-                    FROM
-                        marketing_penjualan
-                    INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    LEFT JOIN (
-                    SELECT
-                        no_faktur,
-                        marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
-                        salesman.kode_cabang AS cabangbaru
-                    FROM
-                        marketing_penjualan_movefaktur
-                        INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
-                    WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
-                    ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
-                    WHERE marketing_penjualan.status_sampel = 0
-                ) pindahfaktur"),
+                         marketing_penjualan.no_faktur,
+                         IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                         IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                     FROM
+                         marketing_penjualan
+                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                     LEFT JOIN (
+                     SELECT
+                         no_faktur,
+                         marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                         salesman.kode_cabang AS cabangbaru
+                     FROM
+                         marketing_penjualan_movefaktur
+                         INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                     WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$sampai'
+                     ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+                     WHERE marketing_penjualan.status_sampel = 0
+                 ) pindahfaktur"),
             function ($join) {
                 $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
             }
@@ -4698,7 +4710,11 @@ class LaporanmarketingController extends Controller
 
         // $querysaldoawal->where('bulan', $bulan);
         // $querysaldoawal->where('tahun', $tahun);
-        $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $saldoawal->kode_saldo_awal);
+        if ($kode_saldo_awal) {
+            $querysaldoawal->where('marketing_saldoawal_piutang.kode_saldo_awal', $kode_saldo_awal);
+        } else {
+            $querysaldoawal->whereNull('marketing_saldoawal_piutang.kode_saldo_awal');
+        }
         $querysaldoawal->where('marketing_penjualan.status_sampel', 0);
 
         $querysaldoawal->whereRaw("IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)- IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
@@ -4764,6 +4780,20 @@ class LaporanmarketingController extends Controller
         // dd($querypenjualan->get());
 
 
+        $semester_program = $request->bulan >= 7 && $request->bulan <= 12 ? '2' : '1';
+        $tahun_program = $request->tahun;
+
+        $query_program_ikatan = DB::table('mkt_ikatan_detail_2026')
+            ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->select('pelanggan.kode_salesman', DB::raw('COUNT(mkt_ikatan_detail_2026.kode_pelanggan) as total_peserta'))
+            ->where('mkt_ikatan_2026.status', 1)
+            ->where('mkt_ikatan_2026.semester', $semester_program)
+            ->whereYear('mkt_ikatan_2026.periode_dari', $tahun_program)
+            ->whereNotNull('mkt_ikatan_detail_2026.file_doc')
+            ->where('mkt_ikatan_detail_2026.file_doc', '!=', '')
+            ->groupBy('pelanggan.kode_salesman');
+
         $data['kategori_komisi'] = $kategori_komisi;
         $data['komisi'] = Salesman::select(
             'salesman.kode_salesman',
@@ -4778,6 +4808,7 @@ class LaporanmarketingController extends Controller
             // 'realisasi_cashin',
             DB::raw('IFNULL(total_lhp, 0) + IFNULL(totalbelumsetor_bulanlalu, 0) + IFNULL(totalgiro_bulanlalu, 0) - IFNULL(totalgiro_bulanini, 0) - IFNULL(totalbelumsetor_bulanini, 0) as realisasi_cashin'),
             DB::raw('IFNULL(saldo_awal_piutang,0) + IFNULL(bruto,0) - IFNULL(penyesuaian,0) - IFNULL(potongan,0) - IFNULL(potongan_istimewa,0) + IFNULL(ppn,0) - IFNULL(retur,0) - IFNULL(jmlbayar,0) as saldo_akhir_piutang'),
+            DB::raw('IFNULL(total_peserta, 0) as total_peserta'),
             ...$selectTarget,
             ...$selectRealisasi,
             ...$selectKendaraan
@@ -4790,6 +4821,9 @@ class LaporanmarketingController extends Controller
             })
             ->leftjoinSub($subqueryKendaraan, 'kendaraan', function ($join) {
                 $join->on('salesman.kode_salesman', '=', 'kendaraan.kode_salesman');
+            })
+            ->leftjoinSub($query_program_ikatan, 'program_ikatan_2026', function ($join) {
+                $join->on('salesman.kode_salesman', '=', 'program_ikatan_2026.kode_salesman');
             })
 
             ->leftjoinSub($subqueryOA, 'oa', function ($join) {
@@ -4937,6 +4971,28 @@ class LaporanmarketingController extends Controller
             ->orderBy('nama_salesman')
             ->get();
 
+        $semester_program = $request->bulan >= 7 && $request->bulan <= 12 ? '2' : '1';
+        $tahun_program = $request->tahun;
+
+        $program_participants = DB::table('mkt_ikatan_detail_2026')
+            ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+            ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->select(
+                'pelanggan.kode_salesman',
+                'pelanggan.kode_pelanggan',
+                'pelanggan.nama_pelanggan',
+                'program_ikatan.nama_program'
+            )
+            ->where('mkt_ikatan_2026.status', 1)
+            ->where('mkt_ikatan_2026.semester', $semester_program)
+            ->whereYear('mkt_ikatan_2026.periode_dari', $tahun_program)
+            ->whereNotNull('mkt_ikatan_detail_2026.file_doc')
+            ->where('mkt_ikatan_detail_2026.file_doc', '!=', '')
+            ->get()
+            ->groupBy('kode_salesman');
+
+        $data['program_participants'] = $program_participants;
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
@@ -4953,8 +5009,10 @@ class LaporanmarketingController extends Controller
             return view('marketing.laporan.komisi_salesman_april_cetak', $data);
         } else if ($request->bulan >= 5 && $request->bulan < 8 && $request->tahun == 2025) {
             return view('marketing.laporan.komisi_salesman_mei_cetak', $data);
-        } else {
+        } else if ($request->tahun < 2026 || ($request->tahun == 2026 && $request->bulan < 7)) {
             return view('marketing.laporan.komisi_salesman_agustus_cetak', $data);
+        } else {
+            return view('marketing.laporan.komisi_salesman_juli26_cetak', $data);
         }
     }
 
