@@ -236,6 +236,20 @@ class SfaApiController extends Controller
                     'foto' => $item->foto ?? '',
                     'encrypted_kode_pelanggan' => Crypt::encrypt($item->kode_pelanggan),
                     'saldo_voucher' => $saldo_voucher,
+                    'nik' => $item->nik,
+                    'no_kk' => $item->no_kk,
+                    'tanggal_lahir' => $item->tanggal_lahir,
+                    'kode_wilayah' => $item->kode_wilayah,
+                    'status_outlet' => $item->status_outlet,
+                    'type_outlet' => $item->type_outlet,
+                    'kepemilikan' => $item->kepemilikan,
+                    'lama_berjualan' => $item->lama_berjualan,
+                    'cara_pembayaran' => $item->cara_pembayaran,
+                    'lama_langganan' => $item->lama_langganan,
+                    'jaminan' => $item->jaminan,
+                    'kode_klasifikasi' => $item->kode_klasifikasi,
+                    'omset_toko' => $item->omset_toko,
+                    'ljt' => $item->ljt,
                 ];
             });
 
@@ -269,6 +283,9 @@ class SfaApiController extends Controller
                 'harga_dus' => $item->harga_dus ?? 0.0,
                 'harga_pack' => $item->harga_pack ?? 0.0,
                 'harga_pcs' => $item->harga_pcs ?? 0.0,
+                'harga_retur_dus' => $item->harga_retur_dus ?? 0.0,
+                'harga_retur_pack' => $item->harga_retur_pack ?? 0.0,
+                'harga_retur_pcs' => $item->harga_retur_pcs ?? 0.0,
                 'kode_kategori_diskon' => $item->kode_kategori_diskon,
                 'kode_kategori_salesman' => $item->kode_kategori_salesman,
             ];
@@ -1499,6 +1516,363 @@ class SfaApiController extends Controller
 
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Pengajuan limit kredit berhasil diajukan.', 'no_pengajuan' => $no_pengajuan]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function ajuanLimitList(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $list = \App\Models\Ajuanlimitkredit::select(
+                    'marketing_ajuan_limitkredit.*',
+                    'pelanggan.nama_pelanggan'
+                )
+                ->join('pelanggan', 'marketing_ajuan_limitkredit.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+                ->where('marketing_ajuan_limitkredit.kode_salesman', $user->kode_salesman)
+                ->orderBy('marketing_ajuan_limitkredit.created_at', 'desc')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'no_pengajuan' => $item->no_pengajuan,
+                        'tanggal' => $item->tanggal,
+                        'kode_pelanggan' => $item->kode_pelanggan,
+                        'nama_pelanggan' => $item->nama_pelanggan,
+                        'limit_sebelumnya' => (double)$item->limit_sebelumnya,
+                        'omset_sebelumnya' => (double)$item->omset_sebelumnya,
+                        'jumlah' => (double)$item->jumlah,
+                        'ljt' => $item->ljt,
+                        'status' => $item->status,
+                        'skor' => (double)$item->skor,
+                        'posisi_ajuan' => $item->posisi_ajuan,
+                        'created_at' => $item->created_at ? $item->created_at->toDateTimeString() : null,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $list
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function cancelAjuanLimit(Request $request, $no_pengajuan)
+    {
+        $user = Auth::user();
+        DB::beginTransaction();
+        try {
+            $ajuan = \App\Models\Ajuanlimitkredit::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_salesman', $user->kode_salesman)
+                ->firstOrFail();
+
+            if ($ajuan->status != '0') {
+                return response()->json(['success' => false, 'message' => 'Pengajuan yang sudah diproses tidak dapat dibatalkan.'], 400);
+            }
+
+            \App\Models\Disposisiajuanlimitkredit::where('no_pengajuan', $no_pengajuan)->delete();
+            $ajuan->delete();
+
+            DB::commit();
+            \Illuminate\Support\Facades\Cache::increment('notif_marketing_version');
+            
+            return response()->json(['success' => true, 'message' => 'Pengajuan limit kredit berhasil dibatalkan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function storeAjuanFaktur(Request $request, $kode_pelanggan)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'tanggal' => 'required',
+            'jumlah_faktur' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $pelanggan = \App\Models\Pelanggan::where('kode_pelanggan', $kode_pelanggan)->firstOrFail();
+
+            // Generate No. Pengajuan
+            $lastajuan = \App\Models\Pengajuanfaktur::select('no_pengajuan')
+                ->whereRaw('YEAR(tanggal) = "' . date('Y', strtotime($request->tanggal)) . '"')
+                ->whereRaw('MID(no_pengajuan,4,3) = "' . $pelanggan->kode_cabang . '"')
+                ->orderBy('no_pengajuan', 'desc')
+                ->first();
+
+            $last_no_pengajuan = $lastajuan != null ? $lastajuan->no_pengajuan : '';
+            $no_pengajuan = buatkode($last_no_pengajuan, 'PJF' . $pelanggan->kode_cabang . substr(date('Y', strtotime($request->tanggal)), 2, 2), 5);
+
+            $is_cod = $request->input('cod') == '1' || $request->input('cod') === true ? 1 : 0;
+            $jumlah_faktur = (int)$request->input('jumlah_faktur');
+
+            if ($pelanggan->limit_pelanggan <= 10000000 && $is_cod == 1 && $jumlah_faktur <= 2) {
+                \App\Models\Pengajuanfaktur::create([
+                    'no_pengajuan' => $no_pengajuan,
+                    'tanggal' => $request->tanggal,
+                    'kode_pelanggan' => $kode_pelanggan,
+                    'kode_salesman' => $pelanggan->kode_salesman,
+                    'jumlah_faktur' => $jumlah_faktur,
+                    'siklus_pembayaran' => $is_cod,
+                    'status' => 1,
+                    'keterangan' => $request->keterangan
+                ]);
+            } else {
+                \App\Models\Pengajuanfaktur::create([
+                    'no_pengajuan' => $no_pengajuan,
+                    'tanggal' => $request->tanggal,
+                    'kode_pelanggan' => $kode_pelanggan,
+                    'kode_salesman' => $pelanggan->kode_salesman,
+                    'jumlah_faktur' => $jumlah_faktur,
+                    'siklus_pembayaran' => $is_cod,
+                    'status' => 0,
+                    'keterangan' => $request->keterangan
+                ]);
+
+                // Disposisi
+                $tanggal_hariini = date('Y-m-d');
+                $lastdisposisi = \App\Models\Disposisiajuanfaktur::whereRaw('date(created_at)="' . $tanggal_hariini . '"')
+                    ->orderBy('kode_disposisi', 'desc')
+                    ->first();
+                $last_kodedisposisi = $lastdisposisi != null ? $lastdisposisi->kode_disposisi : '';
+                $format = "DPFK" . date('Ymd');
+                $kode_disposisi = buatkode($last_kodedisposisi, $format, 4);
+
+                $regional = \App\Models\Cabang::where('kode_cabang', $pelanggan->kode_cabang)->first();
+                $smm = \App\Models\User::role('sales marketing manager')->where('kode_cabang', $pelanggan->kode_cabang)
+                    ->where('status', 1)
+                    ->first();
+
+                if ($smm != null) {
+                    $id_penerima = $smm->id;
+                } else {
+                    $rsm = \App\Models\User::role('regional sales manager')->where('kode_regional', $regional->kode_regional)
+                        ->where('status', 1)
+                        ->first();
+                    $id_penerima = $rsm ? $rsm->id : 0;
+                    if ($rsm == NULL) {
+                        $gm = \App\Models\User::role('gm marketing')
+                            ->where('status', 1)
+                            ->first();
+                        $id_penerima = $gm ? $gm->id : 0;
+                    }
+                }
+
+                \App\Models\Disposisiajuanfaktur::create([
+                    'kode_disposisi' => $kode_disposisi,
+                    'no_pengajuan' => $no_pengajuan,
+                    'id_pengirim' => $user->id,
+                    'id_penerima' => $id_penerima,
+                    'catatan' => $request->keterangan,
+                    'status' => 0
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Pengajuan faktur kredit berhasil diajukan.', 'no_pengajuan' => $no_pengajuan]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function ajuanFakturList(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $list = \App\Models\Pengajuanfaktur::select(
+                    'marketing_ajuan_faktur.*',
+                    'pelanggan.nama_pelanggan'
+                )
+                ->join('pelanggan', 'marketing_ajuan_faktur.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+                ->where('marketing_ajuan_faktur.kode_salesman', $user->kode_salesman)
+                ->orderBy('marketing_ajuan_faktur.created_at', 'desc')
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'no_pengajuan' => $item->no_pengajuan,
+                        'tanggal' => $item->tanggal,
+                        'kode_pelanggan' => $item->kode_pelanggan,
+                        'nama_pelanggan' => $item->nama_pelanggan,
+                        'jumlah_faktur' => (int)$item->jumlah_faktur,
+                        'siklus_pembayaran' => $item->siklus_pembayaran,
+                        'status' => $item->status,
+                        'keterangan' => $item->keterangan,
+                        'posisi_ajuan' => $item->posisi_ajuan,
+                        'created_at' => $item->created_at ? $item->created_at->toDateTimeString() : null,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $list
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function cancelAjuanFaktur(Request $request, $no_pengajuan)
+    {
+        $user = Auth::user();
+        DB::beginTransaction();
+        try {
+            $ajuan = \App\Models\Pengajuanfaktur::where('no_pengajuan', $no_pengajuan)
+                ->where('kode_salesman', $user->kode_salesman)
+                ->firstOrFail();
+
+            if ($ajuan->status != '0') {
+                return response()->json(['success' => false, 'message' => 'Pengajuan yang sudah diproses tidak dapat dibatalkan.'], 400);
+            }
+
+            \App\Models\Disposisiajuanfaktur::where('no_pengajuan', $no_pengajuan)->delete();
+            $ajuan->delete();
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Pengajuan faktur kredit berhasil dibatalkan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function fakturListByPelanggan(Request $request, $kode_pelanggan)
+    {
+        try {
+            $listfaktur = \App\Models\Penjualan::where('kode_pelanggan', $kode_pelanggan)
+                ->where('status_batal', 0)
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'no_faktur' => $item->no_faktur,
+                        'tanggal' => $item->tanggal,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $listfaktur
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function storeRetur(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'tanggal' => 'required',
+            'kode_pelanggan' => 'required',
+            'jenis_retur' => 'required',
+            'no_faktur' => 'required',
+            'items' => 'required|array'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $cektutuplaporan = cektutupLaporan($request->tanggal, "penjualan");
+            if ($cektutuplaporan > 0) {
+                return response()->json(['success' => false, 'message' => 'Periode laporan penjualan sudah ditutup.'], 400);
+            }
+
+            // Generate No. Retur
+            $tanggal_retur = substr(date('Y', strtotime($request->tanggal)), 2, 2) . date('m', strtotime($request->tanggal)) . date('d', strtotime($request->tanggal));
+            $lastretur = \App\Models\Retur::select('no_retur')
+                ->where('tanggal', $request->tanggal)
+                ->whereRaw('LEFT(no_retur,1) = "R"')
+                ->orderBy('no_retur', 'desc')
+                ->first();
+
+            $last_no_retur = $lastretur != null ? $lastretur->no_retur : '';
+            $no_retur = buatkode($last_no_retur, 'R' . $tanggal_retur, 3);
+
+            $simpanretur = \App\Models\Retur::create([
+                'no_retur' => $no_retur,
+                'tanggal' => $request->tanggal,
+                'no_faktur' => $request->no_faktur,
+                'no_ref' => $request->input('no_ref'),
+                'jenis_retur' => $request->jenis_retur,
+                'id_user' => $user->id
+            ]);
+
+            $total = 0;
+            $detail = [];
+            $items = $request->input('items');
+
+            foreach ($items as $item) {
+                $kode_harga = $item['kode_harga'];
+                $isi_pcs_dus = (int)$item['isi_pcs_dus'];
+                $isi_pcs_pack = (int)$item['isi_pcs_pack'];
+                $jumlah = (int)$item['jumlah'];
+                
+                $harga_dus = (double)$item['harga_dus'];
+                $harga_pack = (double)$item['harga_pack'];
+                $harga_pcs = (double)$item['harga_pcs'];
+
+                $jml_dus = floor($jumlah / $isi_pcs_dus);
+                $sisa_dus = $jumlah % $isi_pcs_dus;
+                $jml_pack = 0;
+                $sisa_pack = $sisa_dus;
+                if ($isi_pcs_pack > 0) {
+                    $jml_pack = floor($sisa_dus / $isi_pcs_pack);
+                    $sisa_pack = $sisa_dus % $isi_pcs_pack;
+                }
+                $jml_pcs = $sisa_pack;
+
+                $subtotal = ($jml_dus * $harga_dus) + ($jml_pack * $harga_pack) + ($jml_pcs * $harga_pcs);
+                $total += $subtotal;
+
+                $detail[] = [
+                    'no_retur' => $no_retur,
+                    'kode_harga' => $kode_harga,
+                    'jumlah' => $jumlah,
+                    'harga_dus' => $harga_dus,
+                    'harga_pack' => $harga_pack,
+                    'harga_pcs' => $harga_pcs,
+                    'subtotal' => $subtotal,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            \App\Models\Detailretur::insert($detail);
+
+            if ($request->jenis_retur == "PF") {
+                $faktur = \App\Models\Penjualan::where('no_faktur', $request->no_faktur)->first();
+                if ($faktur && $faktur->jenis_bayar == "TN") {
+                    $cekbayar = \App\Models\Historibayarpenjualan::where('no_faktur', $request->no_faktur)
+                        ->where('voucher', 0)
+                        ->where('tanggal', $faktur->tanggal)
+                        ->orderBy('no_bukti')
+                        ->first();
+                    if ($cekbayar) {
+                        $cekbayar->update([
+                            'jumlah' => $cekbayar->jumlah - $total
+                        ]);
+                    }
+                }
+            }
+
+            // Log activity
+            activity('retur')
+                ->event('create')
+                ->performedOn($simpanretur)
+                ->withProperties([
+                    'penjualan' => $simpanretur->getAttributes(),
+                    'detail' => $detail,
+                ])
+                ->log("Membuat Retur {$simpanretur->no_faktur} dengan " . count($detail) . " item dari SFA.");
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Retur barang berhasil disimpan.', 'no_retur' => $no_retur]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

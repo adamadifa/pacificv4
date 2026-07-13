@@ -62,11 +62,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sfa/pelanggan', [\App\Http\Controllers\Api\SfaApiController::class, 'pelanggan']);
     Route::get('/sfa/pelanggan/options', [\App\Http\Controllers\Api\SfaApiController::class, 'pelangganOptions']);
     Route::post('/sfa/pelanggan/store', [\App\Http\Controllers\Api\SfaApiController::class, 'storePelanggan']);
+    Route::get('/sfa/pelanggan/ajuan-limit', [\App\Http\Controllers\Api\SfaApiController::class, 'ajuanLimitList']);
     Route::post('/sfa/pelanggan/ajuan-limit/{kode_pelanggan}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeAjuanLimit']);
+    Route::delete('/sfa/pelanggan/ajuan-limit/{no_pengajuan}', [\App\Http\Controllers\Api\SfaApiController::class, 'cancelAjuanLimit']);
+    Route::get('/sfa/pelanggan/ajuan-faktur', [\App\Http\Controllers\Api\SfaApiController::class, 'ajuanFakturList']);
+    Route::post('/sfa/pelanggan/ajuan-faktur/{kode_pelanggan}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeAjuanFaktur']);
+    Route::delete('/sfa/pelanggan/ajuan-faktur/{no_pengajuan}', [\App\Http\Controllers\Api\SfaApiController::class, 'cancelAjuanFaktur']);
     Route::get('/sfa/produk', [\App\Http\Controllers\Api\SfaApiController::class, 'produk']);
     Route::get('/sfa/diskon', [\App\Http\Controllers\Api\SfaApiController::class, 'diskon']);
     Route::post('/sfa/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'penjualan']);
     Route::get('/sfa/pelanggan/{kode_pelanggan}/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'historiPenjualan']);
+    Route::get('/sfa/pelanggan/{kode_pelanggan}/faktur-list', [\App\Http\Controllers\Api\SfaApiController::class, 'fakturListByPelanggan']);
+    Route::post('/sfa/retur/store', [\App\Http\Controllers\Api\SfaApiController::class, 'storeRetur']);
     Route::get('/sfa/pelanggan/{kode_pelanggan}/retur', [\App\Http\Controllers\Api\SfaApiController::class, 'historiRetur']);
     Route::post('/sfa/pelanggan/update-foto', [\App\Http\Controllers\Api\SfaApiController::class, 'updateFoto']);
     Route::post('/sfa/penjualan/detail', [\App\Http\Controllers\Api\SfaApiController::class, 'detailPenjualan']);

@@ -156,13 +156,13 @@
                             <td align="right">
                                 @php
                                     if ($ratio_ljt <= 0.5) {
-                                        $reward_ljt = 200000;
+                                        $reward_ljt = 300000;
                                     } elseif ($ratio_ljt > 0.5 && $ratio_ljt <= 1) {
-                                        $reward_ljt = 150000;
+                                        $reward_ljt = 225000;
                                     } elseif ($ratio_ljt > 1 && $ratio_ljt <= 1.5) {
-                                        $reward_ljt = 100000;
+                                        $reward_ljt = 150000;
                                     } elseif ($ratio_ljt > 1.5 && $ratio_ljt <= 2) {
-                                        $reward_ljt = 50000;
+                                        $reward_ljt = 75000;
                                     } else {
                                         $reward_ljt = 0;
                                     }
@@ -186,21 +186,17 @@
                             <td align="right">
                                 @php
                                     if ($cost_ratio <= 6) {
-                                        $reward_costratio = 200000;
+                                        $reward_costratio = 600000;
                                     } elseif ($cost_ratio > 6 && $cost_ratio <= 7) {
-                                        $reward_costratio = 175000;
+                                        $reward_costratio = 500000;
                                     } elseif ($cost_ratio > 7 && $cost_ratio <= 8) {
-                                        $reward_costratio = 150000;
+                                        $reward_costratio = 400000;
                                     } elseif ($cost_ratio > 8 && $cost_ratio <= 9) {
-                                        $reward_costratio = 125000;
+                                        $reward_costratio = 300000;
                                     } elseif ($cost_ratio > 9 && $cost_ratio <= 10) {
-                                        $reward_costratio = 100000;
-                                    } elseif ($cost_ratio > 10 && $cost_ratio <= 11) {
-                                        $reward_costratio = 75000;
-                                    } elseif ($cost_ratio > 11 && $cost_ratio <= 12) {
-                                        $reward_costratio = 50000;
+                                        $reward_costratio = 200000;
                                     } else {
-                                        $reward_costratio = 25000;
+                                        $reward_costratio = 100000;
                                     }
                                 @endphp
                                 {{ formatAngka($reward_costratio) }}
