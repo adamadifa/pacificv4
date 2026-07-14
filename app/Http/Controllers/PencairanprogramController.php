@@ -56,59 +56,63 @@ class PencairanprogramController extends Controller
         }
 
 
-        if ($user->hasRole('regional sales manager')) {
-            if (!empty($request->status)) {
-                if ($request->status == 'pending') {
-                    $query->whereNotnull('marketing_program_pencairan.om');
-                    $query->whereNull('marketing_program_pencairan.rsm');
-                } else if ($request->status == 'approved') {
-                    $query->whereNotnull('marketing_program_pencairan.rsm');
-                    $query->where('status', 0);
-                } else if ($request->status == 'rejected') {
-                    $query->where('status', 2);
-                }
-            }
-            $query->whereNotNull('marketing_program_pencairan.om');
-            // $query->where('marketing_program_ikatan.status', '!=', 2);
+        // Define role-specific Pending queries for cumulative program
+        $pendingCountQuery = clone $query;
+        if ($user->hasRole('operation manager')) {
+            $pendingCountQuery->whereNull('marketing_program_pencairan.om');
+            $pendingCountQuery->where('marketing_program_pencairan.status', '0');
+        } else if ($user->hasRole('regional sales manager')) {
+            $pendingCountQuery->whereNotNull('marketing_program_pencairan.om');
+            $pendingCountQuery->whereNull('marketing_program_pencairan.rsm');
+            $pendingCountQuery->where('marketing_program_pencairan.status', '0');
         } else if ($user->hasRole('gm marketing')) {
-            if (!empty($request->status)) {
-                if ($request->status == 'pending') {
-                    $query->whereNotnull('marketing_program_pencairan.rsm');
-                    $query->whereNull('marketing_program_pencairan.gm');
-                } else if ($request->status == 'approved') {
-                    $query->whereNotnull('marketing_program_pencairan.gm');
-                    $query->where('status', 0);
-                } else if ($request->status == 'rejected') {
-                    $query->where('status', 2);
-                }
-            }
-            $query->whereNotNull('marketing_program_pencairan.rsm');
-            // $query->where('marketing_program_ikatan.status', '!=', 2);
+            $pendingCountQuery->whereNotNull('marketing_program_pencairan.rsm');
+            $pendingCountQuery->whereNull('marketing_program_pencairan.gm');
+            $pendingCountQuery->where('marketing_program_pencairan.status', '0');
         } else if ($user->hasRole('direktur')) {
-
-            if (!empty($request->status)) {
-                if ($request->status == 'pending') {
-                    $query->whereNotnull('marketing_program_pencairan.gm');
-                    $query->whereNull('marketing_program_pencairan.direktur');
-                    $query->where('status', 0);
-                } else if ($request->status == 'approved') {
-                    $query->where('status', 1);
-                } else if ($request->status == 'rejected') {
-                    $query->where('status', 2);
-                }
-            }
-            $query->whereNotNull('marketing_program_pencairan.gm');
-            // $query->where('marketing_program_ikatan.status', '!=', 2);
+            $pendingCountQuery->whereNotNull('marketing_program_pencairan.gm');
+            $pendingCountQuery->whereNull('marketing_program_pencairan.direktur');
+            $pendingCountQuery->where('marketing_program_pencairan.status', '0');
         } else {
-            if ($request->status == 'pending') {
-                $query->where('status', 0);
+            $pendingCountQuery->where('marketing_program_pencairan.status', '0');
+        }
+        $pendingCount = $pendingCountQuery->count();
+
+        $status = $request->has('status') ? $request->status : '0';
+        
+        if ($status == '0') { // PENDING
+            if ($user->hasRole('operation manager')) {
+                $query->whereNull('marketing_program_pencairan.om');
+                $query->where('marketing_program_pencairan.status', '0');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('marketing_program_pencairan.om');
+                $query->whereNull('marketing_program_pencairan.rsm');
+                $query->where('marketing_program_pencairan.status', '0');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('marketing_program_pencairan.rsm');
+                $query->whereNull('marketing_program_pencairan.gm');
+                $query->where('marketing_program_pencairan.status', '0');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('marketing_program_pencairan.gm');
+                $query->whereNull('marketing_program_pencairan.direktur');
+                $query->where('marketing_program_pencairan.status', '0');
+            } else {
+                $query->where('marketing_program_pencairan.status', '0');
             }
-            if ($request->status == 'approved') {
-                $query->where('status', 1);
+        } else if ($status == '1') { // APPROVED / DISETUJUI
+            if ($user->hasRole('operation manager')) {
+                $query->whereNotNull('marketing_program_pencairan.om');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('marketing_program_pencairan.rsm');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('marketing_program_pencairan.gm');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('marketing_program_pencairan.direktur');
+            } else {
+                $query->where('marketing_program_pencairan.status', '1');
             }
-            if ($request->status == 'rejected') {
-                $query->where('status', 2);
-            }
+        } else if ($status == '2') { // DITOLAK
+            $query->where('marketing_program_pencairan.status', '2');
         }
 
         if ($user->hasRole('direktur')) {
@@ -128,6 +132,7 @@ class PencairanprogramController extends Controller
         $pencairanprogram->appends(request()->all());
 
         $data['pencairanprogram'] = $pencairanprogram;
+        $data['pendingCount'] = $pendingCount;
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;

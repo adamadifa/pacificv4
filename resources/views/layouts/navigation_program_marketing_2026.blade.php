@@ -5,6 +5,9 @@
                 <a href="{{ route('programikatan2026.index') }}"
                     class="nav-link {{ request()->is(['programikatan2026', 'programikatan2026/*']) && !request()->is('programikatan2026/monitoring') ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i>Ajuan Program Marketing 2026
+                    @if ($notifikasi_ajuanprogramikatan > 0)
+                        <span class="badge rounded-pill bg-danger ms-1">{{ $notifikasi_ajuanprogramikatan }}</span>
+                    @endif
                 </a>
             </li>
         @endcan
@@ -21,6 +24,9 @@
                 <a href="{{ route('pencairanprogramikatan2026.index') }}"
                     class="nav-link {{ request()->is(['pencairanprogramikatan2026', 'pencairanprogramikatan2026/*']) ? 'active' : '' }}">
                     <i class="tf-icons ti ti-file-description ti-md me-1"></i> Pencairan Program Marketing 2026
+                    @if ($notifikasi_pencairanprogramikatan > 0)
+                        <span class="badge rounded-pill bg-danger ms-1">{{ $notifikasi_pencairanprogramikatan }}</span>
+                    @endif
                 </a>
             </li>
         @endcan

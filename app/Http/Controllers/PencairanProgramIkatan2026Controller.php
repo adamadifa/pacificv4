@@ -52,19 +52,63 @@ class PencairanProgramIkatan2026Controller extends Controller
             $query->whereBetween('marketing_pencairan_ikatan_2026.tanggal', [$request->dari, $request->sampai]);
         }
 
-        if ($user->hasRole('regional sales manager')) {
-            $query->whereNotNull('marketing_pencairan_ikatan_2026.om');
-            $query->where('marketing_pencairan_ikatan_2026.status', '!=', 2);
+        // Define role-specific Pending queries
+        $pendingCountQuery = clone $query;
+        if ($user->hasRole('operation manager')) {
+            $pendingCountQuery->whereNull('marketing_pencairan_ikatan_2026.om');
+            $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
+        } else if ($user->hasRole('regional sales manager')) {
+            $pendingCountQuery->whereNotNull('marketing_pencairan_ikatan_2026.om');
+            $pendingCountQuery->whereNull('marketing_pencairan_ikatan_2026.rsm');
+            $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
+        } else if ($user->hasRole('gm marketing')) {
+            $pendingCountQuery->whereNotNull('marketing_pencairan_ikatan_2026.rsm');
+            $pendingCountQuery->whereNull('marketing_pencairan_ikatan_2026.gm');
+            $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
+        } else if ($user->hasRole('direktur')) {
+            $pendingCountQuery->whereNotNull('marketing_pencairan_ikatan_2026.gm');
+            $pendingCountQuery->whereNull('marketing_pencairan_ikatan_2026.direktur');
+            $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
+        } else {
+            $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
         }
+        $pendingCount = $pendingCountQuery->count();
 
-        if ($user->hasRole('gm marketing')) {
-            $query->whereNotNull('marketing_pencairan_ikatan_2026.rsm');
-            $query->where('marketing_pencairan_ikatan_2026.status', '!=', 2);
-        }
-
-        if ($user->hasRole('direktur')) {
-            $query->whereNotNull('marketing_pencairan_ikatan_2026.gm');
-            $query->where('marketing_pencairan_ikatan_2026.status', '!=', 2);
+        $status = $request->has('status') ? $request->status : '0';
+        
+        if ($status == '0') { // PENDING
+            if ($user->hasRole('operation manager')) {
+                $query->whereNull('marketing_pencairan_ikatan_2026.om');
+                $query->where('marketing_pencairan_ikatan_2026.status', '0');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.om');
+                $query->whereNull('marketing_pencairan_ikatan_2026.rsm');
+                $query->where('marketing_pencairan_ikatan_2026.status', '0');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.rsm');
+                $query->whereNull('marketing_pencairan_ikatan_2026.gm');
+                $query->where('marketing_pencairan_ikatan_2026.status', '0');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.gm');
+                $query->whereNull('marketing_pencairan_ikatan_2026.direktur');
+                $query->where('marketing_pencairan_ikatan_2026.status', '0');
+            } else {
+                $query->where('marketing_pencairan_ikatan_2026.status', '0');
+            }
+        } else if ($status == '1') { // APPROVED / DISETUJUI
+            if ($user->hasRole('operation manager')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.om');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.rsm');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.gm');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.direktur');
+            } else {
+                $query->where('marketing_pencairan_ikatan_2026.status', '1');
+            }
+        } else if ($status == '2') { // DITOLAK
+            $query->where('marketing_pencairan_ikatan_2026.status', '2');
         }
 
         $query->orderBy('marketing_pencairan_ikatan_2026.kode_pencairan', 'desc');
@@ -72,6 +116,7 @@ class PencairanProgramIkatan2026Controller extends Controller
         $pencairanprogramikatan = $query->paginate(15);
         $pencairanprogramikatan->appends(request()->all());
         $data['pencairanprogramikatan'] = $pencairanprogramikatan;
+        $data['pendingCount'] = $pendingCount;
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();

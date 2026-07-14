@@ -50,6 +50,8 @@
             'ajuankumulatif/*',
             'programikatan2026',
             'programikatan2026/*',
+            'pencairanprogramikatan2026',
+            'pencairanprogramikatan2026/*',
             'settingkomisidriverhelper',
         ])
             ? 'open'
@@ -58,6 +60,9 @@
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-box"></i>
             <div>Worksheet OM</div>
+            @if ($notifikasi_ajuan_program > 0)
+                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_ajuan_program }}</div>
+            @endif
         </a>
         <ul class="menu-sub">
             @can('omancabang.index')
@@ -136,6 +141,8 @@
                     'ajuankumulatif/*',
                     'programikatan2026',
                     'programikatan2026/*',
+                    'pencairanprogramikatan2026',
+                    'pencairanprogramikatan2026/*',
                 )
                     ? 'active'
                     : '' }}">
@@ -143,11 +150,17 @@
                         <a href="{{ route('programmarketing.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-box"></i>
                             <div>Program Marketing</div>
+                            @if ($notifikasi_ajuan_program > 0)
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_ajuan_program }}</div>
+                            @endif
                         </a>
                     @else
                         <a href="{{ route('programmarketing.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-box"></i>
                             <div>Program Marketing</div>
+                            @if ($notifikasi_ajuan_program > 0)
+                                <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_ajuan_program }}</div>
+                            @endif
                         </a>
                     @endif
 
