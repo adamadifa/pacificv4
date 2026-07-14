@@ -103,11 +103,12 @@ class GlobalProvider extends ServiceProvider
             $end_periode = date('Y') . '-12-31';
             $namabulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             if ($auth->check()) {
-                $level_user = auth()->user()->roles->pluck('name')[0];
+                $user = auth()->user();
+                $level_user = $user->roles->pluck('name')[0];
                 $roles_can_approve_presensi = config('presensi.approval');
                 $level_hrd = config('presensi.approval.level_hrd');
 
-                $user_role_ids = auth()->user()->roles->pluck('id')->toArray();
+                $user_role_ids = $user->roles->pluck('id')->toArray();
                 $users_with_same_roles = function ($query) use ($user_role_ids) {
                     $query->select('model_id')
                         ->from('model_has_roles')
