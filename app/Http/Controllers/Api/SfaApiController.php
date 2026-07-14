@@ -788,12 +788,13 @@ class SfaApiController extends Controller
 
         $retur = DB::table('marketing_retur_detail')
             ->select(
-                'tanggal',
+                'marketing_retur.tanggal',
                 'marketing_retur_detail.*',
                 'jenis_retur',
                 'produk_harga.kode_produk',
                 'nama_produk',
-                'subtotal'
+                'produk.isi_pcs_dus',
+                'produk.isi_pcs_pack'
             )
             ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -801,14 +802,36 @@ class SfaApiController extends Controller
             ->where('no_faktur', $noFaktur)
             ->get()
             ->map(function($r) {
+                $jumlah = (int)$r->jumlah;
+                $isi_pcs_dus = (int)$r->isi_pcs_dus;
+                $isi_pcs_pack = (int)$r->isi_pcs_pack;
+
+                $qty_dus = 0;
+                $qty_pack = 0;
+                $qty_pcs = 0;
+
+                if ($isi_pcs_dus > 0) {
+                    $qty_dus = floor($jumlah / $isi_pcs_dus);
+                    $sisa = $jumlah % $isi_pcs_dus;
+                } else {
+                    $sisa = $jumlah;
+                }
+
+                if ($isi_pcs_pack > 0) {
+                    $qty_pack = floor($sisa / $isi_pcs_pack);
+                    $qty_pcs = $sisa % $isi_pcs_pack;
+                } else {
+                    $qty_pcs = $sisa;
+                }
+
                 return [
                     'no_retur' => $r->no_retur,
                     'tanggal' => $r->tanggal,
                     'kode_produk' => $r->kode_produk,
                     'nama_produk' => $r->nama_produk,
-                    'qty_dus' => (int)$r->qty_dus,
-                    'qty_pack' => (int)$r->qty_pack,
-                    'qty_pcs' => (int)$r->qty_pcs,
+                    'qty_dus' => (int)$qty_dus,
+                    'qty_pack' => (int)$qty_pack,
+                    'qty_pcs' => (int)$qty_pcs,
                     'subtotal' => (double)$r->subtotal,
                     'jenis_retur' => $r->jenis_retur,
                 ];
@@ -1877,5 +1900,51 @@ class SfaApiController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function detailRetur($no_retur)
+    {
+        $retur = DB::table('marketing_retur')
+            ->select(
+                'marketing_retur.no_retur',
+                'marketing_retur.tanggal',
+                'marketing_retur.no_faktur',
+                'marketing_retur.jenis_retur',
+                'marketing_penjualan.kode_pelanggan',
+                'pelanggan.nama_pelanggan'
+            )
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->where('marketing_retur.no_retur', $no_retur)
+            ->first();
+
+        if (!$retur) {
+            return response()->json(['success' => false, 'message' => 'Data retur tidak ditemukan.'], 404);
+        }
+
+        $items = DB::table('marketing_retur_detail')
+            ->select(
+                'marketing_retur_detail.no_retur',
+                'marketing_retur_detail.kode_harga',
+                'marketing_retur_detail.jumlah',
+                'marketing_retur_detail.harga_dus',
+                'marketing_retur_detail.harga_pack',
+                'marketing_retur_detail.harga_pcs',
+                'marketing_retur_detail.subtotal',
+                'produk.nama_produk',
+                'produk.kode_produk',
+                'produk.isi_pcs_dus',
+                'produk.isi_pcs_pack'
+            )
+            ->join('produk_harga', 'marketing_retur_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->where('marketing_retur_detail.no_retur', $no_retur)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'retur' => $retur,
+            'items' => $items
+        ]);
     }
 }

@@ -75,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sfa/pelanggan/{kode_pelanggan}/faktur-list', [\App\Http\Controllers\Api\SfaApiController::class, 'fakturListByPelanggan']);
     Route::post('/sfa/retur/store', [\App\Http\Controllers\Api\SfaApiController::class, 'storeRetur']);
     Route::get('/sfa/pelanggan/{kode_pelanggan}/retur', [\App\Http\Controllers\Api\SfaApiController::class, 'historiRetur']);
+    Route::get('/sfa/retur/{no_retur}', [\App\Http\Controllers\Api\SfaApiController::class, 'detailRetur']);
     Route::post('/sfa/pelanggan/update-foto', [\App\Http\Controllers\Api\SfaApiController::class, 'updateFoto']);
     Route::post('/sfa/penjualan/detail', [\App\Http\Controllers\Api\SfaApiController::class, 'detailPenjualan']);
     Route::post('/sfa/penjualan/signature', [\App\Http\Controllers\Api\SfaApiController::class, 'uploadSignature']);
