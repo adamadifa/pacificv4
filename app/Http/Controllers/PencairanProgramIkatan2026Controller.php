@@ -69,6 +69,9 @@ class PencairanProgramIkatan2026Controller extends Controller
             $pendingCountQuery->whereNotNull('marketing_pencairan_ikatan_2026.gm');
             $pendingCountQuery->whereNull('marketing_pencairan_ikatan_2026.direktur');
             $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
+        } else if ($user->hasRole(['staff keuangan', 'manager keuangan'])) {
+            $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '1');
+            $pendingCountQuery->whereNull('marketing_pencairan_ikatan_2026.keuangan');
         } else {
             $pendingCountQuery->where('marketing_pencairan_ikatan_2026.status', '0');
         }
@@ -92,6 +95,9 @@ class PencairanProgramIkatan2026Controller extends Controller
                 $query->whereNotNull('marketing_pencairan_ikatan_2026.gm');
                 $query->whereNull('marketing_pencairan_ikatan_2026.direktur');
                 $query->where('marketing_pencairan_ikatan_2026.status', '0');
+            } else if ($user->hasRole(['staff keuangan', 'manager keuangan'])) {
+                $query->where('marketing_pencairan_ikatan_2026.status', '1');
+                $query->whereNull('marketing_pencairan_ikatan_2026.keuangan');
             } else {
                 $query->where('marketing_pencairan_ikatan_2026.status', '0');
             }
@@ -104,6 +110,8 @@ class PencairanProgramIkatan2026Controller extends Controller
                 $query->whereNotNull('marketing_pencairan_ikatan_2026.gm');
             } else if ($user->hasRole('direktur')) {
                 $query->whereNotNull('marketing_pencairan_ikatan_2026.direktur');
+            } else if ($user->hasRole(['staff keuangan', 'manager keuangan'])) {
+                $query->whereNotNull('marketing_pencairan_ikatan_2026.keuangan');
             } else {
                 $query->where('marketing_pencairan_ikatan_2026.status', '1');
             }
@@ -633,7 +641,7 @@ class PencairanProgramIkatan2026Controller extends Controller
           return view('worksheetom.pencairanprogramikatan.detailfaktur', compact('detailpenjualan'));
     }
 
-    public function approve($kode_pencairan)
+    private function getPencairanData($kode_pencairan)
     {
         $kode_pencairan = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
         $query = PencairanProgramIkatan2026::query();
@@ -723,11 +731,36 @@ class PencairanProgramIkatan2026Controller extends Controller
             $item->kenaikan_per_bulan = ($item->target_perbulan ?? 0) / $durasi;
             return $item;
         });
-            
-        $data['pencairanprogram'] = $pencairanprogramikatan;
-        $data['detail'] = $detail;
-        $data['user'] = User::find(auth()->user()->id);
+
+        return [
+            'pencairanprogram' => $pencairanprogramikatan,
+            'detail' => $detail,
+            'user' => User::find(auth()->user()->id)
+        ];
+    }
+
+    public function approve($kode_pencairan)
+    {
+        $data = $this->getPencairanData($kode_pencairan);
         return view('worksheetom.pencairanprogramikatan2026.approve', $data);
+    }
+
+    public function show($kode_pencairan)
+    {
+        $data = $this->getPencairanData($kode_pencairan);
+        return view('worksheetom.pencairanprogramikatan2026.show', $data);
+    }
+
+    public function cetak($kode_pencairan, Request $request)
+    {
+        $data = $this->getPencairanData($kode_pencairan);
+        if ($request->export == 'true') {
+            $kode_pencairan_decrypted = \Illuminate\Support\Facades\Crypt::decrypt($kode_pencairan);
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Pencairan-Ikatan-2026-$kode_pencairan_decrypted.xls");
+            return view('worksheetom.pencairanprogramikatan2026.cetak_export', $data);
+        }
+        return view('worksheetom.pencairanprogramikatan2026.cetak', $data);
     }
 
     public function storeapprove(Request $request, $kode_pencairan)

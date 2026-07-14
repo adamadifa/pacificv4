@@ -162,6 +162,15 @@
                                                              @endif
                                                          @endif
                                                      </div>
+                                                     {{-- KEU --}}
+                                                     <div class="text-center position-relative">
+                                                         <small class="d-block text-muted fw-bold" style="font-size: 0.65rem; margin-bottom: 2px;">KEU</small>
+                                                         @if (empty($d->keuangan)) 
+                                                              <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-label-secondary text-warning"><i class="ti ti-hourglass-empty" style="font-size: 0.8rem;"></i></span></div>
+                                                         @else
+                                                              <div class="avatar avatar-xs"><span class="avatar-initial rounded-circle bg-success text-white"><i class="ti ti-check" style="font-size: 0.8rem;"></i></span></div>
+                                                         @endif
+                                                     </div>
                                                  </div>
                                              </div>
 
@@ -169,6 +178,14 @@
                                             {{-- Actions --}}
                                             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 mt-2 mt-lg-0">
                                                 <div class="d-flex justify-content-lg-end justify-content-start gap-1">
+                                                    <a href="#" class="btn btn-icon btn-label-info btnShow me-1"
+                                                        kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}" data-bs-toggle="tooltip" title="Detail">
+                                                        <i class="ti ti-file-description"></i>
+                                                    </a>
+                                                    <a href="{{ route('pencairanprogramikatan2026.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
+                                                        class="btn btn-icon btn-label-success me-1" data-bs-toggle="tooltip" title="Export Excel" target="_blank">
+                                                        <i class="ti ti-file-spreadsheet"></i>
+                                                    </a>
                                                     @if ($user->hasRole('super admin') || $user->can('ajuanprogramikatan.approve'))
                                                         @if (($user->hasRole('operation manager') && $d->rsm == null) ||
                                                             ($user->hasRole('regional sales manager') && $d->gm == null) ||
@@ -240,6 +257,21 @@
             <div class="sk-wave-rect"></div>
             </div>`);
             $("#loadmodalapprove").load('/pencairanprogramikatan2026/' + kode_pencairan + '/approve');
+        });
+
+        $(".btnShow").click(function(e) {
+            e.preventDefault();
+            var kode_pencairan = $(this).attr("kode_pencairan");
+            $('#modalApprove').modal("show");
+            $("#modalApprove").find(".modal-title").text("Detail Pencairan Program Ikatan");
+            $("#loadmodalapprove").html(`<div class="sk-wave sk-primary" style="margin:auto">
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            <div class="sk-wave-rect"></div>
+            </div>`);
+            $("#loadmodalapprove").load('/pencairanprogramikatan2026/' + kode_pencairan + '/show');
         });
 
         const select2Kodecabang = $(".select2Kodecabang");

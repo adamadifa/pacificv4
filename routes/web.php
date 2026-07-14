@@ -2451,6 +2451,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pencairanprogramikatan2026/{kode_pelanggan}/{kode_pencairan}/detailfaktur', 'detailfaktur')->name('pencairanprogramikatan2026.detailfaktur')->can('pencairanprogramikatan2026.index');
         Route::get('/pencairanprogramikatan2026/{kode_pencairan}/approve', 'approve')->name('pencairanprogramikatan2026.approve')->can('pencairanprogramikatan2026.index');
         Route::post('/pencairanprogramikatan2026/{kode_pencairan}/storeapprove', 'storeapprove')->name('pencairanprogramikatan2026.storeapprove')->can('pencairanprogramikatan2026.index');
+        Route::get('/pencairanprogramikatan2026/{kode_pencairan}/show', 'show')->name('pencairanprogramikatan2026.show')->can('pencairanprogramikatan2026.index');
+        Route::get('/pencairanprogramikatan2026/{kode_pencairan}/cetak', 'cetak')->name('pencairanprogramikatan2026.cetak')->can('pencairanprogramikatan2026.index');
 
         Route::delete('/pencairanprogramikatan2026/{kode_pencairan}/delete', 'destroy')->name('pencairanprogramikatan2026.delete')->can('pencairanprogramikatan2026.delete');
     });

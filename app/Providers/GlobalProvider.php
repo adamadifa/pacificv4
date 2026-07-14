@@ -342,6 +342,13 @@ class GlobalProvider extends ServiceProvider
                         ->where('status', 0)
                         ->count();
 
+                } else if ($user->hasRole(['staff keuangan', 'manager keuangan'])) {
+                    $notifikasi_ajuanprogramikatan = 0;
+                    $notifikasi_pencairanprogramikatan = PencairanProgramIkatan2026::where('status', 1)->whereNull('keuangan')->count();
+                    $notifikasi_ajuanprogramkumulatif = 0;
+                    $notifikasi_pencairanprogramkumulatif = Pencairanprogram::where('status', 1)->whereNull('keuangan')->count();
+                    $notifikasi_ajuanprogramikatanenambulan = 0;
+                    $notifikasi_pencairanprogramikatanenambulan = Pencairanprogramenambulan::where('status', 1)->whereNull('keuangan')->count();
                 } else if ($user->hasRole('super admin')) {
                     $notifikasi_ajuanprogramikatan = MktIkatan2026::where('status', 0)->count();
                     $notifikasi_pencairanprogramikatan = PencairanProgramIkatan2026::where('status', 0)->count();
