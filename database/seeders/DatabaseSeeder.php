@@ -78,6 +78,7 @@ class DatabaseSeeder extends Seeder
             Saldoawalrekeningpermissionseeder::class,
             LemburApprovalConfigSeeder::class,
             Dokumenopnamepermissionseeder::class,
+            RealtimetrackingPermissionSeeder::class,
         ]);
     }
 }

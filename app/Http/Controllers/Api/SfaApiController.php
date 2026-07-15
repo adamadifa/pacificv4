@@ -1947,4 +1947,223 @@ class SfaApiController extends Controller
             'items' => $items
         ]);
     }
+
+    public function laporanPenjualan(Request $request)
+    {
+        $user = Auth::user();
+        $startDate = $request->query('start_date', date('Y-m-d'));
+        $endDate = $request->query('end_date', date('Y-m-d'));
+
+        // Query penjualan
+        $penjualan = DB::table('marketing_penjualan')
+            ->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->select(
+                'marketing_penjualan.no_faktur',
+                'marketing_penjualan.tanggal',
+                'marketing_penjualan.jenis_transaksi',
+                'marketing_penjualan.potongan',
+                'marketing_penjualan.potongan_istimewa',
+                'marketing_penjualan.penyesuaian',
+                'marketing_penjualan.ppn',
+                'marketing_penjualan.status_batal',
+                'pelanggan.nama_pelanggan'
+            )
+            ->addSelect(DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) as total_bruto'))
+            ->where('marketing_penjualan.kode_salesman', $user->kode_salesman)
+            ->whereBetween('marketing_penjualan.tanggal', [$startDate, $endDate])
+            ->where('marketing_penjualan.status_batal', 0)
+            ->orderBy('marketing_penjualan.tanggal', 'desc')
+            ->orderBy('marketing_penjualan.no_faktur', 'desc')
+            ->get();
+
+        // Calculate summaries
+        $totalTunai = 0;
+        $totalKredit = 0;
+        $totalPenjualan = 0;
+
+        $items = $penjualan->map(function ($d) use (&$totalTunai, &$totalKredit, &$totalPenjualan) {
+            $total_bruto = $d->total_bruto ?? 0;
+            $potongan = $d->potongan ?? 0;
+            $potongan_istimewa = $d->potongan_istimewa ?? 0;
+            $penyesuaian = $d->penyesuaian ?? 0;
+            $ppn = $d->ppn ?? 0;
+            
+            $total_netto = $total_bruto - $potongan - $potongan_istimewa - $penyesuaian + $ppn;
+            
+            if ($d->jenis_transaksi == 'T') {
+                $totalTunai += $total_netto;
+            } else {
+                $totalKredit += $total_netto;
+            }
+            $totalPenjualan += $total_netto;
+
+            return [
+                'no_faktur' => $d->no_faktur,
+                'tanggal' => $d->tanggal,
+                'jenis_transaksi' => $d->jenis_transaksi == 'T' ? 'Tunai' : 'Kredit',
+                'nama_pelanggan' => $d->nama_pelanggan,
+                'total_bruto' => $total_bruto,
+                'total_netto' => $total_netto,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'summary' => [
+                    'total_penjualan' => $totalPenjualan,
+                    'total_tunai' => $totalTunai,
+                    'total_kredit' => $totalKredit,
+                    'total_transaksi' => $penjualan->count(),
+                ],
+                'transactions' => $items
+            ]
+        ]);
+    }
+
+    public function laporanPenjualanExcel(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user && $request->has('token')) {
+            $token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->token);
+            if ($token) {
+                $user = $token->tokenable;
+                Auth::login($user);
+            }
+        }
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $dari = $request->query('start_date', date('Y-m-d'));
+        $sampai = $request->query('end_date', date('Y-m-d'));
+        $kode_salesman = $user->kode_salesman;
+        $kode_cabang = $user->kode_cabang;
+
+        $produk = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+            ->where('marketing_penjualan.kode_salesman', $kode_salesman)
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+        $selectColumnkodeproduk = [];
+        foreach ($produk as $d) {
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",jumlah,0)) as `qty_' . $d->kode_produk . '`');
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",marketing_penjualan_detail.harga_dus,0)) as `harga_dus_' . $d->kode_produk . '`');
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",marketing_penjualan_detail.harga_pack,0)) as `harga_pack_' . $d->kode_produk . '`');
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",marketing_penjualan_detail.harga_pcs,0)) as `harga_pcs_' . $d->kode_produk . '`');
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",marketing_penjualan_detail.subtotal,0)) as `subtotal_' . $d->kode_produk . '`');
+        }
+
+        $subqueryRetur = \App\Models\Detailretur::select('marketing_retur.no_faktur', DB::raw('SUM(subtotal) as total_retur'))
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->whereBetween('marketing_retur.tanggal', [$dari, $sampai])
+            ->where('marketing_penjualan.kode_salesman', $kode_salesman)
+            ->where('jenis_retur', 'PF')
+            ->groupBy('marketing_retur.no_faktur');
+
+        $qpenjualan = Detailpenjualan::query();
+        $qpenjualan->select(
+            'marketing_penjualan_detail.no_faktur',
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'pelanggan.hari',
+            'salesman.nama_salesman',
+            'klasifikasi',
+            'nama_wilayah',
+            DB::raw('SUM(subtotal) as bruto'),
+            'total_retur',
+            'potongan_aida',
+            'potongan_swan',
+            'potongan_stick',
+            'potongan_sp',
+            'potongan_sambal',
+            'potongan_istimewa',
+            'penyesuaian',
+            'potongan',
+            'ppn',
+            'jenis_transaksi',
+            'jenis_bayar',
+            'status',
+            'status_batal',
+            'marketing_penjualan.status_pajak',
+            ...$selectColumnkodeproduk
+        );
+
+        $qpenjualan->addSelect(DB::raw('(SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as total_bayar'));
+        $qpenjualan->addSelect(DB::raw('(SELECT MAX(tanggal) FROM marketing_penjualan_historibayar WHERE no_faktur = marketing_penjualan.no_faktur) as lastpayment'));
+        $qpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qpenjualan->rightjoin('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qpenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $qpenjualan->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $qpenjualan->leftJoin('marketing_klasifikasi_outlet', 'pelanggan.kode_klasifikasi', 'marketing_klasifikasi_outlet.kode_klasifikasi');
+        $qpenjualan->leftJoin('wilayah', 'pelanggan.kode_wilayah', 'wilayah.kode_wilayah');
+        $qpenjualan->leftJoinsub($subqueryRetur, 'retur', function ($join) {
+            $join->on('marketing_penjualan.no_faktur', '=', 'retur.no_faktur');
+        });
+
+        $qpenjualan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
+        $qpenjualan->where('marketing_penjualan.kode_salesman', $kode_salesman);
+
+        $penjualan = $qpenjualan->groupBy(
+            'marketing_penjualan_detail.no_faktur',
+            'marketing_penjualan.no_faktur',
+            'marketing_penjualan.tanggal',
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'pelanggan.hari',
+            'salesman.nama_salesman',
+            'klasifikasi',
+            'nama_wilayah',
+            'total_retur',
+            'potongan_aida',
+            'potongan_swan',
+            'potongan_stick',
+            'potongan_sp',
+            'potongan_sambal',
+            'potongan_istimewa',
+            'penyesuaian',
+            'potongan',
+            'ppn',
+            'jenis_transaksi',
+            'jenis_bayar',
+            'status',
+            'status_batal',
+            'marketing_penjualan.status_pajak'
+        )->get();
+
+        $data['penjualan'] = $penjualan;
+        $data['dari'] = $dari;
+        $data['sampai'] = $sampai;
+        $data['produk'] = $produk;
+        $data['cabang'] = \App\Models\Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['salesman'] = \App\Models\Salesman::where('kode_salesman', $kode_salesman)->first();
+
+        if ($request->query('format') === 'json') {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'produk' => $produk,
+                    'penjualan' => $penjualan,
+                    'cabang' => $data['cabang'],
+                    'salesman' => $data['salesman']
+                ]
+            ]);
+        }
+
+        // Force browser to download as Excel file
+        header("Content-Type: application/vnd-ms-excel");
+        header("Content-Disposition: attachment; filename=\"Laporan_Penjualan_Satu_Baris_" . $dari . "_" . $sampai . ".xls\"");
+        return view('marketing.laporan.penjualan_formatsatubaris_cetak', $data);
+    }
 }

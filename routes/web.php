@@ -47,6 +47,7 @@ use App\Http\Controllers\InsentifController;
 use App\Http\Controllers\ItemservicekendaraanController;
 use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\IzincutiController;
+use App\Http\Controllers\TrackingMonitorController;
 use App\Http\Controllers\IzindinasController;
 use App\Http\Controllers\IzinkeluarController;
 use App\Http\Controllers\IzinkoreksiController;
@@ -229,6 +230,13 @@ Route::middleware('auth')->group(function () {
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
+    // Salesman Monitoring Tracking
+    Route::controller(TrackingMonitorController::class)->group(function () {
+        Route::get('/tracking', 'index')->name('tracking.index')->can('tracking.index');
+        Route::get('/tracking/latest', 'getLatestPositions')->name('tracking.latest')->can('tracking.index');
+        Route::get('/tracking/{kode_salesman}/trail', 'getTrail')->name('tracking.trail')->can('tracking.index');
+    });
 
     //Dashboard
     Route::controller(DashboardController::class)->group(function () {

@@ -84,6 +84,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sfa/penjualan/transfer/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeTransfer']);
     Route::delete('/sfa/penjualan/giro/{kode_giro}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteGiro']);
     Route::delete('/sfa/penjualan/transfer/{kode_transfer}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteTransfer']);
+    Route::post('/sfa/tracking', [\App\Http\Controllers\Api\TrackingController::class, 'store']);
+    Route::get('/sfa/laporan/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualan']);
+    Route::get('/sfa/laporan/penjualan/excel', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualanExcel']);
 });
 
 // API Sync Jurnal Umum

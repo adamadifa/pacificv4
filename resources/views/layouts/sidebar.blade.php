@@ -296,6 +296,15 @@
                  </a>
              </li>
          @endif
+
+         @if (auth()->user()->hasAnyPermission(['tracking.index']))
+         <li class="menu-item {{ request()->is(['tracking', 'tracking/*']) ? 'active' : '' }}">
+             <a href="{{ route('tracking.index') }}" class="menu-link">
+                 <i class="menu-icon tf-icons ti ti-location"></i>
+                 <div>Realtime Tracking</div>
+             </a>
+         </li>
+         @endif
          <!-- Salesman -->
          @if (auth()->user()->hasAnyPermission(['sfa.pelanggan']))
              <li class="menu-item {{ request()->is(['sfa/pelanggan']) ? 'active' : '' }}">

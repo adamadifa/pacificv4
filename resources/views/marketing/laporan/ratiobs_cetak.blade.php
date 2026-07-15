@@ -271,13 +271,14 @@
                                         $d->{"reject_pasar_$p->kode_produk"} -
                                         $d->{"repack_$p->kode_produk"};
 
+                                    $retur_qty = ROUND($d->{"retur_$p->kode_produk"}, 2);
+                                    $retur_lalu_qty = ROUND($d->{"retur_lalu_$p->kode_produk"}, 2);
+
                                     $harga =
-                                        $d->{"retur_$p->kode_produk"} > 0
-                                        ? $d->{"total_retur_$p->kode_produk"} /
-                                        ROUND($d->{"retur_$p->kode_produk"}, 2)
-                                        : ($d->{"retur_lalu_$p->kode_produk"} > 0
-                                            ? $d->{"total_retur_lalu_$p->kode_produk"} /
-                                            ROUND($d->{"retur_lalu_$p->kode_produk"}, 2)
+                                        $retur_qty > 0
+                                        ? $d->{"total_retur_$p->kode_produk"} / $retur_qty
+                                        : ($retur_lalu_qty > 0
+                                            ? $d->{"total_retur_lalu_$p->kode_produk"} / $retur_lalu_qty
                                             : $harga_master_cabang[$d->kode_cabang][$p->kode_produk] ??
                                             ($harga_master_global[$p->kode_produk] ?? 0));
                                     $total = ROUND($jml_reject, 2) * $harga;
