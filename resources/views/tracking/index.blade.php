@@ -309,15 +309,28 @@
                     }
                 }
 
-                // Create smaller dot markers for trail points
-                const dotMarker = L.circleMarker([lat, lng], {
-                    radius: 5,
-                    fillColor: '#3b82f6',
-                    color: '#fff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                }).bindTooltip(`
+                // Create markers for trail points showing the order number
+                const numberIcon = L.divIcon({
+                    className: 'custom-trail-icon',
+                    html: `<div style="
+                        background-color: #2563eb;
+                        color: #ffffff;
+                        border: 2px solid #ffffff;
+                        border-radius: 50%;
+                        width: 20px;
+                        height: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: bold;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                    ">${index + 1}</div>`,
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
+
+                const dotMarker = L.marker([lat, lng], { icon: numberIcon }).bindTooltip(`
                     <b>Titik #${index + 1}</b><br>
                     Waktu: ${point.tracked_at.substring(11, 19)}<br>
                     Jarak dari Titik #${index}: ${distanceText}<br>

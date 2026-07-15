@@ -131,14 +131,31 @@
                 function(
                     data) {
                     $.each(data, function(index) {
-                        var salesmanicon = L.icon({
-                            // iconUrl: 'app-assets/marker/' + data[index].marker,
-                            iconUrl: '/assets/img/marker/default.png',
-                            iconSize: [75, 75], // size of the icon
-                            shadowSize: [50, 64], // size of the shadow
-                            iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-                            shadowAnchor: [4, 62], // the same for the shadow
-                            popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+                        var salesmanicon = L.divIcon({
+                            className: 'custom-checkin-icon',
+                            html: `<div style="position: relative; width: 45px; height: 45px; display: inline-block;">
+                                    <img src="/assets/img/marker/default.png" style="width: 45px; height: 45px;" />
+                                    <div style="
+                                        position: absolute;
+                                        top: -2px;
+                                        right: -2px;
+                                        background-color: #e11d48;
+                                        color: #ffffff;
+                                        border: 2px solid #ffffff;
+                                        border-radius: 50%;
+                                        width: 18px;
+                                        height: 18px;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-size: 9px;
+                                        font-weight: bold;
+                                        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                                    ">${index + 1}</div>
+                                   </div>`,
+                            iconSize: [45, 45],
+                            iconAnchor: [22, 45],
+                            popupAnchor: [0, -45]
                         });
 
                         var imagepath = "{{ Storage::url('pelanggan/') }}" + data[index].foto;

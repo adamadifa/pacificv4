@@ -87,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sfa/tracking', [\App\Http\Controllers\Api\TrackingController::class, 'store']);
     Route::get('/sfa/laporan/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualan']);
     Route::get('/sfa/laporan/penjualan/excel', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualanExcel']);
+    Route::get('/sfa/laporan/lhp', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanLhp']);
 });
 
 // API Sync Jurnal Umum

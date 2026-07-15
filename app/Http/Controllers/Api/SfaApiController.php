@@ -2166,4 +2166,175 @@ class SfaApiController extends Controller
         header("Content-Disposition: attachment; filename=\"Laporan_Penjualan_Satu_Baris_" . $dari . "_" . $sampai . ".xls\"");
         return view('marketing.laporan.penjualan_formatsatubaris_cetak', $data);
     }
+
+    public function laporanLhp(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $kode_salesman = $user->kode_salesman;
+        $tanggal = $request->query('tanggal', date('Y-m-d'));
+
+        $produk = \App\Models\Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->where('marketing_penjualan.tanggal', $tanggal)
+            ->where('marketing_penjualan.kode_salesman', $kode_salesman)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->orderBy('produk_harga.kode_produk')
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->get();
+
+        $selectColumnkodeproduk = [];
+        $selectColumnkodeprodukhb = [];
+        foreach ($produk as $d) {
+            $selectColumnkodeproduk[] = DB::raw('SUM(IF(kode_produk="' . $d->kode_produk . '",jumlah,0)) as `qty_' . $d->kode_produk . '`');
+            $selectColumnkodeprodukhb[] = DB::raw('SUM(0) as `qty_' . $d->kode_produk . '`');
+        }
+
+        $qdetailpenjualan = \App\Models\Detailpenjualan::query();
+        $qdetailpenjualan->select(
+            'marketing_penjualan_detail.no_faktur',
+            'nama_pelanggan',
+            DB::raw("SUM(0) as jml_tunai"),
+            DB::raw("SUM(IF(jenis_transaksi='K',subtotal,0)) - IF(jenis_transaksi='K',potongan + potongan_istimewa + penyesuaian - ppn,0)  as jml_kredit"),
+            DB::raw("SUM(0) as jml_titipan"),
+            DB::raw("SUM(0) as jml_giro"),
+            DB::raw("SUM(0) as jml_transfer"),
+            DB::raw("SUM(0) as jml_voucher"),
+            'status_batal',
+            ...$selectColumnkodeproduk
+        );
+        $qdetailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qdetailpenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qdetailpenjualan->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
+        $qdetailpenjualan->where('marketing_penjualan.kode_salesman', $kode_salesman);
+        $qdetailpenjualan->where('marketing_penjualan.tanggal', $tanggal);
+        $qdetailpenjualan->where('marketing_penjualan.status_sampel', 0);
+        $qdetailpenjualan->groupBy(
+            'marketing_penjualan_detail.no_faktur',
+            'nama_pelanggan',
+            'status_batal',
+            'jenis_transaksi',
+            'potongan',
+            'potongan_istimewa',
+            'penyesuaian',
+            'ppn'
+        );
+        $qdetailpenjualan->orderBy('marketing_penjualan_detail.no_faktur');
+
+        $qhistoribayar = \App\Models\Historibayarpenjualan::query();
+        $qhistoribayar->select(
+            'marketing_penjualan_historibayar.no_faktur',
+            'nama_pelanggan',
+            DB::raw("SUM(IF(marketing_penjualan_historibayar.jenis_bayar = 'TN' AND voucher='0',jumlah,0)) as jml_tunai"),
+            DB::raw("SUM(0) as jml_kredit"),
+            DB::raw("SUM(IF( marketing_penjualan_historibayar.jenis_bayar = 'TP' AND voucher = '0',jumlah,0)) as jml_titipan"),
+            DB::raw("SUM(0) as jml_giro"),
+            DB::raw("SUM(0) as jml_transfer"),
+            DB::raw("SUM(IF( marketing_penjualan_historibayar.voucher = '1',jumlah,0)) as jml_voucher"),
+            DB::raw('0 as status_batal'),
+            ...$selectColumnkodeprodukhb
+        );
+        $qhistoribayar->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
+        $qhistoribayar->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qhistoribayar->whereNotIN('marketing_penjualan_historibayar.jenis_bayar', ['TR', 'GR']);
+        $qhistoribayar->where('marketing_penjualan_historibayar.kode_salesman', $kode_salesman);
+        $qhistoribayar->where('marketing_penjualan_historibayar.tanggal', $tanggal);
+        $qhistoribayar->where('marketing_penjualan.status_sampel', 0);
+        $qhistoribayar->groupBy('marketing_penjualan_historibayar.no_faktur', 'nama_pelanggan', 'status_batal');
+
+        $qgiro = \App\Models\Detailgiro::query();
+        $qgiro->select(
+            'no_faktur',
+            'nama_pelanggan',
+            DB::raw("SUM(0) as jml_tunai"),
+            DB::raw("SUM(0) as jml_kredit"),
+            DB::raw("SUM(0) as jml_titipan"),
+            DB::raw("SUM(jumlah) as jml_giro"),
+            DB::raw("SUM(0) as jml_transfer"),
+            DB::raw("SUM(0) as jml_voucher"),
+            DB::raw('0 as status_batal'),
+            ...$selectColumnkodeprodukhb
+        );
+        $qgiro->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro');
+        $qgiro->join('pelanggan', 'marketing_penjualan_giro.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qgiro->where('marketing_penjualan_giro.kode_salesman', $kode_salesman);
+        $qgiro->where('marketing_penjualan_giro.tanggal', $tanggal);
+        $qgiro->groupBy('marketing_penjualan_giro_detail.no_faktur', 'nama_pelanggan', 'status_batal');
+
+        $qtransfer = \App\Models\Detailtransfer::query();
+        $qtransfer->select(
+            'no_faktur',
+            'nama_pelanggan',
+            DB::raw("SUM(0) as jml_tunai"),
+            DB::raw("SUM(0) as jml_kredit"),
+            DB::raw("SUM(0) as jml_titipan"),
+            DB::raw("SUM(0) as jml_giro"),
+            DB::raw("SUM(jumlah) as jml_transfer"),
+            DB::raw("SUM(0) as jml_voucher"),
+            DB::raw('0 as status_batal'),
+            ...$selectColumnkodeprodukhb
+        );
+        $qtransfer->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer');
+        $qtransfer->join('pelanggan', 'marketing_penjualan_transfer.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $qtransfer->where('marketing_penjualan_transfer.kode_salesman', $kode_salesman);
+        $qtransfer->where('marketing_penjualan_transfer.tanggal', $tanggal);
+        $qtransfer->groupBy('marketing_penjualan_transfer_detail.no_faktur', 'nama_pelanggan', 'status_batal');
+
+        $query_lhp = $qdetailpenjualan->unionAll($qhistoribayar)->unionAll($qgiro)->unionAll($qtransfer)->get();
+        $lhp = $query_lhp->groupBy('no_faktur', 'nama_pelanggan')
+            ->map(function ($item) use ($produk) {
+                $result = [
+                    'no_faktur' => $item->first()->no_faktur,
+                    'nama_pelanggan' => $item->first()->nama_pelanggan,
+                    'jml_tunai' => (float)$item->sum('jml_tunai'),
+                    'jml_kredit' => (float)$item->sum('jml_kredit'),
+                    'jml_titipan' => (float)$item->sum('jml_titipan'),
+                    'jml_giro' => (float)$item->sum('jml_giro'),
+                    'jml_transfer' => (float)$item->sum('jml_transfer'),
+                    'jml_voucher' => (float)$item->sum('jml_voucher'),
+                    'status_batal' => (int)$item->first()->status_batal,
+                ];
+                foreach ($produk as $p) {
+                    $result['qty_' . $p->kode_produk] = (float)$item->sum('qty_' . $p->kode_produk);
+                }
+
+                return $result;
+            })
+            ->sortBy('no_faktur')
+            ->values()
+            ->all();
+
+        $detailproduk = \App\Models\Detailpenjualan::join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->select('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', DB::raw('SUM(jumlah) as qty'))
+            ->where('marketing_penjualan.kode_salesman', $kode_salesman)
+            ->where('marketing_penjualan.tanggal', $tanggal)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('status_batal', 0)
+            ->groupBy('produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack')
+            ->orderBy('produk_harga.kode_produk')
+            ->get();
+
+        $salesman = \App\Models\Salesman::where('kode_salesman', $kode_salesman)->first();
+        $cabang = $salesman ? \App\Models\Cabang::where('kode_cabang', $salesman->kode_cabang)->first() : null;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'produk' => $produk,
+                'lhp' => $lhp,
+                'detailproduk' => $detailproduk,
+                'salesman' => $salesman,
+                'cabang' => $cabang,
+                'tanggal' => $tanggal
+            ]
+        ]);
+    }
 }
