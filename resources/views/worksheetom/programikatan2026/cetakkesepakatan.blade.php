@@ -18,8 +18,8 @@
 
         body {
             font-family: 'Times New Roman';
-            font-size: 13px;
-            line-height: 1.35;
+            font-size: 12px;
+            line-height: 1.25;
         }
 
         hr.style2 {
@@ -27,49 +27,49 @@
         }
 
         h4 {
-            line-height: 1.2rem !important;
-            margin: 0 0 5px 0 !important;
+            line-height: 1.1rem !important;
+            margin: 0 0 4px 0 !important;
         }
 
         p {
-            margin: 5px 0 !important;
-            line-height: 1.35;
+            margin: 3px 0 !important;
+            line-height: 1.25;
         }
 
         ol {
-            line-height: 1.35;
+            line-height: 1.25;
             margin: 0;
             padding-left: 20px;
         }
 
         h3 {
-            margin: 5px 0;
-            font-size: 16px;
+            margin: 3px 0;
+            font-size: 14px;
         }
 
         .table td {
-            padding: 3px 6px;
+            padding: 2px 4px;
         }
 
         .datatable3 {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 15px;
+            font-size: 11px;
+            margin-top: 10px;
         }
 
         .datatable3 th {
             background-color: #004d80;
             color: #ffffff;
             border: 1px solid #002b4d;
-            padding: 7px;
+            padding: 5px;
             font-weight: bold;
             text-align: center;
         }
 
         .datatable3 td {
             border: 1px solid #b3d1ff;
-            padding: 6px;
+            padding: 5px;
             text-align: center;
         }
 
@@ -77,7 +77,7 @@
             background-color: #004d80;
             color: #ffffff;
             border: 1px solid #002b4d;
-            padding: 7px;
+            padding: 5px;
             font-weight: bold;
         }
 
@@ -85,7 +85,7 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            gap: 30px;
+            gap: 20px;
         }
 
         .left-col {
@@ -115,7 +115,7 @@
                     </tr>
                 </table>
 
-                <h3 style="text-align: center; margin-top: 10px; margin-bottom: 10px; font-weight: bold;">
+                <h3 style="text-align: center; margin-top: 4px; margin-bottom: 4px; font-weight: bold;">
                     SURAT KESEPAKATAN TARGET
                     <br>
                     PROGRAM {{ $kesepakatan->nama_program }}
@@ -140,9 +140,9 @@
                     </tr>
                 </table>
                 
-                <p style="margin-top: 8px !important; font-weight: bold;">Yang Selanjutnya disebut sebagai Pihak ke -1 (Perwakilan Perusahaan)</p>
+                <p style="margin-top: 4px !important; font-weight: bold;">Yang Selanjutnya disebut sebagai Pihak ke -1 (Perwakilan Perusahaan)</p>
                 
-                <table class="table" style="width: 100%; margin-top: 5px;">
+                <table class="table" style="width: 100%; margin-top: 3px;">
                     <tr>
                         <td style="width: 35%; font-weight: bold;">Nama Lengkap</td>
                         <td style="width: 2%">:</td>
@@ -175,10 +175,10 @@
                     </tr>
                 </table>
 
-                <p style="margin-top: 8px !important; font-weight: bold;">Yang Selanjutnya disebut sebagai Pihak ke -2 (Pembeli)</p>
+                <p style="margin-top: 4px !important; font-weight: bold;">Yang Selanjutnya disebut sebagai Pihak ke -2 (Pembeli)</p>
                 
-                <p style="margin-top: 8px !important;">
-                    Adapun hak dan kewajiban antara Pihak Ke-1 dan Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
+                <p style="margin-top: 4px !important;">
+                    Adapun hak dan kewajiban antara Pihak Ke-1 and Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
                 </p>
                 <ol>
                     <li>Pihak Ke-2 Memilih target penjualan sebanyak {{ formatAngka($kesepakatan->qty_target + $kesepakatan->qty_avg) }} dus/ball selama satu semester</li>
