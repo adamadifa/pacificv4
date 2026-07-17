@@ -18,8 +18,8 @@
 
         body {
             font-family: 'Times New Roman';
-            font-size: 11px;
-            line-height: 1.2;
+            font-size: 13px;
+            line-height: 1.35;
         }
 
         hr.style2 {
@@ -27,56 +27,73 @@
         }
 
         h4 {
-            line-height: 1.1rem !important;
+            line-height: 1.2rem !important;
             margin: 0 0 5px 0 !important;
         }
 
         p {
-            margin: 2px 0 !important;
-            line-height: 1.2;
+            margin: 5px 0 !important;
+            line-height: 1.35;
         }
 
         ol {
-            line-height: 1.2;
+            line-height: 1.35;
             margin: 0;
             padding-left: 20px;
         }
 
         h3 {
-            margin: 3px 0;
-            font-size: 14px;
+            margin: 5px 0;
+            font-size: 16px;
         }
 
         .table td {
-            padding: 2px 4px;
+            padding: 3px 6px;
         }
 
         .datatable3 {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
-            margin-top: 10px;
+            font-size: 12px;
+            margin-top: 15px;
         }
 
-        .datatable3 th, .datatable3 td {
-            border: 1px solid #000;
-            padding: 4px;
+        .datatable3 th {
+            background-color: #004d80;
+            color: #ffffff;
+            border: 1px solid #002b4d;
+            padding: 7px;
+            font-weight: bold;
             text-align: center;
+        }
+
+        .datatable3 td {
+            border: 1px solid #b3d1ff;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .datatable3 tfoot th, .datatable3 tfoot td {
+            background-color: #004d80;
+            color: #ffffff;
+            border: 1px solid #002b4d;
+            padding: 7px;
+            font-weight: bold;
         }
 
         .container {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            gap: 20px;
+            gap: 30px;
         }
 
         .left-col {
-            width: 68%;
+            width: 50%;
         }
 
         .right-col {
-            width: 30%;
+            width: 48%;
         }
     </style>
 </head>
@@ -86,19 +103,19 @@
     <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
     <section class="sheet padding-10mm">
         <div class="container">
-            <!-- Left Column: Agreement Details -->
+            <!-- Left Column: Company details, titles, Pihak 1, Pihak 2, and bullet points 1-7 -->
             <div class="left-col">
                 <table style="width: 100%">
                     <tr>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; margin-bottom: 2px">{{ $kesepakatan->nama_pt }}</h3>
-                            <span style="font-family:'Times New Roman'; font-size: 10px">{{ $kesepakatan->alamat_cabang }}</span><br>
-                            <span style="font-size: 10px">{{ $kesepakatan->email }}</span><br>
+                            <span style="font-family:'Times New Roman'; font-size: 11px">{{ $kesepakatan->alamat_cabang }}</span><br>
+                            <span style="font-size: 11px; color: #004d80;">{{ $kesepakatan->email }}</span><br>
                         </td>
                     </tr>
                 </table>
 
-                <h3 style="text-align: center; margin-top: 5px; margin-bottom: 5px;">
+                <h3 style="text-align: center; margin-top: 10px; margin-bottom: 10px; font-weight: bold;">
                     SURAT KESEPAKATAN TARGET
                     <br>
                     PROGRAM {{ $kesepakatan->nama_program }}
@@ -107,60 +124,60 @@
                 <p>Saya Yang Bertanda Tangan dibawah ini :</p>
                 <table class="table" style="width: 100%">
                     <tr>
-                        <td style="width: 35%">Nama Lengkap</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">Nama Lengkap</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ $kesepakatan->nama_salesman }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">Alamat Lengkap Tempat Tinggal</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">Alamat Lengkap Tempat Tinggal</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ $kesepakatan->alamat_cabang }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">NIK KTP</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">NIK KTP</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black"></td>
                     </tr>
                 </table>
                 
-                <p style="margin-top: 5px !important;"><b>Yang Selanjutnya disebut sebagai Pihak ke -1 (Perwakilan Perusahaan)</b></p>
+                <p style="margin-top: 8px !important; font-weight: bold;">Yang Selanjutnya disebut sebagai Pihak ke -1 (Perwakilan Perusahaan)</p>
                 
                 <table class="table" style="width: 100%; margin-top: 5px;">
                     <tr>
-                        <td style="width: 35%">Nama Lengkap</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">Nama Lengkap</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ textUpperCase($kesepakatan->nama_pelanggan) }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">Alamat Lengkap Tempat Tinggal</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">Alamat Lengkap Tempat Tinggal</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ textCamelCase($kesepakatan->alamat_pelanggan) }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">NIK KTP</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">NIK KTP</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ $kesepakatan->nik }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">No. HP / No. Telp Rumah</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">No. HP / No. Telp Rumah</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ $kesepakatan->no_hp_pelanggan }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">Alamat Toko</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">Alamat Toko</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ textCamelCase($kesepakatan->alamat_toko) }}</td>
                     </tr>
                     <tr>
-                        <td style="width: 35%">Kode Pelanggan ( Diisi Pihak Ke - 1)</td>
-                        <td style="width: 1%">:</td>
+                        <td style="width: 35%; font-weight: bold;">Kode Pelanggan ( Diisi Pihak Ke - 1)</td>
+                        <td style="width: 2%">:</td>
                         <td style="border-bottom: 1px solid black">{{ textupperCase($kesepakatan->kode_pelanggan) }}</td>
                     </tr>
                 </table>
 
-                <p style="margin-top: 5px !important;"><b>Yang Selanjutnya disebut sebagai Pihak ke -2 (Pembeli)</b></p>
+                <p style="margin-top: 8px !important; font-weight: bold;">Yang Selanjutnya disebut sebagai Pihak ke -2 (Pembeli)</p>
                 
-                <p style="margin-top: 5px !important;">
+                <p style="margin-top: 8px !important;">
                     Adapun hak dan kewajiban antara Pihak Ke-1 dan Pihak Ke-2 yang harus disepakati bersama dalam surat kesepakatan ini antara lain :
                 </p>
                 <ol>
@@ -180,31 +197,39 @@
                         transaksi, jika tidak memenuhi maka faktur tersebut tidak diperhitungkan dalam hitungan program.</li>
                     <li>Pihak Ke-2 bersedia melampirkan fotocopy KTP</li>
                     <li>Pihak Ke-1 dan Pihak Ke-2 bersedia melengkapi seluruh data yang ada pada surat kesepakatan ini</li>
+                </ol>
+            </div>
+
+            <!-- Right Column: Bullet points 8-10, sign blocks, target table -->
+            <div class="right-col">
+                <ol start="8">
                     <li>Pengembalian produk oleh Pihak Ke-2 tidak dapat dilakukan dengan cara potong faktur maupun diuangkan. Pengembalian produk hanya
                         dapat dilakukan dengan cara tukar barang dengan produk sejenis.</li>
                     <li>Pihak Ke-1 tidak menerima pengembalian barang yang diakibatkan expired masa produk.</li>
                     <li>Pihak Ke-2 tidak diperkenankan turun target dari target yang telah disepakati</li>
-                    <li>Pencairan reward akan dilakukan oleh Pihak ke-1 maksimal satu bulan dari periode program berakhir.</li>
                 </ol>
 
-                <p style="margin-top: 5px !important;">
+                <p style="margin-top: 8px !important; margin-left: 20px;">
+                    Pencairan reward akan dilakukan oleh Pihak ke-1 maksimal satu bulan dari periode program berakhir.
+                </p>
+
+                <p style="margin-top: 15px !important;">
                     Demikian surat kesepakatan ini dibuat atas dasar kesepakatan target program yang ditawarkan oleh {{ $kesepakatan->nama_pt }}. Apabila
                     terdapat kewajiban yang tidak terlaksana dari poin yang telah disebutkan diatas maka surat kesepakatan ini dapat dinyatakan gugur.
                 </p>
 
-                <p style="margin-top: 8px !important;">
+                <p style="margin-top: 12px !important; font-weight: bold;">
                     {{ $kesepakatan->nama_cabang }}, {{ DateToIndo($kesepakatan->tanggal) }}
                 </p>
                 
-                <table style="width: 100%; margin-top: 5px;">
+                <table style="width: 100%; margin-top: 12px;">
                     <tr>
-                        <td style="text-align: center; width: 25%;">Pihak Ke -1</td>
-                        <td style="text-align: center; width: 25%;">Pihak Ke -2</td>
-                        <td style="text-align: center; width: 50%;" colspan="2">Saksi</td>
+                        <td style="text-align: center; width: 33%; font-weight: bold;">Pihak Ke -1</td>
+                        <td style="text-align: center; width: 33%; font-weight: bold;">Pihak Ke -2</td>
+                        <td style="text-align: center; width: 33%; font-weight: bold;">Saksi</td>
                     </tr>
                     <tr>
-                        <td style="height: 35px"></td>
-                        <td></td>
+                        <td style="height: 55px"></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -212,20 +237,15 @@
                         <td style="text-align: center;">(___________)</td>
                         <td style="text-align: center;">(___________)</td>
                         <td style="text-align: center;">(___________)</td>
-                        <td style="text-align: center;">(___________)</td>
                     </tr>
                     <tr>
-                        <td style="text-align: center; font-size: 10px;">Salesman</td>
-                        <td style="text-align: center; font-size: 10px;">Pelanggan</td>
-                        <td style="text-align: center; font-size: 10px;">SMM</td>
-                        <td style="text-align: center; font-size: 10px;">OM</td>
+                        <td style="text-align: center; font-size: 11px;">Salesman</td>
+                        <td style="text-align: center; font-size: 11px;">Pelanggan</td>
+                        <td style="text-align: center; font-size: 11px;">SMM</td>
                     </tr>
                 </table>
-            </div>
 
-            <!-- Right Column: Monthly Target Table -->
-            <div class="right-col">
-                <h3 style="margin-top: 0; text-align: left;">Lampiran Target Per Bulan</h3>
+                <h3 style="margin-top: 20px; text-align: center; font-weight: bold;">Target Per Bulan</h3>
                 <table class="datatable3">
                     <thead>
                         <tr>
@@ -246,14 +266,14 @@
                             <tr>
                                 <td>{{ getMonthName($d->bulan) }}</td>
                                 <td>{{ $d->tahun }}</td>
-                                <td style="text-align: right; padding-right: 8px;">{{ formatAngka($target) }}</td>
+                                <td style="text-align: right; padding-right: 12px;">{{ formatAngka($target) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="2">TOTAL</th>
-                            <th style="text-align: right; padding-right: 8px;">{{ formatAngka($total_target) }}</th>
+                            <th colspan="2" style="text-align: left; padding-left: 10px;">TOTAL</th>
+                            <th style="text-align: right; padding-right: 12px;">{{ formatAngka($total_target) }}</th>
                         </tr>
                     </tfoot>
                 </table>
