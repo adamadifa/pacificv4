@@ -58,7 +58,7 @@
                     <tr>
                         <td style="width: 10%">
                             @if ($penilaiankaryawan->kode_perusahaan == 'MP')
-                                <img src="{{ asset('assets/img/logo/mp.png') }}" width="80" height="80" alt="">
+                                <img src="{{ asset('assets/img/logo/mp.png') }}" width="80" height="90" alt="">
                             @endif
                         </td>
                         <td style="font-weight: bold; text-align:center; width:55%">
@@ -81,7 +81,8 @@
                         <tr>
                             <td style="font-weight: bold">Periode Kontrak / Masa Percobaan</td>
                             <td>
-                                {{ DateToIndo($penilaiankaryawan->kontrak_dari) }} s/d {{ DateToIndo($penilaiankaryawan->kontrak_sampai) }}
+                                {{ DateToIndo($penilaiankaryawan->kontrak_dari) }} s/d
+                                {{ DateToIndo($penilaiankaryawan->kontrak_sampai) }}
                             </td>
                         </tr>
                         <tr>
@@ -220,13 +221,15 @@
             <div style="margin-top:10px">
                 <b style="font-size:14px">D. Riwayat Absensi dan Rekomendasi User</b>
             </div>
-            <div style="border:1px solid; border-collapse:collapse; height:100px; font-size:14px; padding:8px; margin-top:10px">
+            <div
+                style="border:1px solid; border-collapse:collapse; height:100px; font-size:14px; padding:8px; margin-top:10px">
                 {{ $penilaiankaryawan->rekomendasi }}
             </div>
             <div style="margin-top:10px">
                 <b style="font-size:14px">E. Evaluasi Skill Teknis / Kinerja (Wajib Diisi Oleh User)</b>
             </div>
-            <div style="border:1px solid; border-collapse:collapse; height:100px; font-size:14px; padding:8px; margin-top:10px">
+            <div
+                style="border:1px solid; border-collapse:collapse; height:100px; font-size:14px; padding:8px; margin-top:10px">
                 {{ $penilaiankaryawan->evaluasi }}
             </div>
             <div style="margin-top:10px">
@@ -237,7 +240,8 @@
                     <tr>
                         <td style="height:200px; width:50%; vertical-align:top">
                             @foreach ($historikontrak as $d)
-                                <b>Kontrak Ke {{ $loop->iteration }} </b> : {{ DateToIndo($d->dari) }} s/d {{ DateToIndo($d->sampai) }} <br>
+                                <b>Kontrak Ke {{ $loop->iteration }} </b> : {{ DateToIndo($d->dari) }} s/d
+                                {{ DateToIndo($d->sampai) }} <br>
                             @endforeach
                         </td>
                         <td style="height:200px; width:50%; vertical-align:top">

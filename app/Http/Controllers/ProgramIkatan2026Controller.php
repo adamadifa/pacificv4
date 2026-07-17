@@ -54,44 +54,63 @@ class ProgramIkatan2026Controller extends Controller
             $query->where('mkt_ikatan_2026.nomor_dokumen', $request->nomor_dokumen);
         }
 
-        if ($user->hasRole('regional sales manager')) {
-             if ($request->status == 'pending') {
-                $query->whereNotnull('mkt_ikatan_2026.om');
-                $query->whereNull('mkt_ikatan_2026.rsm');
-            } else if ($request->status == 'approved') {
-                $query->whereNotnull('mkt_ikatan_2026.rsm');
-                $query->where('mkt_ikatan_2026.status', 0);
-            } else if ($request->status == 'rejected') {
-                $query->where('mkt_ikatan_2026.status', 2);
-            }
+        // Define role-specific Pending queries
+        $pendingCountQuery = clone $query;
+        if ($user->hasRole('operation manager')) {
+            $pendingCountQuery->whereNull('mkt_ikatan_2026.om');
+            $pendingCountQuery->where('mkt_ikatan_2026.status', '0');
+        } else if ($user->hasRole('regional sales manager')) {
+            $pendingCountQuery->whereNotNull('mkt_ikatan_2026.om');
+            $pendingCountQuery->whereNull('mkt_ikatan_2026.rsm');
+            $pendingCountQuery->where('mkt_ikatan_2026.status', '0');
         } else if ($user->hasRole('gm marketing')) {
-             if ($request->status == 'pending') {
-                $query->whereNotnull('mkt_ikatan_2026.rsm');
-                $query->whereNull('mkt_ikatan_2026.gm');
-            } else if ($request->status == 'approved') {
-                $query->whereNotnull('mkt_ikatan_2026.gm');
-                $query->where('mkt_ikatan_2026.status', 0);
-            } else if ($request->status == 'rejected') {
-                $query->where('mkt_ikatan_2026.status', 2);
-            }
+            $pendingCountQuery->whereNotNull('mkt_ikatan_2026.rsm');
+            $pendingCountQuery->whereNull('mkt_ikatan_2026.gm');
+            $pendingCountQuery->where('mkt_ikatan_2026.status', '0');
         } else if ($user->hasRole('direktur')) {
-             if ($request->status == 'pending') {
-                $query->whereNotnull('mkt_ikatan_2026.gm');
-                $query->whereNull('mkt_ikatan_2026.direktur');
-                $query->where('mkt_ikatan_2026.status', 0);
-            } else if ($request->status == 'approved') {
-                $query->where('mkt_ikatan_2026.status', 1);
-            } else if ($request->status == 'rejected') {
-                $query->where('mkt_ikatan_2026.status', 2);
-            }
+            $pendingCountQuery->whereNotNull('mkt_ikatan_2026.gm');
+            $pendingCountQuery->whereNull('mkt_ikatan_2026.direktur');
+            $pendingCountQuery->where('mkt_ikatan_2026.status', '0');
         } else {
-            if ($request->status == 'pending') {
-                $query->where('mkt_ikatan_2026.status', 0);
-            } else if ($request->status == 'approved') {
-                $query->where('mkt_ikatan_2026.status', 1);
-            } else if ($request->status == 'rejected') {
-                $query->where('mkt_ikatan_2026.status', 2);
+            $pendingCountQuery->where('mkt_ikatan_2026.status', '0');
+        }
+        $pendingCount = $pendingCountQuery->count();
+
+        $status = $request->has('status') ? $request->status : '0';
+
+        if ($status == '0') { // PENDING
+            if ($user->hasRole('operation manager')) {
+                $query->whereNull('mkt_ikatan_2026.om');
+                $query->where('mkt_ikatan_2026.status', '0');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('mkt_ikatan_2026.om');
+                $query->whereNull('mkt_ikatan_2026.rsm');
+                $query->where('mkt_ikatan_2026.status', '0');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('mkt_ikatan_2026.rsm');
+                $query->whereNull('mkt_ikatan_2026.gm');
+                $query->where('mkt_ikatan_2026.status', '0');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('mkt_ikatan_2026.gm');
+                $query->whereNull('mkt_ikatan_2026.direktur');
+                $query->where('mkt_ikatan_2026.status', '0');
+            } else {
+                $query->where('mkt_ikatan_2026.status', '0');
             }
+        } else if ($status == '1') { // APPROVED / DISETUJUI
+            if ($user->hasRole('operation manager')) {
+                $query->whereNotNull('mkt_ikatan_2026.om');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('mkt_ikatan_2026.rsm');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('mkt_ikatan_2026.gm');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('mkt_ikatan_2026.direktur');
+            } else {
+                $query->where('mkt_ikatan_2026.status', '1');
+            }
+        } else if ($status == '2') { // DITOLAK
+            $query->where('mkt_ikatan_2026.status', '2');
         }
 
         $ajuanprogramikatan = $query->paginate(15);
@@ -102,6 +121,7 @@ class ProgramIkatan2026Controller extends Controller
         $data['cabang'] = $cbg->getCabang();
         $data['programikatan'] = Programikatan::orderBy('kode_program')->get();
         $data['ajuanprogramikatan'] = $ajuanprogramikatan;
+        $data['pendingCount'] = $pendingCount;
         $data['roles_access_all_cabang'] = $roles_access_all_cabang;
 
         return view('worksheetom.programikatan2026.index', $data);
