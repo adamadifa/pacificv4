@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/sfa/penjualan/giro/{kode_giro}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteGiro']);
     Route::delete('/sfa/penjualan/transfer/{kode_transfer}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteTransfer']);
     Route::post('/sfa/tracking', [\App\Http\Controllers\Api\TrackingController::class, 'store']);
+    Route::post('/sfa/update-fcm-token', [\App\Http\Controllers\Api\TrackingController::class, 'updateFcmToken']);
     Route::get('/sfa/laporan/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualan']);
     Route::get('/sfa/laporan/penjualan/excel', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualanExcel']);
     Route::get('/sfa/laporan/lhp', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanLhp']);

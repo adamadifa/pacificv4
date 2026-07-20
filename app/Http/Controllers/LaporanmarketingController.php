@@ -4974,25 +4974,112 @@ class LaporanmarketingController extends Controller
         $semester_program = $request->bulan >= 7 && $request->bulan <= 12 ? '2' : '1';
         $tahun_program = $request->tahun;
 
-        $program_participants = DB::table('mkt_ikatan_detail_2026')
+        // Fetch all candidate program participants for the semester and year
+        $candidates = DB::table('mkt_ikatan_detail_2026')
             ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
             ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->leftJoin('mkt_ikatan_target_2026', function ($join) use ($request) {
+                $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_target_2026.no_pengajuan')
+                    ->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'mkt_ikatan_target_2026.kode_pelanggan')
+                    ->where('mkt_ikatan_target_2026.bulan', $request->bulan)
+                    ->where('mkt_ikatan_target_2026.tahun', $request->tahun);
+            })
             ->select(
-                'pelanggan.kode_salesman',
-                'pelanggan.kode_pelanggan',
+                'mkt_ikatan_detail_2026.no_pengajuan',
+                'mkt_ikatan_detail_2026.kode_pelanggan',
                 'pelanggan.nama_pelanggan',
-                'program_ikatan.nama_program'
+                'pelanggan.kode_salesman',
+                'program_ikatan.produk',
+                'program_ikatan.nama_program',
+                'mkt_ikatan_target_2026.avg',
+                'mkt_ikatan_target_2026.target_perbulan'
             )
             ->where('mkt_ikatan_2026.status', 1)
             ->where('mkt_ikatan_2026.semester', $semester_program)
             ->whereYear('mkt_ikatan_2026.periode_dari', $tahun_program)
             ->whereNotNull('mkt_ikatan_detail_2026.file_doc')
             ->where('mkt_ikatan_detail_2026.file_doc', '!=', '')
-            ->get()
-            ->groupBy('kode_salesman');
+            ->get();
+
+        $customer_codes = $candidates->pluck('kode_pelanggan')->unique()->toArray();
+
+        $sales = collect();
+        if (!empty($customer_codes)) {
+            $sales = DB::table('marketing_penjualan_detail')
+                ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->whereIn('marketing_penjualan.kode_pelanggan', $customer_codes)
+                ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+                ->where('marketing_penjualan.status_sampel', 0)
+                ->where('marketing_penjualan.status_batal', 0)
+                ->select(
+                    'marketing_penjualan.kode_pelanggan',
+                    'produk_harga.kode_produk',
+                    'produk.isi_pcs_dus',
+                    DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs')
+                )
+                ->groupBy('marketing_penjualan.kode_pelanggan', 'produk_harga.kode_produk', 'produk.isi_pcs_dus')
+                ->get()
+                ->groupBy('kode_pelanggan');
+        }
+
+        $achieved_participants = collect();
+        $unachieved_participants = collect();
+        $salesman_counts = [];
+        $salesman_unachieved_counts = [];
+
+        foreach ($candidates as $c) {
+            if (is_null($c->target_perbulan)) {
+                continue;
+            }
+            $target = ($c->avg ?? 0) + ($c->target_perbulan ?? 0);
+            $allowed_products = json_decode($c->produk, true) ?? [];
+            $realisasi = 0;
+
+            if (isset($sales[$c->kode_pelanggan])) {
+                $cust_sales = $sales[$c->kode_pelanggan];
+                foreach ($cust_sales as $s) {
+                    if (in_array($s->kode_produk, $allowed_products)) {
+                        $realisasi += floor($s->total_pcs / $s->isi_pcs_dus);
+                    }
+                }
+            }
+
+            if ($realisasi >= $target) {
+                $achieved_participants->push((object)[
+                    'no_pengajuan' => $c->no_pengajuan,
+                    'kode_pelanggan' => $c->kode_pelanggan,
+                    'nama_pelanggan' => $c->nama_pelanggan,
+                    'kode_salesman' => $c->kode_salesman,
+                    'nama_program' => $c->nama_program,
+                ]);
+                $salesman_counts[$c->kode_salesman] = ($salesman_counts[$c->kode_salesman] ?? 0) + 1;
+            } else {
+                $unachieved_participants->push((object)[
+                    'no_pengajuan' => $c->no_pengajuan,
+                    'kode_pelanggan' => $c->kode_pelanggan,
+                    'nama_pelanggan' => $c->nama_pelanggan,
+                    'kode_salesman' => $c->kode_salesman,
+                    'nama_program' => $c->nama_program,
+                ]);
+                $salesman_unachieved_counts[$c->kode_salesman] = ($salesman_unachieved_counts[$c->kode_salesman] ?? 0) + 1;
+            }
+        }
+
+        $program_participants = $achieved_participants->groupBy('kode_salesman');
+        $program_participants_tidak_tercapai = $unachieved_participants->groupBy('kode_salesman');
+
+        $data['komisi']->transform(function ($item) use ($salesman_counts, $salesman_unachieved_counts) {
+            $item->total_peserta_tercapai = $salesman_counts[$item->kode_salesman] ?? 0;
+            $item->total_peserta_tidak_tercapai = $salesman_unachieved_counts[$item->kode_salesman] ?? 0;
+            $item->total_peserta = $item->total_peserta_tercapai;
+            return $item;
+        });
 
         $data['program_participants'] = $program_participants;
+        $data['program_participants_tidak_tercapai'] = $program_participants_tidak_tercapai;
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
@@ -7349,8 +7436,117 @@ class LaporanmarketingController extends Controller
             $query->where('cabang.kode_cabang', $kode_cabang);
         }
 
+        $ytd_start = $request->tahun . "-01-01";
+
+        // YTD Retur
+        $ytd_queryretur = Detailretur::query();
+        $ytd_queryretur->select('salesman.kode_cabang', ...$selectColumretur);
+        $ytd_queryretur->join('produk_harga', 'marketing_retur_detail.kode_harga', 'produk_harga.kode_harga');
+        $ytd_queryretur->join('marketing_retur', 'marketing_retur_detail.no_retur', 'marketing_retur.no_retur');
+        $ytd_queryretur->join('marketing_penjualan', 'marketing_retur.no_faktur', 'marketing_penjualan.no_faktur');
+        $ytd_queryretur->join('salesman', 'marketing_penjualan.kode_salesman', 'salesman.kode_salesman');
+        $ytd_queryretur->whereBetween('marketing_retur.tanggal', [$ytd_start, $sampai]);
+        if (!empty($kode_cabang)) {
+            $ytd_queryretur->where('salesman.kode_cabang', $kode_cabang);
+        }
+        $ytd_queryretur->groupBy('salesman.kode_cabang');
+        $ytd_retur = $ytd_queryretur->get()->keyBy('kode_cabang');
+
+        // YTD Mutasi
+        $ytd_querymutasi = Detailmutasigudangcabang::query();
+        $ytd_querymutasi->select('gudang_cabang_mutasi.kode_cabang', ...$selectColumnmutasi);
+        $ytd_querymutasi->join('produk', 'gudang_cabang_mutasi_detail.kode_produk', '=', 'produk.kode_produk');
+        $ytd_querymutasi->join('gudang_cabang_mutasi', 'gudang_cabang_mutasi_detail.no_mutasi', 'gudang_cabang_mutasi.no_mutasi');
+        $ytd_querymutasi->whereBetween('gudang_cabang_mutasi.tanggal', [$ytd_start, $sampai]);
+        $ytd_querymutasi->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
+        if (!empty($kode_cabang)) {
+            $ytd_querymutasi->where('gudang_cabang_mutasi.kode_cabang', $kode_cabang);
+        }
+        $ytd_querymutasi->groupBy('gudang_cabang_mutasi.kode_cabang');
+        $ytd_mutasi = $ytd_querymutasi->get()->keyBy('kode_cabang');
+
+        // YTD Netto Omset
+        $ytd_sales_details_query = DB::table('marketing_penjualan_detail')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->whereBetween('marketing_penjualan.tanggal', [$ytd_start, $sampai])
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan_detail.status_promosi', 0);
+        if (!empty($kode_cabang)) {
+            $ytd_sales_details_query->where('salesman.kode_cabang', $kode_cabang);
+        }
+        $ytd_sales_details = $ytd_sales_details_query->select(
+                'salesman.kode_cabang',
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as bruto')
+            )
+            ->groupBy('salesman.kode_cabang')
+            ->get()
+            ->keyBy('kode_cabang');
+
+        $ytd_sales_potongan_query = DB::table('marketing_penjualan')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('marketing_penjualan.tanggal', [$ytd_start, $sampai])
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.status_batal', 0);
+        if (!empty($kode_cabang)) {
+            $ytd_sales_potongan_query->where('salesman.kode_cabang', $kode_cabang);
+        }
+        $ytd_sales_potongan = $ytd_sales_potongan_query->select(
+                'salesman.kode_cabang',
+                DB::raw('SUM(potongan) as potongan'),
+                DB::raw('SUM(potongan_istimewa) as potongan_istimewa'),
+                DB::raw('SUM(penyesuaian) as penyesuaian'),
+                DB::raw('SUM(ppn) as ppn')
+            )
+            ->groupBy('salesman.kode_cabang')
+            ->get()
+            ->keyBy('kode_cabang');
+
+        $ytd_retur_pf_query = DB::table('marketing_retur_detail')
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->whereBetween('marketing_retur.tanggal', [$ytd_start, $sampai])
+            ->where('marketing_retur.jenis_retur', 'PF');
+        if (!empty($kode_cabang)) {
+            $ytd_retur_pf_query->where('salesman.kode_cabang', $kode_cabang);
+        }
+        $ytd_retur_pf = $ytd_retur_pf_query->select(
+                'salesman.kode_cabang',
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->groupBy('salesman.kode_cabang')
+            ->get()
+            ->keyBy('kode_cabang');
+
+        $cabang_keys = array_unique(array_merge(
+            $ytd_sales_details->keys()->toArray(),
+            $ytd_sales_potongan->keys()->toArray(),
+            $ytd_retur_pf->keys()->toArray()
+        ));
+
+        $ytd_netto = [];
+        foreach ($cabang_keys as $kb) {
+            $bruto = $ytd_sales_details[$kb]->bruto ?? 0;
+            $pot = $ytd_sales_potongan[$kb] ?? null;
+            $retur = $ytd_retur_pf[$kb]->total_retur ?? 0;
+            
+            $potongan = $pot->potongan ?? 0;
+            $potongan_istimewa = $pot->potongan_istimewa ?? 0;
+            $penyesuaian = $pot->penyesuaian ?? 0;
+            $ppn = $pot->ppn ?? 0;
+
+            $netto = $bruto - $potongan - $potongan_istimewa - $penyesuaian + $ppn - $retur;
+            $ytd_netto[$kb] = $netto;
+        }
+
         $data['produk'] = $produk;
         $data['insentif'] = $query->get();
+        $data['ytd_retur'] = $ytd_retur;
+        $data['ytd_mutasi'] = $ytd_mutasi;
+        $data['ytd_netto'] = $ytd_netto;
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang)->first();

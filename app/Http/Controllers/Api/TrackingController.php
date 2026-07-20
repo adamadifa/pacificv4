@@ -86,4 +86,30 @@ class TrackingController extends Controller
             ], 500);
         }
     }
+
+    public function updateFcmToken(Request $request)
+    {
+        Log::info('updateFcmToken API hit. Token: ' . $request->input('fcm_token') . ' User: ' . (Auth::user() ? Auth::user()->name : 'Guest'));
+
+        $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized.'
+            ], 401);
+        }
+
+        $user->update([
+            'fcm_token' => $request->input('fcm_token'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'FCM Token updated successfully.'
+        ]);
+    }
 }

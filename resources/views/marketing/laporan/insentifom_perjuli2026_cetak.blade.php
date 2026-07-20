@@ -94,7 +94,7 @@
                         <th colspan="2">CASHIN</th>
                         <th colspan="3">LJT</th>
                         <th colspan="3">COSTRATIO</th>
-                        <th colspan="3">RATIO BS</th>
+                        <th colspan="4">RATIO BS</th>
                         <th colspan="2">VALIDASI KUNJUNGAN</th>
                         <th colspan="2">OPNAME HARIAN</th>
                         <th rowspan="2">TOTAL</th>
@@ -111,7 +111,8 @@
                         <th>REALISASI</th>
                         <th>RATIO</th>
                         <th>REWARD</th>
-                        <th>REALISASI</th>
+                        <th>REJECT</th>
+                        <th>OMSET</th>
                         <th>RATIO</th>
                         <th>REWARD</th>
                         <th>REALISASI</th>
@@ -203,28 +204,33 @@
                             </td>
                             <td align="right">
                                 @php
-                                    $totalharga = 0;
+                                    $ytd_totalharga = 0;
+                                    $ytd_d_retur = $ytd_retur[$d->kode_cabang] ?? null;
+                                    $ytd_d_mutasi = $ytd_mutasi[$d->kode_cabang] ?? null;
+                                    foreach ($produk as $p) {
+                                         $ytd_jmlreject =
+                                             ($ytd_d_mutasi ? $ytd_d_mutasi->{"reject_pasar_$p->kode_produk"} : 0) +
+                                             ($ytd_d_mutasi ? $ytd_d_mutasi->{"reject_mobil_$p->kode_produk"} : 0) +
+                                             ($ytd_d_mutasi ? $ytd_d_mutasi->{"reject_gudang_$p->kode_produk"} : 0) -
+                                             ($ytd_d_mutasi ? $ytd_d_mutasi->{"repack_$p->kode_produk"} : 0);
+                                         $ytd_retur_count = $ytd_d_mutasi ? $ytd_d_mutasi->{"retur_$p->kode_produk"} : 0;
+                                         $ytd_retur_total = $ytd_d_retur ? $ytd_d_retur->{"total_retur_$p->kode_produk"} : 0;
+                                         $ytd_harga = $ytd_retur_count > 0 ? $ytd_retur_total / $ytd_retur_count : 0;
+                                         $ytd_total = ROUND($ytd_jmlreject, 2) * $ytd_harga;
+                                         $ytd_totalharga += $ytd_total;
+                                    }
                                 @endphp
-                                @foreach ($produk as $p)
-                                    @php
-                                        $jmlreject =
-                                            $d->{"reject_pasar_$p->kode_produk"} +
-                                            $d->{"reject_mobil_$p->kode_produk"} +
-                                            $d->{"reject_gudang_$p->kode_produk"} -
-                                            $d->{"repack_$p->kode_produk"};
-                                        $harga =
-                                            $d->{"retur_$p->kode_produk"} > 0
-                                                ? $d->{"total_retur_$p->kode_produk"} / $d->{"retur_$p->kode_produk"}
-                                                : 0;
-                                        $total = ROUND($jmlreject, 2) * $harga;
-                                        $totalharga += $total;
-                                    @endphp
-                                @endforeach
-                                {{ formatAngka($totalharga) }}
+                                {{ formatAngka($ytd_totalharga) }}
+                            </td>
+                            <td align="right">
+                                @php
+                                    $ytd_omset = $ytd_netto[$d->kode_cabang] ?? 0;
+                                @endphp
+                                {{ formatAngka($ytd_omset) }}
                             </td>
                             <td align="center">
                                 @php
-                                    $ratio_bs = ROUND(!empty($d->realisasi_cashin) ? (ROUND($totalharga) / $d->realisasi_cashin) * 100 : 0, 2);
+                                    $ratio_bs = ROUND(!empty($ytd_omset) ? (ROUND($ytd_totalharga) / $ytd_omset) * 100 : 0, 2);
                                 @endphp
                                 {{ $ratio_bs }}%
                             </td>

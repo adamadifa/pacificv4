@@ -189,8 +189,11 @@
                             <tr><td>Selisih</td><td>: ${item.diff_minutes} menit lalu</td></tr>
                             <tr><td>Akurasi</td><td>: ${item.accuracy ? Math.round(item.accuracy) + ' m' : '-'}</td></tr>
                         </table>
-                        <button class="btn btn-sm btn-primary w-100 btn-view-route" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
+                        <button class="btn btn-sm btn-primary w-100 btn-view-route mb-1" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
                             <i class="ti ti-map-pin me-1"></i>Lihat Rute Hari Ini
+                        </button>
+                        <button class="btn btn-sm btn-success w-100 btn-request-location" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
+                            <i class="ti ti-location me-1"></i>Minta Lokasi Sekarang
                         </button>
                     </div>
                 `;
@@ -407,6 +410,46 @@
                 const nama = btn.getAttribute('data-nama');
                 loadTrail(kode, nama);
                 map.closePopup();
+            }
+        });
+
+        // Listen for Request Location button inside Marker Popup
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-request-location');
+            if (btn) {
+                const kode = btn.getAttribute('data-kode');
+                const nama = btn.getAttribute('data-nama');
+                
+                // Show loading/sending state
+                btn.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Mengirim...`;
+
+                fetch(`/tracking/${kode}/request`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.success) {
+                        alert(`Perintah pelacakan terkirim ke ${nama}. Silakan tunggu beberapa saat.`);
+                        // Auto-refresh peta setelah 3 detik untuk mengambil lokasi terbaru
+                        setTimeout(loadLatestPositions, 3000);
+                    } else {
+                        alert(`Gagal meminta lokasi: ${res.message}`);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error requesting location:", err);
+                    alert("Terjadi kesalahan koneksi.");
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
             }
         });
 

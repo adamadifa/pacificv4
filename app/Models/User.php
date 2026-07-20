@@ -41,7 +41,8 @@ class User extends Authenticatable
         'is_approval_presensi',
         'status',
         'last_seen',
-        'password_secure'
+        'password_secure',
+        'fcm_token'
     ];
 
     /**

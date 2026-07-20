@@ -89,6 +89,15 @@
                                         <div>
                                             <h6 class="mb-0 fw-bold">{{ $d->name }}</h6>
                                             <small class="text-muted">{{ $d->username }}</small>
+                                            @if (!empty($d->fcm_token))
+                                                <div class="mt-1">
+                                                    <span class="badge bg-label-success" style="font-size: 10px; cursor: pointer;" 
+                                                          onclick="navigator.clipboard.writeText('{{ $d->fcm_token }}'); alert('FCM Token copied to clipboard!');"
+                                                          data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $d->fcm_token }}">
+                                                        <i class="ti ti-device-mobile me-1"></i> FCM Registered (Copy)
+                                                    </span>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
