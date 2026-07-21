@@ -301,25 +301,49 @@
                                 {{ $ratio_bs }}%
                             </td>
                             <td align="right">
-                                @if ($ratio_bs <= 0.4)
+                                @if ($ratio_bs <= 0.10)
                                     @php
-                                        $reward_bs = 125000;
+                                        $reward_bs = 550000;
                                     @endphp
-                                @elseif ($ratio_bs > 0.4 && $ratio_bs <= 0.6)
+                                @elseif ($ratio_bs > 0.10 && $ratio_bs <= 0.20)
+                                    @php
+                                        $reward_bs = 500000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.20 && $ratio_bs <= 0.30)
+                                    @php
+                                        $reward_bs = 450000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.30 && $ratio_bs <= 0.40)
+                                    @php
+                                        $reward_bs = 400000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.40 && $ratio_bs <= 0.50)
+                                    @php
+                                        $reward_bs = 350000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.50 && $ratio_bs <= 0.60)
+                                    @php
+                                        $reward_bs = 300000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.60 && $ratio_bs <= 0.70)
+                                    @php
+                                        $reward_bs = 250000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.70 && $ratio_bs <= 0.80)
+                                    @php
+                                        $reward_bs = 200000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.80 && $ratio_bs <= 0.90)
+                                    @php
+                                        $reward_bs = 150000;
+                                    @endphp
+                                @elseif ($ratio_bs > 0.90 && $ratio_bs <= 1.00)
                                     @php
                                         $reward_bs = 100000;
                                     @endphp
-                                @elseif ($ratio_bs > 0.6 && $ratio_bs <= 0.8)
-                                    @php
-                                        $reward_bs = 75000;
-                                    @endphp
-                                @elseif ($ratio_bs > 0.8 && $ratio_bs <= 1)
-                                    @php
-                                        $reward_bs = 50000;
-                                    @endphp
                                 @else
                                     @php
-                                        $reward_bs = 25000;
+                                        $reward_bs = 50000;
                                     @endphp
                                 @endif
                                 {{ formatAngka($reward_bs) }}

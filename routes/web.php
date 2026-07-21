@@ -2730,6 +2730,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/bbm/get-km-terakhir/{id}', 'getKmTerakhir')->name('getKmTerakhir');
     });
 
+    // Buku Panduan & Q&A Chat
+    Route::controller(\App\Http\Controllers\PanduanController::class)->group(function () {
+        Route::get('/panduan', 'index')->name('panduan.index');
+        Route::get('/panduan/{slug}', 'show')->name('panduan.show');
+        Route::post('/panduan/chat', 'chat')->name('panduan.chat');
+    });
+
     Route::get('/trackingtruck', [TrackingtruckController::class, 'index'])->name('trackingtruck.index')->can('trackingtruck.index');
     Route::post('/trackingtruck/import', [TrackingtruckController::class, 'import'])->name('trackingtruck.import')->can('trackingtruck.index');
     Route::delete('/trackingtruck/delete-period', [TrackingtruckController::class, 'destroyPeriod'])->name('trackingtruck.delete-period')->can('trackingtruck.index');
