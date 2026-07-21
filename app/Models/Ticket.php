@@ -99,7 +99,7 @@ class Ticket extends Model
             case 'ADMIN':
                 return '<span class="badge bg-primary text-white fw-bold"><i class="ti ti-cpu me-1"></i>Diproses IT Admin</span>';
             default:
-                return '<span class="badge bg-secondary text-white">' . $this->posisi_approval . '</span>';
+                return '<span class="badge bg-label-primary text-primary fw-bold">Menunggu ' . strtoupper($this->posisi_approval) . '</span>';
         }
     }
 

@@ -176,6 +176,7 @@ use App\Http\Controllers\SuratperingatanController;
 use App\Http\Controllers\TargetkomisiController;
 use App\Http\Controllers\TicketCategoryController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TicketApprovalConfigController;
 use App\Http\Controllers\TicketupdateController;
 use App\Http\Controllers\TransitinController;
 use App\Http\Controllers\TrackingtruckController;
@@ -2555,6 +2556,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/ticket/{no_pengajuan}/message', 'message')->name('ticket.message');
         Route::post('/ticket/{no_pengajuan}/storemessage', 'storemessage')->name('ticket.storemessage');
         Route::get('/ticket/{no_pengajuan}/download-lampiran', 'downloadLampiran')->name('ticket.downloadlampiran');
+    });
+
+    Route::controller(TicketApprovalConfigController::class)->group(function () {
+        Route::get('/ticket/config', 'index')->name('ticketconfig.index');
+        Route::get('/ticket/config/create', 'create')->name('ticketconfig.create');
+        Route::post('/ticket/config', 'store')->name('ticketconfig.store');
+        Route::get('/ticket/config/{id}/edit', 'edit')->name('ticketconfig.edit');
+        Route::put('/ticket/config/{id}', 'update')->name('ticketconfig.update');
+        Route::delete('/ticket/config/{id}', 'destroy')->name('ticketconfig.destroy');
     });
 
     Route::controller(TicketupdateController::class)->group(function () {

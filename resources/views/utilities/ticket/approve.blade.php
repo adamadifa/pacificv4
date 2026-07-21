@@ -3,48 +3,48 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        gap: 16px;
+        gap: 12px;
         position: relative;
         flex-wrap: wrap;
     }
     
     .stepper-step {
         flex: 1;
-        min-width: 120px;
+        min-width: 130px;
         background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 16px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 10px;
         position: relative;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 6px;
+        gap: 4px;
     }
     
     .stepper-step.active {
-        border-color: #f59e0b;
+        border-color: #fbbf24;
         background: #fffbeb;
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+        box-shadow: 0 4px 10px rgba(251, 191, 36, 0.05);
     }
     
     .stepper-step.approved {
         border-color: #10b981;
         background: #ecfdf5;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.05);
     }
 
     .stepper-step.it-processing {
         border-color: #3b82f6;
         background: #eff6ff;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.05);
     }
     
     .step-icon-box {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         background: #cbd5e1;
         color: #ffffff;
@@ -52,7 +52,7 @@
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
     
     .stepper-step.approved .step-icon-box {
@@ -60,7 +60,7 @@
     }
     
     .stepper-step.active .step-icon-box {
-        background: #f59e0b;
+        background: #fbbf24;
     }
 
     .stepper-step.it-processing .step-icon-box {
@@ -68,41 +68,42 @@
     }
 
     .ticket-info-card-premium {
-        border-radius: 16px;
+        border-radius: 12px;
         border: 1px solid #e2e8f0;
         background: #f8fafc;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
     }
 </style>
 
 <form action="{{ route('ticket.storeapprove', Crypt::encrypt($ticket->kode_pengajuan)) }}" method="POST" id="formApproveTicket">
     @csrf
 
-    {{-- Ticket Information Card --}}
-    <div class="card ticket-info-card-premium mb-3">
-        <div class="card-body p-4">
+    {{-- Ticket Information --}}
+    <div class="card ticket-info-card-premium border-0 shadow-none mb-3">
+        <div class="card-body p-3">
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
                     <span class="badge bg-primary-subtle text-primary border border-primary font-monospace fs-6 mb-2 px-2 py-1">{{ $ticket->kode_pengajuan }}</span>
-                    <h4 class="fw-bold text-dark mb-0">{{ $ticket->judul ?? 'Pengajuan Tiket' }}</h4>
+                    <h5 class="fw-bold text-dark mb-0">{{ $ticket->judul ?? 'Pengajuan Tiket' }}</h5>
                 </div>
                 <div class="d-flex flex-column align-items-end gap-1">
                     {!! $ticket->badge_priority !!}
                     {!! $ticket->badge_status !!}
+                    {!! $ticket->badge_posisi !!}
                 </div>
             </div>
 
             <div class="row text-muted small my-3 g-2">
                 <div class="col-md-4">
-                    <span class="d-block text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Pembuat</span>
-                    <span class="text-dark fw-semibold">{{ $ticket->user->name ?? '-' }}</span> <span class="badge bg-secondary-subtle text-secondary small">{{ $ticket->kode_cabang ?? '-' }} / {{ $ticket->kode_dept ?? '-' }}</span>
+                    <span class="d-block text-uppercase text-muted fw-bold mb-1" style="font-size: 0.65rem;">Pembuat</span>
+                    <span class="text-dark fw-semibold">{{ $ticket->user->name ?? '-' }}</span> 
+                    <span class="badge bg-secondary-subtle text-secondary small ms-1">{{ $ticket->kode_cabang ?? '-' }} / {{ $ticket->kode_dept ?? '-' }}</span>
                 </div>
                 <div class="col-md-4">
-                    <span class="d-block text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Tanggal</span>
+                    <span class="d-block text-uppercase text-muted fw-bold mb-1" style="font-size: 0.65rem;">Tanggal</span>
                     <span class="text-dark fw-semibold"><i class="ti ti-calendar me-1"></i>{{ date('d-m-Y', strtotime($ticket->tanggal)) }}</span>
                 </div>
                 <div class="col-md-4">
-                    <span class="d-block text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Kategori</span>
+                    <span class="d-block text-uppercase text-muted fw-bold mb-1" style="font-size: 0.65rem;">Kategori</span>
                     <span class="text-dark fw-semibold"><i class="ti ti-tag me-1"></i>{{ $ticket->category->nama_kategori ?? 'Umum' }}</span>
                 </div>
             </div>
@@ -111,7 +112,7 @@
 
             <div class="mb-3">
                 <label class="fw-bold text-dark small mb-1">Keterangan / Detail Pengajuan:</label>
-                <div class="p-3 bg-white rounded border text-secondary" style="line-height: 1.6; font-size: 0.9rem; white-space: pre-line;">{{ $ticket->keterangan }}</div>
+                <div class="p-3 bg-white rounded border text-secondary" style="line-height: 1.6; font-size: 0.85rem; white-space: pre-line;">{{ $ticket->keterangan }}</div>
             </div>
 
             @if ($ticket->lampiran || $ticket->link)
@@ -131,114 +132,76 @@
         </div>
     </div>
 
-    {{-- Approval Stepper Timeline --}}
-    <div class="card border-0 shadow-sm rounded-4 mb-3">
-        <div class="card-header bg-light border-bottom py-3 px-4">
-            <h6 class="mb-0 fw-bold text-dark"><i class="ti ti-git-merge me-2 text-primary fs-5"></i>Alur Status Persetujuan (Approval Flow)</h6>
+    {{-- Approval Stepper Timeline (DYNAMIC CONFIG) --}}
+    <div class="card border-0 shadow-none mb-3">
+        <div class="card-header bg-light border rounded-top py-2 px-3">
+            <h6 class="mb-0 fw-bold text-dark small"><i class="ti ti-git-merge me-2 text-primary"></i>Alur Status Persetujuan (Approval Flow)</h6>
         </div>
-        <div class="card-body p-4">
+        <div class="card-body border border-top-0 rounded-bottom p-3">
             <div class="stepper-timeline">
-                @if ($ticket->kode_cabang == 'PST')
-                    {{-- PST Flow --}}
-                    <div class="stepper-step {{ $ticket->manager_approved_at ? 'approved' : ($ticket->posisi_approval == 'MANAGER_DEPT' ? 'active' : '') }}">
+                @php
+                    $currentPosisi = $ticket->posisi_approval;
+                    $status = $ticket->status;
+                    $foundCurrent = false;
+                @endphp
+
+                @foreach ($configRoles as $role)
+                    @php
+                        $stepClass = '';
+                        $isCurrent = ($currentPosisi == $role && $status == '0');
+                        
+                        if ($isCurrent) {
+                            $stepClass = 'active';
+                            $foundCurrent = true;
+                        } elseif ($status == '1' || $status == '2') {
+                            $stepClass = 'approved';
+                        } elseif (!$foundCurrent) {
+                            $stepClass = 'approved';
+                        }
+                    @endphp
+                    <div class="stepper-step {{ $stepClass }}">
                         <div class="step-icon-box">
-                            @if ($ticket->manager_approved_at)
-                                <i class="ti ti-check fs-6"></i>
+                            @if ($stepClass == 'approved')
+                                <i class="ti ti-check small"></i>
                             @else
-                                1
+                                {{ $loop->iteration }}
                             @endif
                         </div>
-                        <div class="fw-bold small text-dark">Manager Dept</div>
-                        <small class="text-muted d-block text-truncate" style="max-width: 140px;" title="{{ $ticket->managerDept->name ?? 'Dept Manager' }}">{{ $ticket->managerDept->name ?? 'Dept Manager' }}</small>
-                        @if ($ticket->manager_approved_at)
-                            <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.65rem;">Disetujui<br>{{ date('d/m H:i', strtotime($ticket->manager_approved_at)) }}</span>
-                        @elseif($ticket->posisi_approval == 'MANAGER_DEPT' && $ticket->status == '0')
-                            <span class="badge bg-warning-subtle text-warning mt-1 small" style="font-size: 0.65rem;">Menunggu</span>
+                        <div class="fw-bold small text-dark">{{ strtoupper($role) }}</div>
+                        @if ($isCurrent)
+                            <span class="badge bg-warning-subtle text-warning mt-1 small" style="font-size: 0.6rem;">Menunggu</span>
+                        @elseif ($stepClass == 'approved')
+                            <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.6rem;">Selesai</span>
                         @else
-                            <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.65rem;">-</span>
+                            <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.6rem;">-</span>
                         @endif
                     </div>
-                @else
-                    {{-- Non-PST Flow --}}
-                    <div class="stepper-step {{ $ticket->smm_approved_at ? 'approved' : ($ticket->posisi_approval == 'SMM' ? 'active' : '') }}">
-                        <div class="step-icon-box">
-                            @if ($ticket->smm_approved_at)
-                                <i class="ti ti-check fs-6"></i>
-                            @else
-                                1
-                            @endif
-                        </div>
-                        <div class="fw-bold small text-dark">SMM</div>
-                        <small class="text-muted d-block text-truncate" style="max-width: 120px;" title="{{ $ticket->smmUser->name ?? 'SMM Cabang' }}">{{ $ticket->smmUser->name ?? 'SMM Cabang' }}</small>
-                        @if ($ticket->smm_approved_at)
-                            <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.65rem;">Disetujui</span>
-                        @elseif($ticket->posisi_approval == 'SMM' && $ticket->status == '0')
-                            <span class="badge bg-warning-subtle text-warning mt-1 small" style="font-size: 0.65rem;">Menunggu</span>
-                        @else
-                            <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.65rem;">-</span>
-                        @endif
-                    </div>
-
-                    @if ($ticket->category && $ticket->category->perlu_rsm)
-                        <div class="stepper-step {{ $ticket->rsm_approved_at ? 'approved' : ($ticket->posisi_approval == 'RSM' ? 'active' : '') }}">
-                            <div class="step-icon-box">
-                                @if ($ticket->rsm_approved_at)
-                                    <i class="ti ti-check fs-6"></i>
-                                @else
-                                    2
-                                @endif
-                            </div>
-                            <div class="fw-bold small text-dark">RSM</div>
-                            <small class="text-muted d-block text-truncate" style="max-width: 120px;" title="{{ $ticket->rsmUser->name ?? 'RSM Regional' }}">{{ $ticket->rsmUser->name ?? 'RSM Regional' }}</small>
-                            @if ($ticket->rsm_approved_at)
-                                <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.65rem;">Disetujui</span>
-                            @elseif($ticket->posisi_approval == 'RSM' && $ticket->status == '0')
-                                <span class="badge bg-warning-subtle text-warning mt-1 small" style="font-size: 0.65rem;">Menunggu</span>
-                            @else
-                                <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.65rem;">-</span>
-                            @endif
-                        </div>
-                    @endif
-
-                    @if ($ticket->category && $ticket->category->perlu_gm)
-                        <div class="stepper-step {{ $ticket->gm_approved_at ? 'approved' : ($ticket->posisi_approval == 'GM' ? 'active' : '') }}">
-                            <div class="step-icon-box">
-                                @if ($ticket->gm_approved_at)
-                                    <i class="ti ti-check fs-6"></i>
-                                @else
-                                    3
-                                @endif
-                            </div>
-                            <div class="fw-bold small text-dark">GM</div>
-                            <small class="text-muted d-block text-truncate" style="max-width: 120px;" title="{{ $ticket->gmUser->name ?? 'GM' }}">{{ $ticket->gmUser->name ?? 'GM' }}</small>
-                            @if ($ticket->gm_approved_at)
-                                <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.65rem;">Disetujui</span>
-                            @elseif($ticket->posisi_approval == 'GM' && $ticket->status == '0')
-                                <span class="badge bg-warning-subtle text-warning mt-1 small" style="font-size: 0.65rem;">Menunggu</span>
-                            @else
-                                <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.65rem;">-</span>
-                            @endif
-                        </div>
-                    @endif
-                @endif
+                @endforeach
 
                 {{-- IT Exec Final --}}
-                <div class="stepper-step {{ $ticket->status == '1' ? 'approved' : ($ticket->posisi_approval == 'ADMIN' && $ticket->status == '0' ? 'it-processing' : '') }}">
+                @php
+                    $adminClass = '';
+                    if ($status == '1') {
+                        $adminClass = 'approved';
+                    } elseif ($currentPosisi == 'ADMIN' && $status == '0') {
+                        $adminClass = 'it-processing';
+                    }
+                @endphp
+                <div class="stepper-step {{ $adminClass }}">
                     <div class="step-icon-box">
-                        @if ($ticket->status == '1')
-                            <i class="ti ti-check fs-6"></i>
+                        @if ($status == '1')
+                            <i class="ti ti-check small"></i>
                         @else
-                            <i class="ti ti-settings fs-6"></i>
+                            <i class="ti ti-settings small"></i>
                         @endif
                     </div>
                     <div class="fw-bold small text-dark">IT Admin</div>
-                    <small class="text-muted d-block text-truncate" style="max-width: 120px;" title="{{ $ticket->adminUser->name ?? 'Eksekusi IT' }}">{{ $ticket->adminUser->name ?? 'Eksekusi IT' }}</small>
-                    @if ($ticket->status == '1')
-                        <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.65rem;">Selesai</span>
-                    @elseif($ticket->posisi_approval == 'ADMIN' && $ticket->status == '0')
-                        <span class="badge bg-primary-subtle text-primary mt-1 small" style="font-size: 0.65rem;">Proses IT</span>
+                    @if ($status == '1')
+                        <span class="badge bg-success-subtle text-success mt-1 small" style="font-size: 0.6rem;">Selesai</span>
+                    @elseif ($currentPosisi == 'ADMIN' && $status == '0')
+                        <span class="badge bg-primary-subtle text-primary mt-1 small" style="font-size: 0.6rem;">Proses IT</span>
                     @else
-                        <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.65rem;">-</span>
+                        <span class="badge bg-secondary-subtle text-secondary mt-1 small" style="font-size: 0.6rem;">-</span>
                     @endif
                 </div>
             </div>
@@ -248,8 +211,33 @@
     {{-- Decline Notes Input Area --}}
     <div id="declineNotesArea" class="form-group mb-3 d-none">
         <label class="form-label fw-bold text-danger">Alasan Penolakan Tiket <span class="text-danger">*</span></label>
-        <textarea name="catatan_decline" id="catatan_decline" class="form-control border-danger" rows="3" placeholder="Masukkan alasan penolakan agar pembuat tiket dapat mengetahui alasannya..."></textarea>
+        <textarea name="catatan_decline" id="catatan_decline" class="form-control border-danger" rows="3" placeholder="Masukkan alasan penolakan..."></textarea>
     </div>
+
+    @hasrole('super admin')
+        <div class="card border border-warning bg-light-warning mb-3">
+            <div class="card-body p-3">
+                <label class="form-label fw-bold text-warning-dark mb-1">
+                    <i class="ti ti-shield-check me-1"></i> Super Admin Panel Override
+                </label>
+                <p class="text-muted small mb-2">Sebagai super admin, Anda dapat langsung mengalihkan posisi persetujuan tiket ini ke role lain.</p>
+                <select name="manual_posisi_approval" class="form-select select2-no-search">
+                    <option value="">-- Tetap Ikuti Alur Approval Normal --</option>
+                    @foreach ($roles as $role)
+                        <option value="{{ $role }}" {{ $ticket->posisi_approval == $role ? 'selected' : '' }}>
+                            Pindahkan ke: {{ strtoupper($role) }}
+                        </option>
+                    @endforeach
+                    <option value="ADMIN" {{ $ticket->posisi_approval == 'ADMIN' ? 'selected' : '' }}>
+                        Pindahkan ke: ADMIN IT (Proses IT)
+                    </option>
+                    <option value="SELESAI" {{ $ticket->posisi_approval == 'SELESAI' ? 'selected' : '' }}>
+                        Pindahkan ke: SELESAI (Selesaikan Tiket)
+                    </option>
+                </select>
+            </div>
+        </div>
+    @endhasrole
 
     {{-- Action Buttons --}}
     @if ($ticket->status == '0')

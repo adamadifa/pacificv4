@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Ticket;
+use App\Models\TicketApprovalConfig;
 use App\Models\TicketCategory;
 use App\Models\Ticketmessage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\Permission\Models\Role;
 
 class TicketController extends Controller
 {
@@ -23,14 +25,53 @@ class TicketController extends Controller
 
         $roles_it_admin = ['super admin', 'admin maintenance'];
 
-        if (!$user->hasRole($roles_it_admin)) {
-            $query->where(function ($q) use ($user) {
-                $q->where('id_user', $user->id)
-                    ->orWhere('id_manager_dept', $user->id)
-                    ->orWhere('id_smm', $user->id)
-                    ->orWhere('id_rsm', $user->id)
-                    ->orWhere('id_gm', $user->id);
+        // Collect all role names the current user has
+        $userRoleNames = $user->roles->pluck('name')->toArray();
+        $userRoleNamesNormalized = [];
+        foreach ($userRoleNames as $role) {
+            $userRoleNamesNormalized[] = strtolower($role);
+            $userRoleNamesNormalized[] = strtoupper($role);
+            $userRoleNamesNormalized[] = str_replace(' ', '_', strtolower($role));
+            $userRoleNamesNormalized[] = str_replace(' ', '_', strtoupper($role));
+        }
+        $userRoleNamesNormalized = array_unique($userRoleNamesNormalized);
+
+        $hasAccessAllCabang = $user->hasRole($roles_access_all_cabang);
+
+        $userCabangs = [];
+        if (!$hasAccessAllCabang) {
+            if ($user->hasRole('regional sales manager')) {
+                $userCabangs = Cabang::where('kode_regional', $user->kode_regional)->pluck('kode_cabang')->toArray();
+            } else {
+                $cabangAccess = json_decode($user->cabang_access, true) ?? [];
+                $userCabangs = array_unique(array_merge([$user->kode_cabang], $cabangAccess));
+            }
+        }
+
+        $applyRoleFilter = function ($q) use ($user, $userRoleNamesNormalized, $hasAccessAllCabang, $userCabangs) {
+            $q->where(function ($sub) use ($user, $userRoleNamesNormalized, $hasAccessAllCabang, $userCabangs) {
+                $sub->where('tickets.id_user', $user->id)
+                    ->orWhere('tickets.id_manager_dept', $user->id)
+                    ->orWhere('tickets.id_smm', $user->id)
+                    ->orWhere('tickets.id_rsm', $user->id)
+                    ->orWhere('tickets.id_gm', $user->id)
+                    ->orWhere(function ($dyn) use ($user, $userRoleNamesNormalized, $hasAccessAllCabang, $userCabangs) {
+                        $dyn->whereIn('tickets.posisi_approval', $userRoleNamesNormalized);
+
+                        if (!$hasAccessAllCabang && !empty($userCabangs)) {
+                            $dyn->whereIn('tickets.kode_cabang', $userCabangs);
+                        }
+
+                        $dyn->where(function ($deptSub) use ($user) {
+                            $deptSub->whereNotIn('tickets.posisi_approval', ['MANAGER_DEPT', 'manager dept'])
+                                    ->orWhere('tickets.kode_dept', $user->kode_dept);
+                        });
+                    });
             });
+        };
+
+        if (!$user->hasRole($roles_it_admin)) {
+            $applyRoleFilter($query);
         }
 
         if (!empty($request->kode_cabang_search)) {
@@ -69,13 +110,7 @@ class TicketController extends Controller
 
         $statsBaseQuery = Ticket::query();
         if (!$user->hasRole($roles_it_admin)) {
-            $statsBaseQuery->where(function ($q) use ($user) {
-                $q->where('id_user', $user->id)
-                    ->orWhere('id_manager_dept', $user->id)
-                    ->orWhere('id_smm', $user->id)
-                    ->orWhere('id_rsm', $user->id)
-                    ->orWhere('id_gm', $user->id);
-            });
+            $applyRoleFilter($statsBaseQuery);
         }
 
         $cbg = new Cabang();
@@ -184,45 +219,20 @@ class TicketController extends Controller
         $lastKode = $lastTicket != null ? $lastTicket->kode_pengajuan : '';
         $kode_pengajuan = buatkode($lastKode, "TK" . $bulan . $tahun, 4);
 
-        // Approvers auto-detection
-        $id_manager_dept = null;
-        $id_smm = null;
-        $id_rsm = null;
-        $id_gm = null;
+        // Dynamic Approval Config: find the most specific config for the user's dept/branch
+        $approvalConfig = TicketApprovalConfig::where(function ($q) use ($user) {
+                $q->where('kode_dept', $user->kode_dept)->orWhereNull('kode_dept');
+            })
+            ->where(function ($q) use ($user) {
+                $q->where('kode_cabang', $user->kode_cabang)->orWhereNull('kode_cabang');
+            })
+            ->orderByRaw('kode_dept DESC, kode_cabang DESC')
+            ->first();
+
+        // Determine first posisi_approval from dynamic config or fallback to ADMIN
         $posisi_approval = 'ADMIN';
-
-        if ($user->kode_cabang == 'PST') {
-            // Cabang PST (Pusat): Goes to Manager Dept
-            if ($request->has('perlu_manager_dept') && $request->id_manager_dept) {
-                $id_manager_dept = $request->id_manager_dept;
-            }
-
-            if ($id_manager_dept && $id_manager_dept != $user->id) {
-                $posisi_approval = 'MANAGER_DEPT';
-            } else {
-                $posisi_approval = 'ADMIN';
-            }
-        } else {
-            // Non-PST (Branch): SMM -> RSM -> GM -> ADMIN
-            if ($request->has('perlu_smm') && $request->id_smm) {
-                $id_smm = $request->id_smm;
-            }
-            if ($request->has('perlu_rsm') && $request->id_rsm) {
-                $id_rsm = $request->id_rsm;
-            }
-            if ($request->has('perlu_gm') && $request->id_gm) {
-                $id_gm = $request->id_gm;
-            }
-
-            if ($id_smm && $id_smm != $user->id) {
-                $posisi_approval = 'SMM';
-            } elseif ($id_rsm && $id_rsm != $user->id) {
-                $posisi_approval = 'RSM';
-            } elseif ($id_gm && $id_gm != $user->id) {
-                $posisi_approval = 'GM';
-            } else {
-                $posisi_approval = 'ADMIN';
-            }
+        if ($approvalConfig && !empty($approvalConfig->roles)) {
+            $posisi_approval = $approvalConfig->roles[0];
         }
 
         try {
@@ -241,10 +251,10 @@ class TicketController extends Controller
                 'id_user' => $user->id,
                 'kode_cabang' => $user->kode_cabang,
                 'kode_dept' => $user->kode_dept,
-                'id_manager_dept' => $id_manager_dept,
-                'id_smm' => $id_smm,
-                'id_rsm' => $id_rsm,
-                'id_gm' => $id_gm,
+                'id_manager_dept' => null,
+                'id_smm' => null,
+                'id_rsm' => null,
+                'id_gm' => null,
             ]);
 
             return Redirect::back()->with(messageSuccess('Tiket Ajuan Berhasil Dibuat'));
@@ -402,7 +412,26 @@ class TicketController extends Controller
             ->where('kode_pengajuan', $kode_pengajuan)
             ->firstOrFail();
 
-        return view('utilities.ticket.approve', compact('ticket'));
+        $approvalConfig = TicketApprovalConfig::where(function ($q) use ($ticket) {
+                $q->where('kode_dept', $ticket->kode_dept)->orWhereNull('kode_dept');
+            })
+            ->where(function ($q) use ($ticket) {
+                $q->where('kode_cabang', $ticket->kode_cabang)->orWhereNull('kode_cabang');
+            })
+            ->orderByRaw('kode_dept DESC, kode_cabang DESC')
+            ->first();
+
+        $configRoles = [];
+        if ($approvalConfig && !empty($approvalConfig->roles)) {
+            $configRoles = $approvalConfig->roles;
+        }
+
+        $roles = [];
+        if (auth()->user()->hasRole('super admin')) {
+            $roles = $configRoles; // For super admin manual override select dropdown
+        }
+
+        return view('utilities.ticket.approve', compact('ticket', 'roles', 'configRoles'));
     }
 
     public function storeapprove($kode_pengajuan, Request $request)
@@ -421,38 +450,64 @@ class TicketController extends Controller
             return Redirect::back()->with(messageSuccess('Tiket Ajuan Telah Ditolak'));
         }
 
-        // Processing Approval steps
-        $posisi = $ticket->posisi_approval;
-        $category = $ticket->category;
         $updateData = [];
 
-        if ($posisi == 'MANAGER_DEPT') {
-            $updateData['manager_approved_at'] = date('Y-m-d H:i:s');
-            $updateData['posisi_approval'] = 'ADMIN';
-        } elseif ($posisi == 'SMM') {
-            $updateData['smm_approved_at'] = date('Y-m-d H:i:s');
-            if ($ticket->id_rsm) {
-                $updateData['posisi_approval'] = 'RSM';
-            } elseif ($ticket->id_gm) {
-                $updateData['posisi_approval'] = 'GM';
+        // Check for super admin manual override
+        if ($user->hasRole('super admin') && $request->filled('manual_posisi_approval')) {
+            $manualPosisi = $request->manual_posisi_approval;
+            
+            if ($manualPosisi == 'SELESAI') {
+                $updateData['status'] = '1';
+                $updateData['id_admin'] = $user->id;
+                $updateData['tanggal_selesai'] = date('Y-m-d');
+                $updateData['posisi_approval'] = 'SELESAI';
             } else {
-                $updateData['posisi_approval'] = 'ADMIN';
+                $updateData['posisi_approval'] = $manualPosisi;
+                if ($manualPosisi == 'ADMIN') {
+                    $updateData['status'] = '0';
+                }
             }
-        } elseif ($posisi == 'RSM') {
-            $updateData['rsm_approved_at'] = date('Y-m-d H:i:s');
-            if ($ticket->id_gm) {
-                $updateData['posisi_approval'] = 'GM';
+        } else {
+            // Processing Approval steps - dynamic config
+            $posisi = $ticket->posisi_approval;
+
+            if ($posisi == 'ADMIN') {
+                // Final step: IT Admin completes the ticket
+                $updateData['status'] = '1';
+                $updateData['id_admin'] = $user->id;
+                $updateData['tanggal_selesai'] = date('Y-m-d');
+                $updateData['posisi_approval'] = 'SELESAI';
             } else {
-                $updateData['posisi_approval'] = 'ADMIN';
+                // Dynamic: look up the config for this ticket's dept/branch
+                $approvalConfig = TicketApprovalConfig::where(function ($q) use ($ticket) {
+                        $q->where('kode_dept', $ticket->kode_dept)->orWhereNull('kode_dept');
+                    })
+                    ->where(function ($q) use ($ticket) {
+                        $q->where('kode_cabang', $ticket->kode_cabang)->orWhereNull('kode_cabang');
+                    })
+                    ->orderByRaw('kode_dept DESC, kode_cabang DESC')
+                    ->first();
+
+                $nextPosisi = 'ADMIN'; // Default: advance to IT Admin
+
+                if ($approvalConfig && !empty($approvalConfig->roles)) {
+                    $rolesList = $approvalConfig->roles;
+                    $currentIndex = array_search($posisi, $rolesList);
+                    if ($currentIndex !== false && isset($rolesList[$currentIndex + 1])) {
+                        $nextPosisi = $rolesList[$currentIndex + 1];
+                    }
+                }
+
+                $updateData['posisi_approval'] = $nextPosisi;
+
+                // Store approval timestamp in generic field if column exists
+                if (\Illuminate\Support\Facades\Schema::hasColumn('tickets', 'last_approved_at')) {
+                    $updateData['last_approved_at'] = now();
+                }
+                if (\Illuminate\Support\Facades\Schema::hasColumn('tickets', 'last_approved_by')) {
+                    $updateData['last_approved_by'] = $user->id;
+                }
             }
-        } elseif ($posisi == 'GM') {
-            $updateData['gm_approved_at'] = date('Y-m-d H:i:s');
-            $updateData['posisi_approval'] = 'ADMIN';
-        } elseif ($posisi == 'ADMIN') {
-            $updateData['status'] = '1';
-            $updateData['id_admin'] = $user->id;
-            $updateData['tanggal_selesai'] = date('Y-m-d');
-            $updateData['posisi_approval'] = 'SELESAI';
         }
 
         try {
