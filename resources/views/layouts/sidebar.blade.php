@@ -444,6 +444,15 @@
              </a>
          </li>
 
+         @if (auth()->user()->hasRole(['super admin', 'gm administrasi']))
+             <li class="menu-item {{ request()->is(['panduan', 'panduan/*']) ? 'active' : '' }}">
+                 <a href="{{ route('panduan.index') }}" class="menu-link">
+                     <i class="menu-icon tf-icons ti ti-book"></i>
+                     <div>Panduan</div>
+                 </a>
+             </li>
+         @endif
+
      </ul>
  </aside>
  <!-- / Menu -->
