@@ -181,7 +181,7 @@
     <div class="container">
         <table class="header-table">
             <tr>
-                <td class="logo-title">CV MAKMUR PERMATA</td>
+                <td class="logo-title">BUKTI PENGAJUAN DAN PENERIMAAN BARANG</td>
                 <td class="text-right" style="color: #666;">Dicetak pada: {{ date('d/m/Y H:i') }}</td>
             </tr>
         </table>
@@ -337,20 +337,17 @@
                 <td>
                     <div class="approval-header">Diajukan Oleh</div>
                     <div class="approval-space"></div>
-                    <div class="approval-name">Head Pembelian</div>
-                    <div>Staf Pembelian</div>
+                    <div class="approval-name">Pembelian</div>
                 </td>
                 <td>
-                    <div class="approval-header">Diperiksa Oleh</div>
+                    <div class="approval-header">Diterima</div>
                     <div class="approval-space"></div>
-                    <div class="approval-name">GM Operasional</div>
-                    <div>General Manager</div>
+                    <div class="approval-name">Gudang</div>
                 </td>
                 <td>
-                    <div class="approval-header">Disetujui Oleh</div>
+                    <div class="approval-header">Mengetahui</div>
                     <div class="approval-space"></div>
-                    <div class="approval-name">Direktur</div>
-                    <div>Direktur Utama / Perwakilan</div>
+                    <div class="approval-name">Manager</div>
                 </td>
             </tr>
         </table>

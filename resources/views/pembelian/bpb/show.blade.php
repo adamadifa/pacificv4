@@ -285,7 +285,7 @@
                                     name="tanggal_diserahkan" required value="{{ date('Y-m-d') }}"
                                     datepicker="flatpickr-date" />
                             </div>
-                            <div class="col-md-6 col-sm-12">
+                            <div class="col-md-4 col-sm-12">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold text-dark mb-1">Pilih Supplier</label>
                                     <select name="kode_supplier" class="form-select select2KodeSupplier w-100"
@@ -296,6 +296,15 @@
                                                 {{ textUpperCase($s->nama_supplier) }}
                                             </option>
                                         @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-label fw-semibold text-dark mb-1">PPN</label>
+                                    <select name="ppn" id="ppn" class="form-select" required>
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
                                     </select>
                                 </div>
                             </div>

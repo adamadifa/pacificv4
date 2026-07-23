@@ -42,6 +42,7 @@ class LaporanpembelianController extends Controller
             'keterangan_penjualan',
             'nama_akun',
             'ppn',
+            'is_tax_mp',
             'kategori_transaksi',
             'jenis_transaksi',
             'pembelian.created_at',

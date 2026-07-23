@@ -340,6 +340,7 @@
             $("#modal").find(".modal-title").text("Approve Penerimaan Maintenance");
             $("#modal").find("#loadmodal").load(`/pembelian/${no_bukti}/approvemtc`);
         });
+        });
     });
 </script>
 @endpush

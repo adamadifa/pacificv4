@@ -158,4 +158,9 @@ class Pembelian extends Model
         $query->orderBy('pembelian.no_bukti', 'desc');
         return $query;
     }
+
+    public function details()
+    {
+        return $this->hasMany(Detailpembelian::class, 'no_bukti', 'no_bukti');
+    }
 }

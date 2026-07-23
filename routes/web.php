@@ -1574,8 +1574,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/pembelian/getbarangpembelian', 'getbarangpembelian')->name('pembelian.getbarangpembelian');
 
         Route::get('/po/by-supplier/{kode_supplier}', 'getPoBySupplier')->name('getPoBySupplier');
-
-
+        Route::post('/pembelian/sync-to-portal-mp', 'syncToPortalMp')->name('pembelian.syncToPortalMp');
+        Route::post('/pembelian/unsync-from-portal-mp', 'unsyncFromPortalMp')->name('pembelian.unsyncFromPortalMp');
     });
 
     Route::controller(JurnalkoreksiController::class)->group(function () {

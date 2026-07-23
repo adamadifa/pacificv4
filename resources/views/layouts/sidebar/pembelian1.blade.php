@@ -1,10 +1,10 @@
-@if (auth()->user()->hasAnyPermission([
+@if (
+        auth()->user()->hasAnyPermission([
             'pembelian.index',
             'pembelian.jatuhtempo',
             'jurnalkoreksi.index',
             'kontrabonpmb.index',
             'po.index',
-            'bpbpembelian.index',
             'pb.pembelian',
             'pb.rekapsupplier',
             'pb.rekappembelian',
@@ -14,17 +14,17 @@
             'pb.jurnalkoreksi',
             'pb.rekapakun',
             'pb.rekapkontrabon',
-        ]))
+        ])
+    )
     <li
-        class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'po', 'po/*', 'bpbpembelian', 'bpbpembelian/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*', 'laporanpembelian']) ? 'open' : '' }}">
+        class="menu-item {{ request()->is(['pembelian', 'pembelian/*', 'po', 'po/*', 'jurnalkoreksi', 'kontrabonpembelian', 'kontrabonpembelian/*', 'laporanpembelian']) ? 'open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
             <div>Pembelian</div>
         </a>
         <ul class="menu-sub">
             @if (auth()->user()->hasAnyPermission(['pembelian.index']))
-                <li
-                    class="menu-item {{ request()->is(['pembelian', 'pembelian/create', 'pembelian/edit']) ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is(['pembelian', 'pembelian/create', 'pembelian/edit']) ? 'active' : '' }}">
                     <a href="{{ route('pembelian.index') }}" class="menu-link">
                         <div>Pembelian</div>
                     </a>
@@ -47,7 +47,7 @@
             @if (auth()->user()->hasAnyPermission(['bpbpembelian.index']))
                 <li class="menu-item {{ request()->is(['bpbpembelian', 'bpbpembelian/*']) ? 'active' : '' }}">
                     <a href="{{ route('bpbpembelian.index') }}" class="menu-link">
-                        <div>BPPB</div>
+                        <div>BPB</div>
                     </a>
                 </li>
             @endif
@@ -59,14 +59,14 @@
                 </li>
             @endif
             @if (auth()->user()->hasAnyPermission(['kontrabonpmb.index']))
-                <li
-                    class="menu-item {{ request()->is(['kontrabonpembelian', 'kontrabonpembelian/*']) ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is(['kontrabonpembelian', 'kontrabonpembelian/*']) ? 'active' : '' }}">
                     <a href="{{ route('kontrabonpmb.index') }}" class="menu-link">
                         <div>Kontrabon</div>
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->hasAnyPermission([
+            @if (
+                    auth()->user()->hasAnyPermission([
                         'pb.pembelian',
                         'pb.rekapsupplier',
                         'pb.rekappembelian',
@@ -76,7 +76,8 @@
                         'pb.jurnalkoreksi',
                         'pb.rekapakun',
                         'pb.rekapkontrabon',
-                    ]))
+                    ])
+                )
                 <li class="menu-item {{ request()->is(['laporanpembelian', 'laporanpembelian/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporanpembelian.index') }}" class="menu-link">
                         <div>Laporan</div>

@@ -18,6 +18,25 @@
 </head>
 
 <body>
+    @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+    <div style="background: #f8f9fa; padding: 15px; border-bottom: 1px solid #ddd; display: flex; gap: 10px; align-items: center; position: sticky; top: 0; z-index: 1000;" class="no-print">
+        <button id="btnSyncToPortal" style="background-color: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <svg style="width:16px; height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.24"></path></svg>
+            Sync Selected
+        </button>
+        <button id="btnSyncAll" style="background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <svg style="width:16px; height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            Sync All (PPN)
+        </button>
+        <span id="syncStatus" style="font-size: 13px; font-weight: bold; color: #6c757d;"></span>
+    </div>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+        }
+    </style>
+    @endif
+
     <div class="header">
         <h4 class="title">
             LAPORAN PEMBELIAN<br>
@@ -34,6 +53,12 @@
             <table class="datatable3" style="width: 125%">
                 <thead>
                     <tr>
+                        @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                            <th style="width: 5%">
+                                <input type="checkbox" id="selectAllSync" class="no-print" style="margin-right: 5px;">
+                                STATUS
+                            </th>
+                        @endif
                         <th style="width:1%">NO</th>
                         <th style="width:4%">TGL</th>
                         <th style="width:4%">NO BUKTI</th>
@@ -108,6 +133,13 @@
                             $grandtotal += $total;
                         @endphp
                         <tr style="background-color: {{ $bgcolor }}">
+                            @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                                <td class="center" style="background-color: {{ $d->is_tax_mp == 1 ? '#d4edda' : '#f8d7da' }};">
+                                    @if ($d->ppn == '1')
+                                        <input type="checkbox" class="sync-checkbox no-print" value="{{ $d->no_bukti }}" {{ $d->is_tax_mp == 1 ? 'checked' : '' }}>
+                                    @endif
+                                </td>
+                            @endif
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ formatIndo($d->tanggal) }}</td>
                             <td>{{ $d->no_bukti }}</td>
@@ -128,11 +160,13 @@
                             <td class="right">{{ formatAngkaDesimal($kredit) }}</td>
                             <td class="center">{{ $d->kategori_transaksi }}</td>
                             <td>{{ date('d-m-Y H:i', strtotime($d->created_at)) }}</td>
-
                         </tr>
 
                         @if ($no_bukti != $d->no_bukti)
                             <tr bgcolor="#a7efe4" style="color:black; font-weight:bold">
+                                @if (auth()->user()->hasRole(['super admin', 'admin pajak']))
+                                    <td></td>
+                                @endif
                                 <td></td>
                                 <td></td>
                                 <td>{{ $d->no_bukti }}</td>
@@ -153,7 +187,6 @@
                                 <td class="right">{{ formatAngkaDesimal($subtotal_transaksi) }}</td>
                                 <td></td>
                                 <td></td>
-
                             </tr>
                             @php
                                 $subtotal_transaksi = 0;
@@ -163,8 +196,8 @@
                 </tbody>
                 <tfoot class="table-dark">
                     <tr>
-                        <th colspan="14" align="center"><b>TOTAL</b></td>
-                        <th align="right"><b></b></td>
+                        <th colspan="{{ auth()->user()->hasRole(['super admin', 'admin pajak']) ? 15 : 14 }}" align="center"><b>TOTAL</b></th>
+                        <th align="right"><b></b></th>
                         <th class="right">{{ formatAngkaDesimal($grandtotal) }}</th>
                         <th class="right">{{ formatAngkaDesimal($total_debet) }}</th>
                         <th class="right">{{ formatAngkaDesimal($total_kredit + $total_dk) }}</th>
@@ -181,5 +214,161 @@
         'scrollable': true,
         'columnNum': 10,
         'shadow': true,
+    });
+
+    $(function() {
+        $('#selectAllSync').change(function() {
+            var isChecked = $(this).prop('checked');
+            $('.sync-checkbox').prop('checked', isChecked).trigger('change-bulk');
+        });
+
+        $('.sync-checkbox').on('change-bulk', function() {
+            var checkbox = $(this);
+            var td = checkbox.closest('td');
+            if (checkbox.prop('checked')) {
+                td.css('background-color', '#d4edda');
+            } else {
+                td.css('background-color', '#f8d7da');
+            }
+        });
+
+        $('.sync-checkbox').change(function(e) {
+            var checkbox = $(this);
+            var noBukti = checkbox.val();
+            var isChecked = checkbox.prop('checked');
+            var td = checkbox.closest('td');
+
+            if (isChecked) {
+                td.css('opacity', '0.5');
+                $.ajax({
+                    url: "{{ route('pembelian.syncToPortalMp') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        no_bukti: [noBukti]
+                    },
+                    success: function(response) {
+                        td.css({
+                            'opacity': '1',
+                            'background-color': '#d4edda'
+                        });
+                    },
+                    error: function(xhr) {
+                        var err = xhr.responseJSON;
+                        alert(err && err.message ? err.message : 'Gagal mensinkronisasi data.');
+                        checkbox.prop('checked', false);
+                        td.css({
+                            'opacity': '1',
+                            'background-color': '#f8d7da'
+                        });
+                    }
+                });
+            } else {
+                if (confirm('Apakah Anda yakin ingin membatalkan sinkronisasi data untuk No. Bukti: ' + noBukti + '? Data di Portal MP akan ikut terhapus.')) {
+                    td.css('opacity', '0.5');
+                    $.ajax({
+                        url: "{{ route('pembelian.unsyncFromPortalMp') }}",
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            no_bukti: noBukti
+                        },
+                        success: function(response) {
+                            td.css({
+                                'opacity': '1',
+                                'background-color': '#f8d7da'
+                            });
+                        },
+                        error: function(xhr) {
+                            var err = xhr.responseJSON;
+                            alert(err && err.message ? err.message : 'Gagal membatalkan sinkronisasi.');
+                            checkbox.prop('checked', true);
+                            td.css({
+                                'opacity': '1',
+                                'background-color': '#d4edda'
+                            });
+                        }
+                    });
+                } else {
+                    checkbox.prop('checked', true);
+                }
+            }
+        });
+
+        $('#btnSyncToPortal').click(function() {
+            var checkedBukti = [];
+            $('.sync-checkbox:checked').each(function() {
+                checkedBukti.push($(this).val());
+            });
+
+            if (checkedBukti.length === 0) {
+                alert('Silakan pilih setidaknya satu transaksi pembelian (checklist) yang ingin disinkronisasi!');
+                return;
+            }
+
+            var btn = $(this);
+            var statusText = $('#syncStatus');
+            btn.prop('disabled', true).css('opacity', '0.6').text('Syncing...');
+            statusText.css('color', '#6c757d').text('Memulai sinkronisasi ' + checkedBukti.length + ' data...');
+            
+            $.ajax({
+                url: "{{ route('pembelian.syncToPortalMp') }}",
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    no_bukti: checkedBukti
+                },
+                success: function(response) {
+                    statusText.css('color', '#28a745').text(response.message || 'Sinkronisasi berhasil!');
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1500);
+                },
+                error: function(xhr) {
+                    var err = xhr.responseJSON;
+                    statusText.css('color', '#dc3545').text(err && err.message ? err.message : 'Terjadi kesalahan saat sinkronisasi.');
+                    btn.prop('disabled', false).css('opacity', '1').html('Sync Selected');
+                }
+            });
+        });
+
+        $('#btnSyncAll').click(function() {
+            var allBukti = [];
+            $('.sync-checkbox').each(function() {
+                allBukti.push($(this).val());
+            });
+
+            if (allBukti.length === 0) {
+                alert('Tidak ada transaksi PPN = 1 pada periode ini.');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin mensinkronisasi seluruh ' + allBukti.length + ' transaksi PPN pada periode ini?')) {
+                var btn = $(this);
+                var statusText = $('#syncStatus');
+                btn.prop('disabled', true).css('opacity', '0.6').text('Syncing All...');
+                statusText.css('color', '#6c757d').text('Mensinkronisasi seluruh data PPN...');
+
+                $.ajax({
+                    url: "{{ route('pembelian.syncToPortalMp') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        no_bukti: allBukti
+                    },
+                    success: function(response) {
+                        statusText.css('color', '#28a745').text(response.message || 'Sinkronisasi berhasil!');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1500);
+                    },
+                    error: function(xhr) {
+                        var err = xhr.responseJSON;
+                        statusText.css('color', '#dc3545').text(err && err.message ? err.message : 'Terjadi kesalahan saat sinkronisasi.');
+                        btn.prop('disabled', false).css('opacity', '1').html('Sync All (PPN)');
+                    }
+                });
+            }
+        });
     });
 </script>

@@ -953,4 +953,111 @@ class PembelianController extends Controller
 
         return response()->json($data);
     }
+
+    public function syncToPortalMp(Request $request)
+    {
+        $request->validate([
+            'no_bukti' => 'required|array',
+            'no_bukti.*' => 'required|string',
+        ]);
+
+        $no_bukti_list = $request->no_bukti;
+
+        // Fetch pembelian with no_bukti in the list and ppn = 1
+        $pembelian = Pembelian::whereIn('no_bukti', $no_bukti_list)
+            ->where('ppn', '1')
+            ->with('details')
+            ->get();
+
+        if ($pembelian->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada data pembelian dengan PPN = 1 yang dipilih.'
+            ], 404);
+        }
+
+        $baseUrl = env('SYNC_API_MP_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Konfigurasi SYNC_API_MP_BASE_URL belum diset di .env.'
+            ], 500);
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::post($baseUrl . '/api/sync/pembelian', [
+                'purchases' => $pembelian->toArray()
+            ]);
+            if ($response->successful()) {
+                // Update local status to 1
+                Pembelian::whereIn('no_bukti', $no_bukti_list)
+                    ->update(['is_tax_mp' => 1]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berhasil sinkronisasi ' . $pembelian->count() . ' data pembelian ke Portal MP.'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal sinkronisasi: ' . ($response->json('message') ?? 'Terjadi kesalahan pada Portal MP.')
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghubungkan ke Portal MP: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function unsyncFromPortalMp(Request $request)
+    {
+        $request->validate([
+            'no_bukti' => 'required|string',
+        ]);
+
+        $no_bukti = $request->no_bukti;
+
+        $pembelian = Pembelian::where('no_bukti', $no_bukti)->first();
+        if (!$pembelian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi tidak ditemukan.'
+            ], 404);
+        }
+
+        $baseUrl = env('SYNC_API_MP_BASE_URL');
+        if (empty($baseUrl)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Konfigurasi SYNC_API_MP_BASE_URL belum diset di .env.'
+            ], 500);
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::post($baseUrl . '/api/sync/pembelian/delete', [
+                'no_bukti' => $no_bukti
+            ]);
+
+            if ($response->successful()) {
+                $pembelian->update(['is_tax_mp' => 0]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berhasil membatalkan sinkronisasi transaksi ' . $no_bukti
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal membatalkan sinkronisasi di Portal MP: ' . ($response->json('message') ?? 'Terjadi kesalahan.')
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghubungkan ke Portal MP: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
