@@ -38,6 +38,9 @@ class VisitpelangganController extends Controller
             'nama_salesman',
             'salesman.kode_cabang',
             'marketing_penjualan.tanggal as tanggal_faktur',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.potongan',
+            'marketing_penjualan.potongan_istimewa',
             DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn as total_netto'),
         );
         $query->join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur');
@@ -297,6 +300,9 @@ class VisitpelangganController extends Controller
             'alamat_pelanggan',
             'nama_salesman',
             'marketing_penjualan.tanggal as tanggal_faktur',
+            'marketing_penjualan.jenis_transaksi',
+            'marketing_penjualan.potongan',
+            'marketing_penjualan.potongan_istimewa',
             DB::raw('(SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn as total_netto'),
         );
         $query->join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur');

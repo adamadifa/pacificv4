@@ -117,11 +117,24 @@
                             <th class="text-white py-3">Nilai Faktur</th>
                             <th class="text-white py-3">Tunai/Kredit</th>
                             <th class="text-white py-3">JK</th>
+                            <th class="text-white text-center py-3">C1: OTS?</th>
+                            <th class="text-white text-center py-3">C2: Limit/Diskon?</th>
+                            <th class="text-white text-center py-3">Valid OM?</th>
                             <th class="text-white text-center py-3" style="width: 10%">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
                         @foreach ($visit as $d)
+                            @php
+                                $is_ots = $d->jenis_kunjungan === 'OTS';
+                                $is_faktur_valid = false;
+                                if ($d->jenis_transaksi === 'K') {
+                                    $is_faktur_valid = $d->total_netto >= 1000000;
+                                } elseif ($d->jenis_transaksi === 'T') {
+                                    $is_faktur_valid = $d->potongan > 0 || $d->potongan_istimewa > 0;
+                                }
+                                $is_valid_om = $is_ots && $is_faktur_valid;
+                            @endphp
                             <tr>
                                 <td class="py-2">{{ $d->no_faktur }}</td>
                                 <td class="py-2">{{ formatIndo($d->tanggal) }}</td>
@@ -132,6 +145,27 @@
                                 <td class="py-2 text-end fw-bold">{{ formatRupiah($d->total_netto) }}</td>
                                 <td class="py-2">{{ $d->jenis_transaksi == 'K' ? 'Kredit' : 'Tunai' }}</td>
                                 <td class="py-2">{{ $d->jenis_kunjungan }}</td>
+                                <td class="py-2 text-center">
+                                    @if ($is_ots)
+                                        <span class="badge bg-success"><i class="ti ti-check fs-6"></i></span>
+                                    @else
+                                        <span class="badge bg-danger"><i class="ti ti-x fs-6"></i></span>
+                                    @endif
+                                </td>
+                                <td class="py-2 text-center">
+                                    @if ($is_faktur_valid)
+                                        <span class="badge bg-success"><i class="ti ti-check fs-6"></i></span>
+                                    @else
+                                        <span class="badge bg-danger"><i class="ti ti-x fs-6"></i></span>
+                                    @endif
+                                </td>
+                                <td class="py-2 text-center">
+                                    @if ($is_valid_om)
+                                        <span class="badge bg-success fw-bold">YA</span>
+                                    @else
+                                        <span class="badge bg-danger fw-bold">TIDAK</span>
+                                    @endif
+                                </td>
                                 <td class="py-2">
                                     <div class="d-flex justify-content-center">
                                         @can('penjualan.edit')

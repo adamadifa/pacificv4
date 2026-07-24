@@ -7277,6 +7277,13 @@ class LaporanmarketingController extends Controller
         $querymutasi->whereIn('jenis_mutasi', ['RT', 'RM', 'RG', 'RP', 'RK']);
         $querymutasi->groupBy('gudang_cabang_mutasi.kode_cabang');
 
+        // Kriteria Validasi Kunjungan (Visit Validation) untuk Insentif OM:
+        // 1. Tanggal kunjungan berada dalam periode laporan ($dari s/d $sampai).
+        // 2. Jenis kunjungan (jenis_kunjungan) adalah 'OTS' (On The Spot).
+        // 3. Transaksi penjualan pada faktur tersebut memenuhi salah satu syarat berikut:
+        //    a. Transaksi Kredit (K) dengan total penjualan bersih >= Rp 1.000.000 (Subtotal - Potongan - Potongan Istimewa - Penyesuaian + PPN).
+        //    b. Transaksi Tunai (T) yang memiliki Potongan (potongan > 0) ATAU Potongan Istimewa (potongan_istimewa > 0).
+        // 4. Dihitung berdasarkan jumlah pelanggan unik yang dikunjungi (COUNT(DISTINCT kode_pelanggan)).
         $queryvisit = Visitpelanggan::query()
             ->join('marketing_penjualan', 'worksheetom_visitpelanggan.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->leftJoin(
@@ -7311,10 +7318,13 @@ class LaporanmarketingController extends Controller
             ->whereBetween('worksheetom_visitpelanggan.tanggal', [$dari, $sampai])
             ->where('worksheetom_visitpelanggan.jenis_kunjungan', 'OTS')
             ->where(function ($q) {
+                // Syarat transaksi penjualan:
                 $q->where(function ($q2) {
+                    // Kredit (K) dengan total bersih penjualan >= Rp 1.000.000
                     $q2->where('marketing_penjualan.jenis_transaksi', 'K')
                         ->whereRaw('((SELECT SUM(subtotal) FROM marketing_penjualan_detail WHERE no_faktur = marketing_penjualan.no_faktur) - potongan - potongan_istimewa - penyesuaian + ppn) >= 1000000');
                 })->orWhere(function ($q2) {
+                    // Tunai (T) yang memiliki potongan atau potongan istimewa
                     $q2->where('marketing_penjualan.jenis_transaksi', 'T')
                         ->where(function ($q3) {
                             $q3->where('marketing_penjualan.potongan', '>', 0)

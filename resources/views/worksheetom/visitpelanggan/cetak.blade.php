@@ -26,15 +26,27 @@
                     <th>Alamat</th>
                     <th>Tgl Faktur</th>
                     <th>Jenis Kunjungan</th>
+                    <th>C1: OTS?</th>
+                    <th>C2: Limit/Diskon?</th>
+                    <th>Valid OM?</th>
                     <th>Hasil Konfirmasi</th>
                     <th>Note</th>
                     <th>Saran / Keluhan Produk</th>
                     <th>Act OM</th>
-
                 </tr>
             </thead>
             <tbody>
                 @foreach ($visit as $d)
+                    @php
+                        $is_ots = $d->jenis_kunjungan === 'OTS';
+                        $is_faktur_valid = false;
+                        if ($d->jenis_transaksi === 'K') {
+                            $is_faktur_valid = $d->total_netto >= 1000000;
+                        } elseif ($d->jenis_transaksi === 'T') {
+                            $is_faktur_valid = $d->potongan > 0 || $d->potongan_istimewa > 0;
+                        }
+                        $is_valid_om = $is_ots && $is_faktur_valid;
+                    @endphp
                     <tr>
                         <td>{{ formatIndo($d->tanggal) }}</td>
                         <td>{{ $d->no_faktur }}</td>
@@ -43,6 +55,9 @@
                         <td>{{ $d->alamat_pelanggan }}</td>
                         <td>{{ formatIndo($d->tanggal_faktur) }}</td>
                         <td>{{ $d->jenis_kunjungan }}</td>
+                        <td style="text-align: center; background-color: {{ $is_ots ? '#d4edda' : '#f8d7da' }}">{{ $is_ots ? 'YA' : 'TIDAK' }}</td>
+                        <td style="text-align: center; background-color: {{ $is_faktur_valid ? '#d4edda' : '#f8d7da' }}">{{ $is_faktur_valid ? 'YA' : 'TIDAK' }}</td>
+                        <td style="text-align: center; font-weight: bold; background-color: {{ $is_valid_om ? '#c3e6cb' : '#f5c6cb' }}">{{ $is_valid_om ? 'YA' : 'TIDAK' }}</td>
                         <td>{{ $d->hasil_konfirmasi }}</td>
                         <td>{{ $d->note }}</td>
                         <td>{{ $d->saran }}</td>
