@@ -25,6 +25,8 @@
                     <th>Nama Pelanggan</th>
                     <th>Alamat</th>
                     <th>Tgl Faktur</th>
+                    <th>Nilai Faktur</th>
+                    <th>Tunai/Kredit</th>
                     <th>Jenis Kunjungan</th>
                     <th>C1: OTS?</th>
                     <th>C2: Limit/Diskon?</th>
@@ -54,6 +56,8 @@
                         <td>{{ $d->nama_pelanggan }}</td>
                         <td>{{ $d->alamat_pelanggan }}</td>
                         <td>{{ formatIndo($d->tanggal_faktur) }}</td>
+                        <td style="text-align: right; font-weight: bold;">{{ formatRupiah($d->total_netto) }}</td>
+                        <td>{{ $d->jenis_transaksi == 'K' ? 'Kredit' : 'Tunai' }}</td>
                         <td>{{ $d->jenis_kunjungan }}</td>
                         <td style="text-align: center; background-color: {{ $is_ots ? '#d4edda' : '#f8d7da' }}">{{ $is_ots ? 'YA' : 'TIDAK' }}</td>
                         <td style="text-align: center; background-color: {{ $is_faktur_valid ? '#d4edda' : '#f8d7da' }}">{{ $is_faktur_valid ? 'YA' : 'TIDAK' }}</td>
