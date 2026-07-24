@@ -122,6 +122,10 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('users.impersonate', Crypt::encrypt($d->id)) }}" 
+                                           class="text-warning" data-bs-toggle="tooltip" title="View As User">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
                                         <a href="{{ route('users.createuserpermission', Crypt::encrypt($d->id)) }}" 
                                            class="text-info" data-bs-toggle="tooltip" title="Permissions">
                                             <i class="ti ti-shield-lock"></i>

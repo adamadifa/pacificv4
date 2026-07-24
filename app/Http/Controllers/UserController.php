@@ -507,4 +507,31 @@ class UserController extends Controller
             $user->assignRole($role);
         }
     }
+
+    public function impersonate($id)
+    {
+        $id = \Illuminate\Support\Facades\Crypt::decrypt($id);
+        $user = User::findOrFail($id);
+
+        session()->put('impersonated_by', auth()->user()->id);
+
+        auth()->login($user);
+
+        return redirect()->route('dashboard')->with(['success' => 'Melihat sistem sebagai ' . $user->name]);
+    }
+
+    public function stopImpersonating()
+    {
+        if (session()->has('impersonated_by')) {
+            $originalUserId = session()->get('impersonated_by');
+            $user = User::findOrFail($originalUserId);
+
+            auth()->login($user);
+            session()->forget('impersonated_by');
+
+            return redirect()->route('users.index')->with(['success' => 'Kembali ke akun Admin']);
+        }
+
+        return redirect()->route('dashboard');
+    }
 }

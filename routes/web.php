@@ -223,6 +223,7 @@ use Spatie\Permission\Models\Role;
 Route::post('/screen-resolution', [App\Http\Controllers\ScreenController::class, 'store'])->name('screen.resolution');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/users/stop-impersonating', [UserController::class, 'stopImpersonating'])->name('users.stop-impersonating');
 
 
 
@@ -326,6 +327,7 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/users/{id}/pjpaccess', 'editPjpAccess')->name('users.pjpaccess');
             Route::post('/users/{id}/pjpaccess', 'updatePjpAccess')->name('users.pjpaccess.update');
+            Route::get('/users/{id}/impersonate', 'impersonate')->name('users.impersonate');
         });
     });
 

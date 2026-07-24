@@ -44,6 +44,19 @@
 
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
+                    @if (session()->has('impersonated_by'))
+                        <div class="alert alert-warning d-flex align-items-center justify-content-between mx-4 mt-3 mb-0 shadow-sm border border-warning" style="border-radius: 8px;">
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-eye me-2 fs-4"></i>
+                                <div>
+                                    Anda sedang melihat sistem sebagai <strong>{{ Auth::user()->name }}</strong> (Role: {{ Auth::user()->roles->pluck('name')->implode(', ') }}).
+                                </div>
+                            </div>
+                            <a href="{{ route('users.stop-impersonating') }}" class="btn btn-warning btn-sm fw-bold">
+                                <i class="ti ti-logout me-1"></i> Kembali ke Admin
+                            </a>
+                        </div>
+                    @endif
                     <!-- Content -->
                     <div class="container-fluid flex-grow-1 container-p-y">
                         @php
