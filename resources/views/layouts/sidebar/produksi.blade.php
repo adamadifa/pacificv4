@@ -14,22 +14,38 @@
                 </li>
             @endcan
             @if (auth()->user()->hasAnyPermission($produksi_mutasi_produk_permission))
-                @can('samutasiproduksi.index')
-                    <li class="menu-item {{ request()->is($produksi_mutasi_produk_request) ? 'active' : '' }}">
-                        <a href="{{ route('samutasiproduksi.index') }}" class="menu-link">
-                            <div>Mutasi Produksi</div>
-                        </a>
-                    </li>
-                @endcan
+                @php
+                    $mutasiProduksiRoute = '#';
+                    if (auth()->user()->can('samutasiproduksi.index')) {
+                        $mutasiProduksiRoute = route('samutasiproduksi.index');
+                    } elseif (auth()->user()->can('bpbj.index')) {
+                        $mutasiProduksiRoute = route('bpbj.index');
+                    } elseif (auth()->user()->can('fsthp.index')) {
+                        $mutasiProduksiRoute = route('fsthp.index');
+                    }
+                @endphp
+                <li class="menu-item {{ request()->is($produksi_mutasi_produk_request) ? 'active' : '' }}">
+                    <a href="{{ $mutasiProduksiRoute }}" class="menu-link">
+                        <div>Mutasi Produksi</div>
+                    </a>
+                </li>
             @endif
             @if (auth()->user()->hasAnyPermission($produksi_mutasi_barang_permission))
-                @can('sabarangproduksi.index')
-                    <li class="menu-item {{ request()->is($produksi_mutasi_barang_request) ? 'active' : '' }}">
-                        <a href="{{ route('sabarangproduksi.index') }}" class="menu-link">
-                            <div>Mutasi Barang</div>
-                        </a>
-                    </li>
-                @endcan
+                @php
+                    $mutasiBarangRoute = '#';
+                    if (auth()->user()->can('sabarangproduksi.index')) {
+                        $mutasiBarangRoute = route('sabarangproduksi.index');
+                    } elseif (auth()->user()->can('barangmasukproduksi.index')) {
+                        $mutasiBarangRoute = route('barangmasukproduksi.index');
+                    } elseif (auth()->user()->can('barangkeluarproduksi.index')) {
+                        $mutasiBarangRoute = route('barangkeluarproduksi.index');
+                    }
+                @endphp
+                <li class="menu-item {{ request()->is($produksi_mutasi_barang_request) ? 'active' : '' }}">
+                    <a href="{{ $mutasiBarangRoute }}" class="menu-link">
+                        <div>Mutasi Barang</div>
+                    </a>
+                </li>
             @endif
             @if (auth()->user()->hasAnyPermission($produksi_laporan_permission))
                 <li class="menu-item {{ request()->is(['laporanproduksi', 'laporanproduksi/*']) ? 'active' : '' }}">
