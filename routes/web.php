@@ -2255,9 +2255,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::controller(PushSubscriptionController::class)->group(function () {
-        Route::get('/push-subscriptions', 'index')->name('push-subscriptions.index');
-        Route::get('/push-subscriptions/{id}/test', 'test')->name('push-subscriptions.test');
-        Route::delete('/push-subscriptions/{id}', 'destroy')->name('push-subscriptions.destroy');
+        Route::get('/push-subscriptions', 'index')->name('push-subscriptions.index')->can('push-subscriptions.index');
+        Route::get('/push-subscriptions/{id}/test', 'test')->name('push-subscriptions.test')->can('push-subscriptions.test');
+        Route::delete('/push-subscriptions/{id}', 'destroy')->name('push-subscriptions.destroy')->can('push-subscriptions.delete');
     });
 
 

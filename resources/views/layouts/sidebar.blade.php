@@ -342,7 +342,7 @@
              <span class="menu-header-text">Utilities & Settings</span>
          </li>
 
-         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index']) ||
+         @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index', 'push-subscriptions.index']) ||
                  auth()->user()->hasRole(['super admin', 'gm administrasi']))
              <li class="menu-item {{ request()->is(['kirimlhp', 'kirimlpc', 'tutuplaporan', 'activitylog', 'ticket', 'mesinfingerprint', 'push-subscriptions']) ? 'open' : '' }} ">
                  <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -360,11 +360,13 @@
                              <div>Kirim LPC</div>
                          </a>
                      </li>
+                     @can('tutuplaporan.index')
                      <li class="menu-item {{ request()->is(['tutuplaporan', 'tutuplaporan/*']) ? 'active' : '' }}">
                          <a href="{{ route('tutuplaporan.index') }}" class="menu-link">
                              <div>Tutup Laporan</div>
                          </a>
                      </li>
+                     @endcan
                      @can('activitylog.index')
                          <li class="menu-item {{ request()->is(['activitylog', 'activitylog/*']) ? 'active' : '' }}">
                              <a href="{{ route('activitylog.index') }}" class="menu-link">
@@ -394,11 +396,13 @@
                               </a>
                           </li>
                       @endif
+                      @can('push-subscriptions.index')
                       <li class="menu-item {{ request()->is(['push-subscriptions', 'push-subscriptions/*']) ? 'active' : '' }}">
                           <a href="{{ route('push-subscriptions.index') }}" class="menu-link">
                               <div>Push Subscriptions</div>
                           </a>
                       </li>
+                      @endcan
                  </ul>
              </li>
          @endif

@@ -79,6 +79,8 @@ class DatabaseSeeder extends Seeder
             LemburApprovalConfigSeeder::class,
             Dokumenopnamepermissionseeder::class,
             RealtimetrackingPermissionSeeder::class,
+            Tutuplaporanpermissionseeder::class,
+            Pushsubscriptionpermissionseeder::class,
         ]);
     }
 }
