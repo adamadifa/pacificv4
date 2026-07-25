@@ -7,19 +7,31 @@
         </a>
         <ul class="menu-sub">
             @if (auth()->user()->hasAnyPermission($gudang_logistik_mutasi_permission))
+                @php
+                    $logistikMutasiRoute = '#';
+                    if (auth()->user()->can('barangmasukgl.index')) {
+                        $logistikMutasiRoute = route('barangmasukgudanglogistik.index');
+                    } elseif (auth()->user()->can('barangkeluargl.index')) {
+                        $logistikMutasiRoute = route('barangkeluargudanglogistik.index');
+                    } elseif (auth()->user()->can('sagudanglogistik.index')) {
+                        $logistikMutasiRoute = route('sagudanglogistik.index');
+                    } elseif (auth()->user()->can('opgudanglogistik.index')) {
+                        $logistikMutasiRoute = route('opgudanglogistik.index');
+                    }
+                @endphp
                 <li class="menu-item {{ request()->is($gudang_logistik_mutasi_request) ? 'active' : '' }}">
-                    <a href="{{ route('barangmasukgudanglogistik.index') }}" class="menu-link">
+                    <a href="{{ $logistikMutasiRoute }}" class="menu-link">
                         <div>Mutasi Barang</div>
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->can('bpb.index'))
+            @can('bpb.index')
                 <li class="menu-item {{ request()->is(['bpb', 'bpb/*']) ? 'active' : '' }}">
                     <a href="{{ route('bpb.index') }}" class="menu-link">
                         <div>BPB</div>
                     </a>
                 </li>
-            @endif
+            @endcan
             @if (auth()->user()->hasAnyPermission($gudang_logistik_laporan_permission))
                 <li class="menu-item {{ request()->is(['laporangudanglogistik', 'laporangudanglogistik/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporangudanglogistik.index') }}" class="menu-link">

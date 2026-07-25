@@ -547,7 +547,8 @@ function pihakpertamacabang($cabang, $perusahaan)
         'BKI' => 'Victor Simatupang',
         'PWK' => 'M. Hirzam Purnama',
         'TSM' => 'Dade Gunawan',
-        'TGR' => 'Ardi Kurniawan'
+        'TGR' => 'Ardi Kurniawan',
+        'MLG' => 'Zaim'
     ];
 
 
@@ -566,7 +567,8 @@ function pihakpertamacabang($cabang, $perusahaan)
         'PWK' => 'M. Ridwan Nugraha',
         'TSM' => 'Aceng Saepul Anwar',
         'BTN' => 'Rizki Dwi Maulana',
-        'CRB' => 'Asep Ramdani'
+        'CRB' => 'Asep Ramdani',
+        'MLG' => 'Goesta'
     ];
 
     if ($perusahaan == "MP") {
