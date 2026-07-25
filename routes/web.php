@@ -2671,17 +2671,17 @@ Route::middleware('auth')->group(function () {
 
 
     Route::controller(BPBController::class)->group(function () {
-        Route::get('/bpb', 'index')->name('bpb.index');
-        Route::get('/bpb/create', 'create')->name('bpb.create');
-        Route::get('/bpb/{no_bukti}/edit', 'edit')->name('bpb.edit');
-        Route::put('/bpb/{no_bukti}/update', 'update')->name('bpb.update');
-        Route::post('/bpb', 'store')->name('bpb.store');
-        Route::delete('/bpb/{no_bukti}', 'destroy')->name('bpb.delete');
-        Route::get('/bpb/{no_bukti}/show', 'show')->name('bpb.show');
-        Route::post('/bpb/{no_bukti}/storeapprove', 'storeapprove')->name('bpb.storeapprove');
-        Route::post('/bpb/serahterimabpbstore', 'serahterimabpbstore')->name('bpb.serahterimabpbstore');
-        Route::post('/bpb/serahterima/update', 'updateSerahTerima')->name('bpb.updateSerahTerima');
-        Route::post('/bpb/serahterima/delete', 'deleteSerahTerima')->name('bpb.deleteSerahTerima');
+        Route::get('/bpb', 'index')->name('bpb.index')->can('bpb.index');
+        Route::get('/bpb/create', 'create')->name('bpb.create')->can('bpb.create');
+        Route::get('/bpb/{no_bukti}/edit', 'edit')->name('bpb.edit')->can('bpb.edit');
+        Route::put('/bpb/{no_bukti}/update', 'update')->name('bpb.update')->can('bpb.update');
+        Route::post('/bpb', 'store')->name('bpb.store')->can('bpb.store');
+        Route::delete('/bpb/{no_bukti}', 'destroy')->name('bpb.delete')->can('bpb.delete');
+        Route::get('/bpb/{no_bukti}/show', 'show')->name('bpb.show')->can('bpb.show');
+        Route::post('/bpb/{no_bukti}/storeapprove', 'storeapprove')->name('bpb.storeapprove')->can('bpb.storeapprove');
+        Route::post('/bpb/serahterimabpbstore', 'serahterimabpbstore')->name('bpb.serahterimabpbstore')->can('bpb.serahterimabpbstore');
+        Route::post('/bpb/serahterima/update', 'updateSerahTerima')->name('bpb.updateSerahTerima')->can('bpb.updateSerahTerima');
+        Route::post('/bpb/serahterima/delete', 'deleteSerahTerima')->name('bpb.deleteSerahTerima')->can('bpb.deleteSerahTerima');
     });
 
     Route::controller(BPBPembelianController::class)->group(function () {
