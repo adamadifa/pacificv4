@@ -2544,20 +2544,20 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(TicketController::class)->group(function () {
-        Route::get('/ticket', 'index')->name('ticket.index');
-        Route::get('/ticket/create', 'create')->name('ticket.create');
-        Route::get('/ticket/cetak-laporan', 'cetakLaporan')->name('ticket.cetaklaporan');
-        Route::get('/ticket/category-detail/{id}', 'getCategoryDetail')->name('ticket.categorydetail');
-        Route::get('/ticket/download-template/{id_kategori}', 'downloadTemplate')->name('ticket.downloadtemplate');
-        Route::post('/ticket/store', 'store')->name('ticket.store');
-        Route::get('/ticket/{kode_pengajuan}/edit', 'edit')->name('ticket.edit');
-        Route::put('/ticket/{kode_pengajuan}/update', 'update')->name('ticket.update');
-        Route::delete('/ticket/{no_pengajuan}/destroy', 'destroy')->name('ticket.delete');
-        Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve');
-        Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove');
-        Route::get('/ticket/{no_pengajuan}/message', 'message')->name('ticket.message');
-        Route::post('/ticket/{no_pengajuan}/storemessage', 'storemessage')->name('ticket.storemessage');
-        Route::get('/ticket/{no_pengajuan}/download-lampiran', 'downloadLampiran')->name('ticket.downloadlampiran');
+        Route::get('/ticket', 'index')->name('ticket.index')->can('ticket.index');
+        Route::get('/ticket/create', 'create')->name('ticket.create')->can('ticket.create');
+        Route::get('/ticket/cetak-laporan', 'cetakLaporan')->name('ticket.cetaklaporan')->can('ticket.index');
+        Route::get('/ticket/category-detail/{id}', 'getCategoryDetail')->name('ticket.categorydetail')->can('ticket.index');
+        Route::get('/ticket/download-template/{id_kategori}', 'downloadTemplate')->name('ticket.downloadtemplate')->can('ticket.index');
+        Route::post('/ticket/store', 'store')->name('ticket.store')->can('ticket.store');
+        Route::get('/ticket/{kode_pengajuan}/edit', 'edit')->name('ticket.edit')->can('ticket.edit');
+        Route::put('/ticket/{kode_pengajuan}/update', 'update')->name('ticket.update')->can('ticket.update');
+        Route::delete('/ticket/{no_pengajuan}/destroy', 'destroy')->name('ticket.delete')->can('ticket.delete');
+        Route::get('/ticket/{no_pengajuan}/approve', 'approve')->name('ticket.approve')->can('ticket.approve');
+        Route::post('/ticket/{no_pengajuan}/storeapprove', 'storeapprove')->name('ticket.storeapprove')->can('ticket.approve');
+        Route::get('/ticket/{no_pengajuan}/message', 'message')->name('ticket.message')->can('ticket.index');
+        Route::post('/ticket/{no_pengajuan}/storemessage', 'storemessage')->name('ticket.storemessage')->can('ticket.index');
+        Route::get('/ticket/{no_pengajuan}/download-lampiran', 'downloadLampiran')->name('ticket.downloadlampiran')->can('ticket.index');
     });
 
     Route::controller(TicketApprovalConfigController::class)->group(function () {

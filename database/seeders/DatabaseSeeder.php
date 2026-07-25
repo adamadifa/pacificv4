@@ -81,6 +81,7 @@ class DatabaseSeeder extends Seeder
             RealtimetrackingPermissionSeeder::class,
             Tutuplaporanpermissionseeder::class,
             Pushsubscriptionpermissionseeder::class,
+            Ticketpermissionseeder::class,
         ]);
     }
 }

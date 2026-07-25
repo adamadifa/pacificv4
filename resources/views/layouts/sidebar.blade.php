@@ -441,12 +441,14 @@
              </li>
          @endif
 
+         @can('ticket.index')
          <li class="menu-item {{ request()->is(['ticket', 'ticket/*']) ? 'active' : '' }}">
              <a href="{{ route('ticket.index') }}" class="menu-link">
                  <i class="menu-icon tf-icons ti ti-ticket"></i>
                  <div>Ticket</div>
              </a>
          </li>
+         @endcan
 
          @if (auth()->user()->hasRole(['super admin', 'gm administrasi']))
              <li class="menu-item {{ request()->is(['panduan', 'panduan/*']) ? 'active' : '' }}">
