@@ -58,7 +58,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:110px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -460,11 +460,13 @@
                     @if ($kontrak->kode_cabang != 'PST' && $kontrak->kategori_jabatan != 'MJ')
                         <td colspan="3" style="text-align: center; padding:1rem">
                             {{ textCamelCase($kontrak->nama_cabang) }},
-                            {{ DateToIndo($kontrak->tanggal) }}</td>
+                            {{ DateToIndo($kontrak->tanggal) }}
+                        </td>
                     @else
                         <td colspan="2" style="text-align: center; padding:1rem">
                             {{ $kontrak->kode_cabang != 'PST' ? textCamelCase($kontrak->nama_cabang) : 'Tasikmalaya' }},
-                            {{ DateToIndo($kontrak->tanggal) }}</td>
+                            {{ DateToIndo($kontrak->tanggal) }}
+                        </td>
                     @endif
                 </tr>
                 <tr>
