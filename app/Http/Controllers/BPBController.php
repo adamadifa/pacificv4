@@ -31,7 +31,7 @@ class BPBController extends Controller
         $bpb = BPB::query()
             ->select(
                 'bpb.*',
-                'hrd_departemen.nama_deptk',
+                'hrd_departemen.nama_dept',
                 'users.name as nama_user',
                 'u.name as nama_approve_user',
                 'cabang.nama_cabang',
