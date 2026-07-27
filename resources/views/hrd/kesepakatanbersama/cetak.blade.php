@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cetak Kesepakatan Bersama {{ $kesepakatanbersama->no_kontrak }} {{ $kesepakatanbersama->nama_karyawan }} </title>
+    <title>Cetak Kesepakatan Bersama {{ $kesepakatanbersama->no_kontrak }} {{ $kesepakatanbersama->nama_karyawan }}
+    </title>
     <!-- Normalize or reset CSS with your favorite library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
     <!-- Load paper.css for happy printing -->
@@ -58,7 +59,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:110px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -161,17 +162,20 @@
             </p>
             <p style="text-indent:1cm; text-align:justify">
                 Untuk selanjutnya disebut PIHAK KEDUA ( II) atau pekerja.<br>
-                Pada tanggal {{ DateToIndo($kontrak->sampai) }} PIHAK PERTAMA ( I ) dan PIHAK KEDUA ( II ) bertempat di CV
+                Pada tanggal {{ DateToIndo($kontrak->sampai) }} PIHAK PERTAMA ( I ) dan PIHAK KEDUA ( II ) bertempat di
+                CV
                 Makmur Permata Tasikmalaya telah mengadakan perundingan atau musyawarah mufakat yang mendalam secara
                 kekeluargaan dengan menghasilkan kesepakatan sebagai berikut :
                 <br>
             <ol>
                 <li>
-                    PIHAK PERTAMA (I) dan PIHAK KEDUA (II) telah sepakat terkait kontrak kerja yang diputihkan mulai tanggal
+                    PIHAK PERTAMA (I) dan PIHAK KEDUA (II) telah sepakat terkait kontrak kerja yang diputihkan mulai
+                    tanggal
                     {{ DateToIndo($kontrak->sampai) }}
                 </li>
                 <li>
-                    PIHAK PERTAMA ( I ) bersedia untuk memberikan kompensasi atau kebijakan kepada PIHAK KEDUA ( II ) yang
+                    PIHAK PERTAMA ( I ) bersedia untuk memberikan kompensasi atau kebijakan kepada PIHAK KEDUA ( II )
+                    yang
                     besarnya sebagai berikut :
                 </li>
             </ol>
@@ -190,9 +194,10 @@
                             $masakerjakb = hitungMasakerja($nextmonth, $kontrak->sampai);
 
                         @endphp
-                        {{-- {{ $jmk->tanggal }} - {{ $kontrak->dari }} -  --}}
+                        {{-- {{ $jmk->tanggal }} - {{ $kontrak->dari }} - --}}
                         {{ $nextmonth }} s/d {{ $kontrak->sampai }}
-                        {{ $masakerjakb['tahun'] }} Tahun {{ $masakerjakb['bulan'] }} Bulan {{ $masakerjakb['hari'] }} Hari
+                        {{ $masakerjakb['tahun'] }} Tahun {{ $masakerjakb['bulan'] }} Bulan {{ $masakerjakb['hari'] }}
+                        Hari
                     </th>
                 </tr>
                 <tr>
@@ -214,7 +219,8 @@
                                 <td>Tj.Tanggung Jawab</td>
                                 <td>:</td>
                                 <td>Rp.</td>
-                                <td style="text-align: right">{{ formatRupiah($kesepakatanbersama->t_tanggungjawab) }}</td>
+                                <td style="text-align: right">{{ formatRupiah($kesepakatanbersama->t_tanggungjawab) }}
+                                </td>
                             </tr>
                             <tr>
                                 <td>Uang Makan</td>
@@ -333,7 +339,8 @@
                             <tr style="font-weight:bold">
                                 <td colspan="5" style="border-bottom:1px solid black">Jumlah Potongan</td>
                                 <td style="border-bottom:1px solid black">Rp.</td>
-                                <td style="border-bottom:1px solid black; text-align:right">{{ formatRupiah($totalpotongan) }}
+                                <td style="border-bottom:1px solid black; text-align:right">
+                                    {{ formatRupiah($totalpotongan) }}
                                 </td>
                             </tr>
                             <tr style="font-weight:bold">
@@ -369,12 +376,15 @@
             <p>
             <ol start="3">
                 <li>
-                    PIHAK KEDUA ( II ) dapat menerima dengan baik kompensasi atau kebijakan dari PIHAK PERTAMA (I) seperti
+                    PIHAK KEDUA ( II ) dapat menerima dengan baik kompensasi atau kebijakan dari PIHAK PERTAMA (I)
+                    seperti
                     tersebut di atas.
                 </li>
                 <li>
-                    Dengan ditandatanganinya kesepakatan bersama ini oleh kedua belah pihak, PIHAK PERTAMA ( I ) dan PIHAK
-                    KEDUA ( II ) menyatakan permasalahan telah selesai dan tidak ada saling menuntut apapun dikemudian hari.
+                    Dengan ditandatanganinya kesepakatan bersama ini oleh kedua belah pihak, PIHAK PERTAMA ( I ) dan
+                    PIHAK
+                    KEDUA ( II ) menyatakan permasalahan telah selesai dan tidak ada saling menuntut apapun dikemudian
+                    hari.
                 </li>
             </ol>
             Demikian Kesepakatan Bersama ini dibuat dan ditandatangani oleh kedua belah pihak.
