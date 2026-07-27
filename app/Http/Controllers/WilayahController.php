@@ -80,7 +80,7 @@ class WilayahController extends Controller
         $lastwilayah = Wilayah::where('kode_cabang', $kode_cabang)
             ->orderBy('kode_wilayah', 'desc')
             ->first();
-        $last_kode_wilayah = $lastwilayah->kode_wilayah;
+        $last_kode_wilayah = $lastwilayah ? $lastwilayah->kode_wilayah : '';
         $kode_wilayah =  buatkode($last_kode_wilayah, 'W' . $kode_cabang, 6);
 
         try {
