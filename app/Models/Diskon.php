@@ -9,4 +9,5 @@ class Diskon extends Model
 {
     use HasFactory;
     protected $table = "produk_diskon";
+    protected $guarded = [];
 }

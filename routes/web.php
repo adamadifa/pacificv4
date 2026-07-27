@@ -63,6 +63,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KasbonController;
 use App\Http\Controllers\KaskecilController;
 use App\Http\Controllers\KategoriprodukController;
+use App\Http\Controllers\KategoridiskonController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KesepakatanbersamaController;
 use App\Http\Controllers\KirimlhpController;
@@ -371,6 +372,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/kategoriproduk/{kode_kategori_produk}/edit', 'edit')->name('kategoriproduk.edit')->can('kategoriproduk.edit');
         Route::put('/kategoriproduk/{kode_kategori_produk}', 'update')->name('kategoriproduk.update')->can('kategoriproduk.update');
         Route::delete('/kategoriproduk/{kode_kategori_produk}', 'destroy')->name('kategoriproduk.delete')->can('kategoriproduk.delete');
+    });
+
+    Route::controller(KategoridiskonController::class)->group(function () {
+        Route::get('/kategoridiskon', 'index')->name('kategoridiskon.index')->can('kategoridiskon.index');
+        Route::get('/kategoridiskon/create', 'create')->name('kategoridiskon.create')->can('kategoridiskon.create');
+        Route::post('/kategoridiskon', 'store')->name('kategoridiskon.store')->can('kategoridiskon.store');
+        Route::get('/kategoridiskon/{kode_kategori_diskon}/edit', 'edit')->name('kategoridiskon.edit')->can('kategoridiskon.edit');
+        Route::put('/kategoridiskon/{kode_kategori_diskon}', 'update')->name('kategoridiskon.update')->can('kategoridiskon.update');
+        Route::delete('/kategoridiskon/{kode_kategori_diskon}', 'destroy')->name('kategoridiskon.delete')->can('kategoridiskon.delete');
+
+        // Detail Diskons (produk_diskon)
+        Route::get('/kategoridiskon/{kode_kategori_diskon}/show', 'show')->name('kategoridiskon.show')->can('kategoridiskon.show');
+        Route::get('/kategoridiskon/{kode_kategori_diskon}/createdetail', 'createdetail')->name('kategoridiskon.createdetail')->can('kategoridiskon.show');
+        Route::post('/kategoridiskon/{kode_kategori_diskon}/storedetail', 'storedetail')->name('kategoridiskon.storedetail')->can('kategoridiskon.show');
+        Route::get('/kategoridiskon/{id}/editdetail', 'editdetail')->name('kategoridiskon.editdetail')->can('kategoridiskon.show');
+        Route::put('/kategoridiskon/{id}/updatedetail', 'updatedetail')->name('kategoridiskon.updatedetail')->can('kategoridiskon.show');
+        Route::delete('/kategoridiskon/{id}/destroydetail', 'destroydetail')->name('kategoridiskon.destroydetail')->can('kategoridiskon.show');
     });
 
     Route::controller(JenisprodukController::class)->group(function () {

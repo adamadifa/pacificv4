@@ -43,6 +43,13 @@
                      </a>
                  </li>
              @endcan
+             @can('kategoridiskon.index')
+                 <li class="menu-item {{ request()->is(['kategoridiskon', 'kategoridiskon/*']) ? 'active' : '' }}">
+                     <a href="{{ route('kategoridiskon.index') }}" class="menu-link">
+                         <div>Kategori Diskon</div>
+                     </a>
+                 </li>
+             @endcan
              @can('jenisproduk.index')
                  <li class="menu-item {{ request()->is(['jenisproduk', 'jenisproduk/*']) ? 'active' : '' }}">
                      <a href="{{ route('jenisproduk.index') }}" class="menu-link">

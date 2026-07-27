@@ -58,7 +58,7 @@
                     <tr>
                         <td style="width: 10%">
                             @if ($penilaiankaryawan->kode_perusahaan == 'MP')
-                                <img src="{{ asset('assets/img/logo/mp.png') }}" width="80" height="90" alt="">
+                                <img src="{{ asset('assets/img/logo/mp.png') }}" width="80" height="110" alt="">
                             @endif
                         </td>
                         <td style="font-weight: bold; text-align:center; width:55%">
