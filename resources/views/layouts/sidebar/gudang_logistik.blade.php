@@ -29,6 +29,9 @@
                 <li class="menu-item {{ request()->is(['bpb', 'bpb/*']) ? 'active' : '' }}">
                     <a href="{{ route('bpb.index') }}" class="menu-link">
                         <div>BPB</div>
+                        @if (!empty($notifikasi_bpb))
+                            <div class="badge bg-danger rounded-pill ms-auto">{{ $notifikasi_bpb }}</div>
+                        @endif
                     </a>
                 </li>
             @endcan

@@ -391,6 +391,47 @@ class GlobalProvider extends ServiceProvider
                 //             ->where('internal_memo_log_baca.user_id', auth()->id());
                 //     })
                 //     ->count();
+                // Notifikasi BPB
+                $notifikasi_bpb = 0;
+                $user_id = $user->id;
+                $dept = $user->kode_dept;
+                $cabang = $user->kode_cabang;
+                
+                $head_dept_users = [
+                    'AKT' => '194',
+                    'KEU' => '57',
+                    'PMB' => '9',
+                    'HRD' => '109',
+                    'ADT' => '196',
+                    'GAF' => '64',
+                    'GDG' => '28',
+                    'PRD' => '71',
+                    'PDQ' => '62',
+                    'MTC' => '61'
+                ];
+
+                if ($user_id == '67') {
+                    $notifikasi_bpb = \DB::table('bpb')
+                        ->where('approve_head_dept', '1')
+                        ->where('approve_gudang', '0')
+                        ->count();
+                } else {
+                    $is_head = false;
+                    if ($cabang == 'PST' && $dept == 'AKT' && $user_id == '194') {
+                        $is_head = true;
+                    } elseif (isset($head_dept_users[$dept]) && $user_id == $head_dept_users[$dept]) {
+                        $is_head = true;
+                    }
+
+                    if ($is_head) {
+                        $notifikasi_bpb = \DB::table('bpb')
+                            ->where('kode_cabang', $cabang)
+                            ->where('kode_dept', $dept)
+                            ->where('approve_head_dept', '0')
+                            ->count();
+                    }
+                }
+
                 $notifIM = 0;
             } else {
                 $level_user = '';
@@ -440,6 +481,7 @@ class GlobalProvider extends ServiceProvider
                 $notifikasi_update_data = 0;
 
                 $notifIM = 0;
+                $notifikasi_bpb = 0;
             }
 
             if ($level_user == "gm administrasi") {
@@ -874,6 +916,7 @@ class GlobalProvider extends ServiceProvider
                 'notifikasi_izinkoreksi_presensi' => $notifikasi_izinkoreksi,
                 'notifikasi_izindinas_presensi' => $notifikasi_izindinas,
 
+                'notifikasi_bpb' => $notifikasi_bpb,
                 'notifIM' => $notifIM,
 
 
