@@ -168,7 +168,7 @@ class PelangganController extends Controller
         $lastpelanggan = Pelanggan::whereRaw('LEFT(kode_pelanggan,3)="' . $kode_cabang . '"')
             ->orderBy('kode_pelanggan', 'desc')
             ->first();
-        $last_kode_pelanggan = $lastpelanggan->kode_pelanggan;
+        $last_kode_pelanggan = $lastpelanggan ? $lastpelanggan->kode_pelanggan : '';
         $kode_pelanggan =  buatkode($last_kode_pelanggan, $kode_cabang . '-', 5);
 
 
