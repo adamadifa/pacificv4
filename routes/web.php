@@ -2697,6 +2697,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/bpb/{no_bukti}', 'destroy')->name('bpb.delete')->can('bpb.delete');
         Route::get('/bpb/{no_bukti}/show', 'show')->name('bpb.show')->can('bpb.show');
         Route::post('/bpb/{no_bukti}/storeapprove', 'storeapprove')->name('bpb.storeapprove')->can('bpb.storeapprove');
+        Route::post('/bpb/{no_bukti}/cancelapprove', 'cancelapprove')->name('bpb.cancelapprove')->can('bpb.storeapprove');
         Route::post('/bpb/serahterimabpbstore', 'serahterimabpbstore')->name('bpb.serahterimabpbstore')->can('bpb.serahterimabpbstore');
         Route::post('/bpb/serahterima/update', 'updateSerahTerima')->name('bpb.updateSerahTerima')->can('bpb.updateSerahTerima');
         Route::post('/bpb/serahterima/delete', 'deleteSerahTerima')->name('bpb.deleteSerahTerima')->can('bpb.deleteSerahTerima');

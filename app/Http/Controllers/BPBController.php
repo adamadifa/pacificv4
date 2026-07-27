@@ -317,6 +317,78 @@ class BPBController extends Controller
         }
     }
 
+    public function cancelapprove($kode_bpb)
+    {
+        $kode_bpb = Crypt::decrypt($kode_bpb);
+        $bpb = DB::table('bpb')->where('no_bpb', $kode_bpb)->first();
+
+        if (!$bpb) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data BPB tidak ditemukan.'
+            ], 404);
+        }
+
+        $cektutuplaporan = cektutupLaporan($bpb->tanggal, "gudanglogistik");
+        if ($cektutuplaporan > 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Periode Laporan Sudah Ditutup !'
+            ], 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+
+            if ($user->id == '67') {
+                $hasSerahTerima = DB::table('gudang_logistik_barang_keluar')->where('no_ref', $kode_bpb)->exists();
+                if ($hasSerahTerima) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Gagal batalkan approve: BPB sudah memiliki data serah terima.'
+                    ], 400);
+                }
+
+                DB::table('bpb')
+                    ->where('no_bpb', $kode_bpb)
+                    ->update([
+                        'approve_gudang' => '0',
+                        'tgl_gudang' => null,
+                        'updated_at' => now()
+                    ]);
+            } else {
+                if ($bpb->approve_gudang == '1') {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Gagal batalkan approve: Sudah disetujui oleh Gudang.'
+                    ], 400);
+                }
+
+                DB::table('bpb')
+                    ->where('no_bpb', $kode_bpb)
+                    ->update([
+                        'approve_head_dept' => '0',
+                        'approve_user' => null,
+                        'tgl_head_dept' => null,
+                        'updated_at' => now()
+                    ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Persetujuan BPB berhasil dibatalkan'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy($no_bpb)
     {
         $no_bpb = Crypt::decrypt($no_bpb);

@@ -240,11 +240,25 @@
                                                     <i class="ti ti-circle-check fs-5"></i>
                                                 </a>
                                             @endif
+                                            @if (Auth::user()->id == $user && $d->approve_head_dept == '1' && $d->approve_gudang == '0')
+                                                <a href="#" class="btnCancelApprove text-danger"
+                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
+                                                    data-bs-toggle="tooltip" title="Batalkan Approve Head Dept">
+                                                    <i class="ti ti-circle-x fs-5"></i>
+                                                </a>
+                                            @endif
                                             @if (Auth::user()->id == '67' && $d->approve_head_dept == '1' && $d->approve_gudang == '0')
                                                 <a href="#" class="btnApprove text-success" data-approve="1"
                                                     no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
                                                     data-bs-toggle="tooltip" title="Approve Gudang">
                                                     <i class="ti ti-circle-check fs-5"></i>
+                                                </a>
+                                            @endif
+                                            @if (Auth::user()->id == '67' && $d->approve_gudang == '1' && (empty($d->total_serah_terima) || $d->total_serah_terima == 0))
+                                                <a href="#" class="btnCancelApprove text-danger"
+                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
+                                                    data-bs-toggle="tooltip" title="Batalkan Approve Gudang">
+                                                    <i class="ti ti-circle-x fs-5"></i>
                                                 </a>
                                             @endif
                                         @endif
@@ -360,6 +374,61 @@
                                 type: 'POST',
                                 data: {
                                     approve: approve,
+                                    _token: $('meta[name="csrf-token"]')
+                                        .attr('content')
+                                },
+                                success: function(res) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil!',
+                                        text: res.message,
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => location.reload());
+                                },
+                                error: function(xhr) {
+                                    Swal.fire(
+                                        'Gagal!',
+                                        xhr.responseJSON?.message ??
+                                        'Terjadi kesalahan',
+                                        'error'
+                                    );
+                                }
+                            });
+                        }
+                    });
+
+                }
+            });
+        });
+
+        $(".btnCancelApprove").click(function(e) {
+            e.preventDefault();
+
+            let no_bpb = $(this).attr("no_bpb");
+
+            Swal.fire({
+                title: 'Batalkan Approve BPB?',
+                text: 'Apakah Anda yakin ingin membatalkan persetujuan BPB ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Batalkan',
+                cancelButtonText: 'Tidak',
+                confirmButtonColor: '#dc3545', // merah
+                cancelButtonColor: '#6c757d', // abu-abu
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Memproses...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+
+                            $.ajax({
+                                url: `/bpb/${no_bpb}/cancelapprove`,
+                                type: 'POST',
+                                data: {
                                     _token: $('meta[name="csrf-token"]')
                                         .attr('content')
                                 },
