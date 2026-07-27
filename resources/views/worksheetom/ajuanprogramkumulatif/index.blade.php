@@ -17,24 +17,34 @@
                         <a href="#" class="btn btn-primary" id="btnCreate"><i class="fa fa-plus me-2"></i>
                             Tambah Data</a>
                     @endcan
+                    <ul class="nav nav-tabs mt-3 mb-3" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request('status') == '0' || Request('status') == '' ? 'active' : '' }}" href="{{ request()->fullUrlWithQuery(['status' => '0']) }}">
+                                <i class="ti ti-hourglass-empty me-1"></i> Pending
+                                @if ($pendingCount > 0)
+                                    <span class="badge rounded-pill bg-danger ms-1">{{ $pendingCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request('status') == '1' ? 'active' : '' }}" href="{{ request()->fullUrlWithQuery(['status' => '1']) }}">
+                                <i class="ti ti-check me-1"></i> Disetujui
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Request('status') == '2' ? 'active' : '' }}" href="{{ request()->fullUrlWithQuery(['status' => '2']) }}">
+                                <i class="ti ti-x me-1"></i> Ditolak
+                            </a>
+                        </li>
+                    </ul>
                     <div class="row mt-2">
                         <div class="col-12">
                             <form action="{{ route('ajuankumulatif.index') }}">
+                                <input type="hidden" name="status" value="{{ Request('status') ?? '0' }}">
                                 @hasanyrole($roles_show_cabang)
                                     <x-select label="Semua Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
                                         upperCase="true" select2="select2Kodecabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
                                 @endrole
-                                {{-- <x-input-with-icon label="No. Dokumen" value="{{ Request('nomor_dokumen') }}" name="nomor_dokumen"
-                                    icon="ti ti-barcode" /> --}}
-                                @php
-                                    $status_data = [
-                                        (object) ['kode' => 'pending', 'nama' => 'Pending'],
-                                        (object) ['kode' => 'approved', 'nama' => 'Disetujui'],
-                                        (object) ['kode' => 'rejected', 'nama' => 'Ditolak'],
-                                    ];
-                                @endphp
-                                <x-select label="Semua Status" name="status" :data="$status_data" key="kode" textShow="nama"
-                                    selected="{{ Request('status') }}" hideLabel="true" />
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12 col-md-12">
                                         <x-input-with-icon label="Dari" value="{{ Request('dari') }}" name="dari" icon="ti ti-calendar"

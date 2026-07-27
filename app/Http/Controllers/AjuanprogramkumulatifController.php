@@ -43,56 +43,69 @@ class AjuanprogramkumulatifController extends Controller
             $query->where('marketing_program_kumulatif.nomor_dokumen', $request->nomor_dokumen);
         }
 
-        if ($user->hasRole('regional sales manager')) {
-            if (!empty($request->status)) {
-                if ($request->status == 'pending') {
-                    $query->whereNotnull('marketing_program_kumulatif.om');
-                    $query->whereNull('marketing_program_kumulatif.rsm');
-                } else if ($request->status == 'approved') {
-                    $query->whereNotnull('marketing_program_kumulatif.rsm');
-                    $query->where('status', 0);
-                } else if ($request->status == 'rejected') {
-                    $query->where('status', 2);
-                }
+        // Define role-specific Pending queries for cumulative program
+        $pendingCountQuery = clone $query;
+        if ($user->hasRole('operation manager')) {
+            $pendingCountQuery->whereNull('marketing_program_kumulatif.om');
+            $pendingCountQuery->where('marketing_program_kumulatif.status', '0');
+        } else if ($user->hasRole('regional sales manager')) {
+            $pendingCountQuery->whereNotNull('marketing_program_kumulatif.om');
+            $pendingCountQuery->whereNull('marketing_program_kumulatif.rsm');
+            $pendingCountQuery->where('marketing_program_kumulatif.status', '0');
+        } else if ($user->hasRole('gm marketing')) {
+            $pendingCountQuery->whereNotNull('marketing_program_kumulatif.rsm');
+            $pendingCountQuery->whereNull('marketing_program_kumulatif.gm');
+            $pendingCountQuery->where('marketing_program_kumulatif.status', '0');
+        } else if ($user->hasRole('direktur')) {
+            $pendingCountQuery->whereNotNull('marketing_program_kumulatif.gm');
+            $pendingCountQuery->whereNull('marketing_program_kumulatif.direktur');
+            $pendingCountQuery->where('marketing_program_kumulatif.status', '0');
+        } else {
+            $pendingCountQuery->where('marketing_program_kumulatif.status', '0');
+        }
+        $pendingCount = $pendingCountQuery->count();
+
+        $status = $request->has('status') ? $request->status : '0';
+
+        if ($status == '0') { // PENDING
+            if ($user->hasRole('operation manager')) {
+                $query->whereNull('marketing_program_kumulatif.om');
+                $query->where('marketing_program_kumulatif.status', '0');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('marketing_program_kumulatif.om');
+                $query->whereNull('marketing_program_kumulatif.rsm');
+                $query->where('marketing_program_kumulatif.status', '0');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('marketing_program_kumulatif.rsm');
+                $query->whereNull('marketing_program_kumulatif.gm');
+                $query->where('marketing_program_kumulatif.status', '0');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('marketing_program_kumulatif.gm');
+                $query->whereNull('marketing_program_kumulatif.direktur');
+                $query->where('marketing_program_kumulatif.status', '0');
+            } else {
+                $query->where('marketing_program_kumulatif.status', '0');
             }
-            $query->whereNotNull('marketing_program_kumulatif.om');
-            $query->where('marketing_program_kumulatif.status', '!=', 2);
+        } else if ($status == '1') { // APPROVED / DISETUJUI
+            if ($user->hasRole('operation manager')) {
+                $query->whereNotNull('marketing_program_kumulatif.om');
+            } else if ($user->hasRole('regional sales manager')) {
+                $query->whereNotNull('marketing_program_kumulatif.rsm');
+            } else if ($user->hasRole('gm marketing')) {
+                $query->whereNotNull('marketing_program_kumulatif.gm');
+            } else if ($user->hasRole('direktur')) {
+                $query->whereNotNull('marketing_program_kumulatif.direktur');
+            } else {
+                $query->where('marketing_program_kumulatif.status', '1');
+            }
+        } else if ($status == '2') { // DITOLAK
+            $query->where('marketing_program_kumulatif.status', '2');
         }
 
-        if ($user->hasRole('gm marketing')) {
-            if (!empty($request->status)) {
-                if ($request->status == 'pending') {
-                    $query->whereNotnull('marketing_program_kumulatif.rsm');
-                    $query->whereNull('marketing_program_kumulatif.gm');
-                } else if ($request->status == 'approved') {
-                    $query->whereNotnull('marketing_program_kumulatif.gm');
-                    $query->where('status', 0);
-                } else if ($request->status == 'rejected') {
-                    $query->where('status', 2);
-                }
-            }
-            $query->whereNotNull('marketing_program_kumulatif.rsm');
-            $query->where('marketing_program_kumulatif.status', '!=', 2);
-        }
-
-        if ($user->hasRole('direktur')) {
-            if (!empty($request->status)) {
-                if ($request->status == 'pending') {
-                    $query->whereNotnull('marketing_program_kumulatif.gm');
-                    $query->whereNull('marketing_program_kumulatif.direktur');
-                    $query->where('status', 0);
-                } else if ($request->status == 'approved') {
-                    $query->where('status', 1);
-                } else if ($request->status == 'rejected') {
-                    $query->where('status', 2);
-                }
-            }
-            $query->whereNotNull('marketing_program_kumulatif.gm');
-            $query->where('marketing_program_kumulatif.status', '!=', 2);
-        }
         $ajuanprogramkumulatif = $query->paginate(15);
         $ajuanprogramkumulatif->appends(request()->all());
         $data['ajuankumulatif'] = $ajuanprogramkumulatif;
+        $data['pendingCount'] = $pendingCount;
 
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
