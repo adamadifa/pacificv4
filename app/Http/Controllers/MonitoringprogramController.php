@@ -295,7 +295,13 @@ class MonitoringprogramController extends Controller
         $query->leftJoinSub($qpencairansimpanan, 'pencairansimpanan', function ($join) {
             $join->on('marketing_pencairan_ikatan_detail.kode_pelanggan', '=', 'pencairansimpanan.kode_pelanggan');
         });
-        $query->groupBy('marketing_pencairan_ikatan_detail.kode_pelanggan', 'nama_pelanggan', 'total_pencairan');
+        $query->groupBy(
+            'marketing_pencairan_ikatan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            'total_pencairan'
+        );
         if (!empty($request->nama_pelanggan)) {
             $query->where('pelanggan.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
         }
