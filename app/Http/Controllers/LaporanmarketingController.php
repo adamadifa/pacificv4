@@ -5004,62 +5004,95 @@ class LaporanmarketingController extends Controller
             ->where('mkt_ikatan_detail_2026.file_doc', '!=', '')
             ->get();
 
-        $customer_codes = $candidates->pluck('kode_pelanggan')->unique()->toArray();
-
-        $sales = collect();
-        if (!empty($customer_codes)) {
-            $sales = DB::table('marketing_penjualan_detail')
-                ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
-                ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
-                ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
-                ->whereIn('marketing_penjualan.kode_pelanggan', $customer_codes)
-                ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
-                ->where('marketing_penjualan.status_sampel', 0)
-                ->where('marketing_penjualan.status_batal', 0)
-                ->select(
-                    'marketing_penjualan.kode_pelanggan',
-                    'produk_harga.kode_produk',
-                    'produk.isi_pcs_dus',
-                    DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs')
-                )
-                ->groupBy('marketing_penjualan.kode_pelanggan', 'produk_harga.kode_produk', 'produk.isi_pcs_dus')
-                ->get()
-                ->groupBy('kode_pelanggan');
-        }
-
         $unachieved_participants = collect();
         $salesman_unachieved_counts = [];
 
-        foreach ($candidates as $c) {
-            if (is_null($c->target_perbulan)) {
-                // If target_perbulan is null, we assume they are unachieved by default, or we skip them?
-                // Wait! Let's check how the previous code handled is_null($c->target_perbulan):
-                // Previously, it had `if (is_null($c->target_perbulan)) { continue; }`
-                // Let's keep that same check!
-                continue;
-            }
-            $target = ($c->avg ?? 0) + ($c->target_perbulan ?? 0);
-            $allowed_products = json_decode($c->produk, true) ?? [];
-            $realisasi = 0;
+        $is_first_month_of_semester = ($request->bulan == 7 || $request->bulan == 1);
 
-            if (isset($sales[$c->kode_pelanggan])) {
-                $cust_sales = $sales[$c->kode_pelanggan];
-                foreach ($cust_sales as $s) {
-                    if (in_array($s->kode_produk, $allowed_products)) {
-                        $realisasi += floor($s->total_pcs / $s->isi_pcs_dus);
+        if (!$is_first_month_of_semester) {
+            $prev_bulan = $request->bulan - 1;
+            $prev_tahun = $request->tahun;
+            $prev_dari = $prev_tahun . '-' . str_pad($prev_bulan, 2, '0', STR_PAD_LEFT) . '-01';
+            $prev_sampai = date('Y-m-t', strtotime($prev_dari));
+
+            $candidates_prev = DB::table('mkt_ikatan_detail_2026')
+                ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
+                ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+                ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+                ->leftJoin('mkt_ikatan_target_2026', function ($join) use ($prev_bulan, $prev_tahun) {
+                    $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_target_2026.no_pengajuan')
+                        ->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'mkt_ikatan_target_2026.kode_pelanggan')
+                        ->where('mkt_ikatan_target_2026.bulan', $prev_bulan)
+                        ->where('mkt_ikatan_target_2026.tahun', $prev_tahun);
+                })
+                ->select(
+                    'mkt_ikatan_detail_2026.no_pengajuan',
+                    'mkt_ikatan_detail_2026.kode_pelanggan',
+                    'pelanggan.nama_pelanggan',
+                    'pelanggan.kode_salesman',
+                    'program_ikatan.produk',
+                    'program_ikatan.nama_program',
+                    'mkt_ikatan_target_2026.avg',
+                    'mkt_ikatan_target_2026.target_perbulan'
+                )
+                ->where('mkt_ikatan_2026.status', 1)
+                ->where('mkt_ikatan_2026.semester', $semester_program)
+                ->whereYear('mkt_ikatan_2026.periode_dari', $prev_tahun)
+                ->whereMonth('mkt_ikatan_2026.tanggal', '<=', $prev_bulan)
+                ->whereNotNull('mkt_ikatan_detail_2026.file_doc')
+                ->where('mkt_ikatan_detail_2026.file_doc', '!=', '')
+                ->get();
+
+            $customer_codes_prev = $candidates_prev->pluck('kode_pelanggan')->unique()->toArray();
+
+            $sales_prev = collect();
+            if (!empty($customer_codes_prev)) {
+                $sales_prev = DB::table('marketing_penjualan_detail')
+                    ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                    ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                    ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                    ->whereIn('marketing_penjualan.kode_pelanggan', $customer_codes_prev)
+                    ->whereBetween('marketing_penjualan.tanggal', [$prev_dari, $prev_sampai])
+                    ->where('marketing_penjualan.status_sampel', 0)
+                    ->where('marketing_penjualan.status_batal', 0)
+                    ->select(
+                        'marketing_penjualan.kode_pelanggan',
+                        'produk_harga.kode_produk',
+                        'produk.isi_pcs_dus',
+                        DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs')
+                    )
+                    ->groupBy('marketing_penjualan.kode_pelanggan', 'produk_harga.kode_produk', 'produk.isi_pcs_dus')
+                    ->get()
+                    ->groupBy('kode_pelanggan');
+            }
+
+            foreach ($candidates_prev as $c) {
+                if (is_null($c->target_perbulan)) {
+                    continue;
+                }
+                $target = ($c->avg ?? 0) + ($c->target_perbulan ?? 0);
+                $allowed_products = json_decode($c->produk, true) ?? [];
+                $realisasi = 0;
+
+                if (isset($sales_prev[$c->kode_pelanggan])) {
+                    $cust_sales = $sales_prev[$c->kode_pelanggan];
+                    foreach ($cust_sales as $s) {
+                        if (in_array($s->kode_produk, $allowed_products)) {
+                            $realisasi += floor($s->total_pcs / $s->isi_pcs_dus);
+                        }
                     }
                 }
-            }
 
-            if ($realisasi < $target) {
-                $unachieved_participants->push((object)[
-                    'no_pengajuan' => $c->no_pengajuan,
-                    'kode_pelanggan' => $c->kode_pelanggan,
-                    'nama_pelanggan' => $c->nama_pelanggan,
-                    'kode_salesman' => $c->kode_salesman,
-                    'nama_program' => $c->nama_program,
-                ]);
-                $salesman_unachieved_counts[$c->kode_salesman] = ($salesman_unachieved_counts[$c->kode_salesman] ?? 0) + 1;
+                if ($realisasi < $target) {
+                    $unachieved_participants->push((object)[
+                        'no_pengajuan' => $c->no_pengajuan,
+                        'kode_pelanggan' => $c->kode_pelanggan,
+                        'nama_pelanggan' => $c->nama_pelanggan,
+                        'kode_salesman' => $c->kode_salesman,
+                        'nama_program' => $c->nama_program,
+                    ]);
+                    $salesman_unachieved_counts[$c->kode_salesman] = ($salesman_unachieved_counts[$c->kode_salesman] ?? 0) + 1;
+                }
             }
         }
 
