@@ -92,7 +92,7 @@
                         <th rowspan="2" colspan="2" class="orange">Total Poin</th>
                         <th rowspan="2" colspan="2" class="bg-warna-campuran2">CASHIN</th>
                         <th rowspan="2" colspan="3" class="bg-warna-campuran3">LJT</th>
-                        <th rowspan="2" colspan="2" class="bg-warna-campuran4">OUTLET PESERTA PROGRAM</th>
+                        <th rowspan="2" colspan="3" class="bg-warna-campuran4">OUTLET PESERTA PROGRAM</th>
                         <th rowspan="3">TOTAL REWARD</th>
                     </tr>
                     <tr>
@@ -116,7 +116,8 @@
                         <th class="bg-warna-campuran3">REALISASI</th>
                         <th class="bg-warna-campuran3">RATIO</th>
                         <th class="bg-warna-campuran3">REWARD</th>
-                        <th class="bg-warna-campuran4">REALISASI</th>
+                        <th class="bg-warna-campuran4">PESERTA</th>
+                        <th class="bg-warna-campuran4">TDK TERCAPAI</th>
                         <th class="bg-warna-campuran4">REWARD</th>
                     </tr>
                 </thead>
@@ -300,11 +301,24 @@
                                     0
                                 @endif
                             </td>
+                            <td class="center">
+                                @if($d->total_peserta_tidak_tercapai > 0)
+                                    @php
+                                        $participants_tidak = $program_participants_tidak_tercapai[$d->kode_salesman] ?? collect();
+                                    @endphp
+                                    <a href="#" class="show-detail-program" data-salesman="{{ $d->nama_salesman }} (Tidak Tercapai)" data-details="{{ json_encode($participants_tidak->values()->toArray()) }}" style="color: red; text-decoration: underline; font-weight: bold;">
+                                        {{ formatAngka($d->total_peserta_tidak_tercapai) }}
+                                    </a>
+                                @else
+                                    0
+                                @endif
+                            </td>
                             <td class="right">
                                 @php
-                                    $reward_program = $d->total_peserta * 10000;
+                                    $reward_program = ($d->total_peserta * 10000) - ($d->total_peserta_tidak_tercapai * 10000);
                                     $total_reward_program += $reward_program;
                                     $total_realisasi_program += $d->total_peserta;
+                                    $total_tidak_realisasi_program += $d->total_peserta_tidak_tercapai;
                                 @endphp
                                 {{ formatAngka($reward_program) }}
                             </td>
@@ -370,19 +384,20 @@
                                 {{ formatAngka($reward_ljt_spv) }}
                             </th>
                             <td class="center">{{ formatAngka($total_realisasi_program) }}</td>
-                            <td class="right">
+                            <td class="center">{{ formatAngka($total_tidak_realisasi_program) }}</td>
+                            <th class="right">
                                 @php
                                     $reward_program_spv = $total_reward_program / $count_komisi;
                                 @endphp
                                 {{ formatAngka($reward_program_spv) }}
-                            </td>
-                            <td class="right">
+                            </th>
+                            <th class="right">
                                 @php
                                     $total_reward_spv =
                                         $reward_qty_spv + $reward_cashin_spv + $reward_ljt_spv + $reward_program_spv;
                                 @endphp
                                 {{ formatAngka($total_reward_spv) }}
-                            </td>
+                            </th>
                         </tr>
                     @endif
                     <tr>
@@ -465,6 +480,7 @@
                             {{ formatAngka($reward_ljt_smm) }}
                         </th>
                         <th class="center">{{ formatAngka($total_realisasi_program) }}</th>
+                        <th class="center">{{ formatAngka($total_tidak_realisasi_program) }}</th>
                         <th class="right">
                             @php
                                 $reward_program_smm = ($total_reward_program / $count_komisi) * 2;

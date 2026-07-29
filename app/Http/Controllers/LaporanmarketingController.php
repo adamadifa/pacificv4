@@ -4980,13 +4980,21 @@ class LaporanmarketingController extends Controller
             ->join('mkt_ikatan_2026', 'mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_2026.no_pengajuan')
             ->join('pelanggan', 'mkt_ikatan_detail_2026.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
             ->join('program_ikatan', 'mkt_ikatan_2026.kode_program', '=', 'program_ikatan.kode_program')
+            ->leftJoin('mkt_ikatan_target_2026', function ($join) use ($request) {
+                $join->on('mkt_ikatan_detail_2026.no_pengajuan', '=', 'mkt_ikatan_target_2026.no_pengajuan')
+                    ->on('mkt_ikatan_detail_2026.kode_pelanggan', '=', 'mkt_ikatan_target_2026.kode_pelanggan')
+                    ->where('mkt_ikatan_target_2026.bulan', $request->bulan)
+                    ->where('mkt_ikatan_target_2026.tahun', $request->tahun);
+            })
             ->select(
                 'mkt_ikatan_detail_2026.no_pengajuan',
                 'mkt_ikatan_detail_2026.kode_pelanggan',
                 'pelanggan.nama_pelanggan',
                 'pelanggan.kode_salesman',
                 'program_ikatan.produk',
-                'program_ikatan.nama_program'
+                'program_ikatan.nama_program',
+                'mkt_ikatan_target_2026.avg',
+                'mkt_ikatan_target_2026.target_perbulan'
             )
             ->where('mkt_ikatan_2026.status', 1)
             ->where('mkt_ikatan_2026.semester', $semester_program)
@@ -4996,9 +5004,75 @@ class LaporanmarketingController extends Controller
             ->where('mkt_ikatan_detail_2026.file_doc', '!=', '')
             ->get();
 
+        $customer_codes = $candidates->pluck('kode_pelanggan')->unique()->toArray();
+
+        $sales = collect();
+        if (!empty($customer_codes)) {
+            $sales = DB::table('marketing_penjualan_detail')
+                ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->whereIn('marketing_penjualan.kode_pelanggan', $customer_codes)
+                ->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai])
+                ->where('marketing_penjualan.status_sampel', 0)
+                ->where('marketing_penjualan.status_batal', 0)
+                ->select(
+                    'marketing_penjualan.kode_pelanggan',
+                    'produk_harga.kode_produk',
+                    'produk.isi_pcs_dus',
+                    DB::raw('SUM(marketing_penjualan_detail.jumlah) as total_pcs')
+                )
+                ->groupBy('marketing_penjualan.kode_pelanggan', 'produk_harga.kode_produk', 'produk.isi_pcs_dus')
+                ->get()
+                ->groupBy('kode_pelanggan');
+        }
+
+        $unachieved_participants = collect();
+        $salesman_unachieved_counts = [];
+
+        foreach ($candidates as $c) {
+            if (is_null($c->target_perbulan)) {
+                // If target_perbulan is null, we assume they are unachieved by default, or we skip them?
+                // Wait! Let's check how the previous code handled is_null($c->target_perbulan):
+                // Previously, it had `if (is_null($c->target_perbulan)) { continue; }`
+                // Let's keep that same check!
+                continue;
+            }
+            $target = ($c->avg ?? 0) + ($c->target_perbulan ?? 0);
+            $allowed_products = json_decode($c->produk, true) ?? [];
+            $realisasi = 0;
+
+            if (isset($sales[$c->kode_pelanggan])) {
+                $cust_sales = $sales[$c->kode_pelanggan];
+                foreach ($cust_sales as $s) {
+                    if (in_array($s->kode_produk, $allowed_products)) {
+                        $realisasi += floor($s->total_pcs / $s->isi_pcs_dus);
+                    }
+                }
+            }
+
+            if ($realisasi < $target) {
+                $unachieved_participants->push((object)[
+                    'no_pengajuan' => $c->no_pengajuan,
+                    'kode_pelanggan' => $c->kode_pelanggan,
+                    'nama_pelanggan' => $c->nama_pelanggan,
+                    'kode_salesman' => $c->kode_salesman,
+                    'nama_program' => $c->nama_program,
+                ]);
+                $salesman_unachieved_counts[$c->kode_salesman] = ($salesman_unachieved_counts[$c->kode_salesman] ?? 0) + 1;
+            }
+        }
+
         $program_participants = $candidates->groupBy('kode_salesman');
+        $program_participants_tidak_tercapai = $unachieved_participants->groupBy('kode_salesman');
+
+        $data['komisi']->transform(function ($item) use ($salesman_unachieved_counts) {
+            $item->total_peserta_tidak_tercapai = $salesman_unachieved_counts[$item->kode_salesman] ?? 0;
+            return $item;
+        });
 
         $data['program_participants'] = $program_participants;
+        $data['program_participants_tidak_tercapai'] = $program_participants_tidak_tercapai;
         $data['bulan'] = $request->bulan;
         $data['tahun'] = $request->tahun;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
