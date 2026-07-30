@@ -200,7 +200,7 @@ class KendaraanController extends Controller
 
         $kode_cabang_user = auth()->user()->kode_cabang;
         $query = Dpb::query();
-        $query->select('gudang_cabang_dpb.kode_kendaraan', 'kendaraan.merek', 'kendaraan.tipe', 'kendaraan.no_polisi', 'kendaraan.tipe_kendaraan');
+        $query->select('kendaraan.kode_kendaraan', 'kendaraan.merek', 'kendaraan.tipe', 'kendaraan.no_polisi', 'kendaraan.tipe_kendaraan');
         if ($kode_cabang_user != "PST") {
             $query->where('salesman.kode_cabang', $kode_cabang_user);
         } else {
