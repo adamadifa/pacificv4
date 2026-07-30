@@ -51,6 +51,12 @@
                                             <td>
                                                 <div class="d-flex">
                                                     <div>
+                                                        <a href="#" class="me-2 detailPermission"
+                                                            id="{{ Crypt::encrypt($d->id) }}">
+                                                            <i class="fa fa-info-circle text-info"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div>
                                                         <a href="#" class="me-2 editPermission"
                                                             id="{{ Crypt::encrypt($d->id) }}">
                                                             <i class="fa fa-edit text-success"></i>
@@ -85,6 +91,7 @@
 
 <x-modal-form id="mdlcreatePermission" size="" show="loadcreatePermission" title="Tambah Permission" />
 <x-modal-form id="mdleditPermission" size="" show="loadeditPermission" title="Edit Permission" />
+<x-modal-form id="mdldetailPermission" size="modal-lg" show="loaddetailPermission" title="Detail Permission" />
 @endsection
 @push('myscript')
 {{-- <script src="{{ asset('assets/js/pages/roles/create.js') }}"></script> --}}
@@ -100,6 +107,13 @@
             e.preventDefault();
             $('#mdleditPermission').modal("show");
             $("#loadeditPermission").load('/permissions/' + id + '/edit');
+        });
+
+        $(".detailPermission").click(function(e) {
+            var id = $(this).attr("id");
+            e.preventDefault();
+            $('#mdldetailPermission').modal("show");
+            $("#loaddetailPermission").load('/permissions/' + id + '/show');
         });
     });
 </script>

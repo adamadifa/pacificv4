@@ -312,6 +312,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/permissions', 'store')->name('permissions.store');
             Route::get('/permissions/{id}/edit', 'edit')->name('permissions.edit');
             Route::put('/permissions/{id}/update', 'update')->name('permissions.update');
+            Route::get('/permissions/{id}/show', 'show')->name('permissions.show');
+            Route::post('/permissions/{id}/update-access', 'updateAccess')->name('permissions.updateAccess');
             Route::delete('/permissions/{id}/delete', 'destroy')->name('permissions.delete');
         });
 
