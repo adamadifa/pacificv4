@@ -25,8 +25,7 @@ class PermissionController extends Controller
             $query->where('id_permission_group', $request->id_permission_group);
         }
         $query->orderBy('id_permission_group');
-        $permissions = $query->paginate(10);
-        $permissions->appends(request()->all());
+        $permissions = $query->get();
         $permission_groups = Permission_group::orderBy('id')->get();
         return view('settings.permissions.index', compact('permissions', 'permission_groups'));
     }
