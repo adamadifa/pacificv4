@@ -56,9 +56,11 @@
             <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Data Users</h6>
+                    @if (auth()->user()->hasRole('super admin'))
                     <a href="#" class="btn btn-primary btn-sm" id="btncreateUser">
                         <i class="ti ti-plus me-1"></i> Tambah User
                     </a>
+                    @endif
                 </div>
             </div>
             <div class="table-responsive text-nowrap">
@@ -126,6 +128,7 @@
                                            class="text-warning" data-bs-toggle="tooltip" title="View As User">
                                             <i class="ti ti-eye"></i>
                                         </a>
+                                        @if (auth()->user()->hasRole('super admin'))
                                         <a href="{{ route('users.createuserpermission', Crypt::encrypt($d->id)) }}" 
                                            class="text-info" data-bs-toggle="tooltip" title="Permissions">
                                             <i class="ti ti-shield-lock"></i>
@@ -146,6 +149,7 @@
                                                 <i class="ti ti-trash"></i>
                                             </a>
                                         </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

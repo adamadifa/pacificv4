@@ -316,7 +316,6 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::controller(UserController::class)->group(function () {
-            Route::get('/users', 'index')->name('users.index');
             Route::get('/users/create', 'create')->name('users.create');
             Route::post('/users', 'store')->name('users.store');
             Route::get('/users/{id}/edit', 'edit')->name('users.edit');
@@ -328,6 +327,12 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/users/{id}/pjpaccess', 'editPjpAccess')->name('users.pjpaccess');
             Route::post('/users/{id}/pjpaccess', 'updatePjpAccess')->name('users.pjpaccess.update');
+        });
+    });
+
+    Route::middleware('role:super admin|gm administrasi')->group(function () {
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/users', 'index')->name('users.index');
             Route::get('/users/{id}/impersonate', 'impersonate')->name('users.impersonate');
         });
     });

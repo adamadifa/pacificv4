@@ -23,6 +23,12 @@ class UserController extends Controller
         $query->with('roles');
         $query->join('cabang', 'users.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('regional', 'users.kode_regional', '=', 'regional.kode_regional');
+        
+        if (!auth()->user()->hasRole('super admin')) {
+            $query->whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'super admin');
+            });
+        }
         if (!empty($request->name)) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
@@ -512,6 +518,10 @@ class UserController extends Controller
     {
         $id = \Illuminate\Support\Facades\Crypt::decrypt($id);
         $user = User::findOrFail($id);
+
+        if (!auth()->user()->hasRole('super admin') && $user->hasRole('super admin')) {
+            abort(403, 'Unauthorized action.');
+        }
 
         session()->put('impersonated_by', auth()->user()->id);
 
