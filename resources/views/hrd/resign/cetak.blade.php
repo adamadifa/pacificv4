@@ -61,8 +61,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td style="width: 20%; text-align:center">
-                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt=""
-                                style="width: 80px; height:80px">
+                            <img src="{{ asset('assets/img/logo/mp.png') }}" alt="" style="width: 80px; height:110px">
                         </td>
                         <td style="text-align: left">
                             <h3 style="font-family:'Cambria'; line-height:0px ">CV MAKMUR PERMATA</h3>
@@ -341,9 +340,9 @@
                                     @php
 
                                     @endphp
-                                    <td >2.</td>
+                                    <td>2.</td>
                                     <td>Uang Pisah</td>
-                                    <td>{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
+                                    <td>{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk . " %" }}</td>
                                     <td>x</td>
                                     <td>Rp. {{ formatRupiah($totalupah) }}</td>
                                     <td>Rp.</td>
@@ -354,7 +353,8 @@
                                     <td style="border-bottom:1px solid black">Uang Pengganti Hak</td>
                                     <td style="border-bottom:1px solid black">{{ $persentase_pengganti_hak }}%</td>
                                     <td style="border-bottom:1px solid black">x</td>
-                                    <td style="border-bottom:1px solid black">Rp. {{ formatRupiah($total_pesangon + $totaljmk) }}</td>
+                                    <td style="border-bottom:1px solid black">Rp.
+                                        {{ formatRupiah($total_pesangon + $totaljmk) }}</td>
                                     <td style="border-bottom:1px solid black">Rp.</td>
                                     <td style="border-bottom:1px solid black; text-align:right">
                                         @php
@@ -363,7 +363,7 @@
                                         {{ formatRupiah($uph) }}
                                     </td>
                                 </tr>
-                                
+
                                 <tr style="font-weight:bold">
                                     <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
                                     <td>Rp.</td>
@@ -415,9 +415,9 @@
                                     @php
 
                                     @endphp
-                                    <td >2.</td>
+                                    <td>2.</td>
                                     <td>Uang Pisah</td>
-                                    <td>{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk." %" }}</td>
+                                    <td>{{ $persentase_jmk == 100 ? $jmlkali : $persentase_jmk . " %" }}</td>
                                     <td>x</td>
                                     <td>Rp. {{ formatRupiah($totalupah) }}</td>
                                     <td>Rp.</td>
@@ -437,7 +437,7 @@
                                         {{ formatRupiah($uph) }}
                                     </td>
                                 </tr>
-                                
+
                                 <tr style="font-weight:bold">
                                     <td colspan="5">Jumlah Uang Jasa Masa Kerja</td>
                                     <td>Rp.</td>
@@ -513,19 +513,20 @@
                                     <td colspan="5">JMK Sudah di Bayar</td>
                                     <td>Rp.</td>
                                     <td style="text-align:right">
-                                        {{ formatRupiah($jmk_sudahbayar->jmk_sudahbayar ?? 0) }}</td>
+                                        {{ formatRupiah($jmk_sudahbayar->jmk_sudahbayar ?? 0) }}
+                                    </td>
                                 </tr>
                             @endif
                             {{-- @foreach ($potongan as $d)
-                                @php
-                                    $totalpotongan += $d->jumlah;
-                                @endphp
-                                <tr>
-                                    <td>{{ $loop->iteration }}.</td>
-                                    <td colspan="4">{{ $d->keterangan }}</td>
-                                    <td>Rp.</td>
-                                    <td style="text-align: right">{{ formatRupiah($d->jumlah) }}</td>
-                                </tr>
+                            @php
+                            $totalpotongan += $d->jumlah;
+                            @endphp
+                            <tr>
+                                <td>{{ $loop->iteration }}.</td>
+                                <td colspan="4">{{ $d->keterangan }}</td>
+                                <td>Rp.</td>
+                                <td style="text-align: right">{{ formatRupiah($d->jumlah) }}</td>
+                            </tr>
                             @endforeach --}}
                             <tr style="font-weight:bold">
                                 <td colspan="5" style="border-bottom:1px solid black">Jumlah Potongan</td>
@@ -584,7 +585,8 @@
                 <tr>
                     <td colspan="4" style="text-align: center">
                         {{ $resign->kode_cabang != 'PST' ? $resign->nama_cabang : 'Tasikmalaya' }},
-                        {{ DateToIndo($resign->tanggal) }}</td>
+                        {{ DateToIndo($resign->tanggal) }}
+                    </td>
                 </tr>
                 <tr>
                     <td style="text-align:center">PIHAK KEDUA</td>

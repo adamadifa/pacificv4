@@ -4720,6 +4720,7 @@ class LaporanmarketingController extends Controller
         $querysaldoawal->whereRaw("IFNULL(marketing_saldoawal_piutang_detail.jumlah,0)- IFNULL((SELECT SUM(subtotal) FROM marketing_retur_detail
                 INNER JOIN marketing_retur ON marketing_retur_detail.no_retur = marketing_retur.no_retur WHERE marketing_retur.no_faktur = marketing_penjualan.no_faktur AND jenis_retur ='PF' AND marketing_retur.tanggal BETWEEN '$dari' AND '$sampai'),0) - IFNULL((SELECT SUM(jumlah) FROM marketing_penjualan_historibayar WHERE marketing_penjualan_historibayar.no_faktur = marketing_penjualan.no_faktur  AND marketing_penjualan_historibayar.tanggal BETWEEN '$dari' AND '$sampai'),0) != 0");
         $querysaldoawal->where('salesman.kode_cabang', $kode_cabang);
+        $querysaldoawal->whereNotIn('marketing_penjualan.no_faktur', ['BGRE002560', 'BGRE003164']);
         $querysaldoawal->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
         $querysaldoawal->groupBy('kode_salesman_baru');
 
@@ -4773,6 +4774,7 @@ class LaporanmarketingController extends Controller
         $querypenjualan->where('jenis_transaksi', 'K');
         $querypenjualan->where('status_batal', 0);
         $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
+        $querypenjualan->whereNotIn('marketing_penjualan.no_faktur', ['BGRE002560', 'BGRE003164']);
         $querypenjualan->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 30");
         $querypenjualan->groupBy('kode_salesman_baru');
 

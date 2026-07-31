@@ -70,7 +70,7 @@
                             <span style="font-size: 12px">e-mail : pacific.tasikmalaya@gmail.com</span>
                         </td>
                         <td></td>
-                    </tr>
+                        <!-- </tr> -->
                 </table>
             @else
                 <table style="width: 100%">
