@@ -60,6 +60,7 @@
                                             ? ($d->{"realisasi_$p->kode_produk"} / $d->{"oman_$p->kode_produk"}) * 100
                                             : 0;
 
+                                    $color = 'black';
                                     if (${"selisih_$p->kode_produk"} > 0) {
                                         $color = 'green';
                                     } elseif (${"selisih_$p->kode_produk"} < 0) {
