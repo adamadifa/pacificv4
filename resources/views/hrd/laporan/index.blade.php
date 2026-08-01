@@ -70,7 +70,7 @@
                 @can('hrd.presensi')
                     <div class="tab-pane fade active show" id="presensi" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-fingerprint me-2"></i>Laporan Presensi</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -82,7 +82,7 @@
                 @can('hrd.gaji')
                     <div class="tab-pane fade" id="gaji" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Laporan Gaji</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -94,7 +94,7 @@
                 @can('hrd.presensi')
                     <div class="tab-pane fade" id="cuti" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-calendar-event me-2"></i>Laporan Cuti</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -106,7 +106,7 @@
                 @can('hrd.presensi')
                     <div class="tab-pane fade" id="keterlambatan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-clock-off me-2"></i>Rekap Keterlambatan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -118,7 +118,7 @@
                 @can('hrd.pelanggaran')
                     <div class="tab-pane fade" id="pelanggaran" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-alert-triangle me-2"></i>Laporan Pelanggaran</h6>
                             </div>
                             <div class="card-body pt-4">

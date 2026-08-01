@@ -67,7 +67,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Data Klaim Kas Kecil</h6>
                     @can('klaimkaskecil.create')
@@ -81,15 +81,15 @@
                 <table class="table table-hover table-bordered table-striped align-middle" style="font-size: 13px !important;">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KODE</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 30%;">KETERANGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">STATUS</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. BUKTI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">DIPROSES</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">VALIDASI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">JUMLAH</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KODE</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 30%;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">STATUS</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NO. BUKTI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">DIPROSES</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">VALIDASI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">JUMLAH</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody>

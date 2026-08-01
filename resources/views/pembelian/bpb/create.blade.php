@@ -26,7 +26,7 @@
     aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header border-bottom py-3" style="background-color: #002e65;">
+            <div class="modal-header border-bottom py-3" style="background-color: #284c9a;">
                 <h5 class="modal-title text-white" id="myModalLabel18"><i class="ti ti-box me-1"></i> Data Barang</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                     aria-label="Close"></button>
@@ -34,7 +34,7 @@
             <div class="modal-body pt-3">
                 <div class="table-responsive text-nowrap rounded border">
                     <table class="table table-hover table-bordered align-middle mb-0" id="tabelbarang" width="100%">
-                        <thead style="background-color: #002e65;">
+                        <thead style="background-color: #284c9a;">
                             <tr>
                                 <th class="text-white" style="width: 15%">Kode</th>
                                 <th class="text-white">Nama Barang</th>
@@ -91,7 +91,7 @@
                     {{-- Daftar Stok Barang Card --}}
                     <div class="card shadow-sm border mb-4">
                         <div class="card-header py-3"
-                            style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                             <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                                 <i class="ti ti-box fs-4"></i>
                                 <span>Daftar Stok Barang</span>
@@ -121,7 +121,7 @@
                             <div class="table-responsive text-nowrap rounded border">
                                 <table class="table table-sm table-hover table-bordered align-middle mb-0"
                                     id="tableBarang">
-                                    <thead style="background-color: #002e65;">
+                                    <thead style="background-color: #284c9a;">
                                         <tr>
                                             <th class="text-white text-center" style="width: 5%">
                                                 <input type="checkbox" id="checkAllBarang" class="form-check-input">
@@ -172,7 +172,7 @@
                     {{-- Daftar Barang yang Diajukan Card --}}
                     <div class="card shadow-sm border mb-4">
                         <div class="card-header py-3"
-                            style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                             <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                                 <i class="ti ti-list fs-4"></i>
                                 <span>Daftar Barang yang Diajukan</span>
@@ -181,7 +181,7 @@
                         <div class="table-responsive text-nowrap">
                             <table class="table table-sm table-hover table-bordered align-middle mb-0"
                                 id="tabledetail">
-                                <thead style="background-color: #002e65;">
+                                <thead style="background-color: #284c9a;">
                                     <tr>
                                         <th class="text-white" style="width: 15%">Kode</th>
                                         <th class="text-white" style="width: 35%">Nama Barang</th>

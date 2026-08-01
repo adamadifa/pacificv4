@@ -53,7 +53,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-award me-2"></i>Data Insentif</h6>
                     @can('insentif.create')
@@ -67,23 +67,23 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">KODE</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">NIK</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">NAMA KARYAWAN</th>
-                            <th colspan="4" class="text-center text-white" style="background-color: #002e65 !important;">INSENTIF UMUM</th>
-                            <th colspan="4" class="text-center text-white" style="background-color: #002e65 !important;">INSENTIF MANAGER</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">BERLAKU</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">KODE</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">NIK</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">NAMA KARYAWAN</th>
+                            <th colspan="4" class="text-center text-white" style="background-color: #284c9a !important;">INSENTIF UMUM</th>
+                            <th colspan="4" class="text-center text-white" style="background-color: #284c9a !important;">INSENTIF MANAGER</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">BERLAKU</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">Masa Kerja</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Lembur</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Penempatan</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">KPI</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Ruang Lingkup</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Penempatan</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Kinerja</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Kendaraan</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Masa Kerja</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Lembur</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Penempatan</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KPI</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Ruang Lingkup</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Penempatan</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Kinerja</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Kendaraan</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

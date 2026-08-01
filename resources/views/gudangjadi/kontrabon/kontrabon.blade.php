@@ -36,7 +36,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-text me-2"></i>Data Kontrabon Angkutan</h6>
                     @if (request()->is('kontrabonangkutan'))
@@ -50,7 +50,7 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
-                    <thead style="background-color: #002e65;">
+                    <thead style="background-color: #284c9a;">
                         <tr>
                             <th class="text-white">NO. KONTRA BON</th>
                             <th class="text-white">TANGGAL</th>

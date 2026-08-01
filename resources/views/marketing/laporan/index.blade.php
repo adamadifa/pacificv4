@@ -230,7 +230,7 @@
                 @can('mkt.penjualan')
                     <div class="tab-pane fade active show" id="penjualan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Laporan Penjualan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -242,7 +242,7 @@
                 @can('mkt.rekappenjualan')
                     <div class="tab-pane fade" id="rekappenjualan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-analytics me-2"></i>Rekap Penjualan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -254,7 +254,7 @@
                 @can('mkt.kasbesar')
                     <div class="tab-pane fade" id="kasbesar" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-wallet me-2"></i>Laporan Kas Besar</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -266,7 +266,7 @@
                 @can('mkt.retur')
                     <div class="tab-pane fade" id="retur" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-backspace me-2"></i>Laporan Retur</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -278,7 +278,7 @@
                 @can('mkt.tunaikredit')
                     <div class="tab-pane fade" id="tunaikredit" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-cash me-2"></i>Laporan Tunai Kredit</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -290,7 +290,7 @@
                 @can('mkt.dpp')
                     <div class="tab-pane fade" id="dpp" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-receipt-2 me-2"></i>Laporan DPP</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -302,7 +302,7 @@
                 @can('mkt.omsetpelanggan')
                     <div class="tab-pane fade" id="omsetpelanggan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Omset Pelanggan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -314,7 +314,7 @@
                 @can('mkt.rekappelanggan')
                     <div class="tab-pane fade" id="rekappelanggan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-user-exclamation me-2"></i>Rekap Pelanggan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -326,7 +326,7 @@
                 @can('mkt.rekapkendaraan')
                     <div class="tab-pane fade" id="rekapkendaraan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-truck me-2"></i>Rekap Kendaraan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -338,7 +338,7 @@
                 @can('mkt.rekapwilayah')
                     <div class="tab-pane fade" id="rekapwilayah" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-map-pin me-2"></i>Rekap Wilayah</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -350,7 +350,7 @@
                 @can('mkt.analisatransaksi')
                     <div class="tab-pane fade" id="analisatransaksi" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-device-analytics me-2"></i>Analisa Transaksi</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -362,7 +362,7 @@
                 @can('mkt.tunaitransfer')
                     <div class="tab-pane fade" id="tunaitransfer" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrows-transfer-down me-2"></i>Laporan Tunai Transfer</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -374,7 +374,7 @@
                 @can('mkt.effectivecall')
                     <div class="tab-pane fade" id="effectivecall" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-phone-check me-2"></i>Laporan Effective Call</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -386,7 +386,7 @@
                 @can('mkt.kartupiutang')
                     <div class="tab-pane fade" id="kartupiutang" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-address-book me-2"></i>Laporan Kartu Piutang</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -398,7 +398,7 @@
                 @can('mkt.aup')
                     <div class="tab-pane fade" id="aup" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-chart-bar me-2"></i>Laporan AUP</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -410,7 +410,7 @@
                 @can('mkt.lebihsatufaktur')
                     <div class="tab-pane fade" id="lebihsatufaktur" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-files me-2"></i>Laporan Lebih 1 Faktur</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -422,7 +422,7 @@
                 @can('mkt.dppp')
                     <div class="tab-pane fade" id="dppp" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-receipt me-2"></i>Laporan DPPP</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -434,7 +434,7 @@
                 @can('mkt.lhp')
                     <div class="tab-pane fade" id="lhp" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-clipboard-list me-2"></i>Laporan LHP</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -446,7 +446,7 @@
                 @can('mkt.harganet')
                     <div class="tab-pane fade" id="harganet" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-tag me-2"></i>Laporan Harga Net</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -458,7 +458,7 @@
                 @can('mkt.routingsalesman')
                     <div class="tab-pane fade" id="routingsalesman" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-route me-2"></i>Routing Salesman</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -470,7 +470,7 @@
                 @can('mkt.salesperfomance')
                     <div class="tab-pane fade" id="salesperfomance" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-chart-infographic me-2"></i>Sales Performance</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -482,7 +482,7 @@
                 @can('mkt.persentasesfa')
                     <div class="tab-pane fade" id="persentasesfa" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-device-mobile me-2"></i>Persentase SFA</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -494,7 +494,7 @@
                 @can('mkt.persentasesfa')
                     <div class="tab-pane fade" id="persentasedatapelanggan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-database me-2"></i>Persentase Data Pelanggan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -506,7 +506,7 @@
                 @can('mkt.komisisalesman')
                     <div class="tab-pane fade" id="komisisalesman" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-user-dollar me-2"></i>Komisi Salesman</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -518,7 +518,7 @@
                 @can('mkt.komisidriverhelper')
                     <div class="tab-pane fade" id="komisidriverhelper" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-steering-wheel me-2"></i>Komisi Driver Helper</h6>
                             </div>
                             <div class="card-body pt-4">

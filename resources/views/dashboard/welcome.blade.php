@@ -1,6 +1,6 @@
 <style>
     .welcome-card-premium {
-        background: linear-gradient(135deg, #002e65 0%, #001a3d 100%);
+        background: linear-gradient(135deg, #284c9a 0%, #162a5b 100%);
         border-radius: 20px;
         position: relative;
         overflow: visible;
@@ -82,6 +82,44 @@
         font-size: 1.1rem;
     }
 
+    .welcome-waves {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        pointer-events: none;
+        z-index: 0;
+        border-radius: 0 0 20px 20px;
+        overflow: hidden;
+    }
+
+    .welcome-waves svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .welcome-waves .wave-1 {
+        animation: wave-move-1 12s linear infinite;
+    }
+
+    .welcome-waves .wave-2 {
+        animation: wave-move-2 18s linear infinite;
+    }
+
+    @keyframes wave-move-1 {
+        0% { transform: translateX(0) scaleY(1); }
+        50% { transform: translateX(-15%) scaleY(1.08); }
+        100% { transform: translateX(0) scaleY(1); }
+    }
+
+    @keyframes wave-move-2 {
+        0% { transform: translateX(0) scaleY(1); }
+        50% { transform: translateX(15%) scaleY(0.92); }
+        100% { transform: translateX(0) scaleY(1); }
+    }
+
     @media (max-width: 991.98px) {
         .welcome-content {
             max-width: 100%;
@@ -121,5 +159,12 @@
             <i class="ti ti-shield"></i>
             <span>{{ strtolower($level_user) }}</span>
         </div>
+    </div>
+
+    <div class="welcome-waves">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path class="wave-1" fill="rgba(255, 255, 255, 0.05)" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,122.7C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            <path class="wave-2" fill="rgba(255, 255, 255, 0.03)" d="M0,192L48,197.3C96,203,192,213,288,202.7C384,192,480,160,576,138.7C672,117,768,107,864,122.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
     </div>
 </div>

@@ -114,7 +114,7 @@
                     <tr>
                         <th colspan="3">
                             <input type="text" class="noborder-form flatpickr-date text-center" name="tanggal_ambil" id="tanggal_ambil"
-                                style="font-size: 14px; background-color:#002e65; color:white; border-bottom:1px solid white; padding:5px"
+                                style="font-size: 14px; background-color:#284c9a; color:white; border-bottom:1px solid white; padding:5px"
                                 placeholder="Tanggal Pengambilan" value="{{ $dpb->tanggal_ambil }}">
                         </th>
                         <th colspan="3" class="bg-success">

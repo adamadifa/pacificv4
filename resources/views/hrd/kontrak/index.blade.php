@@ -31,7 +31,7 @@
         .contract-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
-            border-color: #002e65 !important;
+            border-color: #284c9a !important;
         }
 
         .contract-info-label {
@@ -57,7 +57,7 @@
         }
 
         .border-left-primary {
-            border-left: 5px solid #002e65 !important;
+            border-left: 5px solid #284c9a !important;
         }
 
         .border-left-danger {

@@ -33,7 +33,7 @@
     }
 
     .nav-tabs-premium .nav-link.active {
-        background-color: #002e65;
+        background-color: #284c9a;
         color: #ffffff !important;
     }
 
@@ -45,7 +45,7 @@
     }
 
     .unified-header {
-        background-color: #002e65;
+        background-color: #284c9a;
         color: white;
         padding: 12px 20px;
         display: flex;
@@ -63,7 +63,7 @@
     }
 
     .table-interesting thead th {
-        background-color: #002e65;
+        background-color: #284c9a;
         color: #ffffff !important; /* Pure white for visibility */
         font-size: 0.75rem;
         text-transform: uppercase;

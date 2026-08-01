@@ -64,12 +64,12 @@
 
         {{-- Data Table Card --}}
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-users me-2"></i>Daftar Pelanggan</h6>
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover">
-                    <thead class="text-white" style="background-color: #002e65;">
+                    <thead class="text-white" style="background-color: #284c9a;">
                         <tr>
                             <th class="fw-bold text-white">No</th>
                             <th class="fw-bold text-white">Kode</th>

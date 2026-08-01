@@ -59,7 +59,7 @@
     <div class="row">
         <div class="table-modal">
             <table class="table table-bordered table-striped">
-                <thead style="background-color: #002e65;">
+                <thead style="background-color: #284c9a;">
                     <tr>
                         <th class="text-white">No.</th>
                         <th class="text-white">Nik</th>

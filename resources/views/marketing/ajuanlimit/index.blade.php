@@ -78,7 +78,7 @@
 
         {{-- Card Data --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-credit-card me-2"></i>Data Ajuan Limit</h6>
                     <div class="d-flex gap-2">
@@ -93,8 +93,8 @@
             </div>
 
                         <style>
-                            .freeze-first { position: sticky; left: 0; background-color: #002e65 !important; z-index: 10; border-right: 2px solid #dee2e6 !important; }
-                            .freeze-last { position: sticky; right: 0; background-color: #002e65 !important; z-index: 10; border-left: 2px solid #dee2e6 !important; }
+                            .freeze-first { position: sticky; left: 0; background-color: #284c9a !important; z-index: 10; border-right: 2px solid #dee2e6 !important; }
+                            .freeze-last { position: sticky; right: 0; background-color: #284c9a !important; z-index: 10; border-left: 2px solid #dee2e6 !important; }
                             .table-hover tbody tr:hover .freeze-cell-first { background-color: #f5f5f5 !important; }
                             .table-hover tbody tr:hover .freeze-cell-last { background-color: #f5f5f5 !important; }
                             .freeze-cell-first { position: sticky; left: 0; background-color: #fff !important; z-index: 9; border-right: 2px solid #dee2e6 !important; }
@@ -103,7 +103,7 @@
 
                         <div class="table-responsive text-nowrap">
                             <table class="table table-hover table-bordered">
-                                <thead style="background-color: #002e65;">
+                                <thead style="background-color: #284c9a;">
                                     <tr>
                                         <th class="text-white freeze-first">No. Pengajuan</th>
                                         <th class="text-white">Tanggal</th>

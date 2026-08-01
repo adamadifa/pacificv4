@@ -21,7 +21,7 @@
         <div class="table-responsive">
             <table class="table">
                 <thead>
-                    <tr style="background-color: #002e65;">
+                    <tr style="background-color: #284c9a;">
                         <th class="text-white py-2">KODE PRODUK</th>
                         <th class="text-white py-2">NAMA PRODUK</th>
                         <th class="text-white py-2 text-end">HARGA</th>

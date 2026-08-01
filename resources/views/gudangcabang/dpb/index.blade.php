@@ -69,7 +69,7 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-box me-2"></i>Data DPB</h6>
                     @can('dpb.create')
@@ -81,14 +81,14 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO. DPB</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">SALESMAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">CABANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TUJUAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO. KENDARAAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KEMBALI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO. DPB</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">SALESMAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">CABANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TUJUAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO. KENDARAAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KEMBALI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

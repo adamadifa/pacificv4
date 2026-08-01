@@ -43,7 +43,7 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-logout me-2"></i>Data Resign</h6>
                     @can('resign.create')
@@ -54,7 +54,7 @@
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
                     <thead class="text-white">
-                        <tr style="background-color: #002e65;">
+                        <tr style="background-color: #284c9a;">
                             <th rowspan="2" class="text-white align-middle">Kode</th>
                             <th rowspan="2" class="text-white align-middle">Tanggal</th>
                             <th rowspan="2" class="text-white align-middle">NIK</th>
@@ -66,7 +66,7 @@
                             <th rowspan="2" class="text-white align-middle">Kategori</th>
                             <th rowspan="2" class="text-white align-middle text-center">#</th>
                         </tr>
-                        <tr style="background-color: #002e65;">
+                        <tr style="background-color: #284c9a;">
                             <th class="text-white border-top-0 border-start text-center">PJP</th>
                             <th class="text-white border-top-0 text-center">Kasbon</th>
                             <th class="text-white border-top-0 text-center">Lainnya</th>

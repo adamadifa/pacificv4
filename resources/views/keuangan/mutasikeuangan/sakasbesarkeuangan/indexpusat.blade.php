@@ -52,7 +52,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-wallet me-2"></i>Data Saldo Kas Besar Pusat</h6>
                     @can('sakasbesarkeuangan.create')
@@ -66,11 +66,11 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 10%; white-space: nowrap;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KETERANGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 1%; white-space: nowrap;">DEBET</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 1%; white-space: nowrap;">KREDIT</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 1%; white-space: nowrap;">#</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 10%; white-space: nowrap;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 1%; white-space: nowrap;">DEBET</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 1%; white-space: nowrap;">KREDIT</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 1%; white-space: nowrap;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

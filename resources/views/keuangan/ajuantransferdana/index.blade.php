@@ -79,7 +79,7 @@
         {{-- Data Table Section --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3 d-flex justify-content-between align-items-center"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Ajuan Transfer Dana</h6>
                 @can('ajuantransfer.create')
                     <a href="#" class="btn btn-primary btn-sm" id="btnCreate">
@@ -91,16 +91,16 @@
                 <table class="table table-hover table-bordered table-striped align-middle" style="font-size: 13px !important;">
                     <thead>
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. PENGAJUAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NAMA</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">BANK</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. REKENING</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">JUMLAH</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 20%;">KETERANGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">VALIDASI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">STATUS</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NO. PENGAJUAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NAMA</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">BANK</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NO. REKENING</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">JUMLAH</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 20%;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">VALIDASI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">STATUS</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

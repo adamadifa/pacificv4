@@ -48,7 +48,7 @@
         width: 56px;
         height: 56px;
         border-radius: 50% !important;
-        background: linear-gradient(135deg, #002e65 0%, #004b93 100%) !important;
+        background: linear-gradient(135deg, #284c9a 0%, #004b93 100%) !important;
         border: none !important;
         color: white !important;
         box-shadow: 0 10px 20px rgba(0, 46, 101, 0.3) !important;

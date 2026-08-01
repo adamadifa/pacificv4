@@ -16,14 +16,14 @@
     .inventory-table thead tr:nth-child(1) th {
         position: sticky !important;
         top: 0 !important;
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
         z-index: 25 !important; /* Above scrolling data */
     }
 
     .inventory-table thead tr:nth-child(2) th {
         position: sticky !important;
         top: 45px !important; /* Offset for the first row's height */
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
         z-index: 24 !important; /* Slightly below the first row but above data */
     }
 
@@ -42,7 +42,7 @@
     table.inventory-table thead th.freeze-column {
         z-index: 40 !important; /* Stays above everything */
         top: 0 !important;
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
         color: white !important;
         border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
     }
@@ -128,7 +128,7 @@
     .detail-value {
         font-weight: 600;
         font-size: 0.8rem;
-        color: #002e65;
+        color: #284c9a;
     }
 </style>
 

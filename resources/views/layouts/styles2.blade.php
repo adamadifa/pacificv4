@@ -1,7 +1,7 @@
  <!-- Core CSS -->
- <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" />
- <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-semi-dark.css') }}" />
- <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}?v=1.0.3" />
+ <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-semi-dark.css') }}?v=1.0.3" />
+ <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}?v=1.0.3" />
 
  <!-- Vendors CSS -->
  <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
@@ -34,7 +34,7 @@
      }
 
      .swal2-confirm {
-         background-color: #1a6bd1 !important;
+         background-color: #284c9a !important;
      }
 
      .noborder-form {

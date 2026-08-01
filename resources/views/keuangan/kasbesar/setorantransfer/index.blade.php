@@ -100,23 +100,23 @@
         {{-- Data Table Section --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Setoran Transfer</h6>
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-bordered table-striped text-center align-middle">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">KODE</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">PELANGGAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">JUMLAH</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">BANK PENGIRIM</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">BANK PENERIMA</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">JATUH TEMPO</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">STATUS</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">DISETORKAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KODE</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">PELANGGAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">JUMLAH</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">BANK PENGIRIM</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">BANK PENERIMA</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">JATUH TEMPO</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">STATUS</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">DISETORKAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm border mb-3">
-            <div class="card-header border-bottom py-2" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-2" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white" style="font-size: 0.85rem;"><i class="ti ti-info-circle me-2"></i>Informasi Saldo Awal</h6>
             </div>
             <div class="card-body p-0">
@@ -33,7 +33,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-2" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-2" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white" style="font-size: 0.85rem;"><i class="ti ti-list me-2"></i>Rincian Piutang Sales</h6>
             </div>
             <div class="card-body p-0">
@@ -41,9 +41,9 @@
                     <table class="table table-bordered table-striped table-sm mb-0">
                         <thead class="sticky-top">
                             <tr>
-                                <th style="background-color: #002e65; color: white;">Kode Sales</th>
-                                <th style="background-color: #002e65; color: white;">Nama Salesman</th>
-                                <th class="text-end" style="background-color: #002e65; color: white;">Saldo</th>
+                                <th style="background-color: #284c9a; color: white;">Kode Sales</th>
+                                <th style="background-color: #284c9a; color: white;">Nama Salesman</th>
+                                <th class="text-end" style="background-color: #284c9a; color: white;">Saldo</th>
                             </tr>
                         </thead>
                         <tbody>

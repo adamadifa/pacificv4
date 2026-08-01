@@ -62,18 +62,18 @@
 
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-history me-2"></i>Histori Pembayaran</h6>
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-bordered table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. BUKTI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">JUMLAH</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">JENIS BAYAR</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">#</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NO. BUKTI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">JUMLAH</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">JENIS BAYAR</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 5%;">#</th>
                         </tr>
                     </thead>
                     <tbody id="loadhistoribayar">

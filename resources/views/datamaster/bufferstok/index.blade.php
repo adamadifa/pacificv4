@@ -37,7 +37,7 @@
             {{-- Data Card --}}
             <div class="card shadow-sm border mt-2">
                 <div class="card-header border-bottom py-3"
-                    style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                    style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 fw-bold text-white"><i class="ti ti-layers-intersect me-2"></i>Data Buffer Stok</h6>
                     </div>
@@ -46,10 +46,10 @@
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
-                                <th class="text-white" style="background-color: #002e65 !important;">KODE PRODUK</th>
-                                <th class="text-white" style="background-color: #002e65 !important;">NAMA PRODUK</th>
-                                <th class="text-white text-center" style="background-color: #002e65 !important;">BUFFER STOK</th>
-                                <th class="text-white text-center" style="background-color: #002e65 !important;">MAX. STOK</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">KODE PRODUK</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">NAMA PRODUK</th>
+                                <th class="text-white text-center" style="background-color: #284c9a !important;">BUFFER STOK</th>
+                                <th class="text-white text-center" style="background-color: #284c9a !important;">MAX. STOK</th>
                             </tr>
                         </thead>
                         <tbody id="loadbufferstok">

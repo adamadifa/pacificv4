@@ -230,7 +230,7 @@
                 @can('akt.rekappersediaan')
                     <div class="tab-pane fade active show" id="rekappersediaan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-box me-2"></i>Laporan Rekap Persediaan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -242,7 +242,7 @@
                 @can('akt.rekapbj')
                     <div class="tab-pane fade" id="rekapbj" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-invoice me-2"></i>Laporan Rekap BJ</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -254,7 +254,7 @@
                 @can('akt.costratio')
                     <div class="tab-pane fade" id="costratio" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-chart-pie me-2"></i>Laporan Cost Ratio</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -266,7 +266,7 @@
                 @can('akt.jurnalumum')
                     <div class="tab-pane fade" id="jurnalumum" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-book me-2"></i>Laporan Jurnal Umum</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -278,7 +278,7 @@
                 @can('lk.bukubesar')
                     <div class="tab-pane fade" id="bukubesar" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Laporan Keuangan (Buku Besar)</h6>
                             </div>
                             <div class="card-body pt-4">

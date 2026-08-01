@@ -52,7 +52,7 @@
                                 .branch-list-item:hover {
                                     background-color: rgba(0, 46, 101, 0.03);
                                     transform: translateX(5px);
-                                    border-color: #002e65 !important;
+                                    border-color: #284c9a !important;
                                 }
 
                                 .branch-icon-wrapper {
@@ -63,11 +63,11 @@
                                     justify-content: center;
                                     border-radius: 8px;
                                     background-color: rgba(0, 46, 101, 0.1);
-                                    color: #002e65;
+                                    color: #284c9a;
                                 }
 
                                 .branch-badge {
-                                    background-color: #002e65;
+                                    background-color: #284c9a;
                                     color: white;
                                     font-weight: 600;
                                     padding: 0.4em 0.8em;

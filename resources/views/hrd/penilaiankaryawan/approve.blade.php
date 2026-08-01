@@ -2,7 +2,7 @@
     @csrf
     <style>
         .approval-header {
-            background: linear-gradient(135deg, #002e65 0%, #0056b3 100%);
+            background: linear-gradient(135deg, #284c9a 0%, #0056b3 100%);
             border-radius: 12px;
             padding: 1.5rem;
             color: white;
@@ -31,7 +31,7 @@
         }
 
         .info-card:hover {
-            border-color: #002e65;
+            border-color: #284c9a;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
@@ -49,7 +49,7 @@
 
         .recommendation-box {
             background: #fcfdfe;
-            border-left: 4px solid #002e65;
+            border-left: 4px solid #284c9a;
             padding: 1rem;
             border-radius: 0 8px 8px 0;
         }
@@ -67,8 +67,8 @@
 
         .masa-kontrak-badge.active {
             background: #eef1f6;
-            border-color: #002e65;
-            color: #002e65;
+            border-color: #284c9a;
+            color: #284c9a;
         }
     </style>
 

@@ -20,7 +20,7 @@
 
         .container {
             width: 100%;
-            border: 2px solid #002e65;
+            border: 2px solid #284c9a;
             padding: 15px;
             box-sizing: border-box;
             background-color: #fff;
@@ -38,7 +38,7 @@
         }
 
         .logo-title {
-            color: #002e65;
+            color: #284c9a;
             font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
@@ -50,15 +50,15 @@
             font-size: 15px;
             font-weight: bold;
             letter-spacing: 1px;
-            color: #002e65;
+            color: #284c9a;
             margin: 10px 0 15px 0;
             text-transform: uppercase;
-            border-bottom: 2px double #002e65;
+            border-bottom: 2px double #284c9a;
             padding-bottom: 5px;
         }
 
         .info-box {
-            border: 1px solid #002e65;
+            border: 1px solid #284c9a;
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 4px;
@@ -77,7 +77,7 @@
 
         .info-label {
             font-weight: bold;
-            color: #002e65;
+            color: #284c9a;
             width: 18%;
         }
 
@@ -98,14 +98,14 @@
 
         table.data-table th,
         table.data-table td {
-            border: 1px solid #002e65;
+            border: 1px solid #284c9a;
             padding: 6px 8px;
             vertical-align: middle;
         }
 
         table.data-table th {
             background: #eef3ff;
-            color: #002e65;
+            color: #284c9a;
             font-weight: bold;
             text-align: center;
             text-transform: uppercase;
@@ -125,7 +125,7 @@
 
         .section-title {
             font-weight: bold;
-            color: #002e65;
+            color: #284c9a;
             margin-top: 15px;
             margin-bottom: 5px;
             font-size: 12px;
@@ -139,7 +139,7 @@
         }
 
         .approval-table td {
-            border: 1px solid #002e65;
+            border: 1px solid #284c9a;
             text-align: center;
             width: 33.33%;
             padding: 8px;
@@ -148,10 +148,10 @@
 
         .approval-header {
             background: #eef3ff;
-            color: #002e65;
+            color: #284c9a;
             font-weight: bold;
             padding: 6px;
-            border-bottom: 1px solid #002e65;
+            border-bottom: 1px solid #284c9a;
             text-transform: uppercase;
         }
 
@@ -171,7 +171,7 @@
             }
 
             .container {
-                border: 2px solid #002e65;
+                border: 2px solid #284c9a;
             }
         }
     </style>
@@ -205,7 +205,7 @@
                     <td class="info-label">Asal Ajuan</td>
                     <td class="info-sep">:</td>
                     <td class="info-value"><span
-                            style="background: #eef3ff; padding: 2px 6px; border-radius: 3px; font-weight: bold; color: #002e65;">{{ $pembelian->kode_asal_pengajuan }}</span>
+                            style="background: #eef3ff; padding: 2px 6px; border-radius: 3px; font-weight: bold; color: #284c9a;">{{ $pembelian->kode_asal_pengajuan }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -325,8 +325,8 @@
                 </tr>
             @endif
             <tr class="fw-bold" style="background: #eef3ff; font-size: 12px;">
-                <td style="color: #002e65;">GRAND TOTAL KLAIM</td>
-                <td class="text-right" style="color: #002e65;">
+                <td style="color: #284c9a;">GRAND TOTAL KLAIM</td>
+                <td class="text-right" style="color: #284c9a;">
                     {{ number_format($total_barang - ($total_potongan ?? 0) + $pembelian->penyesuaian_jk, 2) }}</td>
             </tr>
         </table>

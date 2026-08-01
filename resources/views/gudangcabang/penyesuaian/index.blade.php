@@ -67,7 +67,7 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-adjustments me-2"></i>Data Penyesuaian</h6>
                     @can('penygudangcbg.create')
@@ -79,13 +79,13 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO. MUTASI</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">CABANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">KETERANGAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">JENIS</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">IN/OUT</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO. MUTASI</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">CABANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KETERANGAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">JENIS</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">IN/OUT</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

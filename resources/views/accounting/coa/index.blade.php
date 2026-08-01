@@ -23,7 +23,7 @@
     <div class="col-lg-8 col-md-12 col-12">
         <div class="card shadow-none border">
             <div class="card-header border-bottom py-3 d-flex justify-content-between align-items-center"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-list me-2"></i>Daftar Akun</h6>
                 <div>
                     @can('coa.create')

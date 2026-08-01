@@ -24,7 +24,7 @@
     <div class="col-lg-8 col-md-12 col-sm-12">
         
         <!-- Search Card -->
-        <div class="card shadow-sm border-0 mb-4 text-white" style="background: linear-gradient(135deg, #002e65 0%, #004d99 100%);">
+        <div class="card shadow-sm border-0 mb-4 text-white" style="background: linear-gradient(135deg, #284c9a 0%, #004d99 100%);">
             <div class="card-body p-4 text-center">
                 <h5 class="fw-bold text-white mb-2 fs-4">Ada yang bisa kami bantu?</h5>
                 <p class="text-white-50 small mb-4">Cari panduan penggunaan modul sistem di bawah ini.</p>
@@ -85,7 +85,7 @@
         
         <!-- Quick Q&A Card -->
         <div class="card shadow-sm border mb-4">
-            <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                     <i class="ti ti-help fs-4"></i>
                     <span>Tanya Jawab Populer</span>

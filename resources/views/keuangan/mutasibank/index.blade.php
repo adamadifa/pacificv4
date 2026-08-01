@@ -70,7 +70,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-building-bank me-2"></i>Data Mutasi Bank</h6>
                     @can('mutasibank.create')
@@ -84,13 +84,13 @@
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KETERANGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KODE AKUN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">DEBET</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KREDIT</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">SALDO</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">#</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KODE AKUN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">DEBET</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KREDIT</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">SALDO</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 5%;">#</th>
                         </tr>
                         <tr style="background-color: #f1f1f1;">
                             <th colspan="5" class="fw-bold">SALDO AWAL</th>
@@ -151,11 +151,11 @@
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <td colspan="3" class="fw-bold text-center" style="background-color: #002e65 !important;">TOTAL</td>
-                            <td class="text-end fw-bold" style="background-color: #002e65 !important;">{{ formatAngka($total_debet) }}</td>
-                            <td class="text-end fw-bold" style="background-color: #002e65 !important;">{{ formatAngka($total_kredit) }}</td>
-                            <td class="text-end fw-bold" style="background-color: #002e65 !important;">{{ formatAngka($saldo) }}</td>
-                            <td style="background-color: #002e65 !important;"></td>
+                            <td colspan="3" class="fw-bold text-center" style="background-color: #284c9a !important;">TOTAL</td>
+                            <td class="text-end fw-bold" style="background-color: #284c9a !important;">{{ formatAngka($total_debet) }}</td>
+                            <td class="text-end fw-bold" style="background-color: #284c9a !important;">{{ formatAngka($total_kredit) }}</td>
+                            <td class="text-end fw-bold" style="background-color: #284c9a !important;">{{ formatAngka($saldo) }}</td>
+                            <td style="background-color: #284c9a !important;"></td>
                         </tr>
                     </tfoot>
                 </table>

@@ -20,7 +20,7 @@
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
-                    <thead style="background-color: #002e65;">
+                    <thead style="background-color: #284c9a;">
                         <tr>
                             <th class="text-white">No.</th>
                             <th class="text-white">Alasan</th>

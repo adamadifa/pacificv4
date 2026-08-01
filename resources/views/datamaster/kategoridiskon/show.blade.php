@@ -32,7 +32,7 @@
     {{-- Kategori Info Card --}}
     <div class="col-lg-4 col-md-12 mb-4">
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-info-circle me-2"></i>Informasi Kategori</h6>
             </div>
             <div class="card-body py-4">
@@ -53,7 +53,7 @@
     {{-- Detail Rules Card --}}
     <div class="col-lg-8 col-md-12">
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-percentage me-2"></i>Aturan Kuantitas & Potongan</h6>
                     <a href="#" class="btn btn-primary btn-sm" id="btncreateDetail"
@@ -65,7 +65,7 @@
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
                     <thead class="text-white">
-                        <tr style="background-color: #002e65;">
+                        <tr style="background-color: #284c9a;">
                             <th class="text-white" style="width: 80px;">No.</th>
                             <th class="text-white">Min. Qty (Dus/Pcs)</th>
                             <th class="text-white">Max. Qty (Dus/Pcs)</th>

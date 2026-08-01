@@ -84,7 +84,7 @@
                 @can('gj.persediaan')
                     <div class="tab-pane fade active show" id="persediaan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-box me-2"></i>Laporan Persediaan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -96,7 +96,7 @@
                 @can('gj.rekappersediaan')
                     <div class="tab-pane fade" id="rekappersediaan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-analytics me-2"></i>Rekap Persediaan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -108,7 +108,7 @@
                 @can('gj.rekaphasilproduksi')
                     <div class="tab-pane fade" id="rekaphasilproduksi" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-assembly me-2"></i>Rekap Hasil Produksi</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -120,7 +120,7 @@
                 @can('gj.rekappengeluaran')
                     <div class="tab-pane fade" id="rekappengeluaran" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrow-bar-to-up me-2"></i>Rekap Pengeluaran</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -132,7 +132,7 @@
                 @can('gj.realisasikiriman')
                     <div class="tab-pane fade" id="realisasikiriman" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-truck-delivery me-2"></i>Realisasi Kiriman</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -144,7 +144,7 @@
                 @can('gj.realisasioman')
                     <div class="tab-pane fade" id="realisasioman" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-clipboard-list me-2"></i>Realisasi OMAN</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -156,7 +156,7 @@
                 @can('gj.angkutan')
                     <div class="tab-pane fade" id="angkutan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-truck me-2"></i>Laporan Angkutan</h6>
                             </div>
                             <div class="card-body pt-4">

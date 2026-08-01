@@ -27,7 +27,7 @@
         <form action="{{ route('ajuanlimitconfig.store') }}" method="POST">
             @csrf
             <div class="card shadow-sm border mb-4">
-                <div class="card-header border-bottom py-3" style="background-color: #002e65;">
+                <div class="card-header border-bottom py-3" style="background-color: #284c9a;">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-currency-dollar me-2"></i>Rentang Nominal</h6>
                 </div>
                 <div class="card-body mt-3">
@@ -45,7 +45,7 @@
             </div>
 
             <div class="card shadow-sm border">
-                <div class="card-header border-bottom py-3" style="background-color: #002e65;">
+                <div class="card-header border-bottom py-3" style="background-color: #284c9a;">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-list me-2"></i>Urutan Role Approval</h6>
                 </div>
                 <div class="card-body mt-3">

@@ -98,7 +98,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-target-arrow me-2"></i>Data Target Komisi</h6>
                     @can('targetkomisi.create')
@@ -110,14 +110,14 @@
                 <table class="table table-hover table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">Kode</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Bulan</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Tahun</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Cabang</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Posisi Ajuan</th>
-                            <th class="text-center text-white" style="background-color: #002e65 !important;">Status</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Tanggal</th>
-                            <th class="text-center text-white" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Kode</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Bulan</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Tahun</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Cabang</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Posisi Ajuan</th>
+                            <th class="text-center text-white" style="background-color: #284c9a !important;">Status</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Tanggal</th>
+                            <th class="text-center text-white" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody>

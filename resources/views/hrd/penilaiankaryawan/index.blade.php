@@ -29,7 +29,7 @@
     .assessment-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2) !important;
-        border-color: #002e65 !important;
+        border-color: #284c9a !important;
     }
 
     .border-end-lg {
@@ -45,12 +45,12 @@
     }
 
     .btn-label-primary {
-        color: #002e65;
+        color: #284c9a;
         background: #eef1f6;
     }
 
     .btn-label-primary:hover {
-        background: #002e65 !important;
+        background: #284c9a !important;
         color: #fff !important;
     }
 </style>

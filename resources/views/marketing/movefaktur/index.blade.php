@@ -79,11 +79,11 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrows-transfer me-2"></i>Data Move Faktur</h6>
         <div class="card shadow-sm border">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrows-transfer me-2"></i>Data Move Faktur</h6>
                     <div class="d-flex gap-2">
@@ -107,16 +107,16 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th class="text-center" style="background-color: #002e65 !important; width: 5%">
+                                <th class="text-center" style="background-color: #284c9a !important; width: 5%">
                                     <input type="checkbox" class="form-check-input" id="checkAll">
                                 </th>
-                                <th class="text-white" style="background-color: #002e65 !important;">NO. FAKTUR</th>
-                                <th class="text-white" style="background-color: #002e65 !important;">TGL FAKTUR</th>
-                                <th class="text-white" style="background-color: #002e65 !important;">TGL MOVE</th>
-                                <th class="text-white" style="background-color: #002e65 !important;">PELANGGAN</th>
-                                <th class="text-white" style="background-color: #002e65 !important;">SALES LAMA</th>
-                                <th class="text-white" style="background-color: #002e65 !important;">SALES BARU</th>
-                                <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">NO. FAKTUR</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">TGL FAKTUR</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">TGL MOVE</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">PELANGGAN</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">SALES LAMA</th>
+                                <th class="text-white" style="background-color: #284c9a !important;">SALES BARU</th>
+                                <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">

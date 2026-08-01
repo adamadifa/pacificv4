@@ -43,7 +43,7 @@
 
     th.sticky-column {
         z-index: 3 !important;
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
     }
 
     tr:nth-child(even) td.sticky-column {
@@ -95,7 +95,7 @@
         {{-- Data Table Section --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3 d-flex justify-content-between align-items-center"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Setoran Pusat</h6>
                 @can('setoranpusat.create')
                     <a href="#" class="btn btn-primary btn-sm" id="btnCreate">
@@ -108,21 +108,21 @@
                     <thead>
                         <tr>
                             <th rowspan="2" class="text-white align-middle sticky-column sticky-left-1"
-                                style="background-color: #002e65 !important; min-width: 100px; width: 100px;">TANGGAL</th>
+                                style="background-color: #284c9a !important; min-width: 100px; width: 100px;">TANGGAL</th>
                             <th rowspan="2" class="text-white align-middle sticky-column sticky-left-2"
-                                style="background-color: #002e65 !important; width: 350px; min-width: 350px;">KETERANGAN</th>
-                            <th colspan="4" class="text-white text-center" style="background-color: #002e65 !important;">RINCIAN SETORAN</th>
-                            <th rowspan="2" class="text-white align-middle" style="background-color: #002e65 !important;">JUMLAH</th>
-                            <th rowspan="2" class="text-white align-middle" style="background-color: #002e65 !important;">BANK</th>
-                            <th rowspan="2" class="text-white align-middle" style="background-color: #002e65 !important;">STATUS</th>
+                                style="background-color: #284c9a !important; width: 350px; min-width: 350px;">KETERANGAN</th>
+                            <th colspan="4" class="text-white text-center" style="background-color: #284c9a !important;">RINCIAN SETORAN</th>
+                            <th rowspan="2" class="text-white align-middle" style="background-color: #284c9a !important;">JUMLAH</th>
+                            <th rowspan="2" class="text-white align-middle" style="background-color: #284c9a !important;">BANK</th>
+                            <th rowspan="2" class="text-white align-middle" style="background-color: #284c9a !important;">STATUS</th>
                             <th rowspan="2" class="text-white align-middle sticky-column sticky-right-1"
-                                style="background-color: #002e65 !important; width: 80px; min-width: 80px;">#</th>
+                                style="background-color: #284c9a !important; width: 80px; min-width: 80px;">#</th>
                         </tr>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">KERTAS</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">LOGAM</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TRANSFER</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">GIRO</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KERTAS</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">LOGAM</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TRANSFER</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">GIRO</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

@@ -72,7 +72,7 @@
                 @can('mtc.bahanbakar')
                     <div class="tab-pane fade active show" id="bahanbakar" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-gas-station me-2"></i>Laporan Bahan Bakar</h6>
                             </div>
                             <div class="card-body pt-4">

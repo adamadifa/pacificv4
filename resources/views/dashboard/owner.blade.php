@@ -116,7 +116,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4">
                 <div class="card shadow-sm border">
-                    <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                    <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                         <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Daily Financial Summary</h6>
                     </div>
                     <div class="card-body py-4">
@@ -159,7 +159,7 @@
 
             <div class="col-lg-6 col-md-12 mb-4">
                 <div class="card shadow-sm border">
-                    <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                    <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                         <h6 class="m-0 fw-bold text-white"><i class="ti ti-report-money me-2"></i>Rekap Kas Besar</h6>
                     </div>
                     <div class="card-body py-4">

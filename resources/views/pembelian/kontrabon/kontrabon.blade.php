@@ -50,12 +50,12 @@
     thead th.freeze-3,
     thead th.freeze-4,
     thead th.freeze-last {
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
         z-index: 3;
     }
 
     thead th {
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
     }
 </style>
 
@@ -104,7 +104,7 @@
 
         {{-- Card Data --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-text me-2"></i>Data Kontra Bon</h6>
                     <div class="d-flex gap-2">
@@ -117,7 +117,7 @@
 
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-bordered">
-                    <thead style="background-color: #002e65;">
+                    <thead style="background-color: #284c9a;">
                         <tr>
                             <th class="text-white freeze-1">No. Kontra BON</th>
                             <th class="text-white freeze-2" style="width: 10%">No Dok</th>

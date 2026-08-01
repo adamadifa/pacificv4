@@ -215,17 +215,17 @@
                 <table class="table table-hover table-bordered table-striped align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">NO</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">DEVICE NAME</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">IMEI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">MODEL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">MILAGE (km)</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">FUEL USED (L)</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">FUEL/100 (L)</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">AVG SPEED (km/h)</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">MAX SPEED (km/h)</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 10%;">AKSI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 5%;">NO</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">DEVICE NAME</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">IMEI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">MODEL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">MILAGE (km)</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">FUEL USED (L)</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">FUEL/100 (L)</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">AVG SPEED (km/h)</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">MAX SPEED (km/h)</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 10%;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>

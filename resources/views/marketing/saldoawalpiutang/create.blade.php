@@ -12,7 +12,7 @@
             @csrf
             <input type="hidden" name="data_saldo" id="data_saldo">
             <div class="card shadow-sm border mb-3">
-                <div class="card-header border-bottom py-2" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="card-header border-bottom py-2" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                     <h6 class="m-0 fw-bold text-white" style="font-size: 0.85rem;"><i class="ti ti-calendar me-2"></i>Pilih Periode</h6>
                 </div>
                 <div class="card-body">
@@ -49,7 +49,7 @@
             </div>
 
             <div class="card shadow-sm border">
-                <div class="card-header border-bottom py-2" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="card-header border-bottom py-2" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                     <h6 class="m-0 fw-bold text-white" style="font-size: 0.85rem;"><i class="ti ti-list me-2"></i>Rincian Saldo Akhir Piutang</h6>
                 </div>
                 <div class="card-body p-0">
@@ -57,10 +57,10 @@
                         <table class="table table-bordered table-striped table-sm mb-0">
                             <thead class="sticky-top">
                                 <tr>
-                                    <th style="background-color: #002e65; color: white;">No. Faktur</th>
-                                    <th style="background-color: #002e65; color: white;">Tanggal</th>
-                                    <th style="background-color: #002e65; color: white;">Pelanggan</th>
-                                    <th class="text-end" style="background-color: #002e65; color: white; width: 25%">Saldo</th>
+                                    <th style="background-color: #284c9a; color: white;">No. Faktur</th>
+                                    <th style="background-color: #284c9a; color: white;">Tanggal</th>
+                                    <th style="background-color: #284c9a; color: white;">Pelanggan</th>
+                                    <th class="text-end" style="background-color: #284c9a; color: white; width: 25%">Saldo</th>
                                 </tr>
                             </thead>
                             <tbody id="loaddetailsaldo">

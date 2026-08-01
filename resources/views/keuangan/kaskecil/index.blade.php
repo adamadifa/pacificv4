@@ -71,7 +71,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-wallet me-2"></i>Data Operasional Kas Kecil</h6>
                     @can('kaskecil.create')
@@ -85,15 +85,15 @@
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 3%;">NO</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 10%;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 10%;">NO. BUKTI</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 25%;">KETERANGAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 20%;">AKUN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">PENERIMAAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">PENGELUARAN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">SALDO</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">AKSI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 3%;">NO</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 10%;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 10%;">NO. BUKTI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 25%;">KETERANGAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 20%;">AKUN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">PENERIMAAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">PENGELUARAN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">SALDO</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">AKSI</th>
                         </tr>
                         <tr style="background-color: #f8f9fa;">
                             <th colspan="7" class="fw-bold px-3">SALDO AWAL</th>

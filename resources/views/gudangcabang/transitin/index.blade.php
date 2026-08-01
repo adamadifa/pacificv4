@@ -61,18 +61,18 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-transfer-in me-2"></i>Data Transit IN</h6>
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO. SURAT JALAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">CABANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TRANSIT OUT</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TRANSIT IN</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO. SURAT JALAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">CABANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TRANSIT OUT</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TRANSIT IN</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

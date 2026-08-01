@@ -147,7 +147,7 @@
                         <div class="card-body p-0">
                             <div class="d-flex flex-column flex-md-row">
                                 {{-- Section 1: Identity & Date --}}
-                                <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 280px; background-color: #002e65;">
+                                <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 280px; background-color: #284c9a;">
                                     <div class="avatar avatar-md me-3 bg-white bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
                                         @if ($d->foto && Storage::disk('public')->exists('karyawan/' . $d->foto))
                                             <img src="{{ asset('storage/karyawan/' . $d->foto) }}" alt="Avatar" class="rounded-circle w-100 h-100" style="object-fit: cover;">
@@ -264,7 +264,7 @@
     .card-hover-shadow:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-        border-color: #002e65 !important;
+        border-color: #284c9a !important;
     }
     .small-caps {
         font-variant: all-small-caps;

@@ -21,7 +21,7 @@
     }
 
     thead th {
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
         color: white !important;
     }
 

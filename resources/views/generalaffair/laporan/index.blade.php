@@ -44,7 +44,7 @@
                 @can('ga.servicekendaraan')
                     <div class="tab-pane fade active show" id="servicekendaraan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-settings me-2"></i>Laporan Service Kendaraan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -56,7 +56,7 @@
                 @can('ga.rekapbadstok')
                     <div class="tab-pane fade" id="rekapbadstok" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-package-off me-2"></i>Laporan Rekap Bad Stok</h6>
                             </div>
                             <div class="card-body pt-4">

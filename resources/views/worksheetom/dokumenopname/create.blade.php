@@ -1,3 +1,8 @@
+<style>
+    .flatpickr-calendar {
+        z-index: 999999 !important;
+    }
+</style>
 <form action="{{ route('worksheetom.dokumenopname.store') }}" method="POST" id="formDokumenopname" enctype="multipart/form-data">
     @csrf
     @hasanyrole($roles_show_cabang)
@@ -22,7 +27,9 @@
     $(document).ready(function() {
         const formDokumenopname = $("#formDokumenopname");
         const select2Kodecabang = $('.select2Kodecabang');
-        $(".flatpickr-date").flatpickr();
+        $("#tanggal").flatpickr({
+            dateFormat: "Y-m-d"
+        });
         if (select2Kodecabang.length) {
             select2Kodecabang.each(function() {
                 var $this = $(this);

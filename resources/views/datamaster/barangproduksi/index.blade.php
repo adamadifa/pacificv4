@@ -42,7 +42,7 @@
     <div class="col-lg-12 col-sm-12 col-xs-12">
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-box me-2"></i>Data Barang Produksi</h6>
                     @can('produk.create')
@@ -56,14 +56,14 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO.</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">KODE</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">NAMA BARANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">SATUAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">ASAL BARANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">KATEGORI</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">STATUS</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO.</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KODE</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NAMA BARANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">SATUAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">ASAL BARANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KATEGORI</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">STATUS</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

@@ -18,24 +18,35 @@
             font-family: 'Outfit', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(-45deg, #1c1c1c, #2a2a2a, #111827, #374151);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: linear-gradient(135deg, #162a5b 0%, #0d1b3b 100%);
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow: hidden;
+            position: relative;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .login-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
+
+        .login-waves svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
 
         .glass-container {
-            background: rgba(17, 24, 39, 0.6);
+            background: rgba(13, 27, 59, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             width: 100%;
@@ -45,6 +56,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
 
         .input-field {
@@ -108,63 +122,72 @@
 
 <body>
     <div class="glass-container">
-        <!-- Logo -->
-        <div class="mb-4">
-            <img src="{{ asset('assets/img/logo/logoportal.png') }}" alt="Logo" width="100" style="filter: brightness(0) invert(1);">
-        </div>
-
-        <!-- Character -->
-        <div id="character-container" class="state-idle">
-            <img id="character-img" src="{{ asset('karakter.png') }}" alt="Character">
-        </div>
-
-        <!-- Form Title -->
-        <div class="w-full mb-6 text-center">
-            <h1 class="text-2xl font-bold text-white mb-1">Welcome Back</h1>
-            <p class="text-gray-400 text-xs">Sign in to your account</p>
-        </div>
-
-        @if ($errors->any())
-            <div class="w-full bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-2 rounded-xl mb-4 text-xs">
-                @foreach ($errors->all() as $error)
-                    <p>• {{ $error }}</p>
-                @endforeach
-            </div>
-        @endif
-
-        <!-- Login Form -->
-        <form id="login-form" action="{{ route('login') }}" method="POST" class="w-full space-y-4">
-            @csrf
-            <div>
-                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Username</label>
-                <input type="text" name="id_user" id="id_user" placeholder="Username" 
-                    class="input-field w-full px-4 py-3.5 text-sm font-medium" required value="{{ old('id_user') }}" autocomplete="off">
+        <div class="relative z-10 w-full flex flex-col items-center justify-center">
+            <!-- Logo -->
+            <div class="mb-4">
+                <img src="{{ asset('assets/img/logo/logoportal.png') }}" alt="Logo" width="100" style="filter: brightness(0) invert(1);">
             </div>
 
-            <div>
-                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Password</label>
-                <div class="relative">
-                    <input type="password" name="password" id="password" placeholder="••••••••" 
-                        class="input-field w-full px-4 py-3.5 text-sm font-medium" required>
+            <!-- Character -->
+            <div id="character-container" class="state-idle">
+                <img id="character-img" src="{{ asset('karakter.png') }}" alt="Character">
+            </div>
+
+            <!-- Form Title -->
+            <div class="w-full mb-6 text-center">
+                <h1 class="text-2xl font-bold text-white mb-1">Welcome Back</h1>
+                <p class="text-gray-400 text-xs">Sign in to your account</p>
+            </div>
+
+            @if ($errors->any())
+                <div class="w-full bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-2 rounded-xl mb-4 text-xs">
+                    @foreach ($errors->all() as $error)
+                        <p>• {{ $error }}</p>
+                    @endforeach
                 </div>
-            </div>
+            @endif
 
-            <div class="flex justify-between items-center px-1">
-                <div class="flex items-center">
-                    <input type="checkbox" name="remember" id="remember" class="w-3.5 h-3.5 rounded border-gray-600 bg-gray-800 text-blue-600 focus:ring-blue-500">
-                    <label for="remember" class="ml-2 text-xs text-gray-400">Remember me</label>
+            <!-- Login Form -->
+            <form id="login-form" action="{{ route('login') }}" method="POST" class="w-full space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Username</label>
+                    <input type="text" name="id_user" id="id_user" placeholder="Username" 
+                        class="input-field w-full px-4 py-3.5 text-sm font-medium" required value="{{ old('id_user') }}" autocomplete="off">
                 </div>
-                <a href="#" class="text-xs font-bold text-blue-400">Forgot Password?</a>
-            </div>
 
-            <button type="submit" class="btn-primary w-full py-5 text-white text-base mt-2 uppercase tracking-widest">
-                Sign In
-            </button>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="password" placeholder="••••••••" 
+                            class="input-field w-full px-4 py-3.5 text-sm font-medium" required>
+                    </div>
+                </div>
 
-            <p class="text-gray-500 text-center text-[11px] mt-6">
-                Don't have an account? <a href="#" class="text-blue-400 font-bold ml-1">Contact Admin</a>
-            </p>
-        </form>
+                <div class="flex justify-between items-center px-1">
+                    <div class="flex items-center">
+                        <input type="checkbox" name="remember" id="remember" class="w-3.5 h-3.5 rounded border-gray-600 bg-gray-800 text-blue-600 focus:ring-blue-500">
+                        <label for="remember" class="ml-2 text-xs text-gray-400">Remember me</label>
+                    </div>
+                    <a href="#" class="text-xs font-bold text-blue-400">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-primary w-full py-5 text-white text-base mt-2 uppercase tracking-widest">
+                    Sign In
+                </button>
+
+                <p class="text-gray-500 text-center text-[11px] mt-6">
+                    Don't have an account? <a href="#" class="text-blue-400 font-bold ml-1">Contact Admin</a>
+                </p>
+            </form>
+        </div>
+
+        <div class="login-waves">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                <path class="wave-1" fill="rgba(255, 255, 255, 0.05)" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,122.7C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                <path class="wave-2" fill="rgba(255, 255, 255, 0.03)" d="M0,192L48,197.3C96,203,192,213,288,202.7C384,192,480,160,576,138.7C672,117,768,107,864,122.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
     </div>
 
     <!-- PWA Install Prompt Banner -->

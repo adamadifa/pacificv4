@@ -34,14 +34,14 @@
         }
 
         .nav-pills-custom .nav-link:hover {
-            color: #002e65;
+            color: #284c9a;
             background-color: rgba(0, 46, 101, 0.05);
         }
 
         .nav-pills-custom .nav-link.active {
-            color: #002e65 !important;
+            color: #284c9a !important;
             background-color: #fff !important;
-            border-bottom: 3px solid #002e65;
+            border-bottom: 3px solid #284c9a;
             box-shadow: none !important;
         }
 

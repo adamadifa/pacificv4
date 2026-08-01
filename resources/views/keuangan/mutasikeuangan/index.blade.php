@@ -71,7 +71,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrows-transfer-down me-2"></i>Data Mutasi Keuangan</h6>
                     @can('mutasikeuangan.create')
@@ -85,18 +85,18 @@
                 <table class="table table-hover table-bordered table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 8%">TANGGAL</th>
-                            <th colspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 15%">NO. BUKTI</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 25%">KETERANGAN</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 10%">KATEGORI</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 10%">DEBET</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 10%">KREDIT</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 12%">SALDO</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important; width: 5%">#</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 8%">TANGGAL</th>
+                            <th colspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 15%">NO. BUKTI</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 25%">KETERANGAN</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 10%">KATEGORI</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 10%">DEBET</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 10%">KREDIT</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 12%">SALDO</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important; width: 5%">#</th>
                         </tr>
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. BTK</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">NO. BKK</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NO. BTK</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">NO. BKK</th>
                         </tr>
                         <tr>
                             <th colspan="7" class="bg-light fw-bold text-dark">SALDO AWAL</th>
@@ -166,11 +166,11 @@
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <th colspan="5" class="text-center" style="background-color: #002e65 !important;">TOTAL</th>
-                            <th class="text-end" style="background-color: #002e65 !important;">{{ formatAngka($total_debet) }}</th>
-                            <th class="text-end" style="background-color: #002e65 !important;">{{ formatAngka($total_kredit) }}</th>
-                            <th class="text-end" style="background-color: #002e65 !important;">{{ formatAngka($saldo) }}</th>
-                            <th style="background-color: #002e65 !important;"></th>
+                            <th colspan="5" class="text-center" style="background-color: #284c9a !important;">TOTAL</th>
+                            <th class="text-end" style="background-color: #284c9a !important;">{{ formatAngka($total_debet) }}</th>
+                            <th class="text-end" style="background-color: #284c9a !important;">{{ formatAngka($total_kredit) }}</th>
+                            <th class="text-end" style="background-color: #284c9a !important;">{{ formatAngka($saldo) }}</th>
+                            <th style="background-color: #284c9a !important;"></th>
                         </tr>
                     </tfoot>
                 </table>

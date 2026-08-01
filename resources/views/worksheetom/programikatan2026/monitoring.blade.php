@@ -194,12 +194,12 @@
                     {{-- TABLE VIEW CONTAINER --}}
                     <div id="table-view-container" class="d-none mt-2">
                         <div class="card shadow-sm border mb-3">
-                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Realisasi Program</h6>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover table-bordered mb-0">
-                                    <thead style="background-color: #002e65;">
+                                    <thead style="background-color: #284c9a;">
                                         <tr>
                                             <th class="text-white text-center" style="width: 50px;">No.</th>
                                             <th class="text-white">No. Ajuan</th>

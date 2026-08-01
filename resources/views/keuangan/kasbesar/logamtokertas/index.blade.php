@@ -59,7 +59,7 @@
         {{-- Data Table Section --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3 d-flex justify-content-between align-items-center"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Ganti Logam ke Kertas</h6>
                 @can('logamtokertas.create')
                     <a href="#" class="btn btn-primary btn-sm" id="btnCreate">
@@ -71,11 +71,11 @@
                 <table class="table table-hover table-bordered table-striped text-center align-middle">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">KODE</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">CABANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">JUMLAH</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">KODE</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">CABANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">JUMLAH</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

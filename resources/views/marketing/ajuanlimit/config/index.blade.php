@@ -57,7 +57,7 @@
 
     .info-value-sm {
         font-size: 14px;
-        color: #002e65;
+        color: #284c9a;
         font-weight: 700;
     }
 

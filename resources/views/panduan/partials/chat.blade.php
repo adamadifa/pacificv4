@@ -8,7 +8,7 @@
 <div id="chat-widget-window" class="card shadow-lg border-0 d-none" style="position: fixed; top: 0; right: 0; bottom: 0; width: 25%; min-width: 380px; max-width: 500px; height: 100vh; z-index: 9999 !important; border-radius: 16px 0 0 16px; overflow: hidden; transition: all 0.3s ease; box-shadow: -10px 0 30px rgba(0,0,0,0.15) !important;">
     
     <!-- Chat Header -->
-    <div class="card-header d-flex justify-content-between align-items-center py-3 text-white" style="background: linear-gradient(135deg, #002e65 0%, #00408a 100%); border-radius: 0; height: 70px;">
+    <div class="card-header d-flex justify-content-between align-items-center py-3 text-white" style="background: linear-gradient(135deg, #284c9a 0%, #00408a 100%); border-radius: 0; height: 70px;">
         <div class="d-flex align-items-center gap-2">
             <div class="bg-success rounded-circle" style="width: 12px; height: 12px;"></div>
             <div>
@@ -63,7 +63,7 @@
     
     .chat-bubble-user {
         border-radius: 12px 0 12px 12px !important;
-        background: #002e65;
+        background: #284c9a;
         color: #fff;
         font-size: 15px !important;
         padding: 10px 14px !important;
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 text: "Semua riwayat chat Anda dengan asisten akan dihapus permanen.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#002e65',
+                confirmButtonColor: '#284c9a',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya, Hapus!'
             }).then((result) => {

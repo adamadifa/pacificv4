@@ -1,7 +1,7 @@
 <div class="table-responsive">
     <table class="table table-hover table-striped mb-0">
         <thead>
-            <tr style="background-color: #002e65;">
+            <tr style="background-color: #284c9a;">
                 <th class="py-3 text-white" style="padding-left: 15px;">KODE & NAMA AKUN</th>
                 <th class="py-3 text-center text-white" style="width: 100px;">AKSI</th>
             </tr>

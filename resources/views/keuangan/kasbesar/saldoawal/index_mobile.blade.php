@@ -48,7 +48,7 @@
         width: 56px;
         height: 56px;
         border-radius: 50% !important;
-        background: linear-gradient(135deg, #002e65 0%, #004b93 100%) !important;
+        background: linear-gradient(135deg, #284c9a 0%, #004b93 100%) !important;
         border: none !important;
         color: white !important;
         box-shadow: 0 10px 20px rgba(0, 46, 101, 0.3) !important;
@@ -194,8 +194,8 @@
                             <div class="row g-2">
                                 <div class="col-6">
                                     <div class="val-block bg-kertas">
-                                        <div class="d-flex align-items-center gap-1" style="font-size: 10px; color: #002e65; font-weight: 500;">
-                                            <i class="ti ti-cash fs-6" style="color: #002e65;"></i>Uang Kertas
+                                        <div class="d-flex align-items-center gap-1" style="font-size: 10px; color: #284c9a; font-weight: 500;">
+                                            <i class="ti ti-cash fs-6" style="color: #284c9a;"></i>Uang Kertas
                                         </div>
                                         <div class="fw-bold text-slate-800 mt-1" style="font-size: 12px;">Rp {{ formatAngka($d->uang_kertas) }}</div>
                                     </div>

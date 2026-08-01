@@ -55,7 +55,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-wallet me-2"></i>Data Gaji</h6>
                     @can('gaji.create')
@@ -69,21 +69,21 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">KODE</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">NIK</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">NAMA KARYAWAN</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">GAJI POKOK</th>
-                            <th colspan="6" class="text-center text-white" style="background-color: #002e65 !important;">TUNJANGAN</th>
-                            <th rowspan="2" class="text-white" style="background-color: #002e65 !important;">BERLAKU</th>
-                            <th rowspan="2" class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">KODE</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">NIK</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">NAMA KARYAWAN</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">GAJI POKOK</th>
+                            <th colspan="6" class="text-center text-white" style="background-color: #284c9a !important;">TUNJANGAN</th>
+                            <th rowspan="2" class="text-white" style="background-color: #284c9a !important;">BERLAKU</th>
+                            <th rowspan="2" class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">Jabatan</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Masa Kerja</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Tang. Jawab</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Makan</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Istri</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">Skill</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Jabatan</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Masa Kerja</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Tang. Jawab</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Makan</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Istri</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">Skill</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

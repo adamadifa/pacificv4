@@ -1,6 +1,6 @@
 <div class="table-responsive">
     <table class="table table-bordered table-hover">
-        <thead class="text-white" style="background-color: #002e65;">
+        <thead class="text-white" style="background-color: #284c9a;">
             <tr>
                 <th class="text-center text-white" style="width: 5%">No</th>
                 <th class="text-white">Bank</th>

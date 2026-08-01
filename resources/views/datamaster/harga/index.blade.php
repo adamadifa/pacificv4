@@ -55,7 +55,7 @@
 
     /* background and z-index for headers - NO VERTICAL STICKY */
     thead th {
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
     }
 
     thead th.freeze-1,
@@ -63,7 +63,7 @@
     thead th.freeze-3,
     thead th.freeze-last {
         z-index: 3 !important;
-        background-color: #002e65 !important;
+        background-color: #284c9a !important;
         position: sticky;
     }
 
@@ -117,7 +117,7 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-currency-dollar me-2"></i>Data Harga</h6>
                     @can('harga.create')

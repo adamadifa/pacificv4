@@ -39,7 +39,7 @@
         <!-- Informasi BPB Card -->
         <div class="col-md-8">
             <div class="card h-100 border shadow-sm">
-                <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                             <i class="ti ti-receipt fs-4"></i>
@@ -53,7 +53,7 @@
                 <div class="card-body pt-3">
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <div class="p-3 border rounded" style="background-color: #fafbfc; border-left: 4px solid #002e65 !important;">
+                            <div class="p-3 border rounded" style="background-color: #fafbfc; border-left: 4px solid #284c9a !important;">
                                 <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 11px; letter-spacing: 0.5px;">No. BPB</small>
                                 <span class="fs-5 fw-bold text-dark">{{ $bpb->no_bpb }}</span>
                             </div>
@@ -90,7 +90,7 @@
         <!-- Progres Serah Terima Card -->
         <div class="col-md-4">
             <div class="card h-100 border shadow-sm">
-                <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                     <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                         <i class="ti ti-chart-pie fs-4"></i>
                         <span>Progres Penyerahan</span>
@@ -109,7 +109,7 @@
                     
                     <div class="row g-2 text-center mb-1">
                         <div class="col-4">
-                            <div class="p-2 border rounded" style="background-color: #fafbfc; border-top: 3px solid #002e65 !important;">
+                            <div class="p-2 border rounded" style="background-color: #fafbfc; border-top: 3px solid #284c9a !important;">
                                 <h5 class="mb-0 fw-bold text-primary">{{ formatAngkaDesimal($totalJumlah) }}</h5>
                                 <small class="text-muted fw-semibold" style="font-size: 10px;">Total Order</small>
                             </div>
@@ -134,7 +134,7 @@
 
     <!-- DETAIL BARANG -->
     <div class="card shadow-sm border mb-4">
-        <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+        <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
             <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                 <i class="ti ti-box fs-4"></i>
                 <span>Detail Barang Permintaan</span>
@@ -142,7 +142,7 @@
         </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover table-bordered align-middle mb-0">
-                <thead style="background-color: #002e65;">
+                <thead style="background-color: #284c9a;">
                     <tr>
                         <th class="text-white text-center" style="width: 5%">No</th>
                         <th class="text-white" style="width: 15%">Kode</th>
@@ -240,7 +240,7 @@
 
 <!-- HISTORY -->
 <div class="card shadow-sm border mt-4">
-    <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+    <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
         <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
             <i class="ti ti-history fs-4"></i>
             <span>History Serah Terima</span>
@@ -264,7 +264,7 @@
                         @if ($s->diterima == 0)
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge bg-warning text-dark shadow-sm px-2 py-1"><i class="ti ti-clock me-1" style="font-size:12px"></i>Menunggu Konfirmasi</span>
-                                <select class="form-select form-select-sm terimaSurat border-primary py-0 px-2" data-no_bukti="{{ $s->no_bukti }}" style="width: auto; height: 26px; font-size: 12px; border-color: #002e65 !important;">
+                                <select class="form-select form-select-sm terimaSurat border-primary py-0 px-2" data-no_bukti="{{ $s->no_bukti }}" style="width: auto; height: 26px; font-size: 12px; border-color: #284c9a !important;">
                                     <option value="">-- Pilih --</option>
                                     <option value="1" @selected($s->diterima == 1)>Terima</option>
                                 </select>

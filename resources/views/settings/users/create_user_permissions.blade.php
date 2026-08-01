@@ -50,7 +50,7 @@
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="card h-100 shadow-none border overflow-hidden">
                     <div class="card-header d-flex justify-content-between align-items-center py-2 px-3" 
-                         style="background-color: #002e65 !important;">
+                         style="background-color: #284c9a !important;">
                         <h6 class="mb-0 text-white fw-semibold small">
                             <i class="ti ti-folder-check me-1"></i> {{ $d->group_name }}
                         </h6>

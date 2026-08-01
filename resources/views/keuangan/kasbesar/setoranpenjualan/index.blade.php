@@ -91,7 +91,7 @@
         {{-- Data Table Section --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3 d-flex justify-content-between align-items-center"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-table me-2"></i>Data Setoran Penjualan</h6>
                 <div class="d-flex gap-2">
                     @can('setoranpenjualan.show')
@@ -113,13 +113,13 @@
                 <table class="table table-hover table-striped table-bordered text-center align-middle">
                     <thead>
                         <tr>
-                            <th rowspan="2" class="text-white align-middle" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th rowspan="2" class="text-white align-middle" style="background-color: #002e65 !important;">SALESMAN</th>
+                            <th rowspan="2" class="text-white align-middle" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th rowspan="2" class="text-white align-middle" style="background-color: #284c9a !important;">SALESMAN</th>
                             <th colspan="2" class="text-white text-center" style="background-color: #28a745 !important;">PENJUALAN</th>
                             <th rowspan="2" class="text-white align-middle text-center" style="background-color: #28a745 !important;">TOTAL LHP</th>
                             <th colspan="5" class="text-white text-center" style="background-color: #dc3545 !important;">SETORAN</th>
                             <th rowspan="2" class="text-white align-middle text-center" style="background-color: #dc3545 !important;">TOTAL SETORAN</th>
-                            <th rowspan="2" class="text-white text-center align-middle" style="background-color: #002e65 !important;">#</th>
+                            <th rowspan="2" class="text-white text-center align-middle" style="background-color: #284c9a !important;">#</th>
                         </tr>
                         <tr>
                             <th class="text-white text-center" style="background-color: #28a745c4 !important;">TUNAI</th>

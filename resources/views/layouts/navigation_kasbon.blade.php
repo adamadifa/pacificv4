@@ -10,7 +10,7 @@
         }
 
         .nav-pills-custom .nav-link.active {
-            color: #002e65 !important;
+            color: #284c9a !important;
             background-color: transparent !important;
         }
 
@@ -21,11 +21,11 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background-color: #002e65;
+            background-color: #284c9a;
         }
 
         .nav-pills-custom .nav-link:hover {
-            color: #002e65;
+            color: #284c9a;
         }
     </style>
     <div class="nav-align-top mb-1">

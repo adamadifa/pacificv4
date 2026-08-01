@@ -921,8 +921,8 @@
                             <input type="hidden" name="status_promosi_produk[]" class="status_promosi" value="${status_promosi}"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
-                            <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}"/>
-                            <input type="hidden" name="isi_pcs_pack_produk[]" value="${isi_pcs_pack}"/>
+                            <input type="hidden" name="isi_pcs_dus_produk[]" class="isi_pcs_dus" value="${isi_pcs_dus}"/>
+                            <input type="hidden" name="isi_pcs_pack_produk[]" class="isi_pcs_pack" value="${isi_pcs_pack}"/>
                             ${kode_harga}
                         </td>
                         <td>${nama_produk}</td>
@@ -1049,6 +1049,9 @@
             let subtotal = currentRow.find('td:eq(8)').text();
             let kode_pelanggan = $("#kode_pelanggan").val();
             let status_promosi = currentRow.find('.status_promosi').val();
+            let isi_pcs_dus = currentRow.find('.isi_pcs_dus').val();
+            let isi_pcs_pack = currentRow.find('.isi_pcs_pack').val();
+            let kode_kategori_diskon = currentRow.find('.kode_kategori_diskon').val();
             let index_old = kode_harga + "" + status_promosi;
             console.log(kode_harga);
             console.log(status_promosi);
@@ -1066,7 +1069,10 @@
                 'jml_pcs': jml_pcs,
                 'harga_pcs': harga_pcs,
                 'status_promosi': status_promosi,
-                'index_old': index_old
+                'index_old': index_old,
+                'isi_pcs_dus': isi_pcs_dus,
+                'isi_pcs_pack': isi_pcs_pack,
+                'kode_kategori_diskon': kode_kategori_diskon
             };
             $.ajax({
                 type: 'POST',
@@ -1157,8 +1163,8 @@
                             <input type="hidden" name="status_promosi_produk[]" value="${status_promosi}" class="status_promosi"/>
                             <input type="hidden" name="kode_kategori_diskon[]" class="kode_kategori_diskon" value="${kode_kategori_diskon}"/>
                             <input type="hidden" name="jumlah_produk[]" value="${jumlah}"/>
-                            <input type="hidden" name="isi_pcs_dus_produk[]" value="${isi_pcs_dus}"/>
-                            <input type="hidden" name="isi_pcs_pack_produk[]" value="${isi_pcs_pack}"/>
+                            <input type="hidden" name="isi_pcs_dus_produk[]" class="isi_pcs_dus" value="${isi_pcs_dus}"/>
+                            <input type="hidden" name="isi_pcs_pack_produk[]" class="isi_pcs_pack" value="${isi_pcs_pack}"/>
                             ${kode_harga}
                         </td>
                         <td>${nama_produk}</td>

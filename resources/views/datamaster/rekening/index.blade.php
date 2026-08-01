@@ -55,7 +55,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-credit-card me-2"></i>Data Rekening</h6>
                 </div>
@@ -64,15 +64,15 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO.</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">NIK</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">NAMA KARYAWAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">DEPT</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">JABATAN</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">MP/PCF</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">CABANG</th>
-                            <th class="text-white" style="background-color: #002e65 !important;">NO. REKENING</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">#</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO.</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NIK</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NAMA KARYAWAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">DEPT</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">JABATAN</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">MP/PCF</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">CABANG</th>
+                            <th class="text-white" style="background-color: #284c9a !important;">NO. REKENING</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">

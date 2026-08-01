@@ -40,7 +40,7 @@
         }
 
         .bg-gradient-blue {
-            background: linear-gradient(135deg, #002e65 0%, #0056b3 100%);
+            background: linear-gradient(135deg, #284c9a 0%, #0056b3 100%);
         }
 
         .glass-card {

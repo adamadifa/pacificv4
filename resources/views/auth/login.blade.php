@@ -14,29 +14,32 @@
             font-family: 'Outfit', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(-45deg, #1c1c1c, #2a2a2a, #111827, #374151);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: linear-gradient(135deg, #162a5b 0%, #0d1b3b 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
         }
 
-        @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+        .login-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
+
+        .login-waves svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
 
         .glass-card {
             background: transparent;
@@ -66,7 +69,7 @@
             content: '';
             position: absolute;
             inset: 1px;
-            background: rgba(17, 24, 39, 0.8);
+            background: rgba(13, 27, 59, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 23px;
@@ -213,6 +216,13 @@
 </head>
 
 <body>
+
+    <div class="login-waves">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path class="wave-1" fill="rgba(255, 255, 255, 0.05)" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,122.7C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            <path class="wave-2" fill="rgba(255, 255, 255, 0.03)" d="M0,192L48,197.3C96,203,192,213,288,202.7C384,192,480,160,576,138.7C672,117,768,107,864,122.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </div>
 
     <div class="relative w-full max-w-md mx-4 mt-24">
         <!-- Image Character -->

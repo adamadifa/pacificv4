@@ -89,7 +89,7 @@
                         <div class="card-body p-0">
                             <div class="d-flex flex-column flex-md-row align-items-stretch">
                                 {{-- Section 1: Employee Avatar & Identity --}}
-                                <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 250px; background-color: #002e65;">
+                                <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 250px; background-color: #284c9a;">
                                     <div class="avatar avatar-lg me-3 border border-2 border-white-50 rounded-circle">
                                         @if (!empty($d->foto) && file_exists(public_path('storage/karyawan/' . $d->foto)))
                                             <img src="{{ asset('storage/karyawan/' . $d->foto) }}" alt="Avatar" class="rounded-circle">
@@ -238,7 +238,7 @@
     .card-hover-shadow:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-        border-color: #002e65 !important;
+        border-color: #284c9a !important;
     }
     .small-caps {
         font-variant: all-small-caps;

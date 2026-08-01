@@ -35,7 +35,7 @@
 
         {{-- Data Card --}}
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-map me-2"></i>Data Regional</h6>
                     @can('regional.create')
@@ -46,7 +46,7 @@
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
                     <thead class="text-white">
-                        <tr style="background-color: #002e65;">
+                        <tr style="background-color: #284c9a;">
                             <th class="text-white">No.</th>
                             <th class="text-white">Kode Regional</th>
                             <th class="text-white">Nama Regional</th>

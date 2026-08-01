@@ -101,13 +101,13 @@
         </form>
 
         <div class="card shadow-sm border mt-2">
-            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-clipboard-list me-2"></i>Data Lembur</h6>
             </div>
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-striped">
                     <thead class="text-white">
-                        <tr style="background-color: #002e65;">
+                        <tr style="background-color: #284c9a;">
                             <th class="text-white">Kode</th>
                             <th class="text-white">Tanggal</th>
                             <th class="text-white">Cabang</th>

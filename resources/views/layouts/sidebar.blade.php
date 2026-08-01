@@ -1,7 +1,7 @@
 <!-- Menu -->
  <style>
      #layout-menu {
-         background: linear-gradient(180deg, #002e65 0%, #001a3d 100%) !important;
+         background: linear-gradient(180deg, #284c9a 0%, #162a5b 100%) !important;
          border-right: 0 !important;
          box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15) !important;
      }
@@ -19,7 +19,7 @@
          align-items: center !important;
          padding: 0.75rem 1rem;
          margin: 0.5rem 0.75rem 1rem 0.75rem;
-         background: #002e65;
+         background: #284c9a;
          border-radius: 12px;
          transition: all 0.3s ease;
          gap: 0.75rem;
@@ -48,7 +48,7 @@
          content: '';
          position: absolute;
          inset: 1px;
-         background: #002e65;
+         background: #284c9a;
          border-radius: 11px;
          z-index: -1;
      }
@@ -87,7 +87,7 @@
          width: 13px;
          height: 13px;
          background: #28c76f;
-         border: 2px solid #002e65;
+         border: 2px solid #284c9a;
          border-radius: 50%;
          box-shadow: 0 0 5px rgba(40, 199, 111, 0.4);
      }
@@ -125,11 +125,32 @@
      }
 
      .user-profile-sidebar .user-role {
-         font-size: 0.75rem;
-         color: rgba(255, 255, 255, 0.5);
-         text-transform: lowercase;
-         font-weight: 400;
-     }
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.55);
+          text-transform: lowercase;
+          font-weight: 400;
+          line-height: 1.2;
+      }
+
+      .user-profile-sidebar .user-meta-wrapper {
+          display: flex;
+          gap: 0.35rem;
+          margin-top: 4px;
+          flex-wrap: wrap;
+      }
+
+      .user-profile-sidebar .meta-item {
+          font-size: 0.65rem;
+          background: rgba(255, 255, 255, 0.12);
+          color: rgba(255, 255, 255, 0.85);
+          padding: 1px 6px;
+          border-radius: 4px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          display: inline-flex;
+          align-items: center;
+      }
 
      #layout-menu .menu-link {
          color: rgba(255, 255, 255, 0.7) !important;
@@ -231,18 +252,28 @@
              </div>
              <div class="status-indicator"></div>
          </div>
-         <div class="user-info-text">
-             <div class="user-name">
-                 @php
-                     $nameParts = explode(' ', trim($user->name));
-                     echo count($nameParts) > 1 ? $nameParts[0] . ' ' . $nameParts[1] : $nameParts[0];
-                 @endphp
-             </div>
-             <div class="user-role-wrapper">
-                 <i class="ti ti-shield role-icon"></i>
-                 <span class="user-role">{{ strtolower($level_user) }} <br>{{ auth()->user()->kode_salesman }}<br>{{ auth()->user()->kode_cabang }}</span>
-             </div>
-         </div>
+          <div class="user-info-text">
+              <div class="user-name">
+                  @php
+                      $nameParts = explode(' ', trim($user->name));
+                      echo count($nameParts) > 1 ? $nameParts[0] . ' ' . $nameParts[1] : $nameParts[0];
+                  @endphp
+              </div>
+              <div class="user-role-wrapper">
+                  <i class="ti ti-shield role-icon"></i>
+                  <span class="user-role">{{ strtolower($level_user) }}</span>
+              </div>
+              @if(auth()->user()->kode_salesman || auth()->user()->kode_cabang)
+                  <div class="user-meta-wrapper">
+                      @if(auth()->user()->kode_salesman)
+                          <span class="meta-item">{{ auth()->user()->kode_salesman }}</span>
+                      @endif
+                      @if(auth()->user()->kode_cabang)
+                          <span class="meta-item">{{ auth()->user()->kode_cabang }}</span>
+                      @endif
+                  </div>
+              @endif
+          </div>
      </div>
 
      <div class="menu-inner-shadow"></div>

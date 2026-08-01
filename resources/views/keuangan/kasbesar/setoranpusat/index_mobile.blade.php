@@ -48,7 +48,7 @@
         width: 56px;
         height: 56px;
         border-radius: 50% !important;
-        background: linear-gradient(135deg, #002e65 0%, #004b93 100%) !important;
+        background: linear-gradient(135deg, #284c9a 0%, #004b93 100%) !important;
         border: none !important;
         color: white !important;
         box-shadow: 0 10px 20px rgba(0, 46, 101, 0.3) !important;
@@ -286,7 +286,7 @@
             </div>
 
             {{-- Summary Card --}}
-            <div class="card border-0 shadow rounded-3 mt-4 mb-5" style="background: linear-gradient(135deg, #002e65 0%, #004b93 100%); color: white; border-radius: 16px !important;">
+            <div class="card border-0 shadow rounded-3 mt-4 mb-5" style="background: linear-gradient(135deg, #284c9a 0%, #004b93 100%); color: white; border-radius: 16px !important;">
                 <div class="card-body p-3">
                     <h6 class="text-white fw-bold mb-3 d-flex align-items-center gap-2" style="font-size: 13px;">
                         <i class="ti ti-calculator fs-5 text-warning"></i>

@@ -57,7 +57,7 @@
 
         thead .table-sticky-first {
             z-index: 3;
-            background-color: #002e65 !important; /* Matches unified header */
+            background-color: #284c9a !important; /* Matches unified header */
         }
     </style>
 @section('navigasi')
@@ -77,7 +77,7 @@
                         {{-- Left Column: Permintaan Produksi --}}
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="card premium-card shadow-sm h-100">
-                                <div class="card-header border-bottom py-3 d-flex align-items-center" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                                <div class="card-header border-bottom py-3 d-flex align-items-center" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                     <i class="ti ti-clipboard-list fs-3 text-white me-2"></i>
                                     <h5 class="card-title mb-0 fw-bold text-white">Permintaan Produksi</h5>
                                 </div>
@@ -118,7 +118,7 @@
                         {{-- Right Column: Rekap Hasil Produksi --}}
                         <div class="col-lg-8 col-md-12 col-sm-12">
                             <div class="card premium-card shadow-sm h-100">
-                                <div class="card-header border-bottom py-3 d-flex align-items-center justify-content-between" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                                <div class="card-header border-bottom py-3 d-flex align-items-center justify-content-between" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                                     <div class="d-flex align-items-center">
                                         <i class="ti ti-chart-bar fs-3 text-white me-2"></i>
                                         <h5 class="card-title mb-0 fw-bold text-white">Rekap Hasil Produksi</h5>
@@ -131,7 +131,7 @@
                                 <div class="card-body px-0 pt-0">
                                     <div class="table-responsive">
                                         <table class="table table-hover table-borderless mb-0">
-                                            <thead style="background-color: #002e65;">
+                                            <thead style="background-color: #284c9a;">
                                                 <tr>
                                                     <th rowspan="2" class="ps-4 text-white border-0 table-sticky-first py-2">Produk</th>
                                                     <th colspan="12" class="text-center py-1 text-white border-0 small opacity-75">Bulan Produksi</th>

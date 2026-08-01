@@ -46,7 +46,7 @@
         {{-- Data Card --}}
         <div class="card shadow-sm border">
             <div class="card-header border-bottom py-3"
-                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-database-import me-2"></i>Data Saldo Awal Rekening</h6>
                     @can('sarekening.create')
@@ -60,10 +60,10 @@
                 <table class="table table-hover table-bordered table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 5%;">NO</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">KODE</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important;">TANGGAL</th>
-                            <th class="text-white text-center" style="background-color: #002e65 !important; width: 10%;">AKSI</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 5%;">NO</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">KODE</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important;">TANGGAL</th>
+                            <th class="text-white text-center" style="background-color: #284c9a !important; width: 10%;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -9,7 +9,7 @@
     .contract-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
-        border-color: #002e65;
+        border-color: #284c9a;
     }
 
     .contract-info-label {
@@ -44,8 +44,8 @@
 
     .nav-tabs-custom .nav-link.active {
         background: transparent;
-        border-bottom-color: #002e65;
-        color: #002e65;
+        border-bottom-color: #284c9a;
+        color: #284c9a;
     }
 </style>
 
