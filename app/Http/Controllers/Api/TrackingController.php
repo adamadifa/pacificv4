@@ -15,6 +15,7 @@ class TrackingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'fcm_token' => 'nullable|string',
             'locations' => 'required|array',
             'locations.*.latitude' => 'required|numeric',
             'locations.*.longitude' => 'required|numeric',
@@ -23,6 +24,14 @@ class TrackingController extends Controller
         ]);
 
         $user = Auth::user();
+        if (!$user && $request->bearerToken()) {
+            $user = Auth::guard('sanctum')->user();
+        }
+
+        if (!$user && $request->input('fcm_token')) {
+            $user = \App\Models\User::where('fcm_token', $request->input('fcm_token'))->first();
+        }
+
         if (!$user || !$user->kode_salesman) {
             return response()->json([
                 'success' => false,

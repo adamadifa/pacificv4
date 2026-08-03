@@ -30,6 +30,7 @@ Route::get('/karyawan/{filename}', function ($filename) {
 
 Route::post('/login-karyawan', [App\Http\Controllers\Api\Auth\EmployeeAuthController::class, 'login']);
 Route::post('/sfa/login', [\App\Http\Controllers\Api\SfaApiController::class, 'login']);
+Route::post('/sfa/tracking', [\App\Http\Controllers\Api\TrackingController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -85,7 +86,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sfa/penjualan/transfer/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeTransfer']);
     Route::delete('/sfa/penjualan/giro/{kode_giro}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteGiro']);
     Route::delete('/sfa/penjualan/transfer/{kode_transfer}', [\App\Http\Controllers\Api\SfaApiController::class, 'deleteTransfer']);
-    Route::post('/sfa/tracking', [\App\Http\Controllers\Api\TrackingController::class, 'store']);
     Route::post('/sfa/update-fcm-token', [\App\Http\Controllers\Api\TrackingController::class, 'updateFcmToken']);
     Route::get('/sfa/laporan/penjualan', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualan']);
     Route::get('/sfa/laporan/penjualan/excel', [\App\Http\Controllers\Api\SfaApiController::class, 'laporanPenjualanExcel']);
