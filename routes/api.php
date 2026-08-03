@@ -78,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sfa/retur/{no_retur}', [\App\Http\Controllers\Api\SfaApiController::class, 'detailRetur']);
     Route::post('/sfa/pelanggan/update-foto', [\App\Http\Controllers\Api\SfaApiController::class, 'updateFoto']);
     Route::post('/sfa/penjualan/detail', [\App\Http\Controllers\Api\SfaApiController::class, 'detailPenjualan']);
+    Route::post('/sfa/penjualan/update-print', [\App\Http\Controllers\Api\SfaApiController::class, 'updatePrintStatus']);
     Route::post('/sfa/penjualan/signature', [\App\Http\Controllers\Api\SfaApiController::class, 'uploadSignature']);
     Route::post('/sfa/penjualan/pembayaran/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storePembayaran']);
     Route::post('/sfa/penjualan/giro/{no_faktur}', [\App\Http\Controllers\Api\SfaApiController::class, 'storeGiro']);

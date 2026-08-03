@@ -991,6 +991,24 @@ class SfaApiController extends Controller
                 ];
             });
 
+        $print_tagihan = DB::table('marketing_penjualan_historibayar')
+            ->where('no_faktur', $noFaktur)
+            ->where('tanggal', '>', '2024-10-20')
+            ->where('print_tagihan', 0)
+            ->count();
+
+        $print_giro = DB::table('marketing_penjualan_giro_detail')
+            ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
+            ->where('no_faktur', $noFaktur)
+            ->where('print_giro', 0)
+            ->count();
+
+        $print_transfer = DB::table('marketing_penjualan_transfer_detail')
+            ->join('marketing_penjualan_transfer', 'marketing_penjualan_transfer_detail.kode_transfer', '=', 'marketing_penjualan_transfer.kode_transfer')
+            ->where('no_faktur', $noFaktur)
+            ->where('print_transfer', 0)
+            ->count();
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -1030,9 +1048,64 @@ class SfaApiController extends Controller
                 'retur' => $retur,
                 'historibayar' => $historibayar,
                 'giro' => $giro,
-                'transfer' => $transfer
+                'transfer' => $transfer,
+                'print' => (int)($penjualan->print ?? 0),
+                'lock_print' => (int)($penjualan->lock_print ?? 0),
+                'print_tagihan' => $print_tagihan,
+                'print_giro' => $print_giro,
+                'print_transfer' => $print_transfer,
             ]
         ]);
+    }
+
+    public function updatePrintStatus(Request $request)
+    {
+        $noFaktur = $request->input('no_faktur');
+        if (!$noFaktur) {
+            return response()->json(['success' => false, 'message' => 'No faktur tidak ditemukan.'], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            Penjualan::where('no_faktur', $noFaktur)->update([
+                'print' => DB::raw('print + 1'),
+                'lock_print' => 0
+            ]);
+
+            DB::table('marketing_penjualan_historibayar')
+                ->where('no_faktur', $noFaktur)
+                ->update([
+                    'print_tagihan' => 1
+                ]);
+
+            DB::table('marketing_penjualan_giro_detail')
+                ->where('no_faktur', $noFaktur)
+                ->where('print_giro', 0)
+                ->update([
+                    'print_giro' => 1
+                ]);
+
+            DB::table('marketing_penjualan_transfer_detail')
+                ->where('no_faktur', $noFaktur)
+                ->where('print_transfer', 0)
+                ->update([
+                    'print_transfer' => 1
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status print berhasil diperbarui.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status print: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function uploadSignature(Request $request)
