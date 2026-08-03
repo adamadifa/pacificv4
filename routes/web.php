@@ -240,6 +240,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/tracking/latest', 'getLatestPositions')->name('tracking.latest')->can('tracking.index');
         Route::get('/tracking/{kode_salesman}/trail', 'getTrail')->name('tracking.trail')->can('tracking.index');
         Route::post('/tracking/{kode_salesman}/request', 'requestLocation')->name('tracking.request')->can('tracking.index');
+        Route::post('/tracking/{kode_salesman}/play-alarm', 'requestPlayAlarm')->name('tracking.playalarm')->can('tracking.index');
+        Route::post('/tracking/{kode_salesman}/stop-alarm', 'requestStopAlarm')->name('tracking.stopalarm')->can('tracking.index');
     });
 
     //Dashboard

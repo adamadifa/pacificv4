@@ -192,9 +192,17 @@
                         <button class="btn btn-sm btn-primary w-100 btn-view-route mb-1" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
                             <i class="ti ti-map-pin me-1"></i>Lihat Rute Hari Ini
                         </button>
-                        <button class="btn btn-sm btn-success w-100 btn-request-location" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
+                        <button class="btn btn-sm btn-success w-100 btn-request-location mb-1" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
                             <i class="ti ti-location me-1"></i>Minta Lokasi Sekarang
                         </button>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm btn-danger w-50 btn-play-alarm" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
+                                <i class="ti ti-bell me-1"></i>Bunyikan
+                            </button>
+                            <button class="btn btn-sm btn-secondary w-50 btn-stop-alarm" data-kode="${item.kode_salesman}" data-nama="${item.nama_salesman}">
+                                <i class="ti ti-bell-off me-1"></i>Matikan
+                            </button>
+                        </div>
                     </div>
                 `;
                 
@@ -444,6 +452,78 @@
                 })
                 .catch(err => {
                     console.error("Error requesting location:", err);
+                    alert("Terjadi kesalahan koneksi.");
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        // Listen for Play Alarm button inside Marker Popup
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-play-alarm');
+            if (btn) {
+                const kode = btn.getAttribute('data-kode');
+                const nama = btn.getAttribute('data-nama');
+                
+                btn.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+
+                fetch(`/tracking/${kode}/play-alarm`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.success) {
+                        alert(`Alarm berhasil dibunyikan di perangkat ${nama}.`);
+                    } else {
+                        alert(`Gagal membunyikan alarm: ${res.message}`);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error playing alarm:", err);
+                    alert("Terjadi kesalahan koneksi.");
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        });
+
+        // Listen for Stop Alarm button inside Marker Popup
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-stop-alarm');
+            if (btn) {
+                const kode = btn.getAttribute('data-kode');
+                const nama = btn.getAttribute('data-nama');
+                
+                btn.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+
+                fetch(`/tracking/${kode}/stop-alarm`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.success) {
+                        alert(`Alarm berhasil dimatikan di perangkat ${nama}.`);
+                    } else {
+                        alert(`Gagal mematikan alarm: ${res.message}`);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error stopping alarm:", err);
                     alert("Terjadi kesalahan koneksi.");
                 })
                 .finally(() => {

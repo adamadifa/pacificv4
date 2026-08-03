@@ -105,4 +105,74 @@ class TrackingMonitorController extends Controller
             ], 500);
         }
     }
+
+    public function requestPlayAlarm($kode_salesman)
+    {
+        $user = DB::table('users')->where('kode_salesman', $kode_salesman)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User salesman tidak ditemukan.'
+            ], 404);
+        }
+
+        if (empty($user->fcm_token)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device salesman belum terdaftar (FCM token kosong).'
+            ], 400);
+        }
+
+        try {
+            \App\Services\FCMService::sendSilentNotification($user->fcm_token, [
+                'action' => 'PLAY_ALARM'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Perintah bunyi alarm berhasil dikirim ke perangkat.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function requestStopAlarm($kode_salesman)
+    {
+        $user = DB::table('users')->where('kode_salesman', $kode_salesman)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User salesman tidak ditemukan.'
+            ], 404);
+        }
+
+        if (empty($user->fcm_token)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device salesman belum terdaftar (FCM token kosong).'
+            ], 400);
+        }
+
+        try {
+            \App\Services\FCMService::sendSilentNotification($user->fcm_token, [
+                'action' => 'STOP_ALARM'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Perintah matikan alarm berhasil dikirim ke perangkat.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
