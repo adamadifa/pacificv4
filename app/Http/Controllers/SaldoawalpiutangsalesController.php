@@ -178,7 +178,7 @@ class SaldoawalpiutangsalesController extends Controller
 
         $querydetail = Detailpenjualan::query();
         $querydetail->select(
-            'marketing_penjualan.kode_salesman',
+            'pindahfaktur.kode_salesman_baru as kode_salesman',
             'nama_salesman',
             'salesman.kode_cabang',
             DB::raw('SUM(0) as potongan'),
@@ -193,15 +193,39 @@ class SaldoawalpiutangsalesController extends Controller
             DB::raw('SUM(0) as saldopiutangpindahkesaleslain')
         );
         $querydetail->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $querydetail->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $querydetail->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$dari'  GROUP BY no_faktur)
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $querydetail->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $querydetail->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
         $querydetail->where('status_batal', 0);
         $querydetail->where('salesman.kode_cabang', $kode_cabang);
-        $querydetail->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
+        $querydetail->groupBy('pindahfaktur.kode_salesman_baru', 'salesman.kode_cabang', 'nama_salesman');
 
         $querypenjualan = Penjualan::query();
         $querypenjualan->select(
-            'marketing_penjualan.kode_salesman',
+            'pindahfaktur.kode_salesman_baru as kode_salesman',
             'nama_salesman',
             'salesman.kode_cabang',
             DB::raw('SUM(potongan) as potongan'),
@@ -215,12 +239,36 @@ class SaldoawalpiutangsalesController extends Controller
             DB::raw('SUM(0) as saldopiutangpindahan'),
             DB::raw('SUM(0) as saldopiutangpindahkesaleslain')
         );
-        $querypenjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $querypenjualan->leftJoin(
+            DB::raw("(
+                SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur WHERE tanggal <= '$dari' GROUP BY no_faktur)
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $querypenjualan->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $querypenjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
         $querypenjualan->where('status_batal', 0);
         $querypenjualan->where('salesman.kode_cabang', $kode_cabang);
-        $querypenjualan->groupBy('marketing_penjualan.kode_salesman', 'salesman.kode_cabang', 'nama_salesman');
+        $querypenjualan->groupBy('pindahfaktur.kode_salesman_baru', 'salesman.kode_cabang', 'nama_salesman');
 
         $queryretur = Detailretur::query();
         $queryretur->select(
