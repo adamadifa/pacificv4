@@ -459,6 +459,8 @@
                     btn.innerHTML = originalText;
                 });
             }
+        });
+
         // Listen for Play Alarm button inside Marker Popup
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('.btn-play-alarm');
