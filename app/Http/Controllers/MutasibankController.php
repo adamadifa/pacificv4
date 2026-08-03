@@ -53,7 +53,7 @@ class MutasibankController extends Controller
     public function create()
     {
         $bnk = new Bank();
-        $data['bank'] = $bnk->getBank()->get();
+        $data['bank'] = $bnk->getMutasibank()->get();
         $coacabang = new Coacabang();
         $data['coa'] = $coacabang->getCoacabang()->get();
         return view('keuangan.mutasibank.create', $data);
@@ -113,7 +113,7 @@ class MutasibankController extends Controller
     {
         $no_bukti = Crypt::decrypt($no_bukti);
         $bnk = new Bank();
-        $data['bank'] = $bnk->getBank()->get();
+        $data['bank'] = $bnk->getMutasibank()->get();
         $coacabang = new Coacabang();
         $data['coa'] = $coacabang->getCoacabang()->get();
         $data['mutasibank'] = Ledger::where('no_bukti', $no_bukti)->first();
