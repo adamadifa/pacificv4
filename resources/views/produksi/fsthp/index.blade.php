@@ -1,9 +1,9 @@
 {{-- Filter Section (Below Navigation) --}}
-<form action="{{ route('fsthp.index') }}">
+<form action="{{ request()->routeIs('fsthp.index') ? route('fsthp.index') : route('fsthpgudang.index') }}">
     <div class="row g-2 align-items-end mb-3">
         <div class="col-lg-10 col-md-10 col-sm-12">
-            <x-input-with-icon label="Tanggal Mutasi" value="{{ Request('tanggal_mutasi_search') }}" name="tanggal_mutasi_search"
-                icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
+            <x-input-with-icon label="Tanggal Mutasi" value="{{ Request('tanggal_mutasi_search') }}"
+                name="tanggal_mutasi_search" icon="ti ti-calendar" datepicker="flatpickr-date" hideLabel="true" />
         </div>
         <div class="col-lg-2 col-md-2 col-sm-12">
             <div class="form-group mb-3">
@@ -15,7 +15,8 @@
 
 {{-- Data Card --}}
 <div class="card shadow-sm border">
-    <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+    <div class="card-header border-bottom py-3"
+        style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
         <div class="d-flex justify-content-between align-items-center">
             <h6 class="m-0 fw-bold text-white"><i class="ti ti-package-export me-2"></i>Data FSTHP</h6>
             @can('fsthp.create')
