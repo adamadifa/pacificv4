@@ -285,7 +285,7 @@ class LaporanmarketingController extends Controller
                     FROM marketing_penjualan_detail
                     INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
                     INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
-                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai'" . $status_sampel_query . $status_pajak_query . "
+                    WHERE tanggal BETWEEN '$request->dari' AND '$request->sampai' AND status_batal = 0" . $status_sampel_query . $status_pajak_query . "
                     GROUP BY salesman.kode_cabang
                 ) detailpenjualan"),
             function ($join) {
