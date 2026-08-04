@@ -430,7 +430,31 @@ class SaldoawalbukubesarController extends Controller
             DB::raw('1 as urutan')
         );
         $piutangcabang->join('marketing_penjualan', 'marketing_penjualan_historibayar.no_faktur', '=', 'marketing_penjualan.no_faktur');
-        $piutangcabang->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
+        $piutangcabang->leftJoin(
+            DB::raw("(
+                  SELECT
+                    marketing_penjualan.no_faktur,
+                    IF( salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru ) AS kode_salesman_baru,
+                    IF( cabangbaru IS NULL, salesman.kode_cabang, cabangbaru ) AS kode_cabang_baru
+                FROM
+                    marketing_penjualan
+                INNER JOIN salesman ON marketing_penjualan.kode_salesman = salesman.kode_salesman
+                LEFT JOIN (
+                SELECT
+                    no_faktur,
+                    marketing_penjualan_movefaktur.kode_salesman_baru AS salesbaru,
+                    salesman.kode_cabang AS cabangbaru
+                FROM
+                    marketing_penjualan_movefaktur
+                    INNER JOIN salesman ON marketing_penjualan_movefaktur.kode_salesman_baru = salesman.kode_salesman
+                WHERE id IN (SELECT MAX(id) as id FROM marketing_penjualan_movefaktur GROUP BY no_faktur) AND tanggal <= '$start_date'
+                ) movefaktur ON ( marketing_penjualan.no_faktur = movefaktur.no_faktur)
+            ) pindahfaktur"),
+            function ($join) {
+                $join->on('marketing_penjualan.no_faktur', '=', 'pindahfaktur.no_faktur');
+            }
+        );
+        $piutangcabang->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $piutangcabang->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $piutangcabang->leftJoinSub($coa_piutangcabang, 'coa_piutangcabang', function ($join) {
             $join->on('salesman.kode_cabang', '=', 'coa_piutangcabang.kode_cabang_coa');
@@ -441,6 +465,7 @@ class SaldoawalbukubesarController extends Controller
         }
         $piutangcabang->where('marketing_penjualan_historibayar.voucher', 0);
         $piutangcabang->where('marketing_penjualan.status_batal', 0);
+        $piutangcabang->where('marketing_penjualan.status_sampel', 0);
         $piutangcabang->orderBy('coa_piutangcabang.kode_akun');
         $piutangcabang->orderBy('marketing_penjualan_historibayar.tanggal');
         $piutangcabang->orderBy('marketing_penjualan_historibayar.no_bukti');
@@ -470,6 +495,7 @@ class SaldoawalbukubesarController extends Controller
             $penjualan_produk->whereBetween('produk.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $penjualan_produk->where('marketing_penjualan.status_batal', 0);
+        $penjualan_produk->where('marketing_penjualan.status_sampel', 0);
         $penjualan_produk->orderBy('marketing_penjualan.tanggal');
         $penjualan_produk->orderBy('marketing_penjualan.no_faktur');
 
@@ -491,6 +517,7 @@ class SaldoawalbukubesarController extends Controller
         $detailpenjualan->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $detailpenjualan->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         $detailpenjualan->where('status_batal', 0);
+        $detailpenjualan->where('marketing_penjualan.status_sampel', 0);
         $detailpenjualan->groupBy('marketing_penjualan.no_faktur');
 
         $penjualannetto = Penjualan::query();
@@ -549,6 +576,7 @@ class SaldoawalbukubesarController extends Controller
             $kasbesarpiutangdagang->whereBetween('marketing_penjualan_historibayar.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $kasbesarpiutangdagang->where('voucher', 0);
+        $kasbesarpiutangdagang->where('marketing_penjualan.status_sampel', 0);
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.kode_akun');
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.tanggal');
         $kasbesarpiutangdagang->orderBy('marketing_penjualan_historibayar.no_bukti');
@@ -576,6 +604,7 @@ class SaldoawalbukubesarController extends Controller
         $returpenjualanpiutangdagang->where('jenis_retur', 'PF');
         $returpenjualanpiutangdagang->whereBetween('marketing_retur.tanggal', [$start_date, $sampai]);
         $returpenjualanpiutangdagang->where('marketing_penjualan.status_batal', 0);
+        $returpenjualanpiutangdagang->where('marketing_penjualan.status_sampel', 0);
         $returpenjualanpiutangdagang->where('marketing_penjualan.tanggal', '<', $start_date);
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
             $returpenjualanpiutangdagang->whereBetween('marketing_retur.kode_akun_piutang_dagang', [$request->kode_akun_dari, $request->kode_akun_sampai]);
