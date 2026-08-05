@@ -128,8 +128,14 @@
 
         function toggleInputs(checkbox) {
             let card = checkbox.closest('.card');
-            let isChecked = checkbox.is(':checked') && !checkbox.hasClass('pelangganna');
-            card.find('.input-pencairan').prop('disabled', !isChecked);
+            let isChecked = checkbox.is(':checked');
+            
+            if (checkbox.hasClass('pelangganna')) {
+                checkbox.prop('disabled', true);
+                card.find('.input-pencairan').prop('disabled', true);
+            } else {
+                card.find('.input-pencairan').prop('disabled', !isChecked);
+            }
         }
 
         $('.checkpelanggan').each(function() {
