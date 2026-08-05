@@ -189,6 +189,13 @@
                     </a>
                 </li>
             @endcan
+            @can('broadcasttagihan.index')
+                <li class="menu-item {{ request()->is(['broadcasttagihan', 'broadcasttagihan/*']) ? 'active' : '' }}">
+                    <a href="{{ route('broadcasttagihan.index') }}" class="menu-link">
+                        <div>Broadcast Tagihan</div>
+                    </a>
+                </li>
+            @endcan
             @if (auth()->user()->hasAnyPermission($laporanpermissions))
                 <li class="menu-item {{ request()->is(['laporanmarketing']) ? 'active' : '' }}">
                     <a href="{{ route('laporanmarketing.index') }}" class="menu-link">

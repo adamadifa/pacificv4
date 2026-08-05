@@ -30,6 +30,7 @@ use App\Http\Controllers\BpbjController;
 use App\Http\Controllers\BpjskesehatanController;
 use App\Http\Controllers\BpjstenagakerjaController;
 use App\Http\Controllers\BufferstokController;
+use App\Http\Controllers\BroadcasttagihanController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CoaController;
 use App\Http\Controllers\CoaCabangController;
@@ -1214,6 +1215,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/penjualan/editproduk', 'editproduk')->name('penjualan.editproduk');
         Route::post('/penjualan/getfakturbypelanggan', 'getfakturbypelanggan')->name('penjualan.getfakturbypelanggan');
         Route::get('/penjualan/{no_faktur}/getpiutangfaktur', 'getpiutangfaktur')->name('penjualan.getpiutangfaktur');
+    });
+
+    Route::controller(BroadcasttagihanController::class)->group(function () {
+        Route::get('/broadcasttagihan', 'index')->name('broadcasttagihan.index')->can('broadcasttagihan.index');
+        Route::post('/broadcasttagihan/send', 'send')->name('broadcasttagihan.send')->can('broadcasttagihan.send');
     });
 
     Route::controller(ReturController::class)->group(function () {
@@ -2808,3 +2814,41 @@ Route::get('/assignrole', function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::get('/test-wa', function () {
+    $imageUrl = 'https://app.portalmp.com/storage/karyawan/22.10.452.jpg';
+    $pesan = [
+        'api_key' => 'uxlLxWx36Q4KzaPlbFMCsuCRO7MvXn',
+        'sender' => '6282220804021',
+        'number' => '628122266840',
+        'media_type' => 'image',
+        'caption' => 'Tes kirim pesan langsung via route /test-wa dengan Gambar',
+        'url' => $imageUrl
+    ];
+
+    $curl = curl_init();
+    curl_setopt_array($curl, [
+        CURLOPT_URL => 'https://wa.portalmp.com/send-media',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => json_encode($pesan),
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json'
+        ],
+    ]);
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+    curl_close($curl);
+
+    if ($err) {
+        return "cURL Error #:" . $err;
+    } else {
+        return "Response: " . $response;
+    }
+});
