@@ -26,17 +26,17 @@
         <div class="card card-body p-3 shadow-sm border {{ $color_reward }}">
              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 {{-- Input Hidden --}}
-                <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]" value="{{ $d->kode_pelanggan }}">
-                <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}">
-                <input type="hidden" name="qty_tunai[{{ $loop->index }}]" value="0">
-                <input type="hidden" name="qty_kredit[{{ $loop->index }}]" value="0">
-                <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}">
-                <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="0">
-                <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="0">
-                <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}">
-                <input type="hidden" name="rate[{{ $loop->index }}]" value="{{ $d->reward_rate }}">
-                <input type="hidden" name="status_pencairan[{{ $loop->index }}]" value="{{ $reward >= 100000 ? 1 : 0 }}">
-                <input type="hidden" name="kredit_melebihi_top[{{ $loop->index }}]" value="{{ $d->jml_kredit_melebihi_top ?? 0 }}">
+                <input type="hidden" name="kode_pelanggan[{{ $loop->index }}]" value="{{ $d->kode_pelanggan }}" class="input-pencairan" disabled>
+                <input type="hidden" name="status[{{ $loop->index }}]" value="{{ $status }}" class="input-pencairan" disabled>
+                <input type="hidden" name="qty_tunai[{{ $loop->index }}]" value="0" class="input-pencairan" disabled>
+                <input type="hidden" name="qty_kredit[{{ $loop->index }}]" value="0" class="input-pencairan" disabled>
+                <input type="hidden" name="jumlah[{{ $loop->index }}]" value="{{ $d->jml_dus }}" class="input-pencairan" disabled>
+                <input type="hidden" name="reward_tunai[{{ $loop->index }}]" value="0" class="input-pencairan" disabled>
+                <input type="hidden" name="reward_kredit[{{ $loop->index }}]" value="0" class="input-pencairan" disabled>
+                <input type="hidden" name="total_reward[{{ $loop->index }}]" value="{{ $reward }}" class="input-pencairan" disabled>
+                <input type="hidden" name="rate[{{ $loop->index }}]" value="{{ $d->reward_rate }}" class="input-pencairan" disabled>
+                <input type="hidden" name="status_pencairan[{{ $loop->index }}]" value="{{ $reward >= 100000 ? 1 : 0 }}" class="input-pencairan" disabled>
+                <input type="hidden" name="kredit_melebihi_top[{{ $loop->index }}]" value="{{ $d->jml_kredit_melebihi_top ?? 0 }}" class="input-pencairan" disabled>
                 
                  {{-- Pelanggan --}}
                 <div class="d-flex align-items-center" style="min-width: 250px;">
@@ -103,10 +103,10 @@
                             <input class="form-check-input checkpelanggan" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
                                 id="checkpelanggan">
                         </div>
-                    @else
+                     @else
                         <input class="form-check-input checkpelanggan pelangganna" name="checkpelanggan[{{ $loop->index }}]" value="1" type="checkbox"
                             id="checkpelanggan" checked>
-                    @endif
+                     @endif
                 </div>
 
              </div>
@@ -125,5 +125,19 @@
         }
 
         hide();
+
+        function toggleInputs(checkbox) {
+            let card = checkbox.closest('.card');
+            let isChecked = checkbox.is(':checked') && !checkbox.hasClass('pelangganna');
+            card.find('.input-pencairan').prop('disabled', !isChecked);
+        }
+
+        $('.checkpelanggan').each(function() {
+            toggleInputs($(this));
+        });
+
+        $(document).on('change', '.checkpelanggan', function() {
+            toggleInputs($(this));
+        });
     });
 </script>
