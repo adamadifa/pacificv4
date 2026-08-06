@@ -637,6 +637,7 @@ class SaldoawalbukubesarController extends Controller
             $retur_penjualan->whereBetween('marketing_retur.kode_akun', [$request->kode_akun_dari, $request->kode_akun_sampai]);
         }
         $retur_penjualan->where('marketing_retur.jenis_retur', 'PF');
+        $retur_penjualan->where('marketing_penjualan.status_sampel', 0);
         $retur_penjualan->orderBy('marketing_retur.tanggal');
         $retur_penjualan->orderBy('marketing_retur.no_retur');
 
@@ -659,6 +660,7 @@ class SaldoawalbukubesarController extends Controller
         $potongan_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $potongan_penjualan->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         $potongan_penjualan->where('marketing_penjualan.status_batal', 0);
+        $potongan_penjualan->where('marketing_penjualan.status_sampel', 0);
         $potongan_penjualan->orderBy('marketing_penjualan.tanggal');
         $potongan_penjualan->orderBy('marketing_penjualan.no_faktur');
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
@@ -686,6 +688,7 @@ class SaldoawalbukubesarController extends Controller
         $penyesuaian_penjualan->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $penyesuaian_penjualan->whereBetween('marketing_penjualan.tanggal', [$start_date, $sampai]);
         $penyesuaian_penjualan->where('marketing_penjualan.status_batal', 0);
+        $penyesuaian_penjualan->where('marketing_penjualan.status_sampel', 0);
         $penyesuaian_penjualan->orderBy('marketing_penjualan.tanggal');
         $penyesuaian_penjualan->orderBy('marketing_penjualan.no_faktur');
         if (!empty($request->kode_akun_dari) && !empty($request->kode_akun_sampai)) {
