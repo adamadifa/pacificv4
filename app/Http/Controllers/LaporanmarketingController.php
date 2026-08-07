@@ -8210,14 +8210,16 @@ class LaporanmarketingController extends Controller
                 $kode_salesman_to_send = $penjualan->kode_salesman;
 
 
-                // Cek Kode Cabang PKP Pelanggan
+                // Cek Kode Cabang PKP Pelanggan / Penjualan
                 $pelanggan = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
                 $salesmanAsal = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
 
-                if ($pelanggan != null && !empty($pelanggan->kode_cabang_pkp) && $pelanggan->kode_cabang_pkp != NULL) {
+                $kode_cabang_pkp = !empty($penjualan->kode_pkp) ? $penjualan->kode_pkp : ($pelanggan ? $pelanggan->kode_cabang_pkp : null);
+
+                if (!empty($kode_cabang_pkp)) {
                     // Jika kode_cabang_pkp sama dengan cabang asal, jangan ubah salesman
-                    if ($salesmanAsal != null && $pelanggan->kode_cabang_pkp != $salesmanAsal->kode_cabang) {
-                        $salesman = Salesman::where('kode_cabang', $pelanggan->kode_cabang_pkp)
+                    if ($salesmanAsal != null && $kode_cabang_pkp != $salesmanAsal->kode_cabang) {
+                        $salesman = Salesman::where('kode_cabang', $kode_cabang_pkp)
                             ->where(function ($query) {
                                 $query->where('nama_salesman', 'LIKE', '%Non Sales%')
                                     ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');
@@ -8600,15 +8602,17 @@ class LaporanmarketingController extends Controller
                 if ($details->isEmpty())
                     continue;
 
-                // Cek Kode Cabang PKP Pelanggan - hanya ubah kode_salesman yang dikirim ke API
+                // Cek Kode Cabang PKP Pelanggan / Penjualan - hanya ubah kode_salesman yang dikirim ke API
                 $kode_salesman_to_send = $penjualan->kode_salesman;
                 $pelangganPkp = Pelanggan::where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
                 $salesmanAsal = Salesman::where('kode_salesman', $penjualan->kode_salesman)->first();
 
-                if ($pelangganPkp != null && !empty($pelangganPkp->kode_cabang_pkp) && $pelangganPkp->kode_cabang_pkp != NULL) {
+                $kode_cabang_pkp = !empty($penjualan->kode_pkp) ? $penjualan->kode_pkp : ($pelangganPkp ? $pelangganPkp->kode_cabang_pkp : null);
+
+                if (!empty($kode_cabang_pkp)) {
                     // Jika kode_cabang_pkp sama dengan cabang asal, jangan ubah salesman
-                    if ($salesmanAsal != null && $pelangganPkp->kode_cabang_pkp != $salesmanAsal->kode_cabang) {
-                        $salesmanNonSales = Salesman::where('kode_cabang', $pelangganPkp->kode_cabang_pkp)
+                    if ($salesmanAsal != null && $kode_cabang_pkp != $salesmanAsal->kode_cabang) {
+                        $salesmanNonSales = Salesman::where('kode_cabang', $kode_cabang_pkp)
                             ->where(function ($query) {
                                 $query->where('nama_salesman', 'LIKE', '%Non Sales%')
                                     ->orWhere('nama_salesman', 'LIKE', '%Nonsales%');

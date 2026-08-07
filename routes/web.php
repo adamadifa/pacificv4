@@ -1209,6 +1209,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/penjualan/{no_faktur}/generatefaktur', 'generatefaktur')->name('penjualan.generatefaktur')->can('penjualan.update');
 
         Route::get('/penjualan/{no_faktur}/updatelockprint', 'updatelockprint')->name('penjualan.updatelockprint')->can('penjualan.updatelockprint');
+        Route::get('/penjualan/{no_faktur}/setpkp', 'setpkp')->name('penjualan.setpkp')->can('penjualan.setpkp');
+        Route::put('/penjualan/{no_faktur}/updatesetpkp', 'updatesetpkp')->name('penjualan.updatesetpkp')->can('penjualan.setpkp');
 
         //AJAX REQUEST
         Route::post('/penjualan/generatenofaktur', 'generatenofaktur')->name('penjualan.generatenofaktur');

@@ -47,6 +47,7 @@ class PenjualanController extends Controller
             'pelanggan.nama_pelanggan',
             'salesman.nama_salesman',
             'cabang.nama_cabang',
+            'cabang_pkp.kode_pt as kode_pt_pkp',
             'worksheetom_visitpelanggan.kode_visit',
             DB::raw('IF(salesbaru IS NULL, marketing_penjualan.kode_salesman, salesbaru) as kode_salesman_baru'),
             DB::raw('IF(cabangbaru IS NULL, salesman.kode_cabang, cabangbaru) as kode_cabang_baru')
@@ -55,6 +56,7 @@ class PenjualanController extends Controller
         $query->join('pelanggan', 'marketing_penjualan.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
         $query->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $query->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin('cabang as cabang_pkp', 'marketing_penjualan.kode_pkp', '=', 'cabang_pkp.kode_cabang');
         $query->leftJoin('worksheetom_visitpelanggan', 'marketing_penjualan.no_faktur', '=', 'worksheetom_visitpelanggan.no_faktur');
 
         $movefaktur = DB::table('marketing_penjualan_movefaktur')
@@ -340,7 +342,9 @@ class PenjualanController extends Controller
         $penjualan = $pnj->getFaktur($no_faktur);
         $data['penjualan'] = $penjualan;
 
-        if (!empty($penjualan->kode_cabang_pkp)) {
+        if (!empty($penjualan->kode_pkp)) {
+            $kode_cabang = $penjualan->kode_pkp;
+        } else if (!empty($penjualan->kode_cabang_pkp)) {
             $kode_cabang = $penjualan->kode_cabang_pkp;
         } else {
             $kode_cabang = $penjualan->kode_cabang;
@@ -363,7 +367,9 @@ class PenjualanController extends Controller
         $detailpenjualan = new Penjualan();
         $data['detail'] = $detailpenjualan->getDetailpenjualan($no_faktur);
 
-        if (!empty($penjualan->kode_cabang_pkp)) {
+        if (!empty($penjualan->kode_pkp)) {
+            $kode_cabang = $penjualan->kode_pkp;
+        } else if (!empty($penjualan->kode_cabang_pkp)) {
             $kode_cabang = $penjualan->kode_cabang_pkp;
         } else {
             $kode_cabang = $penjualan->kode_cabang;
@@ -1470,5 +1476,30 @@ class PenjualanController extends Controller
             'lock_print' => $lock_print
         ]);
         return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+    }
+
+    public function setpkp($no_faktur)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        $pnj = new Penjualan();
+        $data['penjualan'] = $pnj->getFaktur($no_faktur);
+        $data['cabang'] = Cabang::orderBy('urutan')->get();
+        return view('marketing.penjualan.setpkp', $data);
+    }
+
+    public function updatesetpkp($no_faktur, Request $request)
+    {
+        $no_faktur = Crypt::decrypt($no_faktur);
+        DB::beginTransaction();
+        try {
+            Penjualan::where('no_faktur', $no_faktur)->update([
+                'kode_pkp' => $request->kode_pkp,
+            ]);
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Kode PKP Berhasil Diperbarui'));
+        } catch (\Exception $e) {
+            DB::rollback();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

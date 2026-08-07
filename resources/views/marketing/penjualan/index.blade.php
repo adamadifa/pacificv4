@@ -191,6 +191,7 @@
                             <th class="text-white freeze-2" style="width: 10%">Tanggal</th>
                             <th class="text-white freeze-3" style="width: 15%">Nama Pelanggan</th>
                             <th class="text-white">Nama Cabang</th>
+                            <th class="text-white">PKP</th>
                             <th class="text-white">Salesman</th>
                             <th class="text-white">Total</th>
                             <th class="text-white">JT</th>
@@ -229,6 +230,13 @@
                                 <td class="freeze-2" style="background-color: {{ $color != '' ? $color : '#fff' }} !important;">{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
                                 <td class="freeze-3" style="background-color: {{ $color != '' ? $color : '#fff' }} !important;">{{ $d->nama_pelanggan }}</td>
                                 <td>{{ strtoupper($d->nama_cabang) }}</td>
+                                <td>
+                                    @if(!empty($d->kode_pt_pkp))
+                                        <span class="badge bg-info">{{ strtoupper($d->kode_pt_pkp) }}</span>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td>{{ strtoupper($d->nama_salesman) }}</td>
                                 <td class="text-end fw-bold">{{ formatAngka($total_netto) }}</td>
                                 <td>
@@ -292,6 +300,11 @@
                                         @can('penjualan.batalfaktur')
                                             <a href="#" class="btnBatal text-danger" no_faktur="{{ Crypt::encrypt($d->no_faktur) }}" data-bs-toggle="tooltip" title="Batalkan Faktur">
                                                 <i class="ti ti-file-invoice fs-5"></i>
+                                            </a>
+                                        @endcan
+                                        @can('penjualan.setpkp')
+                                            <a href="#" class="btnSetpkp text-warning" no_faktur="{{ Crypt::encrypt($d->no_faktur) }}" data-bs-toggle="tooltip" title="Set Cabang PKP">
+                                                <i class="ti ti-building fs-5"></i>
                                             </a>
                                         @endcan
                                         @can('penjualan.delete')
@@ -396,6 +409,15 @@
             $("#modal").modal("show");
             $(".modal-title").text("Ubah Ke Faktur Batal");
             $("#loadmodal").load(`/penjualan/${no_faktur}/batalfaktur`);
+        });
+
+        $(".btnSetpkp").click(function(e) {
+            e.preventDefault();
+            loading();
+            const no_faktur = $(this).attr('no_faktur');
+            $("#modal").modal("show");
+            $(".modal-title").text("Tentukan Cabang PKP");
+            $("#loadmodal").load(`/penjualan/${no_faktur}/setpkp`);
         });
 
         const select2Kodecabangsearch = $('.select2Kodecabangsearch');

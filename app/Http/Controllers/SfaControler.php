@@ -713,7 +713,9 @@ class SfaControler extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        if (!empty($faktur->kode_cabang_pkp)) {
+        if (!empty($faktur->kode_pkp)) {
+            $kode_cabang = $faktur->kode_pkp;
+        } else if (!empty($faktur->kode_cabang_pkp)) {
             $kode_cabang = $faktur->kode_cabang_pkp;
         } else {
             $kode_cabang = $faktur->kode_cabang;
