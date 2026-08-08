@@ -4501,20 +4501,49 @@ class LaporanmarketingController extends Controller
             $selectColumnRealisasikendaraan[] = DB::raw("SUM(IF(produk_harga.kode_produk='$p->kode_produk',jumlah/isi_pcs_dus,0)) as `qty_kendaraan_$p->kode_produk`");
             $selectKendaraan[] = "qty_kendaraan_$p->kode_produk";
         }
-        $salesman_target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
-            ->select('kode_salesman')
-            ->where('kode_cabang', $kode_cabang)
-            ->where('bulan', $request->bulan)
-            ->where('tahun', $request->tahun)
-            ->groupBy('kode_salesman');
+        if ($request->format_komisi == '2') {
+            // Target dihitung dari rata-rata realisasi Januari - Juni tahun berjalan
+            $jan_juni_dari = $request->tahun . "-01-01";
+            $jan_juni_sampai = $request->tahun . "-06-30";
 
-        $subqueryTarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
-            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
-            ->where('marketing_komisi_target.kode_cabang', $kode_cabang)
-            ->where('marketing_komisi_target.bulan', $request->bulan)
-            ->where('marketing_komisi_target.tahun', $request->tahun)
-            ->select('kode_salesman', ...$selectColumntarget)
-            ->groupBy('kode_salesman');
+            $selectColumntarget_avg = [];
+            foreach ($kategori_komisi as $k) {
+                // Rata-rata target = Total realisasi qty (jumlah / isi_pcs_dus) dari Jan-Jun dibagi 6 bulan
+                $selectColumntarget_avg[] = DB::raw("SUM(IF(produk.kode_kategori_komisi='$k->kode_kategori', jumlah / isi_pcs_dus, 0)) / 6 as `target_$k->kode_kategori`");
+            }
+
+            // Salesman yang memiliki target adalah salesman yang aktif di cabang tersebut
+            $salesman_target = Salesman::select('kode_salesman')
+                ->where('kode_cabang', $kode_cabang)
+                ->where('status_aktif_salesman', 1);
+
+            $subqueryTarget = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+                ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+                ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+                ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang)
+                ->whereBetween('marketing_penjualan.tanggal_pelunasan', [$jan_juni_dari, $jan_juni_sampai])
+                ->where('status_promosi', 0)
+                ->where('status_batal', 0)
+                ->where('marketing_penjualan.status_sampel', 0)
+                ->select('marketing_penjualan.kode_salesman', ...$selectColumntarget_avg)
+                ->groupBy('marketing_penjualan.kode_salesman');
+        } else {
+            $salesman_target = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+                ->select('kode_salesman')
+                ->where('kode_cabang', $kode_cabang)
+                ->where('bulan', $request->bulan)
+                ->where('tahun', $request->tahun)
+                ->groupBy('kode_salesman');
+
+            $subqueryTarget = Detailtargetkomisi::join('marketing_komisi_target', 'marketing_komisi_target_detail.kode_target', '=', 'marketing_komisi_target.kode_target')
+                ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+                ->where('marketing_komisi_target.kode_cabang', $kode_cabang)
+                ->where('marketing_komisi_target.bulan', $request->bulan)
+                ->where('marketing_komisi_target.tahun', $request->tahun)
+                ->select('kode_salesman', ...$selectColumntarget)
+                ->groupBy('kode_salesman');
+        }
 
         $subqueryRealisasi = Detailpenjualan::join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')

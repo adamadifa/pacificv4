@@ -37,7 +37,14 @@
         </div>
     </div>
 
-
+    <div class="row">
+        <div class="col">
+            <x-select label="Format Komisi" name="format_komisi" id="format_komisi" :data="[
+                (object) ['kode' => '1', 'nama' => 'Format 1 (Target Normal)'],
+                (object) ['kode' => '2', 'nama' => 'Format 2 (Target AVG Jan - Jun)'],
+            ]" key="kode" textShow="nama" hideLabel="true" selected="1" />
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
