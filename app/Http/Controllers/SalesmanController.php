@@ -34,6 +34,10 @@ class SalesmanController extends Controller
             $query->where('salesman.kode_cabang', $request->kode_cabang);
         }
 
+        if (isset($request->status_aktif_salesman) && $request->status_aktif_salesman !== '') {
+            $query->where('status_aktif_salesman', $request->status_aktif_salesman);
+        }
+
         if (!$user->hasRole($roles_access_all_cabang)) {
             if ($user->hasRole('regional sales manager')) {
                 $query->where('cabang.kode_regional', auth()->user()->kode_regional);

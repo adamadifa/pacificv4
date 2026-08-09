@@ -18,14 +18,37 @@
         {{-- Filter Section (No Card) --}}
         <form action="{{ route('salesman.index') }}">
             <div class="row g-2 align-items-end mb-3">
-                <div class="col-lg-6 col-md-6 col-sm-12">
-                    <x-input-with-icon label="Cari Nama Salesman" value="{{ Request('nama_salesman') }}"
-                        name="nama_salesman" icon="ti ti-search" hideLabel="true" />
-                </div>
                 @hasanyrole($roles_show_cabang)
                     <div class="col-lg-4 col-md-4 col-sm-12">
+                        <x-input-with-icon label="Cari Nama Salesman" value="{{ Request('nama_salesman') }}"
+                            name="nama_salesman" icon="ti ti-search" hideLabel="true" />
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <x-select label="Cabang" name="kode_cabang" :data="$cabang" key="kode_cabang"
                             textShow="nama_cabang" selected="{{ Request('kode_cabang') }}" hideLabel="true" />
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group mb-3">
+                            <select name="status_aktif_salesman" id="status_aktif_salesman" class="form-select">
+                                <option value="">Status</option>
+                                <option value="1" {{ Request('status_aktif_salesman') === '1' ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ Request('status_aktif_salesman') === '0' ? 'selected' : '' }}>Non Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+                @else
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <x-input-with-icon label="Cari Nama Salesman" value="{{ Request('nama_salesman') }}"
+                            name="nama_salesman" icon="ti ti-search" hideLabel="true" />
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group mb-3">
+                            <select name="status_aktif_salesman" id="status_aktif_salesman" class="form-select">
+                                <option value="">Status</option>
+                                <option value="1" {{ Request('status_aktif_salesman') === '1' ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ Request('status_aktif_salesman') === '0' ? 'selected' : '' }}>Non Aktif</option>
+                            </select>
+                        </div>
                     </div>
                 @endhasanyrole
                 <div class="col-lg-2 col-md-2 col-sm-12">
