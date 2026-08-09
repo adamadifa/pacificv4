@@ -1,3 +1,31 @@
+<style>
+    .table-target-detail th {
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        vertical-align: middle !important;
+        padding: 8px 10px !important;
+        font-weight: 600;
+    }
+    .table-target-detail td {
+        font-size: 0.78rem;
+        padding: 6px 10px !important;
+        vertical-align: middle !important;
+    }
+    .noborder-form {
+        border: 1px solid #d4d8dd !important;
+        border-radius: 4px !important;
+        padding: 4px 8px !important;
+        background-color: #fff !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        width: 70px;
+    }
+    .noborder-form:focus {
+        border-color: #7367f0 !important;
+        box-shadow: 0 0 0 0.2rem rgba(115, 103, 240, 0.25) !important;
+        outline: 0 !important;
+    }
+</style>
 <form action="{{ route('targetkomisi.store') }}" method="POST" id="formTargetkomisi">
   <div class="row">
     <div class="co-12">
@@ -57,11 +85,11 @@
   <div class="row mb-3">
     <div class="col">
       <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover table-target-detail">
           <thead class="table-dark">
             <tr>
-              <th rowspan="2" class="align-middle">Kode</th>
-              <th rowspan="2" class="align-middle">Salesman</th>
+              <th rowspan="2" class="align-middle text-center">Kode</th>
+              <th rowspan="2" class="align-middle text-center">Salesman</th>
               <th colspan="{{ count($produk) }}" class="text-center">Produk</th>
             </tr>
             <tr>

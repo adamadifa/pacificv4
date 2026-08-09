@@ -1,18 +1,17 @@
 @foreach ($detail as $d)
     <tr>
-        <td>
-            <input type="hidden" name="kode_salesman[]" value="{{ $d->kode_salesman }}">
+        <td class="text-center fw-semibold text-muted">
             {{ $d->kode_salesman }}
         </td>
-        <td>{{ $d->nik }}</td>
-        <td>{{ $d->nama_salesman }}</td>
-        <td>
+        <td class="text-center">{{ $d->nik }}</td>
+        <td class="fw-semibold text-dark">{{ $d->nama_salesman }}</td>
+        <td class="text-center small">
             @php
                 $end_date = $targetkomisi->tahun . '-' . $targetkomisi->bulan . '-01';
                 $masakerja = hitungMasakerja($d->tanggal_masuk, $end_date);
             @endphp
             @if (!empty($d->tanggal_masuk))
-                {{ $masakerja['tahun'] }} Tahun {{ $masakerja['bulan'] }} Bulan
+                {{ $masakerja['tahun'] }} Thn {{ $masakerja['bulan'] }} Bln
             @endif
         </td>
 
@@ -20,15 +19,20 @@
             @php
                 $rata_rata_penjualan = $d->{"penjualan_$p->kode_produk"} / $p->isi_pcs_dus / 3;
                 $jml_penjualan_tigabulan = $d->{"penjualan_tiga_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
-                $jml_penjualan_duabulan = $d->{"penjualan_dua_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
+                $jml_penjualan_dua_bulan = $d->{"penjualan_dua_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
                 $jml_penjualan_lastbulan = $d->{"penjualan_last_bulan_$p->kode_produk"} / $p->isi_pcs_dus;
                 $jml_last_target = $d->{"target_last_$p->kode_produk"};
             @endphp
-            <td class="text-end bg-success text-white"> {{ formatAngka($rata_rata_penjualan) }}</td>
-            <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
-            <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_duabulan) }}</td>
-            <td class="text-end bg-info text-white">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
-            <td class="text-end bg-primary text-white">{{ formatAngka($jml_last_target) }}</td>
+            <td class="text-end cell-avg">
+                @if ($loop->first)
+                    <input type="hidden" name="kode_salesman[]" value="{{ $d->kode_salesman }}">
+                @endif
+                {{ formatAngka($rata_rata_penjualan) }}
+            </td>
+            <td class="text-end cell-realisasi">{{ formatAngka($jml_penjualan_tigabulan) }}</td>
+            <td class="text-end cell-realisasi">{{ formatAngka($jml_penjualan_dua_bulan) }}</td>
+            <td class="text-end cell-realisasi">{{ formatAngka($jml_penjualan_lastbulan) }}</td>
+            <td class="text-end cell-last-target">{{ formatAngka($jml_last_target) }}</td>
             <td class="text-end">
                 {{ formatAngka($d->{"target_awal_$p->kode_produk"}) }}
                 <input type="hidden" class="noborder-form text-end money target_awal t_awal_{{ $p->kode_produk }}"
@@ -54,8 +58,7 @@
                     value="{{ formatAngka($d->{"target_dirut_$p->kode_produk"}) }}" name="dirut_{{ $p->kode_produk }}[]"
                     {{ $level_user == 'direktur' || $level_user == 'super admin' ? '' : 'readonly' }} kode_produk="{{ $p->kode_produk }}">
             </td>
-            <td class="text-end">
-                {{-- {{ formatAngka($d->{"target_$p->kode_produk"}) }} --}}
+            <td class="text-end cell-target-akhir">
                 <input type="text" class="noborder-form text-end target_akhir_{{ $p->kode_produk }}"
                     value="{{ formatAngka($d->{"target_$p->kode_produk"}) }}" name="{{ $p->kode_produk }}[]" readonly>
             </td>
@@ -79,10 +82,3 @@
         });
     });
 </script>
-{{-- <script>
-    $(".table-modal").freezeTable({
-        'scrollable': true,
-        'columnNum': 3,
-        'shadow': true,
-    });
-</script> --}}

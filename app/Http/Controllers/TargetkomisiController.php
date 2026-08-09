@@ -658,9 +658,10 @@ class TargetkomisiController extends Controller
             ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
             ->where('kode_target', $kode_target)
             ->first();
-        $produk = Detailtargetkomisi::select('kode_produk')
-            ->orderBy('kode_produk')
-            ->groupBy('kode_produk')
+        $produk = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_produk', 'isi_pcs_dus')
+            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+            ->orderBy('marketing_komisi_target_detail.kode_produk')
+            ->groupBy('marketing_komisi_target_detail.kode_produk', 'produk.isi_pcs_dus')
             ->where('kode_target', $kode_target)
             ->get();
         $data['produk'] = $produk;
@@ -693,35 +694,54 @@ class TargetkomisiController extends Controller
                 'tahun' => 'required'
             ]);
         }
-        $produk = Detailtargetkomisi::select('kode_produk')
-            ->orderBy('kode_produk')
-            ->groupBy('kode_produk')
+        $produk = Detailtargetkomisi::select('marketing_komisi_target_detail.kode_produk', 'isi_pcs_dus')
+            ->join('produk', 'marketing_komisi_target_detail.kode_produk', '=', 'produk.kode_produk')
+            ->orderBy('marketing_komisi_target_detail.kode_produk')
+            ->groupBy('marketing_komisi_target_detail.kode_produk', 'produk.isi_pcs_dus')
             ->where('kode_target', $kode_target)
             ->get();
 
         $kode_target_new =  $kode_cabang . $bln . $tahun;
-        $kode_salesman = $request->kode_salesman;
 
-        // dd($request->kode_salesman);
-        //dd($request->BB);
-        for ($i = 0; $i < count($kode_salesman); $i++) {
-            foreach ($produk as $p) {
-                $kode_produk = $p->kode_produk;
-                ${$kode_produk} = $request->$kode_produk;
-                ${'target_rsm_' . $kode_produk} = $request->{'rsm_' . $kode_produk};
-                ${'target_awal_' . $kode_produk} = $request->{'target_awal_' . $kode_produk};
-                ${'target_gm_' . $kode_produk} = $request->{'gm_' . $kode_produk};
-                ${'target_dirut_' . $kode_produk} = $request->{'dirut_' . $kode_produk};
-                $data[] = [
-                    'kode_target' => $kode_target_new,
-                    'kode_salesman' => $kode_salesman[$i],
-                    'kode_produk' => $kode_produk,
-                    'jml_awal' => toNumber(${'target_awal_' . $kode_produk}[$i]),
-                    'rsm' => toNumber(${'target_rsm_' . $kode_produk}[$i]),
-                    'gm' => toNumber(${'target_gm_' . $kode_produk}[$i]),
-                    'direktur' => toNumber(${'target_dirut_' . $kode_produk}[$i]),
-                    'jumlah' => toNumber(${$kode_produk}[$i])
-                ];
+        $data = [];
+        if ($request->has('target_data')) {
+            $target_data = json_decode($request->target_data, true);
+            foreach ($target_data as $row) {
+                $kode_salesman_item = $row['kode_salesman'];
+                foreach ($row['products'] as $kode_produk => $val) {
+                    $data[] = [
+                        'kode_target' => $kode_target_new,
+                        'kode_salesman' => $kode_salesman_item,
+                        'kode_produk' => $kode_produk,
+                        'jml_awal' => toNumber($val['target_awal']),
+                        'rsm' => toNumber($val['rsm']),
+                        'gm' => toNumber($val['gm']),
+                        'direktur' => toNumber($val['dirut']),
+                        'jumlah' => toNumber($val['akhir'])
+                    ];
+                }
+            }
+        } else {
+            $kode_salesman = $request->kode_salesman;
+            for ($i = 0; $i < count($kode_salesman); $i++) {
+                foreach ($produk as $p) {
+                    $kode_produk = $p->kode_produk;
+                    ${$kode_produk} = $request->$kode_produk;
+                    ${'target_rsm_' . $kode_produk} = $request->{'rsm_' . $kode_produk};
+                    ${'target_awal_' . $kode_produk} = $request->{'target_awal_' . $kode_produk};
+                    ${'target_gm_' . $kode_produk} = $request->{'gm_' . $kode_produk};
+                    ${'target_dirut_' . $kode_produk} = $request->{'dirut_' . $kode_produk};
+                    $data[] = [
+                        'kode_target' => $kode_target_new,
+                        'kode_salesman' => $kode_salesman[$i],
+                        'kode_produk' => $kode_produk,
+                        'jml_awal' => toNumber(${'target_awal_' . $kode_produk}[$i]),
+                        'rsm' => toNumber(${'target_rsm_' . $kode_produk}[$i]),
+                        'gm' => toNumber(${'target_gm_' . $kode_produk}[$i]),
+                        'direktur' => toNumber(${'target_dirut_' . $kode_produk}[$i]),
+                        'jumlah' => toNumber(${$kode_produk}[$i])
+                    ];
+                }
             }
         }
 
