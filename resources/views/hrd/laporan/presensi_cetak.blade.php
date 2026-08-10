@@ -403,7 +403,7 @@
                                     @elseif($d[$tanggal_presensi]['status'] == 's')
                                         @php
                                             $potongan_jam_terlambat = 0;
-                                            // $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_dirumahkan = 0;
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
