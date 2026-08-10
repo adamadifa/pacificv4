@@ -4,14 +4,15 @@
     $isMobile = $agent->isMobile();
 @endphp
 
-<form action="{{ route('laporanmarketing.cetakkomisisalesman') }}" method="POST" id="formKomisisalesman" target="{{ $isMobile ? '_self' : '_blank' }}">
+<form action="{{ route('laporanmarketing.cetakkomisisalesman') }}" method="POST" id="formKomisisalesman"
+    target="{{ $isMobile ? '_self' : '_blank' }}">
     @csrf
     @hasanyrole($roles_show_cabang)
-        <div class="form-group mb-3">
-            <x-select label="Pilih Cabang" name="kode_cabang" id="kode_cabang_komisisalesman" :data="$cabang"
-                key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabangkomisisalesman" upperCase="true"
-                hideLabel="true" />
-        </div>
+    <div class="form-group mb-3">
+        <x-select label="Pilih Cabang" name="kode_cabang" id="kode_cabang_komisisalesman" :data="$cabang"
+            key="kode_cabang" textShow="nama_cabang" select2="select2Kodecabangkomisisalesman" upperCase="true"
+            hideLabel="true" />
+    </div>
     @endrole
     <div class="row">
         <div class="col">
@@ -20,8 +21,8 @@
                     return (object) $item;
                 });
             @endphp
-            <x-select label="Bulan" name="bulan" id="bulan" :data="$bulan_data" key="kode_bulan"
-                textShow="nama_bulan" hideLabel="true" />
+            <x-select label="Bulan" name="bulan" id="bulan" :data="$bulan_data" key="kode_bulan" textShow="nama_bulan"
+                hideLabel="true" />
         </div>
     </div>
     <div class="row">
@@ -40,9 +41,8 @@
     <div class="row">
         <div class="col">
             <x-select label="Format Komisi" name="format_komisi" id="format_komisi" :data="[
-                (object) ['kode' => '1', 'nama' => 'Format 1 (Target Normal)'],
-                (object) ['kode' => '2', 'nama' => 'Format 2 (Target AVG Jan - Jun)'],
-            ]" key="kode" textShow="nama" hideLabel="true" selected="1" />
+        (object) ['kode' => '1', 'nama' => 'Format 1 (Target Normal)'],
+    ]" key="kode" textShow="nama" hideLabel="true" selected="1" />
         </div>
     </div>
 
@@ -61,11 +61,11 @@
 </form>
 @push('myscript')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             const formKomisisalesman = $("#formKomisisalesman");
             const select2Kodecabangkomisisalesman = $(".select2Kodecabangkomisisalesman");
             if (select2Kodecabangkomisisalesman.length) {
-                select2Kodecabangkomisisalesman.each(function() {
+                select2Kodecabangkomisisalesman.each(function () {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Pilih Cabang',
@@ -77,7 +77,7 @@
 
 
 
-            formKomisisalesman.submit(function(e) {
+            formKomisisalesman.submit(function (e) {
                 const kode_cabang = formKomisisalesman.find('#kode_cabang_komisisalesman').val();
                 const bulan = formKomisisalesman.find('#bulan').val();
                 const tahun = formKomisisalesman.find('#tahun').val();
