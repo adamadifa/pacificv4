@@ -1139,7 +1139,7 @@ class DashboardController extends Controller
             $qpembayaran->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman');
             $qpembayaran->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
             $qpembayaran->select(
-                'marketing_penjualan_historibayar.kode_salesman',
+                'salesman.kode_salesman',
                 'nama_salesman',
                 DB::raw('SUM(IF(voucher="1",jumlah,0)) as total_voucher'),
                 DB::raw('SUM(IF(voucher="0",jumlah,0)) as total_cashin'),
