@@ -10,6 +10,7 @@ use App\Models\Produk;
 use App\Models\Salesman;
 use App\Models\Targetkomisi;
 use App\Models\User;
+use App\Models\Regional;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -114,6 +115,10 @@ class TargetkomisiController extends Controller
             $query->where('marketing_komisi_target.kode_cabang', $request->kode_cabang_search);
         }
 
+        if (!empty($request->kode_regional_search)) {
+            $query->where('cabang.kode_regional', $request->kode_regional_search);
+        }
+
         if (!empty($request->posisi_ajuan)) {
             $query->where('roles.name', $request->posisi_ajuan);
         }
@@ -132,6 +137,7 @@ class TargetkomisiController extends Controller
         $cbg = new Cabang();
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
+        $data['regional'] = Regional::orderBy('kode_regional')->get();
         return view('marketing.targetkomisi.index', $data);
     }
 
@@ -1162,5 +1168,97 @@ class TargetkomisiController extends Controller
 
         $data['target'] = $target;
         return view('dashboard.mobile.gettarget', $data);
+    }
+
+    public function editposisi($kode_target)
+    {
+        if (!auth()->user()->hasRole('super admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $kode_target = Crypt::decrypt($kode_target);
+        $targetkomisi = Targetkomisi::select('marketing_komisi_target.*', 'nama_cabang', 'cabang.kode_regional')
+            ->join('cabang', 'marketing_komisi_target.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('kode_target', $kode_target)
+            ->first();
+            
+        // Get the latest disposisi
+        $latest_disposisi = Disposisitargetkomisi::where('kode_target', $kode_target)
+            ->orderBy('kode_disposisi', 'desc')
+            ->first();
+            
+        $roles = DB::table('roles')
+            ->whereIn('name', ['regional sales manager', 'gm marketing', 'direktur'])
+            ->get();
+            
+        // Find current receiver's role
+        $current_role_id = null;
+        if ($latest_disposisi) {
+            $penerima = User::find($latest_disposisi->id_penerima);
+            if ($penerima) {
+                $current_role_id = $penerima->roles->first()?->id;
+            }
+        }
+        
+        return view('marketing.targetkomisi.editposisi', compact('targetkomisi', 'roles', 'current_role_id', 'latest_disposisi'));
+    }
+
+    public function updateposisi($kode_target, Request $request)
+    {
+        if (!auth()->user()->hasRole('super admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $kode_target = Crypt::decrypt($kode_target);
+        $targetkomisi = Targetkomisi::where('kode_target', $kode_target)->first();
+        $kode_cabang = $targetkomisi->kode_cabang;
+        $regional = Cabang::where('kode_cabang', $kode_cabang)->first();
+        
+        $role = DB::table('roles')->where('id', $request->posisi_ajuan)->first();
+        if (!$role) {
+            return Redirect::back()->with(messageError('Role tidak ditemukan'));
+        }
+        
+        // Find user of that role
+        if ($role->name == 'regional sales manager') {
+            $user_penerima = User::role('regional sales manager')
+                ->where('kode_regional', $regional->kode_regional)
+                ->where('status', 1)
+                ->first();
+        } else {
+            $user_penerima = User::role($role->name)
+                ->where('status', 1)
+                ->first();
+        }
+        
+        if (!$user_penerima) {
+            return Redirect::back()->with(messageError('User penerima dengan role ' . $role->name . ' tidak ditemukan atau tidak aktif'));
+        }
+        
+        DB::beginTransaction();
+        try {
+            // Update targetkomisi status
+            Targetkomisi::where('kode_target', $kode_target)->update([
+                'status' => $request->status
+            ]);
+            
+            // Update the latest disposisi's id_penerima
+            $latest_disposisi = Disposisitargetkomisi::where('kode_target', $kode_target)
+                ->orderBy('kode_disposisi', 'desc')
+                ->first();
+                
+            if ($latest_disposisi) {
+                $latest_disposisi->update([
+                    'id_penerima' => $user_penerima->id,
+                    'status' => $request->status == 1 ? 1 : 0
+                ]);
+            }
+            
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Posisi Ajuan & Status Berhasil Diupdate'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
     }
 }

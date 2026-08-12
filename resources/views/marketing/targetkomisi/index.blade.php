@@ -32,7 +32,14 @@
                 <div class="card-body p-0">
                     <div class="row">
                         @hasanyrole($roles_show_cabang)
-                            <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <x-select label="Semua Regional" name="kode_regional_search" :data="$regional" key="kode_regional"
+                                        textShow="nama_regional" upperCase="true" selected="{{ Request('kode_regional_search') }}"
+                                        select2="select2Koderegionalsearch" hideLabel="true" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <x-select label="Semua Cabang" name="kode_cabang_search" :data="$cabang" key="kode_cabang"
                                         textShow="nama_cabang" upperCase="true" selected="{{ Request('kode_cabang_search') }}"
@@ -212,6 +219,14 @@
                                                         </a>
                                                     @endcan
 
+                                                    @if ($level_user == 'super admin')
+                                                        <a href="#" class="btnEditPosisi text-warning"
+                                                            kode_target="{{ Crypt::encrypt($d->kode_target) }}"
+                                                            data-bs-toggle="tooltip" title="Edit Posisi">
+                                                            <i class="ti ti-settings fs-4"></i>
+                                                        </a>
+                                                    @endif
+
                                                     @can('targetkomisi.delete')
                                                         @if ($d->id_pengirim == auth()->user()->id)
                                                             <form method="POST"
@@ -270,6 +285,18 @@
             });
         }
 
+        const select2Koderegionalsearch = $('.select2Koderegionalsearch');
+        if (select2Koderegionalsearch.length) {
+            select2Koderegionalsearch.each(function() {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>').select2({
+                    placeholder: 'Semua Regional',
+                    allowClear: true,
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
         $(".btnCreate").click(function(e) {
             e.preventDefault();
             loading();
@@ -303,6 +330,15 @@
             $('#modal').modal("show");
             $("#loadmodal").load(`/targetkomisi/${kode_target}/edit`);
             $(".modal-title").text("Edit Target");
+        });
+
+        $(".btnEditPosisi").click(function(e) {
+            e.preventDefault();
+            loading();
+            const kode_target = $(this).attr("kode_target");
+            $('#modal').modal("show");
+            $("#loadmodal").load(`/targetkomisi/${kode_target}/editposisi`);
+            $(".modal-title").text("Edit Posisi Ajuan");
         });
     });
 </script>

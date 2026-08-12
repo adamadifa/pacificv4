@@ -1159,6 +1159,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/targetkomisi/{kode_target}/approve', 'approve')->name('targetkomisi.approve')->can('targetkomisi.approve');
         Route::get('/targetkomisi/{kode_target}/approvestore', 'approvestore')->name('targetkomisi.approvestore')->can('targetkomisi.approve');
         Route::delete('/targetkomisi/{kode_target}/cancel', 'cancel')->name('targetkomisi.cancel')->can('targetkomisi.approve');
+        Route::get('/targetkomisi/{kode_target}/editposisi', 'editposisi')->name('targetkomisi.editposisi')->can('targetkomisi.approve');
+        Route::put('/targetkomisi/{kode_target}/updateposisi', 'updateposisi')->name('targetkomisi.updateposisi')->can('targetkomisi.approve');
         Route::delete('/targetkomisi/{kode_target}', 'destroy')->name('targetkomisi.delete')->can('targetkomisi.delete');
 
         Route::post('/targetkomisi/gettargetsalesman', 'gettargetsalesman')->name('targetkomisi.gettargetsalesman');
