@@ -372,6 +372,8 @@ function getAkunpiutangcabang($kode_cabang)
         $akun = "1-1495";
     } else if ($kode_cabang == "CRB") {
         $akun = "1-1496";
+    } else if ($kode_cabang == "MLG") {
+        $akun = "1-1497";
     } else {
         $akun = "99";
     }
