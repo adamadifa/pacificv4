@@ -462,25 +462,53 @@ class PenilaiankaryawanController extends Controller
 
         DB::beginTransaction();
         try {
+            $original_masa_kontrak = $penilaiankaryawan->masa_kontrak;
+            $submitted_masa_kontrak = $request->masa_kontrak ?? $original_masa_kontrak;
+            
+            $masa_kontrak_labels = [
+                'TP' => 'Tidak Di Perpanjang',
+                'K3' => '3 Bulan',
+                'K6' => '6 Bulan',
+                'KT' => 'Karyawan Tetap'
+            ];
+            
+            $label_old = $masa_kontrak_labels[$original_masa_kontrak] ?? $original_masa_kontrak;
+            $label_new = $masa_kontrak_labels[$submitted_masa_kontrak] ?? $submitted_masa_kontrak;
+            
+            if ($original_masa_kontrak == $submitted_masa_kontrak) {
+                $keterangan = "Disetujui {$label_new}";
+            } else {
+                $keterangan = "Diubah dari {$label_old} menjadi {$label_new} oleh {$user->name} (" . (singkatString($role) == 'AMH' ? 'HRD' : singkatString($role)) . ")";
+            }
+            
+            $history = json_decode($penilaiankaryawan->approval_history, true) ?? [];
+            $history[] = [
+                'user_name' => $user->name,
+                'role' => $role,
+                'action' => $original_masa_kontrak == $submitted_masa_kontrak ? 'approved' : 'modified',
+                'old_value' => $original_masa_kontrak,
+                'new_value' => $submitted_masa_kontrak,
+                'keterangan' => $keterangan,
+                'date' => date('Y-m-d H:i:s')
+            ];
 
+            $update_data = [
+                'approval_history' => json_encode($history)
+            ];
 
-
-
-
-
+            if ($original_masa_kontrak != $submitted_masa_kontrak) {
+                $update_data['masa_kontrak'] = $submitted_masa_kontrak;
+            }
 
             if ($role == $end_role) {
-                Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)
-                    ->update([
-                        'status' => 1,
-                        'posisi_ajuan' => getRoleID($role) // Tetap di role terakhir saat sudah disetujui
-                    ]);
+                $update_data['status'] = 1;
+                $update_data['posisi_ajuan'] = getRoleID($role); // Tetap di role terakhir saat sudah disetujui
             } else {
                 // Update posisi_ajuan ke role berikutnya
-                Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update([
-                    'posisi_ajuan' => getRoleID($nextrole)
-                ]);
+                $update_data['posisi_ajuan'] = getRoleID($nextrole);
             }
+
+            Penilaiankaryawan::where('kode_penilaian', $kode_penilaian)->update($update_data);
 
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disetujui'));

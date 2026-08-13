@@ -166,19 +166,21 @@
                 <h6 class="fw-bold mb-3 d-flex align-items-center">
                     <i class="ti ti-clock me-2 text-primary"></i> Hasil Penilaian & Rekomendasi
                 </h6>
+                
+                <input type="hidden" name="masa_kontrak" id="masa_kontrak" value="{{ $penilaiankaryawan->masa_kontrak }}">
                 <div class="d-flex flex-wrap gap-2 mb-4">
-                    <div class="masa-kontrak-badge {{ $penilaiankaryawan->masa_kontrak == 'TP' ? 'active' : '' }}">
-                        <i class="ti {{ $penilaiankaryawan->masa_kontrak == 'TP' ? 'ti-square-check' : 'ti-square' }}"></i> Tidak Di Perpanjang
-                    </div>
-                    <div class="masa-kontrak-badge {{ $penilaiankaryawan->masa_kontrak == 'K3' ? 'active' : '' }}">
-                        <i class="ti {{ $penilaiankaryawan->masa_kontrak == 'K3' ? 'ti-square-check' : 'ti-square' }}"></i> 3 Bulan
-                    </div>
-                    <div class="masa-kontrak-badge {{ $penilaiankaryawan->masa_kontrak == 'K6' ? 'active' : '' }}">
-                        <i class="ti {{ $penilaiankaryawan->masa_kontrak == 'K6' ? 'ti-square-check' : 'ti-square' }}"></i> 6 Bulan
-                    </div>
-                    <div class="masa-kontrak-badge {{ $penilaiankaryawan->masa_kontrak == 'KT' ? 'active' : '' }}">
-                        <i class="ti {{ $penilaiankaryawan->masa_kontrak == 'KT' ? 'ti-square-check' : 'ti-square' }}"></i> Karyawan Tetap
-                    </div>
+                    <button type="button" class="btn btn-outline-secondary btn-masa-kontrak {{ $penilaiankaryawan->masa_kontrak == 'TP' ? 'active btn-outline-danger' : '' }}" data-value="TP">
+                        <i class="ti ti-square-x me-1"></i> Tidak Di Perpanjang
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-masa-kontrak {{ $penilaiankaryawan->masa_kontrak == 'K3' ? 'active btn-outline-primary' : '' }}" data-value="K3">
+                        <i class="ti ti-calendar me-1"></i> 3 Bulan
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-masa-kontrak {{ $penilaiankaryawan->masa_kontrak == 'K6' ? 'active btn-outline-primary' : '' }}" data-value="K6">
+                        <i class="ti ti-calendar me-1"></i> 6 Bulan
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-masa-kontrak {{ $penilaiankaryawan->masa_kontrak == 'KT' ? 'active btn-outline-success' : '' }}" data-value="KT">
+                        <i class="ti ti-user-check me-1"></i> Karyawan Tetap
+                    </button>
                 </div>
 
                 <div class="row g-3">
@@ -195,6 +197,28 @@
                         </div>
                     </div>
                 </div>
+
+                @if(!empty($penilaiankaryawan->approval_history))
+                    @php
+                        $history = json_decode($penilaiankaryawan->approval_history, true) ?? [];
+                    @endphp
+                    @if(count($history) > 0)
+                        <div class="mt-4 border-top pt-3">
+                            <small class="text-muted fw-semibold mb-2 d-block">Riwayat Approval & Perubahan</small>
+                            <ul class="list-unstyled mb-0">
+                                @foreach($history as $h)
+                                    <li class="mb-2 d-flex align-items-start gap-2">
+                                        <i class="ti ti-circle-check text-success mt-1" style="font-size: 1rem;"></i>
+                                        <div>
+                                            <span class="small fw-semibold text-dark">{{ $h['keterangan'] }}</span>
+                                            <span class="d-block text-muted" style="font-size: 0.75rem;">{{ formatIndo($h['date']) }} {{ date('H:i', strtotime($h['date'])) }}</span>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                @endif
             </div>
         </div>
     </div>
@@ -222,6 +246,22 @@
                 <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                 Memproses...
             `);
+        });
+
+        $(".btn-masa-kontrak").click(function(e) {
+            e.preventDefault();
+            $(".btn-masa-kontrak").removeClass("active btn-outline-danger btn-outline-primary btn-outline-success").addClass("btn-outline-secondary");
+            const val = $(this).data("value");
+            $("#masa_kontrak").val(val);
+            
+            $(this).addClass("active");
+            if (val === 'TP') {
+                $(this).addClass("btn-outline-danger").removeClass("btn-outline-secondary");
+            } else if (val === 'KT') {
+                $(this).addClass("btn-outline-success").removeClass("btn-outline-secondary");
+            } else {
+                $(this).addClass("btn-outline-primary").removeClass("btn-outline-secondary");
+            }
         });
     });
 </script>
