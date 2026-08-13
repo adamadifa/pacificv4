@@ -255,4 +255,46 @@ class KontrakkaryawanController extends Controller
             'data' => $lastkontrak
         ]);
     }
+
+    public function deactivateOld()
+    {
+        try {
+            DB::beginTransaction();
+            $employees = DB::table('hrd_kontrak')->select('nik')->distinct()->get();
+            $updated = 0;
+            foreach ($employees as $e) {
+                $contracts = DB::table('hrd_kontrak')
+                    ->where('nik', $e->nik)
+                    ->orderBy('dari', 'desc')
+                    ->orderBy('no_kontrak', 'desc')
+                    ->get();
+                if ($contracts->count() > 1) {
+                    $latest = $contracts->first();
+                    $others = $contracts->slice(1);
+                    foreach ($others as $o) {
+                        if ($o->status_kontrak != 0) {
+                            DB::table('hrd_kontrak')->where('no_kontrak', $o->no_kontrak)->update(['status_kontrak' => 0]);
+                            $updated++;
+                        }
+                    }
+                    if ($latest->status_kontrak != 1) {
+                        DB::table('hrd_kontrak')->where('no_kontrak', $latest->no_kontrak)->update(['status_kontrak' => 1]);
+                        $updated++;
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menonaktifkan ' . $updated . ' kontrak lama.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menonaktifkan kontrak lama: ' . $e->getMessage()
+            ]);
+        }
+    }
 }
+

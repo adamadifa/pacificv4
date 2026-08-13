@@ -1819,6 +1819,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/kontrakkerja/{no_kontrak}/delete', 'destroy')->name('kontrakkerja.delete')->can('kontrakkerja.delete');
 
         Route::post('/kontrakkerja/getlastkontrak', 'getlastkontrak')->name('kontrakkerja.getlastkontrak');
+        Route::post('/kontrakkerja/deactivate-old', 'deactivateOld')->name('kontrakkerja.deactivate-old')->can('kontrakkerja.edit');
     });
 
 

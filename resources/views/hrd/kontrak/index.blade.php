@@ -99,9 +99,14 @@
         <div class="col-lg-12 col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0 fw-bold"><i class="ti ti-file-text me-2 text-primary"></i>Riwayat Kontrak Kerja</h5>
-                @can('kontrakkerja.create')
-                    <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Kontrak</a>
-                @endcan
+                <div class="d-flex gap-2">
+                    @can('kontrakkerja.edit')
+                        <a href="#" class="btn btn-warning" id="btnDeactivateOld"><i class="ti ti-ban me-1"></i> Nonaktifkan Kontrak Lama</a>
+                    @endcan
+                    @can('kontrakkerja.create')
+                        <a href="#" class="btn btn-primary" id="btnCreate"><i class="ti ti-plus me-1"></i> Buat Kontrak</a>
+                    @endcan
+                </div>
             </div>
 
             {{-- Filter Section --}}
@@ -257,6 +262,63 @@
             $("#modal").modal("show");
             $(".modal-title").text("Edit Kontrak");
             $("#loadmodal").load(`/kontrakkerja/${no_kontrak}/edit`);
+        });
+
+        $("#btnDeactivateOld").click(function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Semua kontrak lama milik karyawan yang sudah memiliki kontrak lebih baru akan dinonaktifkan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Nonaktifkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    });
+                    
+                    $.ajax({
+                        url: "{{ route('kontrakkerja.deactivate-old') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    'Berhasil!',
+                                    response.message,
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Error!',
+                                'Terjadi kesalahan pada server.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            })
         });
     });
 </script>
