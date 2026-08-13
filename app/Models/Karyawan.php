@@ -258,7 +258,7 @@ class Karyawan extends Authenticatable
 
     public function getKontrakBelumPenilaian()
     {
-        $limitDate = date("Y-m-d", strtotime("+2 months"));
+        $limitDate = date("Y-m-t", strtotime("+2 months"));
         $query = Kontrakkaryawan::query();
         $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang');
         $query->join('hrd_karyawan', 'hrd_kontrak.nik', '=', 'hrd_karyawan.nik');
