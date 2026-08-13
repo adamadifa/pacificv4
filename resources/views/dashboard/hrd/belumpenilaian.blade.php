@@ -84,7 +84,7 @@
                                         </span>
                                     </div>
                                     @can('penilaiankaryawan.create')
-                                        <a href="{{ route('penilaiankaryawan.create') }}" class="btn btn-warning btn-sm waves-effect waves-light mt-1">
+                                        <a href="{{ route('penilaiankaryawan.index') }}" class="btn btn-warning btn-sm waves-effect waves-light mt-1">
                                             <i class="ti ti-clipboard-check me-1 fs-6"></i> Input Penilaian
                                         </a>
                                     @endcan
