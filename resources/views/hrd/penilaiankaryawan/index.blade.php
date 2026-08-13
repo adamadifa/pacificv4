@@ -258,6 +258,9 @@
                             @endcan
 
                             @can('penilaiankaryawan.show')
+                                <a href="#" class="btnDetail btn btn-icon btn-label-secondary btn-sm" kode_penilaian="{{ Crypt::encrypt($d->kode_penilaian) }}" title="Detail">
+                                    <i class="ti ti-eye"></i>
+                                </a>
                                 <a href="{{ route('penilaiankaryawan.cetak', Crypt::encrypt($d->kode_penilaian)) }}" class="btn btn-icon btn-label-primary btn-sm" target="_blank" title="Cetak">
                                     <i class="ti ti-printer"></i>
                                 </a>
@@ -384,6 +387,16 @@
             $("#modal").modal("show");
             $(".modal-title").text("Approve Penilaian Karyawan");
             $("#loadmodal").load(`/penilaiankaryawan/${kode_penilaian}/approve`);
+            $("#modal").find(".modal-dialog").addClass('modal-xl');
+        });
+
+        $(".btnDetail").click(function(e) {
+            e.preventDefault();
+            var kode_penilaian = $(this).attr("kode_penilaian");
+            loading();
+            $("#modal").modal("show");
+            $(".modal-title").text("Detail Penilaian Karyawan");
+            $("#loadmodal").load(`/penilaiankaryawan/${kode_penilaian}/show`);
             $("#modal").find(".modal-dialog").addClass('modal-xl');
         });
 

@@ -1899,6 +1899,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/penilaiankaryawan/{id}/delete', 'destroy')->name('penilaiankaryawan.delete')->can('penilaiankaryawan.delete');
 
         Route::get('/penilaiankaryawan/{kode_penilaian}/approve', 'approve')->name('penilaiankaryawan.approve')->can('penilaiankaryawan.approve');
+        Route::get('/penilaiankaryawan/{kode_penilaian}/show', 'show')->name('penilaiankaryawan.show')->can('penilaiankaryawan.index');
         Route::post('/penilaiankaryawan/{kode_penilaian}/storeapprove', 'storeapprove')->name('penilaiankaryawan.storeapprove')->can('penilaiankaryawan.approve');
         Route::delete('/penilaiankaryawan/{kode_penilaian}/cancel', 'cancel')->name('penilaiankaryawan.cancel')->can('penilaiankaryawan.approve');
 

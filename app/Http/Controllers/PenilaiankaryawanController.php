@@ -139,6 +139,27 @@ class PenilaiankaryawanController extends Controller
             $izin = !empty($request->izin) ? $request->izin : 0;
             $alfa = !empty($request->alfa) ? $request->alfa : 0;
 
+            $masa_kontrak_labels = [
+                'TP' => 'Tidak Di Perpanjang',
+                'K3' => '3 Bulan',
+                'K6' => '6 Bulan',
+                'KT' => 'Karyawan Tetap'
+            ];
+            
+            $label_masa = $masa_kontrak_labels[$request->masa_kontrak] ?? $request->masa_kontrak;
+            
+            $history = [
+                [
+                    'user_name' => $user->name,
+                    'role' => $role,
+                    'action' => 'submitted',
+                    'old_value' => null,
+                    'new_value' => $request->masa_kontrak,
+                    'keterangan' => "Diajukan {$label_masa} oleh {$user->name} (" . (singkatString($role) == 'AMH' ? 'HRD' : singkatString($role)) . ")",
+                    'date' => date('Y-m-d H:i:s')
+                ]
+            ];
+
             Penilaiankaryawan::create([
                 'kode_penilaian' => $kode_penilaian,
                 'nik' => $karyawan->nik,
@@ -160,7 +181,8 @@ class PenilaiankaryawanController extends Controller
                 'status' => 0,
                 'status_pemutihan' => 0,
                 'no_kontrak' => $no_kontrak,
-                'id_user' => auth()->user()->id
+                'id_user' => auth()->user()->id,
+                'approval_history' => json_encode($history)
             ]);
 
             foreach ($request->skor as $kode_item => $skor) {
@@ -427,6 +449,19 @@ class PenilaiankaryawanController extends Controller
     }
 
 
+    public function show($kode_penilaian)
+    {
+        $kode_penilaian = Crypt::decrypt($kode_penilaian);
+        $pk = new Penilaiankaryawan();
+        $penilaiankaryawan = $pk->getPenilaiankaryawan($kode_penilaian)->first();
+        $data['doc'] = $penilaiankaryawan->kode_doc;
+        $data['penilaiankaryawan'] = $penilaiankaryawan;
+        $data['total_score'] = Detailpenilaiankaryawan::where('kode_penilaian', $kode_penilaian)
+            ->select(DB::raw('SUM(nilai) as total_score'))->first();
+        return view('hrd.penilaiankaryawan.show', $data);
+    }
+
+
     public function storeapprove($kode_penilaian, Request $request)
     {
         $kode_penilaian = Crypt::decrypt($kode_penilaian);
@@ -476,7 +511,7 @@ class PenilaiankaryawanController extends Controller
             $label_new = $masa_kontrak_labels[$submitted_masa_kontrak] ?? $submitted_masa_kontrak;
             
             if ($original_masa_kontrak == $submitted_masa_kontrak) {
-                $keterangan = "Disetujui {$label_new}";
+                $keterangan = "Disetujui {$label_new} oleh {$user->name} (" . (singkatString($role) == 'AMH' ? 'HRD' : singkatString($role)) . ")";
             } else {
                 $keterangan = "Diubah dari {$label_old} menjadi {$label_new} oleh {$user->name} (" . (singkatString($role) == 'AMH' ? 'HRD' : singkatString($role)) . ")";
             }

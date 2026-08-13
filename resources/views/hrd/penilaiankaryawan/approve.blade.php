@@ -204,18 +204,31 @@
                     @endphp
                     @if(count($history) > 0)
                         <div class="mt-4 border-top pt-3">
-                            <small class="text-muted fw-semibold mb-2 d-block">Riwayat Approval & Perubahan</small>
-                            <ul class="list-unstyled mb-0">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center text-warning">
+                                <i class="ti ti-history me-2"></i> Riwayat Perubahan & Approval
+                            </h6>
+                            <div class="p-3 bg-light rounded border border-dashed">
                                 @foreach($history as $h)
-                                    <li class="mb-2 d-flex align-items-start gap-2">
-                                        <i class="ti ti-circle-check text-success mt-1" style="font-size: 1rem;"></i>
-                                        <div>
-                                            <span class="small fw-semibold text-dark">{{ $h['keterangan'] }}</span>
-                                            <span class="d-block text-muted" style="font-size: 0.75rem;">{{ formatIndo($h['date']) }} {{ date('H:i', strtotime($h['date'])) }}</span>
+                                    @php
+                                        $keterangan = $h['keterangan'];
+                                        if (strpos($keterangan, ' oleh ') === false && !empty($h['user_name'])) {
+                                            $formattedRole = singkatString($h['role'] ?? '') == 'AMH' ? 'HRD' : singkatString($h['role'] ?? '');
+                                            $keterangan .= ' oleh ' . $h['user_name'] . ' (' . $formattedRole . ')';
+                                        }
+                                    @endphp
+                                    <div class="d-flex align-items-start mb-3 {{ $loop->last ? 'mb-0' : '' }}">
+                                        <div class="badge bg-label-warning p-2 me-3 rounded">
+                                            <i class="ti ti-history fs-5"></i>
                                         </div>
-                                    </li>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-semibold text-dark fs-6">{{ $keterangan }}</span>
+                                            <span class="text-muted small mt-1">
+                                                <i class="ti ti-calendar-event me-1"></i>{{ formatIndo($h['date']) }} {{ date('H:i', strtotime($h['date'])) }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 @endforeach
-                            </ul>
+                            </div>
                         </div>
                     @endif
                 @endif
