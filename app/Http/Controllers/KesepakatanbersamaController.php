@@ -290,11 +290,10 @@ class KesepakatanbersamaController extends Controller
                 'kode_dept' => $request->kode_dept
             ]);
 
-            if ($lastkontrakkaryawan != null) {
-                $lastkontrakkaryawan->update([
-                    'status_kontrak' => 0
-                ]);
-            }
+            // Nonaktifkan semua kontrak lama karyawan tersebut
+            Kontrakkaryawan::where('nik', $penialaiankaryawan->nik)->where('no_kontrak', '!=', $no_kontrak)->update([
+                'status_kontrak' => 0
+            ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {

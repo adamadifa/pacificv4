@@ -111,11 +111,10 @@ class KontrakkaryawanController extends Controller
                 'kode_gaji' => $kode_gaji,
             ]);
 
-            if ($lastkontrakkaryawan != null) {
-                $lastkontrakkaryawan->update([
-                    'status_kontrak' => 0
-                ]);
-            }
+            // Nonaktifkan semua kontrak lama karyawan tersebut
+            Kontrakkaryawan::where('nik', $nik)->where('no_kontrak', '!=', $no_kontrak)->update([
+                'status_kontrak' => 0
+            ]);
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {

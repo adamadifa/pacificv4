@@ -241,9 +241,14 @@ class Karyawan extends Authenticatable
         } else if ($kategori == 3) { // Jatuh Tempo Dua Bulan
             $query->whereBetween('sampai', [$start_date_duabulan, $end_date_duabulan]);
         }
-        $query->where('status_aktif_karyawan', 1);
-        $query->where('status_karyawan', 'K');
-        $query->where('status_kontrak', 1);
+        $query->where('hrd_karyawan.status_aktif_karyawan', 1);
+        $query->where('hrd_karyawan.status_karyawan', 'K');
+        $query->where('hrd_kontrak.status_kontrak', 1);
+        $query->whereNotExists(function ($q) {
+            $q->select(DB::raw(1))
+                ->from('hrd_resign')
+                ->whereColumn('hrd_resign.nik', 'hrd_karyawan.nik');
+        });
         $query->orderBy('hrd_kontrak.sampai');
         $query->orderBy('hrd_karyawan.nama_karyawan');
         return $query->get();
