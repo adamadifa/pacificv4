@@ -244,6 +244,7 @@ class Karyawan extends Authenticatable
         $query->where('hrd_karyawan.status_aktif_karyawan', 1);
         $query->where('hrd_karyawan.status_karyawan', 'K');
         $query->where('hrd_kontrak.status_kontrak', 1);
+        $query->whereColumn('hrd_kontrak.dari', '!=', 'hrd_kontrak.sampai');
         $query->whereNotExists(function ($q) {
             $q->select(DB::raw(1))
                 ->from('hrd_resign')
