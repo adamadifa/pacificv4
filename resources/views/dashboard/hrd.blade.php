@@ -38,7 +38,33 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-9 col-md-12 col-sm-12">
-                            @include('dashboard.hrd.rekapkontrak')
+                            <div class="card shadow-none border mb-4">
+                                <div class="card-header p-0">
+                                    <ul class="nav nav-tabs" role="tablist" style="border-bottom: 1px solid rgba(0,0,0,0.08);">
+                                        <li class="nav-item" role="presentation">
+                                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-habis-kontrak" style="padding: 1rem 1.5rem; font-weight: 600;">
+                                                <i class="ti ti-file-certificate me-1"></i> Karyawan Habis Kontrak
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-belum-penilaian" style="padding: 1rem 1.5rem; font-weight: 600;">
+                                                <i class="ti ti-clipboard-check me-1"></i> Karyawan Belum Penilaian
+                                                <span class="badge rounded-pill bg-danger ms-2">{{ count($kontrak_belum_penilaian) }}</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body p-3 bg-transparent">
+                                    <div class="tab-content p-0 border-0 shadow-none bg-transparent">
+                                        <div class="tab-pane fade show active" id="tab-habis-kontrak" role="tabpanel">
+                                            @include('dashboard.hrd.rekapkontrak')
+                                        </div>
+                                        <div class="tab-pane fade" id="tab-belum-penilaian" role="tabpanel">
+                                            @include('dashboard.hrd.belumpenilaian')
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12">
                             <style>

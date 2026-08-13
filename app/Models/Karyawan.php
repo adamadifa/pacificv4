@@ -256,6 +256,35 @@ class Karyawan extends Authenticatable
     }
 
 
+    public function getKontrakBelumPenilaian()
+    {
+        $limitDate = date("Y-m-d", strtotime("+2 months"));
+        $query = Kontrakkaryawan::query();
+        $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang');
+        $query->join('hrd_karyawan', 'hrd_kontrak.nik', '=', 'hrd_karyawan.nik');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->whereColumn('hrd_kontrak.dari', '!=', 'hrd_kontrak.sampai');
+        $query->where('hrd_karyawan.status_aktif_karyawan', 1);
+        $query->where('hrd_karyawan.status_karyawan', 'K');
+        $query->where('hrd_kontrak.status_kontrak', 1);
+        $query->where('hrd_kontrak.sampai', '<=', $limitDate);
+        $query->whereNotExists(function ($q) {
+            $q->select(DB::raw(1))
+                ->from('hrd_penilaian')
+                ->whereColumn('hrd_penilaian.no_kontrak', 'hrd_kontrak.no_kontrak');
+        });
+        $query->whereNotExists(function ($q) {
+            $q->select(DB::raw(1))
+                ->from('hrd_resign')
+                ->whereColumn('hrd_resign.nik', 'hrd_karyawan.nik');
+        });
+        $query->orderBy('hrd_kontrak.sampai');
+        $query->orderBy('hrd_karyawan.nama_karyawan');
+        return $query->get();
+    }
+
+
     function getRekapkaryawancabang()
     {
 

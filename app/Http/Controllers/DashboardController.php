@@ -644,6 +644,7 @@ class DashboardController extends Controller
         $data['kontrak_bulanini'] = $sk->getRekapkontrak(1);
         $data['kontrak_bulandepan'] = $sk->getRekapkontrak(2);
         $data['kontrak_duabulan'] = $sk->getRekapkontrak(3);
+        $data['kontrak_belum_penilaian'] = $sk->getKontrakBelumPenilaian();
         $data['karyawancabang'] = $sk->getRekapkaryawancabang();
         $data['karyawan_ulangtahun'] = $sk->getKaryawanUlangTahun();
         return view('dashboard.hrd', $data);
