@@ -92,7 +92,11 @@
                 @endphp
                 @foreach ($detail as $d)
                     @php
+                        $is_potongan = ($d->kode_barang == 'PNJKR');
                         $total = $d->qty * $d->harga + $d->penyesuaian;
+                        if ($is_potongan) {
+                            $total = -$total;
+                        }
                         $totalpembelian += $total;
                     @endphp
                     <tr>

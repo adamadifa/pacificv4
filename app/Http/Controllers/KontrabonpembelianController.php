@@ -55,7 +55,7 @@ class KontrabonpembelianController extends Controller
         $no_kontrabon = Crypt::decrypt($no_kontrabon);
         $kb = new Kontrabonpembelian();
         $data['kontrabon'] = $kb->getKontrabonpembelian(no_kontrabon: $no_kontrabon)->first();
-        $data['detail'] = Detailkontrabonpembelian::select('pembelian_kontrabon_detail.*', 'pembelian.tanggal as tgl_pembelian', 'nama_barang', 'pembelian_detail.jumlah as qty', 'harga', 'penyesuaian')
+        $data['detail'] = Detailkontrabonpembelian::select('pembelian_kontrabon_detail.*', 'pembelian.tanggal as tgl_pembelian', 'nama_barang', 'pembelian_detail.jumlah as qty', 'harga', 'penyesuaian', 'pembelian_detail.kode_barang')
             ->join('pembelian', 'pembelian_kontrabon_detail.no_bukti', '=', 'pembelian.no_bukti')
             ->join('pembelian_detail', 'pembelian_kontrabon_detail.no_bukti', '=', 'pembelian_detail.no_bukti')
             ->join('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
