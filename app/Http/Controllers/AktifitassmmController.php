@@ -100,7 +100,9 @@ class AktifitassmmController extends Controller
                     'latitude' => $latitude,
                     'longitude' => $longitude,
                     'keterangan' => $activity,
-                    'foto' => $fileName
+                    'foto' => $fileName,
+                    'created_at' => $tanggaljam,
+                    'updated_at' => $tanggaljam
                 ];
 
                 DB::table('aktifitas_smm')->insert($data);
