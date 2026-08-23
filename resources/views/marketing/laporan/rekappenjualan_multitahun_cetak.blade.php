@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Rekap Penjualan Qty & Netto Multi Tahun {{ date('Y-m-d H:i:s') }}</title>
+    <title>Rekap Penjualan Qty Multi Tahun {{ date('Y-m-d H:i:s') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
@@ -31,7 +31,7 @@
 <body>
     <div class="header">
         <h4 class="title">
-            REKAP PENJUALAN QTY & NETTO MULTI TAHUN <br>
+            REKAP PENJUALAN QTY MULTI TAHUN <br>
         </h4>
         <h4>TAHUN : {{ implode(', ', $years) }}</h4>
         @if ($cabang != null)
@@ -53,7 +53,7 @@
                     <th rowspan="2" style="vertical-align: middle;">Cabang</th>
                     <th rowspan="2" style="vertical-align: middle;">Salesman</th>
                     @foreach ($years as $year)
-                        <th colspan="{{ count($produk) + 1 }}" style="text-align: center;">{{ $year }}</th>
+                        <th colspan="{{ count($produk) }}" style="text-align: center;">{{ $year }}</th>
                     @endforeach
                 </tr>
                 <tr>
@@ -61,7 +61,6 @@
                         @foreach ($produk as $p)
                             <th style="font-size: 10px;">{{ $p->kode_produk }}</th>
                         @endforeach
-                        <th>NETTO</th>
                     @endforeach
                 </tr>
             </thead>
@@ -69,7 +68,6 @@
                 @php
                     $grand_totals = [];
                     foreach ($years as $year) {
-                        $grand_totals[$year]['netto'] = 0;
                         foreach ($produk as $p) {
                             $grand_totals[$year]['qty'][$p->kode_produk] = 0;
                         }
@@ -93,11 +91,6 @@
                                 @endphp
                                 <td align="right">{{ $qty > 0 ? formatAngkaDesimal($qty) : '' }}</td>
                             @endforeach
-                            @php
-                                $netto = $netto_map[$salesman->kode_salesman][$year] ?? 0;
-                                $grand_totals[$year]['netto'] += $netto;
-                            @endphp
-                            <td align="right">{{ $netto > 0 ? formatAngka($netto) : '' }}</td>
                         @endforeach
                     </tr>
                 @endforeach
@@ -109,7 +102,6 @@
                         @foreach ($produk as $p)
                             <td align="right">{{ formatAngkaDesimal($grand_totals[$year]['qty'][$p->kode_produk]) }}</td>
                         @endforeach
-                        <td align="right">{{ formatAngka($grand_totals[$year]['netto']) }}</td>
                     @endforeach
                 </tr>
             </tfoot>

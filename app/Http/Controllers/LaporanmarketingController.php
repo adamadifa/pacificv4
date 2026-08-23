@@ -5299,43 +5299,7 @@ class LaporanmarketingController extends Controller
         $q_salesman->orderBy('salesman.nama_salesman', 'asc');
         $salesmen = $q_salesman->select('salesman.*', 'cabang.nama_cabang')->get();
 
-        // Get Netto data grouped by salesman and year
-        $q_netto = DB::table('marketing_penjualan')
-            ->select(
-                'marketing_penjualan.kode_salesman',
-                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
-                DB::raw('SUM(mpd_summary.bruto - marketing_penjualan.potongan - marketing_penjualan.potongan_istimewa - marketing_penjualan.penyesuaian + marketing_penjualan.ppn) as netto')
-            )
-            ->join(DB::raw('(
-                SELECT 
-                    marketing_penjualan_detail.no_faktur, 
-                    SUM(marketing_penjualan_detail.subtotal) as bruto
-                FROM marketing_penjualan_detail
-                INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
-                WHERE marketing_penjualan.status_batal = 0
-                  AND marketing_penjualan.status_sampel = 0
-                  AND YEAR(marketing_penjualan.tanggal) IN (' . implode(',', $years) . ')
-                GROUP BY marketing_penjualan_detail.no_faktur
-            ) as mpd_summary'), 'marketing_penjualan.no_faktur', '=', 'mpd_summary.no_faktur')
-            ->where('marketing_penjualan.status_batal', 0)
-            ->where('marketing_penjualan.status_sampel', 0)
-            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
-
-        if (!empty($kode_cabang)) {
-            $q_netto->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
-                ->where('salesman.kode_cabang', $kode_cabang);
-        }
-        if (!empty($request->kode_salesman)) {
-            $q_netto->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
-        }
-
-        $netto_data = $q_netto->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'))
-            ->get();
-
         $netto_map = [];
-        foreach ($netto_data as $n) {
-            $netto_map[$n->kode_salesman][$n->tahun] = $n->netto;
-        }
 
         // Get Qty data grouped by salesman, product, and year
         $q_qty = DB::table('marketing_penjualan')
