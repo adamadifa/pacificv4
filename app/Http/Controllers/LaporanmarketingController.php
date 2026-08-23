@@ -5284,20 +5284,26 @@ class LaporanmarketingController extends Controller
         }
         sort($years);
 
-        // Fetch salesmen (including inactive ones)
-        $q_salesman = Salesman::query();
-        $q_salesman->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+        // Fetch salesmen who have transactions in those years from marketing_penjualan
+        $q_salesman = DB::table('marketing_penjualan')
+            ->select('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
 
         if (!empty($kode_cabang)) {
             $q_salesman->where('salesman.kode_cabang', $kode_cabang);
         }
         if (!empty($request->kode_salesman)) {
-            $q_salesman->where('salesman.kode_salesman', $request->kode_salesman);
+            $q_salesman->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
 
-        $q_salesman->orderBy('salesman.kode_cabang', 'asc');
-        $q_salesman->orderBy('salesman.nama_salesman', 'asc');
-        $salesmen = $q_salesman->select('salesman.*', 'cabang.nama_cabang')->get();
+        $salesmen = $q_salesman->groupBy('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('salesman.kode_cabang', 'asc')
+            ->orderBy('salesman.nama_salesman', 'asc')
+            ->get();
 
         $netto_map = [];
 
