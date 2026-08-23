@@ -8,6 +8,7 @@
             <option value="3">Rekap Penjualan Qty</option>
             <option value="4">Rekap Penjualan Produk</option>
             <option value="5">Collect Aup</option>
+            <option value="6">Rekap Qty & Netto per Salesman (Multi Tahun)</option>
         </select>
     </div>
     @hasanyrole($roles_show_cabang)
@@ -41,6 +42,13 @@
             <x-input-with-icon icon="ti ti-calendar" label="Sampai" name="sampai" datepicker="flatpickr-date" hideLabel="true" />
         </div>
     </div>
+    <div class="form-group mb-3" id="tahunmultitahun" style="display: none;">
+        <select name="tahun[]" id="tahun_rekappenjualan" class="select2Tahunrekappenjualan form-select" multiple="multiple" data-placeholder="Pilih Tahun">
+            @for ($y = date('Y'); $y >= $start_year; $y--)
+                <option value="{{ $y }}">{{ $y }}</option>
+            @endfor
+        </select>
+    </div>
     <div class="row">
         <div class="col-lg-10 col-md-12 col-sm-12">
             <button type="submit" name="submitButton" class="btn btn-primary w-100" id="submitButtonRekappenjualan">
@@ -64,9 +72,15 @@
                 if (jenis_laporan == "5") {
                     $("#tanggalaup").show();
                     $("#tanggalpenjualan").hide();
+                    $("#tahunmultitahun").hide();
+                } else if (jenis_laporan == "6") {
+                    $("#tanggalaup").hide();
+                    $("#tanggalpenjualan").hide();
+                    $("#tahunmultitahun").show();
                 } else {
                     $("#tanggalaup").hide();
                     $("#tanggalpenjualan").show();
+                    $("#tahunmultitahun").hide();
                 }
             }
 
@@ -98,7 +112,17 @@
                 });
             }
 
-
+            const select2Tahunrekappenjualan = $(".select2Tahunrekappenjualan");
+            if (select2Tahunrekappenjualan.length) {
+                select2Tahunrekappenjualan.each(function() {
+                    var $this = $(this);
+                    $this.wrap('<div class="position-relative"></div>').select2({
+                        placeholder: 'Pilih Tahun',
+                        allowClear: true,
+                        dropdownParent: $this.parent()
+                    });
+                });
+            }
 
             function getsalesmanbyCabangRekappenjualan() {
                 var kode_cabang = formRekappenjualan.find("#kode_cabang_rekappenjualan").val();
@@ -118,18 +142,10 @@
                 });
             }
 
-
-
             getsalesmanbyCabangRekappenjualan();
             formRekappenjualan.find("#kode_cabang_rekappenjualan").change(function(e) {
                 getsalesmanbyCabangRekappenjualan();
             });
-
-
-
-
-
-
 
             formRekappenjualan.submit(function(e) {
 
@@ -154,7 +170,7 @@
                     });
                     return false;
 
-                } else if (dari == "" && jenis_laporan != "5") {
+                } else if (dari == "" && jenis_laporan != "5" && jenis_laporan != "6") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Dari Tanggal Harus Diisi !",
@@ -165,7 +181,7 @@
                         },
                     });
                     return false;
-                } else if (sampai == "" && jenis_laporan != "5") {
+                } else if (sampai == "" && jenis_laporan != "5" && jenis_laporan != "6") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Sampai Tanggal Harus Diisi !",
@@ -176,7 +192,7 @@
                         },
                     });
                     return false;
-                } else if (start.getTime() > end.getTime() && jenis_laporan != "5") {
+                } else if (start.getTime() > end.getTime() && jenis_laporan != "5" && jenis_laporan != "6") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari",
@@ -195,6 +211,17 @@
                         showConfirmButton: true,
                         didClose: (e) => {
                             $(this).find("#tanggal").focus();
+                        },
+                    });
+                    return false;
+                } else if (jenis_laporan == 6 && (!formRekappenjualan.find('#tahun_rekappenjualan').val() || formRekappenjualan.find('#tahun_rekappenjualan').val().length == 0)) {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "Tahun Harus Diisi !",
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            $(this).find("#tahun_rekappenjualan").focus();
                         },
                     });
                     return false;

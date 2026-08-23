@@ -5258,7 +5258,145 @@ class LaporanmarketingController extends Controller
             return $this->cetak_rekappenjualan($kode_cabang, $request);
         } else if ($request->jenis_laporan == 5) {
             return $this->cetak_rekapaup($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 6) {
+            return $this->cetakrekappenjualanmultitahun($kode_cabang, $request);
         }
+    }
+
+    public function cetakrekappenjualanmultitahun($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch salesmen (including inactive ones)
+        $q_salesman = Salesman::query();
+        $q_salesman->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang');
+
+        if (!empty($kode_cabang)) {
+            $q_salesman->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_salesman->where('salesman.kode_salesman', $request->kode_salesman);
+        }
+
+        $q_salesman->orderBy('salesman.kode_cabang', 'asc');
+        $q_salesman->orderBy('salesman.nama_salesman', 'asc');
+        $salesmen = $q_salesman->select('salesman.*', 'cabang.nama_cabang')->get();
+
+        // Get Netto data grouped by salesman and year
+        $q_netto = DB::table('marketing_penjualan')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('SUM(mpd_summary.bruto - marketing_penjualan.potongan - marketing_penjualan.potongan_istimewa - marketing_penjualan.penyesuaian + marketing_penjualan.ppn) as netto')
+            )
+            ->join(DB::raw('(
+                SELECT 
+                    marketing_penjualan_detail.no_faktur, 
+                    SUM(marketing_penjualan_detail.subtotal) as bruto
+                FROM marketing_penjualan_detail
+                INNER JOIN marketing_penjualan ON marketing_penjualan_detail.no_faktur = marketing_penjualan.no_faktur
+                WHERE marketing_penjualan.status_batal = 0
+                  AND marketing_penjualan.status_sampel = 0
+                  AND YEAR(marketing_penjualan.tanggal) IN (' . implode(',', $years) . ')
+                GROUP BY marketing_penjualan_detail.no_faktur
+            ) as mpd_summary'), 'marketing_penjualan.no_faktur', '=', 'mpd_summary.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_netto->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_netto->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $netto_data = $q_netto->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'))
+            ->get();
+
+        $netto_map = [];
+        foreach ($netto_data as $n) {
+            $netto_map[$n->kode_salesman][$n->tahun] = $n->netto;
+        }
+
+        // Get Qty data grouped by salesman, product, and year
+        $q_qty = DB::table('marketing_penjualan')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                'ph.kode_produk',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('SUM(mpd.jumlah / pr.isi_pcs_dus) as qty')
+            )
+            ->join('marketing_penjualan_detail as mpd', 'marketing_penjualan.no_faktur', '=', 'mpd.no_faktur')
+            ->join('produk_harga as ph', 'mpd.kode_harga', '=', 'ph.kode_harga')
+            ->join('produk as pr', 'ph.kode_produk', '=', 'pr.kode_produk')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_qty->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_qty->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $qty_data = $q_qty->groupBy('marketing_penjualan.kode_salesman', 'ph.kode_produk', DB::raw('YEAR(marketing_penjualan.tanggal)'))
+            ->get();
+
+        $qty_map = [];
+        $active_product_ids = [];
+        foreach ($qty_data as $q) {
+            $qty_map[$q->kode_salesman][$q->kode_produk][$q->tahun] = $q->qty;
+            if ($q->qty > 0) {
+                $active_product_ids[] = $q->kode_produk;
+            }
+        }
+        $active_product_ids = array_unique($active_product_ids);
+
+        // Get only products that have sales
+        if (!empty($active_product_ids)) {
+            $produk = DB::table('produk')
+                ->whereIn('kode_produk', $active_product_ids)
+                ->orderBy('nama_produk', 'asc')
+                ->get();
+        } else {
+            $produk = collect();
+        }
+
+        $data['salesmen'] = $salesmen;
+        $data['years'] = $years;
+        $data['produk'] = $produk;
+        $data['netto_map'] = $netto_map;
+        $data['qty_map'] = $qty_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['selected_salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty & Netto Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappenjualan_multitahun_cetak', $data);
     }
 
     public function cetak_rekapaup($kode_cabang, Request $request)
