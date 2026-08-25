@@ -5307,12 +5307,13 @@ class LaporanmarketingController extends Controller
 
         $netto_map = [];
 
-        // Get Qty data grouped by salesman, product, and year
+        // Get Qty data grouped by salesman, product, year, and month
         $q_qty = DB::table('marketing_penjualan')
             ->select(
                 'marketing_penjualan.kode_salesman',
                 'ph.kode_produk',
                 DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
                 DB::raw('SUM(mpd.jumlah / pr.isi_pcs_dus) as qty')
             )
             ->join('marketing_penjualan_detail as mpd', 'marketing_penjualan.no_faktur', '=', 'mpd.no_faktur')
@@ -5330,13 +5331,13 @@ class LaporanmarketingController extends Controller
             $q_qty->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
         }
 
-        $qty_data = $q_qty->groupBy('marketing_penjualan.kode_salesman', 'ph.kode_produk', DB::raw('YEAR(marketing_penjualan.tanggal)'))
+        $qty_data = $q_qty->groupBy('marketing_penjualan.kode_salesman', 'ph.kode_produk', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
             ->get();
 
         $qty_map = [];
         $active_product_ids = [];
         foreach ($qty_data as $q) {
-            $qty_map[$q->kode_salesman][$q->kode_produk][$q->tahun] = $q->qty;
+            $qty_map[$q->kode_salesman][$q->kode_produk][$q->tahun][$q->bulan] = $q->qty;
             if ($q->qty > 0) {
                 $active_product_ids[] = $q->kode_produk;
             }
