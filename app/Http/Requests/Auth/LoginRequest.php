@@ -67,7 +67,7 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        if (!Auth::attempt($this->only($this->id_type, 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt($this->only($this->id_type, 'password'), true)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
