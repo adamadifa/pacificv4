@@ -8,6 +8,7 @@ use App\Models\Detailbarangkeluargudanglogistik;
 use App\Models\Detailbarangmasukgudanglogistik;
 use App\Models\Kategoribarangpembelian;
 use App\Models\User;
+use App\Models\Departemen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -22,6 +23,7 @@ class LaporangudanglogistikController extends Controller
         $data['kategori'] = Kategoribarangpembelian::where('kode_group', 'GDL')->orderBy('kode_kategori')->get();
         $data['list_jenis_pengeluaran'] = config('gudanglogistik.blade.list_jenis_pengeluaran');
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
+        $data['departemen'] = Departemen::orderBy('nama_dept')->get();
         return view('gudanglogistik.laporan.index', $data);
     }
 
@@ -297,5 +299,67 @@ class LaporangudanglogistikController extends Controller
         }
         $query->orderBy('nama_barang');
         return $query->get();
+    }
+
+    public function cetakbpb(Request $request)
+    {
+        if (lockreport($request->dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
+        $query = DB::table('bpb_detail as bd')
+            ->select(
+                'bpb.no_bpb',
+                'bpb.tanggal',
+                'bpb.kode_dept',
+                'hrd_departemen.nama_dept',
+                'bd.kode_barang',
+                'pembelian_barang.nama_barang',
+                'pembelian_barang.satuan',
+                'bd.jumlah as qty_diminta',
+                DB::raw('COALESCE(diserahkan.qty_diserahkan, 0) as qty_diserahkan'),
+                DB::raw('(bd.jumlah - COALESCE(diserahkan.qty_diserahkan, 0)) as sisa')
+            )
+            ->join('bpb', 'bd.no_bpb', '=', 'bpb.no_bpb')
+            ->join('pembelian_barang', 'bd.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->leftJoin('hrd_departemen', 'bpb.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->leftJoin(DB::raw('(
+                SELECT g.no_ref as no_bpb, gd.kode_barang, SUM(gd.jumlah) as qty_diserahkan
+                FROM gudang_logistik_barang_keluar_detail gd
+                JOIN gudang_logistik_barang_keluar g ON g.no_bukti = gd.no_bukti
+                WHERE g.diterima = 1
+                GROUP BY g.no_ref, gd.kode_barang
+            ) diserahkan'), function($join) {
+                $join->on('bpb.no_bpb', '=', 'diserahkan.no_bpb')
+                     ->on('bd.kode_barang', '=', 'diserahkan.kode_barang');
+            })
+            ->whereBetween('bpb.tanggal', [$request->dari, $request->sampai]);
+
+        if (!empty($request->kode_dept)) {
+            $query->where('bpb.kode_dept', $request->kode_dept);
+        }
+
+        if ($request->status == 'selesai') {
+            $query->whereRaw('(bd.jumlah - COALESCE(diserahkan.qty_diserahkan, 0)) <= 0');
+        } elseif ($request->status == 'proses') {
+            $query->whereRaw('(bd.jumlah - COALESCE(diserahkan.qty_diserahkan, 0)) > 0');
+        }
+
+        $query->orderBy('bpb.tanggal', 'desc');
+        $query->orderBy('bpb.no_bpb', 'desc');
+
+        $data['bpb'] = $query->get();
+        $data['dept'] = DB::table('hrd_departemen')->where('kode_dept', $request->kode_dept)->first();
+        $data['status'] = $request->status;
+        $data['dari'] = $request->dari;
+        $data['sampai'] = $request->sampai;
+
+        $time = date('H:i:s');
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Laporan BPB Gudang Logistik $request->dari-$request->sampai - $time.xls");
+        }
+
+        return view('gudanglogistik.laporan.bpb_cetak', $data);
     }
 }

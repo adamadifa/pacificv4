@@ -39,7 +39,7 @@
         <!-- Informasi BPB Card -->
         <div class="col-md-8">
             <div class="card h-100 border shadow-sm">
-                <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                             <i class="ti ti-receipt fs-4"></i>
@@ -53,7 +53,7 @@
                 <div class="card-body pt-3">
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <div class="p-3 border rounded" style="background-color: #fafbfc; border-left: 4px solid #284c9a !important;">
+                            <div class="p-3 border rounded" style="background-color: #fafbfc; border-left: 4px solid #002e65 !important;">
                                 <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 11px; letter-spacing: 0.5px;">No. BPB</small>
                                 <span class="fs-5 fw-bold text-dark">{{ $bpb->no_bpb }}</span>
                             </div>
@@ -90,7 +90,7 @@
         <!-- Progres Serah Terima Card -->
         <div class="col-md-4">
             <div class="card h-100 border shadow-sm">
-                <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                     <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                         <i class="ti ti-chart-pie fs-4"></i>
                         <span>Progres Penyerahan</span>
@@ -109,7 +109,7 @@
                     
                     <div class="row g-2 text-center mb-1">
                         <div class="col-4">
-                            <div class="p-2 border rounded" style="background-color: #fafbfc; border-top: 3px solid #284c9a !important;">
+                            <div class="p-2 border rounded" style="background-color: #fafbfc; border-top: 3px solid #002e65 !important;">
                                 <h5 class="mb-0 fw-bold text-primary">{{ formatAngkaDesimal($totalJumlah) }}</h5>
                                 <small class="text-muted fw-semibold" style="font-size: 10px;">Total Order</small>
                             </div>
@@ -134,7 +134,7 @@
 
     <!-- DETAIL BARANG -->
     <div class="card shadow-sm border mb-4">
-        <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+        <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
             <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
                 <i class="ti ti-box fs-4"></i>
                 <span>Detail Barang Permintaan</span>
@@ -142,7 +142,7 @@
         </div>
         <div class="table-responsive text-nowrap">
             <table class="table table-hover table-bordered align-middle mb-0">
-                <thead style="background-color: #284c9a;">
+                <thead style="background-color: #002e65;">
                     <tr>
                         <th class="text-white text-center" style="width: 5%">No</th>
                         <th class="text-white" style="width: 15%">Kode</th>
@@ -160,9 +160,14 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                     @php
+                        $pendingDetail = $detail->filter(function($d) use ($diserahkanTotal) {
+                            $sudahDiserahkan = $diserahkanTotal[$d->kode_barang] ?? 0;
+                            $itemProgress = $d->jumlah > 0 ? round(($sudahDiserahkan / $d->jumlah) * 100) : 0;
+                            return $itemProgress < 100;
+                        });
                         $totalSisa = 0;
                     @endphp
-                    @foreach ($detail as $d)
+                    @forelse ($pendingDetail as $d)
                         @php
                             $sudahDiserahkan = $diserahkanTotal[$d->kode_barang] ?? 0;
                             $sisa = $d->jumlah - $sudahDiserahkan;
@@ -207,14 +212,24 @@
                             <td><span class="badge bg-info text-white shadow-xs">{{ $d->satuan }}</span></td>
                             <td><span class="text-muted small">{{ $d->keterangan ?: '-' }}</span></td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="{{ Auth::user()->id == '67' ? 10 : 9 }}" class="text-center text-muted py-4">
+                                <div class="d-flex flex-column align-items-center gap-2">
+                                    <i class="ti ti-circle-check text-success" style="font-size: 40px;"></i>
+                                    <span class="fw-bold text-dark">Semua barang telah diserahkan (100%)</span>
+                                    <small>Tidak ada barang yang perlu diserahkan lagi untuk BPB ini.</small>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- ACTION BAR -->
-    @if (Auth::user()->id == '67' && $totalSisa > 0)
+    @if (Auth::user()->id == '67' && $totalSisa > 0 && $bpb->approve_gudang == '1')
         <div class="card shadow-sm mb-4 border" style="border-left: 4px solid #10b981 !important;">
             <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 py-3">
                 <div class="d-flex align-items-center gap-2">
@@ -240,7 +255,7 @@
 
 <!-- HISTORY -->
 <div class="card shadow-sm border mt-4">
-    <div class="card-header py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+    <div class="card-header py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
         <h6 class="m-0 fw-bold text-white d-flex align-items-center gap-2">
             <i class="ti ti-history fs-4"></i>
             <span>History Serah Terima</span>
@@ -264,7 +279,7 @@
                         @if ($s->diterima == 0)
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge bg-warning text-dark shadow-sm px-2 py-1"><i class="ti ti-clock me-1" style="font-size:12px"></i>Menunggu Konfirmasi</span>
-                                <select class="form-select form-select-sm terimaSurat border-primary py-0 px-2" data-no_bukti="{{ $s->no_bukti }}" style="width: auto; height: 26px; font-size: 12px; border-color: #284c9a !important;">
+                                <select class="form-select form-select-sm terimaSurat border-primary py-0 px-2" data-no_bukti="{{ $s->no_bukti }}" style="width: auto; height: 26px; font-size: 12px; border-color: #002e65 !important;">
                                     <option value="">-- Pilih --</option>
                                     <option value="1" @selected($s->diterima == 1)>Terima</option>
                                 </select>

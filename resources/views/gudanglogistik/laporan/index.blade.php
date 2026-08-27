@@ -56,12 +56,20 @@
                         </button>
                     </li>
                 @endcan
+                @can('gl.bpb')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#bpbreport"
+                            aria-controls="bpbreport" aria-selected="false" tabindex="-1">
+                            <i class="ti ti-receipt me-2"></i> BPB
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content" style="padding: 0 !important; border: none !important; background: transparent !important;">
                 @can('gl.barangmasuk')
                     <div class="tab-pane fade active show" id="barangmasuk" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrow-bar-to-down me-2"></i>Laporan Barang Masuk</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -73,7 +81,7 @@
                 @can('gl.barangkeluar')
                     <div class="tab-pane fade" id="barangkeluar" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-arrow-bar-to-up me-2"></i>Laporan Barang Keluar</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -85,7 +93,7 @@
                 @can('gl.persediaan')
                     <div class="tab-pane fade" id="persediaan" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-box me-2"></i>Laporan Persediaan</h6>
                             </div>
                             <div class="card-body pt-4">
@@ -97,11 +105,23 @@
                 @can('gl.persediaanopname')
                     <div class="tab-pane fade" id="persediaanopname" role="tabpanel">
                         <div class="card shadow-none border">
-                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                                 <h6 class="m-0 fw-bold text-white"><i class="ti ti-file-analytics me-2"></i>Persediaan Opname</h6>
                             </div>
                             <div class="card-body pt-4">
                                 @include('gudanglogistik.laporan.opname')
+                            </div>
+                        </div>
+                    </div>
+                @endcan
+                @can('gl.bpb')
+                    <div class="tab-pane fade" id="bpbreport" role="tabpanel">
+                        <div class="card shadow-none border">
+                            <div class="card-header border-bottom py-3" style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-receipt me-2"></i>Laporan BPB</h6>
+                            </div>
+                            <div class="card-body pt-4">
+                                @include('gudanglogistik.laporan.bpb')
                             </div>
                         </div>
                     </div>
@@ -177,6 +197,7 @@
 
         validatePeriode("frmLaporanbarangmasuk");
         validatePeriode("frmLaporanbarangkeluar");
+        validatePeriode("frmLaporanbpb");
         validateBulanTahun("frmPersediaan", false);
         validateBulanTahun("frmPersediaanopname", false);
     });

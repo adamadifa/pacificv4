@@ -526,12 +526,10 @@ class DashboardController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $agent = new Agent();
         if ($agent->isMobile()) {
-            return view('dashboard.operationmanager', $data);
+            return view('dashboard.mobile.operationmanager', $data);
         } else {
             return view('dashboard.operationmanager', $data);
         }
-
-        die;
 
 
         //Jika Mobile
@@ -589,7 +587,11 @@ class DashboardController extends Controller
                 return view('dashboard.marketing', $data);
             }
         } else {
-            return view('dashboard.marketing', $data);
+            if ($agent->isMobile()) {
+                return view('dashboard.mobile.marketing', $data);
+            } else {
+                return view('dashboard.marketing', $data);
+            }
         }
     }
 

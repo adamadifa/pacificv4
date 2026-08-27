@@ -87,7 +87,7 @@
         {{-- Card Data --}}
         <div class="card shadow-sm border mt-2">
             <div class="card-header border-bottom py-3"
-                style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                style="background-color: #002e65; border-radius: 0.375rem 0.375rem 0 0;">
                 <div class="d-flex justify-content-between align-items-center">
                     <h6 class="m-0 fw-bold text-white"><i class="ti ti-receipt me-2"></i>Data Bukti Permintaan Barang
                     </h6>
@@ -100,17 +100,16 @@
 
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover table-bordered">
-                    <thead style="background-color: #284c9a;">
+                    <thead style="background-color: #002e65;">
                         <tr>
                             <th class="text-white" style="width: 12%">No. Bukti</th>
                             <th class="text-white" style="width: 12%">Tanggal</th>
                             <th class="text-white" style="width: 20%">Departemen</th>
                             <th class="text-white" style="width: 8%">Cabang</th>
                             <th class="text-white" style="width: 18%">Yang Mengajukan</th>
-                            <th class="text-white text-center" style="width: 10%">Head Dept</th>
-                            <th class="text-white text-center" style="width: 10%">Gudang</th>
+                            <th class="text-white text-center" style="width: 12%">Gudang</th>
                             <th class="text-white text-center" style="width: 10%">Status</th>
-                            <th class="text-white text-center" style="width: 10%">#</th>
+                            <th class="text-white text-center" style="width: 8%">#</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -122,42 +121,7 @@
                                 <td>{{ $d->kode_cabang }}</td>
                                 <td>{{ $d->nama_user }}</td>
                                 <td class="text-center">
-                                    @if ($d->kode_dept == 'MTC')
-                                        <div class="d-flex flex-column gap-1 align-items-center">
-                                            <div>
-                                                <span
-                                                    class="badge bg-{{ $d->approve_manager == '1' ? 'success' : 'warning text-dark' }} px-2 py-1"
-                                                    style="font-size: 10px;" data-bs-toggle="tooltip"
-                                                    title="Manager MTC">
-                                                    Mngr: {!! $d->approve_manager == '1' ? '<i class="ti ti-check"></i>' : '<i class="ti ti-clock"></i>' !!}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span
-                                                    class="badge bg-{{ $d->approve_direktur == '1' ? 'success' : 'warning text-dark' }} px-2 py-1"
-                                                    style="font-size: 10px;" data-bs-toggle="tooltip"
-                                                    title="Direktur">
-                                                    Dir: {!! $d->approve_direktur == '1' ? '<i class="ti ti-check"></i>' : '<i class="ti ti-clock"></i>' !!}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @else
-                                        @if ($d->approve_head_dept == '1')
-                                            <button class="btn btn-sm btn-success" type="button"
-                                                style="padding: 2px 6px;" data-bs-toggle="tooltip"
-                                                title="Disetujui Head Dept">
-                                                <i class="ti ti-check" style="font-size: 13px;"></i>
-                                            </button>
-                                        @else
-                                            <button class="btn btn-sm btn-warning text-dark" type="button"
-                                                style="padding: 2px 6px;" data-bs-toggle="tooltip"
-                                                title="Menunggu Head Dept">
-                                                <i class="ti ti-clock" style="font-size: 13px;"></i>
-                                            </button>
-                                        @endif
-                                    @endif
-                                </td>
-                                <td class="text-center">
+
                                     @if ($d->approve_gudang == '1')
                                         <button class="btn btn-sm btn-success" type="button"
                                             style="padding: 2px 6px;">
@@ -207,60 +171,12 @@
                                             }
                                         @endphp
 
-                                        @if ($d->kode_dept == 'MTC')
-                                            @if (Auth::user()->id == '61' && $d->approve_manager == '0')
-                                                <a href="#" class="btnApprove text-success"
-                                                    data-approve="manager" no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Approve Manager MTC">
-                                                    <i class="ti ti-circle-check fs-5"></i>
-                                                </a>
-                                            @endif
-                                            @if (
-                                                (Auth::user()->id == '29' || Auth::user()->hasRole('direktur')) &&
-                                                    $d->approve_manager == '1' &&
-                                                    $d->approve_direktur == '0')
-                                                <a href="#" class="btnApprove text-success"
-                                                    data-approve="direktur" no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Approve Direktur">
-                                                    <i class="ti ti-circle-check fs-5"></i>
-                                                </a>
-                                            @endif
-                                            @if (Auth::user()->id == '67' && $d->approve_manager == '1' && $d->approve_direktur == '1' && $d->approve_gudang == '0')
-                                                <a href="#" class="btnApprove text-success" data-approve="1"
-                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Approve Gudang">
-                                                    <i class="ti ti-circle-check fs-5"></i>
-                                                </a>
-                                            @endif
-                                        @else
-                                            @if (Auth::user()->id == $user && $d->approve_head_dept == '0')
-                                                <a href="#" class="btnApprove text-success"
-                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Approve Head Dept">
-                                                    <i class="ti ti-circle-check fs-5"></i>
-                                                </a>
-                                            @endif
-                                            @if (Auth::user()->id == $user && $d->approve_head_dept == '1' && $d->approve_gudang == '0')
-                                                <a href="#" class="btnCancelApprove text-danger"
-                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Batalkan Approve Head Dept">
-                                                    <i class="ti ti-circle-x fs-5"></i>
-                                                </a>
-                                            @endif
-                                            @if (Auth::user()->id == '67' && $d->approve_head_dept == '1' && $d->approve_gudang == '0')
-                                                <a href="#" class="btnApprove text-success" data-approve="1"
-                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Approve Gudang">
-                                                    <i class="ti ti-circle-check fs-5"></i>
-                                                </a>
-                                            @endif
-                                            @if (Auth::user()->id == '67' && $d->approve_gudang == '1' && (empty($d->total_serah_terima) || $d->total_serah_terima == 0))
-                                                <a href="#" class="btnCancelApprove text-danger"
-                                                    no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
-                                                    data-bs-toggle="tooltip" title="Batalkan Approve Gudang">
-                                                    <i class="ti ti-circle-x fs-5"></i>
-                                                </a>
-                                            @endif
+                                        @if (Auth::user()->id == '67' && $d->approve_gudang == '0')
+                                            <a href="#" class="btnApprove text-success" data-approve="1"
+                                                no_bpb="{{ Crypt::encrypt($d->no_bpb) }}"
+                                                data-bs-toggle="tooltip" title="Approve Gudang">
+                                                <i class="ti ti-circle-check fs-5"></i>
+                                            </a>
                                         @endif
 
                                         @if (empty($d->tanggal_pembelian))
@@ -276,10 +192,7 @@
                                             <i class="ti ti-file-description fs-5"></i>
                                         </a>
                                         @php
-                                            $canDelete =
-                                                $d->kode_dept == 'MTC'
-                                                    ? $d->approve_manager == '0'
-                                                    : $d->approve_head_dept == '0';
+                                            $canDelete = $d->approve_gudang == '0';
                                         @endphp
                                         @if ($canDelete)
                                             <form method="POST" class="deleteform d-inline"
@@ -374,61 +287,6 @@
                                 type: 'POST',
                                 data: {
                                     approve: approve,
-                                    _token: $('meta[name="csrf-token"]')
-                                        .attr('content')
-                                },
-                                success: function(res) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil!',
-                                        text: res.message,
-                                        timer: 1500,
-                                        showConfirmButton: false
-                                    }).then(() => location.reload());
-                                },
-                                error: function(xhr) {
-                                    Swal.fire(
-                                        'Gagal!',
-                                        xhr.responseJSON?.message ??
-                                        'Terjadi kesalahan',
-                                        'error'
-                                    );
-                                }
-                            });
-                        }
-                    });
-
-                }
-            });
-        });
-
-        $(".btnCancelApprove").click(function(e) {
-            e.preventDefault();
-
-            let no_bpb = $(this).attr("no_bpb");
-
-            Swal.fire({
-                title: 'Batalkan Approve BPB?',
-                text: 'Apakah Anda yakin ingin membatalkan persetujuan BPB ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Batalkan',
-                cancelButtonText: 'Tidak',
-                confirmButtonColor: '#dc3545', // merah
-                cancelButtonColor: '#6c757d', // abu-abu
-            }).then((result) => {
-                if (result.isConfirmed) {
-
-                    Swal.fire({
-                        title: 'Memproses...',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-
-                            $.ajax({
-                                url: `/bpb/${no_bpb}/cancelapprove`,
-                                type: 'POST',
-                                data: {
                                     _token: $('meta[name="csrf-token"]')
                                         .attr('content')
                                 },
