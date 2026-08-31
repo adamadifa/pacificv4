@@ -2858,3 +2858,10 @@ Route::get('/test-wa', function () {
         return "Response: " . $response;
     }
 });
+
+Route::middleware(['auth'])->prefix('wa-komplain')->group(function () {
+    Route::get('/', [\App\Http\Controllers\WaKomplainController::class, 'index'])->name('wa-komplain.index');
+    Route::get('/{id}', [\App\Http\Controllers\WaKomplainController::class, 'show'])->name('wa-komplain.show');
+    Route::post('/{id}/status', [\App\Http\Controllers\WaKomplainController::class, 'updateStatus'])->name('wa-komplain.status');
+    Route::post('/{id}/assign', [\App\Http\Controllers\WaKomplainController::class, 'assignTo'])->name('wa-komplain.assign');
+});

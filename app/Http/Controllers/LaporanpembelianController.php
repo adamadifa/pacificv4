@@ -128,6 +128,7 @@ class LaporanpembelianController extends Controller
         $data['bank'] = $bank;
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
+        $data['format_bank'] = $request->format_bank;
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");

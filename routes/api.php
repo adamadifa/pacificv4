@@ -113,3 +113,6 @@ Route::prefix('sync')->group(function () {
 // ADMS Machine Interface
 Route::any('/adms/capture', [AdmsController::class, 'capture']);
 Route::any('/adms/receive', [AdmsController::class, 'receiveX100c']);
+
+// WA AI Customer Service Webhook
+Route::middleware('webhook.token')->post('/wa-complain/store', [\App\Http\Controllers\Api\WaComplainController::class, 'store']);

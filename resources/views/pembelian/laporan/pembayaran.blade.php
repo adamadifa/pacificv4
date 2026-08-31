@@ -3,6 +3,15 @@
     <x-select label="Supplier" name="kode_supplier_pembayaran" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
         select2="select2Kodesupplierpembayaran" hideLabel="true" />
 
+    <div class="row mb-3">
+        <div class="col-12">
+            <select name="format_bank" id="format_bank" class="form-select">
+                <option value="nama">Nama Bank</option>
+                <option value="kode">Kode Bank</option>
+            </select>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />

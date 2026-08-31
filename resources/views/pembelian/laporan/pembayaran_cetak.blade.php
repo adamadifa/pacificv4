@@ -44,7 +44,7 @@
                     </tr>
                     <tr>
                         @foreach ($bank as $d)
-                            <th>{{ $d->nama_bank }}</th>
+                            <th>{{ $format_bank == 'kode' ? $d->kode_bank : $d->nama_bank }}</th>
                             @php
                                 ${"total_$d->kode_bank"} = 0;
                             @endphp
