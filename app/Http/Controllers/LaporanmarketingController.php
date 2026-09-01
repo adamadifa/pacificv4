@@ -28,6 +28,7 @@ use App\Models\Penjualan;
 use App\Models\Produk;
 use App\Models\Ratiokomisidriverhelper;
 use App\Models\Retur;
+use App\Models\Regional;
 use App\Models\Saldoawalpiutangpelanggan;
 use App\Models\Saldoawalpiutangsalesman;
 use App\Models\Salesman;
@@ -5260,6 +5261,10 @@ class LaporanmarketingController extends Controller
             return $this->cetak_rekapaup($kode_cabang, $request);
         } else if ($request->jenis_laporan == 6) {
             return $this->cetakrekappenjualanmultitahun($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 7) {
+            return $this->cetakrekappenjualanmultitahun_percabang($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 8) {
+            return $this->cetakrekappenjualanmultitahun_perregional($kode_cabang, $request);
         }
     }
 
@@ -5368,6 +5373,204 @@ class LaporanmarketingController extends Controller
         }
 
         return view('marketing.laporan.rekappenjualan_multitahun_cetak', $data);
+    }
+
+    public function cetakrekappenjualanmultitahun_percabang($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch cabang yang memiliki transaksi di tahun-tahun yang dipilih
+        $q_cabang = DB::table('marketing_penjualan')
+            ->select('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_cabang->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $cabang_list = $q_cabang
+            ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('cabang.nama_cabang', 'asc')
+            ->get();
+
+        // Get Qty data grouped by cabang, product, year, and month
+        $q_qty = DB::table('marketing_penjualan')
+            ->select(
+                'salesman.kode_cabang',
+                'ph.kode_produk',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(mpd.jumlah / pr.isi_pcs_dus) as qty')
+            )
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('marketing_penjualan_detail as mpd', 'marketing_penjualan.no_faktur', '=', 'mpd.no_faktur')
+            ->join('produk_harga as ph', 'mpd.kode_harga', '=', 'ph.kode_harga')
+            ->join('produk as pr', 'ph.kode_produk', '=', 'pr.kode_produk')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_qty->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $qty_data = $q_qty
+            ->groupBy('salesman.kode_cabang', 'ph.kode_produk', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        $qty_map = [];
+        $active_product_ids = [];
+        foreach ($qty_data as $q) {
+            $qty_map[$q->kode_cabang][$q->kode_produk][$q->tahun][$q->bulan] = $q->qty;
+            if ($q->qty > 0) {
+                $active_product_ids[] = $q->kode_produk;
+            }
+        }
+        $active_product_ids = array_unique($active_product_ids);
+
+        // Get only products that have sales
+        if (!empty($active_product_ids)) {
+            $produk = DB::table('produk')
+                ->whereIn('kode_produk', $active_product_ids)
+                ->orderBy('nama_produk', 'asc')
+                ->get();
+        } else {
+            $produk = collect();
+        }
+
+        $data['cabang_list'] = $cabang_list;
+        $data['years'] = $years;
+        $data['produk'] = $produk;
+        $data['qty_map'] = $qty_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty & Netto per Cabang Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappenjualan_multitahun_percabang_cetak', $data);
+    }
+
+    public function cetakrekappenjualanmultitahun_perregional($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch regional yang memiliki transaksi di tahun-tahun yang dipilih
+        $q_regional = DB::table('marketing_penjualan')
+            ->select('regional.kode_regional', 'regional.nama_regional')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('regional', 'cabang.kode_regional', '=', 'regional.kode_regional')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_regional->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $regional_list = $q_regional
+            ->groupBy('regional.kode_regional', 'regional.nama_regional')
+            ->orderBy('regional.nama_regional', 'asc')
+            ->get();
+
+        // Get Qty data grouped by regional, product, year, and month
+        $q_qty = DB::table('marketing_penjualan')
+            ->select(
+                'cabang.kode_regional',
+                'ph.kode_produk',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(mpd.jumlah / pr.isi_pcs_dus) as qty')
+            )
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('marketing_penjualan_detail as mpd', 'marketing_penjualan.no_faktur', '=', 'mpd.no_faktur')
+            ->join('produk_harga as ph', 'mpd.kode_harga', '=', 'ph.kode_harga')
+            ->join('produk as pr', 'ph.kode_produk', '=', 'pr.kode_produk')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_qty->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $qty_data = $q_qty
+            ->groupBy('cabang.kode_regional', 'ph.kode_produk', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        $qty_map = [];
+        $active_product_ids = [];
+        foreach ($qty_data as $q) {
+            $qty_map[$q->kode_regional][$q->kode_produk][$q->tahun][$q->bulan] = $q->qty;
+            if ($q->qty > 0) {
+                $active_product_ids[] = $q->kode_produk;
+            }
+        }
+        $active_product_ids = array_unique($active_product_ids);
+
+        // Get only products that have sales
+        if (!empty($active_product_ids)) {
+            $produk = DB::table('produk')
+                ->whereIn('kode_produk', $active_product_ids)
+                ->orderBy('nama_produk', 'asc')
+                ->get();
+        } else {
+            $produk = collect();
+        }
+
+        $data['regional_list'] = $regional_list;
+        $data['years'] = $years;
+        $data['produk'] = $produk;
+        $data['qty_map'] = $qty_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty & Netto per Regional Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappenjualan_multitahun_perregional_cetak', $data);
     }
 
     public function cetak_rekapaup($kode_cabang, Request $request)

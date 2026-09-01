@@ -9,10 +9,12 @@
             <option value="4">Rekap Penjualan Produk</option>
             <option value="5">Collect Aup</option>
             <option value="6">Rekap Qty & Netto per Salesman (Multi Tahun)</option>
+            <option value="7">Rekap Qty & Netto per Cabang (Multi Tahun)</option>
+            <option value="8">Rekap Qty & Netto per Regional (Multi Tahun)</option>
         </select>
     </div>
     @hasanyrole($roles_show_cabang)
-        <div class="form-group mb-3">
+        <div class="form-group mb-3" id="divKodecabangRekappenjualan">
             <select name="kode_cabang" id="kode_cabang_rekappenjualan" class="form-select select2Kodecabangrekappenjualan">
                 <option value="">Semua Cabang</option>
                 @foreach ($cabang as $d)
@@ -21,14 +23,13 @@
             </select>
         </div>
     @endrole
-    <div class="form-group mb-3">
+    <div class="form-group mb-3" id="divKodesalesmanRekappenjualan">
         @hasanyrole('salesman')
             <input type="hidden" name="kode_salesman" value="{{ auth()->user()->kode_salesman }}">
         @else
             <select name="kode_salesman" id="kode_salesman_rekappenjualan" class="select2Kodesalesmanrekappenjualan form-select">
             </select>
         @endhasanyrole
-
     </div>
 
     <div class="row" id="tanggalaup">
@@ -73,14 +74,32 @@
                     $("#tanggalaup").show();
                     $("#tanggalpenjualan").hide();
                     $("#tahunmultitahun").hide();
+                    $("#divKodecabangRekappenjualan").show();
+                    $("#divKodesalesmanRekappenjualan").show();
                 } else if (jenis_laporan == "6") {
                     $("#tanggalaup").hide();
                     $("#tanggalpenjualan").hide();
                     $("#tahunmultitahun").show();
+                    $("#divKodecabangRekappenjualan").show();
+                    $("#divKodesalesmanRekappenjualan").show();
+                } else if (jenis_laporan == "7") {
+                    $("#tanggalaup").hide();
+                    $("#tanggalpenjualan").hide();
+                    $("#tahunmultitahun").show();
+                    $("#divKodecabangRekappenjualan").hide();
+                    $("#divKodesalesmanRekappenjualan").hide();
+                } else if (jenis_laporan == "8") {
+                    $("#tanggalaup").hide();
+                    $("#tanggalpenjualan").hide();
+                    $("#tahunmultitahun").show();
+                    $("#divKodecabangRekappenjualan").hide();
+                    $("#divKodesalesmanRekappenjualan").hide();
                 } else {
                     $("#tanggalaup").hide();
                     $("#tanggalpenjualan").show();
                     $("#tahunmultitahun").hide();
+                    $("#divKodecabangRekappenjualan").show();
+                    $("#divKodesalesmanRekappenjualan").show();
                 }
             }
 
@@ -170,7 +189,7 @@
                     });
                     return false;
 
-                } else if (dari == "" && jenis_laporan != "5" && jenis_laporan != "6") {
+                } else if (dari == "" && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Dari Tanggal Harus Diisi !",
@@ -181,7 +200,7 @@
                         },
                     });
                     return false;
-                } else if (sampai == "" && jenis_laporan != "5" && jenis_laporan != "6") {
+                } else if (sampai == "" && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Sampai Tanggal Harus Diisi !",
@@ -192,7 +211,7 @@
                         },
                     });
                     return false;
-                } else if (start.getTime() > end.getTime() && jenis_laporan != "5" && jenis_laporan != "6") {
+                } else if (start.getTime() > end.getTime() && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari",
@@ -214,7 +233,7 @@
                         },
                     });
                     return false;
-                } else if (jenis_laporan == 6 && (!formRekappenjualan.find('#tahun_rekappenjualan').val() || formRekappenjualan.find('#tahun_rekappenjualan').val().length == 0)) {
+                } else if ((jenis_laporan == 6 || jenis_laporan == 7 || jenis_laporan == 8) && (!formRekappenjualan.find('#tahun_rekappenjualan').val() || formRekappenjualan.find('#tahun_rekappenjualan').val().length == 0)) {
                     Swal.fire({
                         title: "Oops!",
                         text: "Tahun Harus Diisi !",
