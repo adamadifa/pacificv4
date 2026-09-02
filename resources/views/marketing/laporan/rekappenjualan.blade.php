@@ -8,9 +8,11 @@
             <option value="3">Rekap Penjualan Qty</option>
             <option value="4">Rekap Penjualan Produk</option>
             <option value="5">Collect Aup</option>
-            <option value="6">Rekap Qty & Netto per Salesman (Multi Tahun)</option>
-            <option value="7">Rekap Qty & Netto per Cabang (Multi Tahun)</option>
-            <option value="8">Rekap Qty & Netto per Regional (Multi Tahun)</option>
+            @hasanyrole('super admin|gm administrasi')
+                <option value="6">Rekap Qty & Netto per Salesman (Multi Tahun)</option>
+                <option value="7">Rekap Qty & Netto per Cabang (Multi Tahun)</option>
+                <option value="8">Rekap Qty & Netto per Regional (Multi Tahun)</option>
+            @endhasanyrole
         </select>
     </div>
     @hasanyrole($roles_show_cabang)
