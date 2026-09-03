@@ -79,6 +79,8 @@ class Piutangkaryawan extends Model
         //     $query->where('pjp.status', $request->status);
         // }
 
+        $query = Pjp::applyPjpAccess($query, $user);
+
         if (!$user->hasRole($roles_access_all_piutang)) {
             $query->where('keuangan_piutangkaryawan.status', '0');
         }
@@ -86,17 +88,6 @@ class Piutangkaryawan extends Model
         if (!empty($no_pinjaman)) {
             $query->where('keuangan_piutangkaryawan.no_pinjaman', $no_pinjaman);
         }
-        //Jika User Tidak Memiliki Akses ke Semua PJP
-        // if (!$user->hasRole($roles_access_all_pjp)) {
-        //     $query->whereNotIn('hrd_karyawan.kode_jabatan', ['J01', 'J02']);
-        // }
-
-        // $query->whereIn('hrd_karyawan.kode_dept', $dept_access);
-
-        // if (!$user->hasRole($roles_access_all_pjp)) {
-        //     $query->where('hrd_jabatan.kategori', 'NM');
-        // }
-
 
         $query->orderBy('keuangan_piutangkaryawan.tanggal', 'desc');
         $query->orderBy('keuangan_piutangkaryawan.no_pinjaman', 'desc');

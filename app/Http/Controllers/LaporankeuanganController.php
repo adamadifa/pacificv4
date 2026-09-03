@@ -48,6 +48,22 @@ class LaporankeuanganController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
 
+        // Cabang & Departemen khusus PJP / Kasbon / Piutang
+        $pjp_cabang_access = json_decode($user->pjp_cabang_access, true) ?? [];
+        $pjp_dept_access = json_decode($user->pjp_dept_access, true) ?? [];
+
+        if (!empty($pjp_cabang_access) && !in_array('all', $pjp_cabang_access)) {
+            $data['cabang_pjp'] = Cabang::whereIn('kode_cabang', $pjp_cabang_access)->orderBy('kode_cabang')->get();
+        } else {
+            $data['cabang_pjp'] = $data['cabang'];
+        }
+
+        if (!empty($pjp_dept_access) && !in_array('all', $pjp_dept_access)) {
+            $data['departemen_pjp'] = Departemen::whereIn('kode_dept', $pjp_dept_access)->orderBy('kode_dept')->get();
+        } else {
+            $data['departemen_pjp'] = $data['departemen'];
+        }
+
         $data['coa'] = Coa::orderby('kode_akun')->get();
         // if ($user->hasRole(['admin pajak', 'rom'])) {
         //     $data['coa'] = Coa::orderby('kode_akun')
@@ -1260,7 +1276,7 @@ class LaporankeuanganController extends Controller
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_piutangkaryawan)->first();
-        $data['departemen'] = Departemen::where('kode_dept', $request->kode_cabang_piutangkaryawan)->first();
+        $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_piutangkaryawan)->first();
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
@@ -1691,8 +1707,6 @@ class LaporankeuanganController extends Controller
 
         $user = User::findorfail(auth()->user()->id);
         $roles_access_all_piutang = config('global.roles_access_all_piutang');
-        $roles_access_all_cabang = config('global.roles_access_all_cabang');
-        $dept_access = json_decode($user->dept_access, true) != null ? json_decode($user->dept_access, true) : [];
 
         $query = Piutangkaryawan::query();
         $query->selectRaw("keuangan_piutangkaryawan.nik, nama_karyawan,
@@ -1747,18 +1761,10 @@ class LaporankeuanganController extends Controller
             $query->where('keuangan_piutangkaryawan.kategori', $request->status_aktif_piutangkaryawan);
         }
 
-        if (!$user->hasRole($roles_access_all_cabang)) {
-            if ($user->hasRole('regional sales manager')) {
-                $query->where('cabang.kode_regional', $user->kode_regional);
-                $query->where('hrd_karyawan.kode_jabatan', '!=', 'J03');
-            } else {
-                $query->where('hrd_jabatan.kategori', 'NM');
-                $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
-            }
-        } else {
-            if (!$user->hasRole($roles_access_all_piutang)) {
-                $query->where('keuangan_piutangkaryawan.status', '0');
-            }
+        $query = Pjp::applyPjpAccess($query, $user);
+
+        if (!$user->hasRole($roles_access_all_piutang)) {
+            $query->where('keuangan_piutangkaryawan.status', '0');
         }
 
         $query->groupByRaw('keuangan_piutangkaryawan.nik,nama_karyawan');

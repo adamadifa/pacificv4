@@ -1,9 +1,9 @@
 <form action="{{ route('laporankeuangan.cetakrekapkartupiutang') }}" id="formRekapkartupiutang" target="_blank" method="POST">
     @csrf
-    @hasanyrole($roles_show_cabang)
-        <x-select label="Pilih Cabang" name="c" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
+    @hasanyrole($roles_show_cabang_pjp)
+        <x-select label="Pilih Cabang" name="kode_cabang_rekapkartupiutang" :data="$cabang_pjp" key="kode_cabang" textShow="nama_cabang" upperCase="true"
             select2="select2Kodecabangrekapkartupiutang" hideLabel="true" />
-        <x-select label="Semua Departemen" name="kode_dept_rekapkartupiutang" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
+        <x-select label="Semua Departemen" name="kode_dept_rekapkartupiutang" :data="$departemen_pjp" key="kode_dept" textShow="nama_dept" upperCase="true"
             select2="select2Kodedeptrekapkartupiutang" hideLabel="true" />
     @endrole
     <div class="row">

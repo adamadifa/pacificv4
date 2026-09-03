@@ -1,9 +1,9 @@
 <form action="{{ route('laporankeuangan.cetakkartupiutangkaryawan') }}" id="formKartupiutangkaryawan" target="_blank" method="POST">
     @csrf
-    @hasanyrole($roles_show_cabang)
-        <x-select label="Semua Cabang" name="kode_cabang_kartupiutangkaryawan" :data="$cabang" key="kode_cabang" textShow="nama_cabang" upperCase="true"
+    @hasanyrole($roles_show_cabang_pjp)
+        <x-select label="Semua Cabang" name="kode_cabang_kartupiutangkaryawan" :data="$cabang_pjp" key="kode_cabang" textShow="nama_cabang" upperCase="true"
             select2="select2Kodecabangkartupiutangkaryawan" hideLabel="true" />
-        <x-select label="Semua Departemen" name="kode_dept_kartupiutangkaryawan" :data="$departemen" key="kode_dept" textShow="nama_dept" upperCase="true"
+        <x-select label="Semua Departemen" name="kode_dept_kartupiutangkaryawan" :data="$departemen_pjp" key="kode_dept" textShow="nama_dept" upperCase="true"
             select2="select2Kodedeptkartupiutangkaryawan" hideLabel="true" />
     @endrole
 
