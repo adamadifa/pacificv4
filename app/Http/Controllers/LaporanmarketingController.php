@@ -2319,16 +2319,29 @@ class LaporanmarketingController extends Controller
             $selectColumnkodeproduk[] = DB::raw('SUM(IF(produk_harga.kode_produk="' . $d->kode_produk . '",jumlah,0)) as `qty_' . $d->kode_produk . '`');
         }
 
-        $query = Detailpenjualan::select(
+        $select = [
             'marketing_penjualan.kode_pelanggan',
             'pelanggan.nama_pelanggan',
             'nama_wilayah',
             'klasifikasi',
-            'salesman.nama_salesman',
             DB::raw('COUNT(DISTINCT(kode_sku)) as total_sku'),
             DB::raw('SUM(subtotal) as total_bruto'),
             ...$selectColumnkodeproduk
-        );
+        ];
+
+        $groupBy = [
+            'marketing_penjualan.kode_pelanggan',
+            'pelanggan.nama_pelanggan',
+            'nama_wilayah',
+            'klasifikasi',
+        ];
+
+        if ($request->group_by != 'pelanggan') {
+            $select[] = 'salesman.nama_salesman';
+            $groupBy[] = 'salesman.nama_salesman';
+        }
+
+        $query = Detailpenjualan::select($select);
         $query->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga');
         $query->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk');
         $query->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
@@ -2361,19 +2374,14 @@ class LaporanmarketingController extends Controller
 
 
         $query->orderBy('pelanggan.nama_pelanggan', 'asc');
-        $query->groupBy(
-            'marketing_penjualan.kode_pelanggan',
-            'pelanggan.nama_pelanggan',
-            'nama_wilayah',
-            'klasifikasi',
-            'salesman.nama_salesman'
-        );
+        $query->groupBy($groupBy);
         $data['rekappelanggan'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
         $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
         $data['salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
         $data['produk'] = $produk;
+        $data['group_by'] = $request->group_by;
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");

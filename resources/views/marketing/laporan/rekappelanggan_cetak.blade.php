@@ -54,7 +54,9 @@
                         <th rowspan="2">KODE PELANGGAN</th>
                         <th rowspan="2">NAMA PELANGGAN</th>
                         <th rowspan="2">PASAR/DAERAH</th>
-                        <th rowspan="2">SALESMAN</th>
+                        @if ($group_by != 'pelanggan')
+                            <th rowspan="2">SALESMAN</th>
+                        @endif
                         <th rowspan="2">KLASIFIKASI</th>
                         <th colspan="{{ count($produk) }}">PRODUK</th>
                         <th rowspan="2">SKU</th>
@@ -83,7 +85,9 @@
                             <td>{{ $d->kode_pelanggan }}</td>
                             <td>{{ $d->nama_pelanggan }}</td>
                             <td>{{ $d->nama_wilayah }}</td>
-                            <td>{{ $d->nama_salesman }}</td>
+                            @if ($group_by != 'pelanggan')
+                                <td>{{ $d->nama_salesman }}</td>
+                            @endif
                             <td>{{ $d->klasifikasi }}</td>
                             @foreach ($produk as $p)
                                 @php
@@ -99,7 +103,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="5">TOTAL</th>
+                        <th colspan="{{ $group_by == 'pelanggan' ? 4 : 5 }}">TOTAL</th>
                         @foreach ($produk as $d)
                             @php
                                 $total_qty = ${"total_qty_$d->kode_produk"} / $d->isi_pcs_dus;

@@ -11,6 +11,12 @@
         </div>
     @endrole
     <div class="form-group mb-3">
+        <select name="group_by" id="group_by_rekappelanggan" class="form-select">
+            <option value="salesman">Group By Salesman & Pelanggan</option>
+            <option value="pelanggan">Group By Pelanggan</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
         <select name="kode_salesman" id="kode_salesman_rekappelanggan" class="select2Kodesalesmanrekappelanggan form-select">
         </select>
     </div>
