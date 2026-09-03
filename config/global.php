@@ -143,7 +143,6 @@ return  [
         'gm administrasi',
         'manager keuangan',
         'direktur',
-        'gm marketing',
         'gm operasional',
     ],
     'roles_access_all_kasbon' => [

@@ -91,7 +91,12 @@
                                 $sisatagihan = $d->jumlah - $d->totalpembayaran;
                             @endphp
                             <tr>
-                                <td class="text-center fw-bold">{{ $d->no_pinjaman }}</td>
+                                <td class="text-center fw-bold">
+                                    {{ $d->no_pinjaman }}
+                                    @if ($d->status == 1)
+                                        <i class="ti ti-check text-success ms-1" data-bs-toggle="tooltip" title="Hanya Bisa Dilihat Keuangan"></i>
+                                    @endif
+                                </td>
                                 <td class="text-center">{{ formatIndo($d->tanggal) }}</td>
                                 <td class="text-center">{{ $d->nik }}</td>
                                 <td>{{ $d->nama_karyawan }}</td>
@@ -111,6 +116,11 @@
                                     {!! $sisatagihan == 0
                                         ? '<span class="badge bg-success">Lunas</span>'
                                         : '<span class="badge bg-danger">Belum Lunas</span>' !!}
+                                    @if ($d->status == 1)
+                                        <span class="badge bg-info mt-1 d-block" data-bs-toggle="tooltip" title="Hanya Bisa Dilihat Keuangan">
+                                            <i class="ti ti-check me-1"></i>Keuangan
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
