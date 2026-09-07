@@ -9,9 +9,18 @@
             <option value="4">Rekap Penjualan Produk</option>
             <option value="5">Collect Aup</option>
             @hasanyrole('super admin|gm administrasi')
-                <option value="6">Rekap Qty & Netto per Salesman (Multi Tahun)</option>
-                <option value="7">Rekap Qty & Netto per Cabang (Multi Tahun)</option>
-                <option value="8">Rekap Qty & Netto per Regional (Multi Tahun)</option>
+                <option value="6">Rekap Penjualan Qty per Salesman (Multi Tahun)</option>
+                <option value="7">Rekap Penjualan Qty per Cabang (Multi Tahun)</option>
+                <option value="8">Rekap Penjualan Qty per Regional (Multi Tahun)</option>
+                <option value="9">Rekap Penjualan Omset per Salesman (Multi Tahun)</option>
+                <option value="10">Rekap Penjualan Omset per Cabang (Multi Tahun)</option>
+                <option value="11">Rekap Penjualan Omset per Regional (Multi Tahun)</option>
+                <option value="12">Rekap Retur Netto per Salesman (Multi Tahun)</option>
+                <option value="13">Rekap Retur Netto per Cabang (Multi Tahun)</option>
+                <option value="14">Rekap Retur Netto per Regional (Multi Tahun)</option>
+                <option value="15">Rekap Piutang per Salesman (Multi Tahun)</option>
+                <option value="16">Rekap Piutang per Cabang (Multi Tahun)</option>
+                <option value="17">Rekap Piutang per Regional (Multi Tahun)</option>
             @endhasanyrole
         </select>
     </div>
@@ -78,19 +87,19 @@
                     $("#tahunmultitahun").hide();
                     $("#divKodecabangRekappenjualan").show();
                     $("#divKodesalesmanRekappenjualan").show();
-                } else if (jenis_laporan == "6") {
+                } else if (jenis_laporan == "6" || jenis_laporan == "9" || jenis_laporan == "12" || jenis_laporan == "15") {
                     $("#tanggalaup").hide();
                     $("#tanggalpenjualan").hide();
                     $("#tahunmultitahun").show();
                     $("#divKodecabangRekappenjualan").show();
                     $("#divKodesalesmanRekappenjualan").show();
-                } else if (jenis_laporan == "7") {
+                } else if (jenis_laporan == "7" || jenis_laporan == "10" || jenis_laporan == "13" || jenis_laporan == "16") {
                     $("#tanggalaup").hide();
                     $("#tanggalpenjualan").hide();
                     $("#tahunmultitahun").show();
                     $("#divKodecabangRekappenjualan").hide();
                     $("#divKodesalesmanRekappenjualan").hide();
-                } else if (jenis_laporan == "8") {
+                } else if (jenis_laporan == "8" || jenis_laporan == "11" || jenis_laporan == "14" || jenis_laporan == "17") {
                     $("#tanggalaup").hide();
                     $("#tanggalpenjualan").hide();
                     $("#tahunmultitahun").show();
@@ -191,7 +200,7 @@
                     });
                     return false;
 
-                } else if (dari == "" && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8") {
+                } else if (dari == "" && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8" && jenis_laporan != "9" && jenis_laporan != "10" && jenis_laporan != "11" && jenis_laporan != "12" && jenis_laporan != "13" && jenis_laporan != "14" && jenis_laporan != "15" && jenis_laporan != "16" && jenis_laporan != "17") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Dari Tanggal Harus Diisi !",
@@ -202,7 +211,7 @@
                         },
                     });
                     return false;
-                } else if (sampai == "" && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8") {
+                } else if (sampai == "" && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8" && jenis_laporan != "9" && jenis_laporan != "10" && jenis_laporan != "11" && jenis_laporan != "12" && jenis_laporan != "13" && jenis_laporan != "14" && jenis_laporan != "15" && jenis_laporan != "16" && jenis_laporan != "17") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Sampai Tanggal Harus Diisi !",
@@ -213,7 +222,7 @@
                         },
                     });
                     return false;
-                } else if (start.getTime() > end.getTime() && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8") {
+                } else if (start.getTime() > end.getTime() && jenis_laporan != "5" && jenis_laporan != "6" && jenis_laporan != "7" && jenis_laporan != "8" && jenis_laporan != "9" && jenis_laporan != "10" && jenis_laporan != "11" && jenis_laporan != "12" && jenis_laporan != "13" && jenis_laporan != "14" && jenis_laporan != "15" && jenis_laporan != "16" && jenis_laporan != "17") {
                     Swal.fire({
                         title: "Oops!",
                         text: "Periode Tidak Valid !, Periode Sampai Harus Lebih Akhir dari Periode Dari",
@@ -235,7 +244,7 @@
                         },
                     });
                     return false;
-                } else if ((jenis_laporan == 6 || jenis_laporan == 7 || jenis_laporan == 8) && (!formRekappenjualan.find('#tahun_rekappenjualan').val() || formRekappenjualan.find('#tahun_rekappenjualan').val().length == 0)) {
+                } else if ((jenis_laporan == 6 || jenis_laporan == 7 || jenis_laporan == 8 || jenis_laporan == 9 || jenis_laporan == 10 || jenis_laporan == 11 || jenis_laporan == 12 || jenis_laporan == 13 || jenis_laporan == 14 || jenis_laporan == 15 || jenis_laporan == 16 || jenis_laporan == 17) && (!formRekappenjualan.find('#tahun_rekappenjualan').val() || formRekappenjualan.find('#tahun_rekappenjualan').val().length == 0)) {
                     Swal.fire({
                         title: "Oops!",
                         text: "Tahun Harus Diisi !",

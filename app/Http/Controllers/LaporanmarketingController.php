@@ -5273,6 +5273,24 @@ class LaporanmarketingController extends Controller
             return $this->cetakrekappenjualanmultitahun_percabang($kode_cabang, $request);
         } else if ($request->jenis_laporan == 8) {
             return $this->cetakrekappenjualanmultitahun_perregional($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 9) {
+            return $this->cetakrekappenjualan_omset_multitahun($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 10) {
+            return $this->cetakrekappenjualan_omset_multitahun_percabang($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 11) {
+            return $this->cetakrekappenjualan_omset_multitahun_perregional($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 12) {
+            return $this->cetakrekapretur_netto_multitahun($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 13) {
+            return $this->cetakrekapretur_netto_multitahun_percabang($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 14) {
+            return $this->cetakrekapretur_netto_multitahun_perregional($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 15) {
+            return $this->cetakrekappiutang_multitahun($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 16) {
+            return $this->cetakrekappiutang_multitahun_percabang($kode_cabang, $request);
+        } else if ($request->jenis_laporan == 17) {
+            return $this->cetakrekappiutang_multitahun_perregional($kode_cabang, $request);
         }
     }
 
@@ -5377,7 +5395,7 @@ class LaporanmarketingController extends Controller
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
-            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty & Netto Multi Tahun.xls");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty Multi Tahun.xls");
         }
 
         return view('marketing.laporan.rekappenjualan_multitahun_cetak', $data);
@@ -5475,7 +5493,7 @@ class LaporanmarketingController extends Controller
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
-            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty & Netto per Cabang Multi Tahun.xls");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty per Cabang Multi Tahun.xls");
         }
 
         return view('marketing.laporan.rekappenjualan_multitahun_percabang_cetak', $data);
@@ -5575,10 +5593,1163 @@ class LaporanmarketingController extends Controller
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
-            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty & Netto per Regional Multi Tahun.xls");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Qty per Regional Multi Tahun.xls");
         }
 
         return view('marketing.laporan.rekappenjualan_multitahun_perregional_cetak', $data);
+    }
+
+    public function cetakrekappenjualan_omset_multitahun($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch salesmen who have transactions in those years from marketing_penjualan
+        $q_salesman = DB::table('marketing_penjualan')
+            ->select('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_salesman->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_salesman->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $salesmen = $q_salesman->groupBy('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('salesman.kode_cabang', 'asc')
+            ->orderBy('salesman.nama_salesman', 'asc')
+            ->get();
+
+        // 1. Sales Bruto
+        $q_bruto = DB::table('marketing_penjualan_detail')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto')
+            )
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bruto->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_bruto->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $bruto_data = $q_bruto->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 2. Potongan, Potongan Istimewa, Penyesuaian, PPN
+        $q_penjualan = DB::table('marketing_penjualan')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn')
+            )
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_penjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_penjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $penjualan_data = $q_penjualan->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 3. Retur (PF)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_retur.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_retur.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_retur.jenis_retur', 'PF')
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_retur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $retur_data = $q_retur->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_retur.tanggal)'), DB::raw('MONTH(marketing_retur.tanggal)'))
+            ->get();
+
+        // Calculate Netto per Salesman per Year per Month
+        $netto_map = [];
+
+        foreach ($bruto_data as $b) {
+            if (!isset($netto_map[$b->kode_salesman][$b->tahun][$b->bulan])) {
+                $netto_map[$b->kode_salesman][$b->tahun][$b->bulan] = 0;
+            }
+            $netto_map[$b->kode_salesman][$b->tahun][$b->bulan] += $b->total_bruto;
+        }
+
+        foreach ($penjualan_data as $p) {
+            if (!isset($netto_map[$p->kode_salesman][$p->tahun][$p->bulan])) {
+                $netto_map[$p->kode_salesman][$p->tahun][$p->bulan] = 0;
+            }
+            $netto_map[$p->kode_salesman][$p->tahun][$p->bulan] += (- $p->total_potongan - $p->total_potongan_istimewa - $p->total_penyesuaian + $p->total_ppn);
+        }
+
+        foreach ($retur_data as $r) {
+            if (!isset($netto_map[$r->kode_salesman][$r->tahun][$r->bulan])) {
+                $netto_map[$r->kode_salesman][$r->tahun][$r->bulan] = 0;
+            }
+            $netto_map[$r->kode_salesman][$r->tahun][$r->bulan] -= $r->total_retur;
+        }
+
+        $data['salesmen'] = $salesmen;
+        $data['years'] = $years;
+        $data['netto_map'] = $netto_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['selected_salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Omset Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappenjualan_omset_multitahun_cetak', $data);
+    }
+
+    public function cetakrekappenjualan_omset_multitahun_percabang($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch cabang yang memiliki transaksi di tahun-tahun yang dipilih
+        $q_cabang = DB::table('marketing_penjualan')
+            ->select('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_cabang->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $cabang_list = $q_cabang
+            ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('cabang.nama_cabang', 'asc')
+            ->get();
+
+        // 1. Sales Bruto
+        $q_bruto = DB::table('marketing_penjualan_detail')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto')
+            )
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bruto->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $bruto_data = $q_bruto->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 2. Potongan, Potongan Istimewa, Penyesuaian, PPN
+        $q_penjualan = DB::table('marketing_penjualan')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn')
+            )
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_penjualan->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $penjualan_data = $q_penjualan->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 3. Retur (PF)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_retur.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_retur.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_retur.jenis_retur', 'PF')
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $retur_data = $q_retur->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_retur.tanggal)'), DB::raw('MONTH(marketing_retur.tanggal)'))
+            ->get();
+
+        // Calculate Netto per Cabang per Year per Month
+        $netto_map = [];
+
+        foreach ($bruto_data as $b) {
+            if (!isset($netto_map[$b->kode_cabang][$b->tahun][$b->bulan])) {
+                $netto_map[$b->kode_cabang][$b->tahun][$b->bulan] = 0;
+            }
+            $netto_map[$b->kode_cabang][$b->tahun][$b->bulan] += $b->total_bruto;
+        }
+
+        foreach ($penjualan_data as $p) {
+            if (!isset($netto_map[$p->kode_cabang][$p->tahun][$p->bulan])) {
+                $netto_map[$p->kode_cabang][$p->tahun][$p->bulan] = 0;
+            }
+            $netto_map[$p->kode_cabang][$p->tahun][$p->bulan] += (- $p->total_potongan - $p->total_potongan_istimewa - $p->total_penyesuaian + $p->total_ppn);
+        }
+
+        foreach ($retur_data as $r) {
+            if (!isset($netto_map[$r->kode_cabang][$r->tahun][$r->bulan])) {
+                $netto_map[$r->kode_cabang][$r->tahun][$r->bulan] = 0;
+            }
+            $netto_map[$r->kode_cabang][$r->tahun][$r->bulan] -= $r->total_retur;
+        }
+
+        $data['cabang_list'] = $cabang_list;
+        $data['years'] = $years;
+        $data['netto_map'] = $netto_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Omset per Cabang Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappenjualan_omset_multitahun_percabang_cetak', $data);
+    }
+
+    public function cetakrekappenjualan_omset_multitahun_perregional($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch regional yang memiliki transaksi di tahun-tahun yang dipilih
+        $q_regional = DB::table('marketing_penjualan')
+            ->select('regional.kode_regional', 'regional.nama_regional')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('regional', 'cabang.kode_regional', '=', 'regional.kode_regional')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_regional->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $regional_list = $q_regional
+            ->groupBy('regional.kode_regional', 'regional.nama_regional')
+            ->orderBy('regional.nama_regional', 'asc')
+            ->get();
+
+        // 1. Sales Bruto
+        $q_bruto = DB::table('marketing_penjualan_detail')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto')
+            )
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bruto->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $bruto_data = $q_bruto->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 2. Potongan, Potongan Istimewa, Penyesuaian, PPN
+        $q_penjualan = DB::table('marketing_penjualan')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn')
+            )
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_penjualan->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $penjualan_data = $q_penjualan->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 3. Retur (PF)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_retur.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_retur.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_retur.jenis_retur', 'PF')
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $retur_data = $q_retur->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_retur.tanggal)'), DB::raw('MONTH(marketing_retur.tanggal)'))
+            ->get();
+
+        // Calculate Netto per Regional per Year per Month
+        $netto_map = [];
+
+        foreach ($bruto_data as $b) {
+            if (!isset($netto_map[$b->kode_regional][$b->tahun][$b->bulan])) {
+                $netto_map[$b->kode_regional][$b->tahun][$b->bulan] = 0;
+            }
+            $netto_map[$b->kode_regional][$b->tahun][$b->bulan] += $b->total_bruto;
+        }
+
+        foreach ($penjualan_data as $p) {
+            if (!isset($netto_map[$p->kode_regional][$p->tahun][$p->bulan])) {
+                $netto_map[$p->kode_regional][$p->tahun][$p->bulan] = 0;
+            }
+            $netto_map[$p->kode_regional][$p->tahun][$p->bulan] += (- $p->total_potongan - $p->total_potongan_istimewa - $p->total_penyesuaian + $p->total_ppn);
+        }
+
+        foreach ($retur_data as $r) {
+            if (!isset($netto_map[$r->kode_regional][$r->tahun][$r->bulan])) {
+                $netto_map[$r->kode_regional][$r->tahun][$r->bulan] = 0;
+            }
+            $netto_map[$r->kode_regional][$r->tahun][$r->bulan] -= $r->total_retur;
+        }
+
+        $data['regional_list'] = $regional_list;
+        $data['years'] = $years;
+        $data['netto_map'] = $netto_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Penjualan Omset per Regional Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappenjualan_omset_multitahun_perregional_cetak', $data);
+    }
+
+    public function cetakrekapretur_netto_multitahun($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch salesmen who have retur in those years
+        $q_salesman = DB::table('marketing_retur')
+            ->select('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_salesman->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_salesman->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $salesmen = $q_salesman->groupBy('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('salesman.kode_cabang', 'asc')
+            ->orderBy('salesman.nama_salesman', 'asc')
+            ->get();
+
+        // Query Retur Netto (subtotal)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_retur.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_retur.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_retur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $retur_data = $q_retur->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_retur.tanggal)'), DB::raw('MONTH(marketing_retur.tanggal)'))
+            ->get();
+
+        $retur_map = [];
+        foreach ($retur_data as $r) {
+            $retur_map[$r->kode_salesman][$r->tahun][$r->bulan] = $r->total_retur;
+        }
+
+        $data['salesmen'] = $salesmen;
+        $data['years'] = $years;
+        $data['retur_map'] = $retur_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['selected_salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Retur Netto Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekapretur_netto_multitahun_cetak', $data);
+    }
+
+    public function cetakrekapretur_netto_multitahun_percabang($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch cabang yang memiliki transaksi retur di tahun-tahun yang dipilih
+        $q_cabang = DB::table('marketing_retur')
+            ->select('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_cabang->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $cabang_list = $q_cabang
+            ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('cabang.nama_cabang', 'asc')
+            ->get();
+
+        // Query Retur Netto (subtotal)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_retur.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_retur.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $retur_data = $q_retur->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_retur.tanggal)'), DB::raw('MONTH(marketing_retur.tanggal)'))
+            ->get();
+
+        $retur_map = [];
+        foreach ($retur_data as $r) {
+            $retur_map[$r->kode_cabang][$r->tahun][$r->bulan] = $r->total_retur;
+        }
+
+        $data['cabang_list'] = $cabang_list;
+        $data['years'] = $years;
+        $data['retur_map'] = $retur_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Retur Netto per Cabang Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekapretur_netto_multitahun_percabang_cetak', $data);
+    }
+
+    public function cetakrekapretur_netto_multitahun_perregional($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch regional yang memiliki transaksi retur di tahun-tahun yang dipilih
+        $q_regional = DB::table('marketing_retur')
+            ->select('regional.kode_regional', 'regional.nama_regional')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('regional', 'cabang.kode_regional', '=', 'regional.kode_regional')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_regional->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $regional_list = $q_regional
+            ->groupBy('regional.kode_regional', 'regional.nama_regional')
+            ->orderBy('regional.nama_regional', 'asc')
+            ->get();
+
+        // Query Retur Netto (subtotal)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_retur.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_retur.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->whereIn(DB::raw('YEAR(marketing_retur.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $retur_data = $q_retur->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_retur.tanggal)'), DB::raw('MONTH(marketing_retur.tanggal)'))
+            ->get();
+
+        $retur_map = [];
+        foreach ($retur_data as $r) {
+            $retur_map[$r->kode_regional][$r->tahun][$r->bulan] = $r->total_retur;
+        }
+
+        $data['regional_list'] = $regional_list;
+        $data['years'] = $years;
+        $data['retur_map'] = $retur_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Retur Netto per Regional Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekapretur_netto_multitahun_perregional_cetak', $data);
+    }
+
+    public function cetakrekappiutang_multitahun($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch salesmen who have credit sales in those years
+        $q_salesman = DB::table('marketing_penjualan')
+            ->select('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_salesman->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_salesman->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $salesmen = $q_salesman->groupBy('marketing_penjualan.kode_salesman', 'salesman.nama_salesman', 'salesman.status_aktif_salesman', 'salesman.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('salesman.kode_cabang', 'asc')
+            ->orderBy('salesman.nama_salesman', 'asc')
+            ->get();
+
+        // 1. Credit Sales Bruto
+        $q_bruto = DB::table('marketing_penjualan_detail')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto')
+            )
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bruto->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_bruto->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $bruto_data = $q_bruto->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 2. Credit Sales Potongan, Potongan Istimewa, Penyesuaian, PPN
+        $q_penjualan = DB::table('marketing_penjualan')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn')
+            )
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_penjualan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_penjualan->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $penjualan_data = $q_penjualan->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 3. Retur on Credit Sales (PF)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'marketing_penjualan.kode_salesman',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->where('marketing_retur.jenis_retur', 'PF')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+                ->where('salesman.kode_cabang', $kode_cabang);
+        }
+        if (!empty($request->kode_salesman)) {
+            $q_retur->where('marketing_penjualan.kode_salesman', $request->kode_salesman);
+        }
+
+        $retur_data = $q_retur->groupBy('marketing_penjualan.kode_salesman', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // Calculate Piutang (Total Piutang = Bruto - Potongan - Potongan Istimewa - Penyesuaian + PPN - Retur)
+        $piutang_map = [];
+
+        foreach ($bruto_data as $b) {
+            if (!isset($piutang_map[$b->kode_salesman][$b->tahun][$b->bulan])) {
+                $piutang_map[$b->kode_salesman][$b->tahun][$b->bulan] = 0;
+            }
+            $piutang_map[$b->kode_salesman][$b->tahun][$b->bulan] += $b->total_bruto;
+        }
+
+        foreach ($penjualan_data as $p) {
+            if (!isset($piutang_map[$p->kode_salesman][$p->tahun][$p->bulan])) {
+                $piutang_map[$p->kode_salesman][$p->tahun][$p->bulan] = 0;
+            }
+            $piutang_map[$p->kode_salesman][$p->tahun][$p->bulan] += (- $p->total_potongan - $p->total_potongan_istimewa - $p->total_penyesuaian + $p->total_ppn);
+        }
+
+        foreach ($retur_data as $r) {
+            if (!isset($piutang_map[$r->kode_salesman][$r->tahun][$r->bulan])) {
+                $piutang_map[$r->kode_salesman][$r->tahun][$r->bulan] = 0;
+            }
+            $piutang_map[$r->kode_salesman][$r->tahun][$r->bulan] -= $r->total_retur;
+        }
+
+        $data['salesmen'] = $salesmen;
+        $data['years'] = $years;
+        $data['piutang_map'] = $piutang_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+        $data['selected_salesman'] = Salesman::where('kode_salesman', $request->kode_salesman)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Piutang Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappiutang_multitahun_cetak', $data);
+    }
+
+    public function cetakrekappiutang_multitahun_percabang($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch cabang yang memiliki transaksi piutang di tahun-tahun yang dipilih
+        $q_cabang = DB::table('marketing_penjualan')
+            ->select('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_cabang->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $cabang_list = $q_cabang
+            ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+            ->orderBy('cabang.nama_cabang', 'asc')
+            ->get();
+
+        // 1. Credit Sales Bruto
+        $q_bruto = DB::table('marketing_penjualan_detail')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto')
+            )
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bruto->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $bruto_data = $q_bruto->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 2. Credit Sales Potongan, Potongan Istimewa, Penyesuaian, PPN
+        $q_penjualan = DB::table('marketing_penjualan')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn')
+            )
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_penjualan->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $penjualan_data = $q_penjualan->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 3. Retur on Credit Sales (PF)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'salesman.kode_cabang',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->where('marketing_retur.jenis_retur', 'PF')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $retur_data = $q_retur->groupBy('salesman.kode_cabang', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // Calculate Piutang per Cabang per Year per Month
+        $piutang_map = [];
+
+        foreach ($bruto_data as $b) {
+            if (!isset($piutang_map[$b->kode_cabang][$b->tahun][$b->bulan])) {
+                $piutang_map[$b->kode_cabang][$b->tahun][$b->bulan] = 0;
+            }
+            $piutang_map[$b->kode_cabang][$b->tahun][$b->bulan] += $b->total_bruto;
+        }
+
+        foreach ($penjualan_data as $p) {
+            if (!isset($piutang_map[$p->kode_cabang][$p->tahun][$p->bulan])) {
+                $piutang_map[$p->kode_cabang][$p->tahun][$p->bulan] = 0;
+            }
+            $piutang_map[$p->kode_cabang][$p->tahun][$p->bulan] += (- $p->total_potongan - $p->total_potongan_istimewa - $p->total_penyesuaian + $p->total_ppn);
+        }
+
+        foreach ($retur_data as $r) {
+            if (!isset($piutang_map[$r->kode_cabang][$r->tahun][$r->bulan])) {
+                $piutang_map[$r->kode_cabang][$r->tahun][$r->bulan] = 0;
+            }
+            $piutang_map[$r->kode_cabang][$r->tahun][$r->bulan] -= $r->total_retur;
+        }
+
+        $data['cabang_list'] = $cabang_list;
+        $data['years'] = $years;
+        $data['piutang_map'] = $piutang_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Piutang per Cabang Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappiutang_multitahun_percabang_cetak', $data);
+    }
+
+    public function cetakrekappiutang_multitahun_perregional($kode_cabang, Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        // Fetch regional yang memiliki transaksi piutang di tahun-tahun yang dipilih
+        $q_regional = DB::table('marketing_penjualan')
+            ->select('regional.kode_regional', 'regional.nama_regional')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('regional', 'cabang.kode_regional', '=', 'regional.kode_regional')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_regional->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $regional_list = $q_regional
+            ->groupBy('regional.kode_regional', 'regional.nama_regional')
+            ->orderBy('regional.nama_regional', 'asc')
+            ->get();
+
+        // 1. Credit Sales Bruto
+        $q_bruto = DB::table('marketing_penjualan_detail')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan_detail.subtotal) as total_bruto')
+            )
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bruto->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $bruto_data = $q_bruto->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 2. Credit Sales Potongan, Potongan Istimewa, Penyesuaian, PPN
+        $q_penjualan = DB::table('marketing_penjualan')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_penjualan.potongan) as total_potongan'),
+                DB::raw('SUM(marketing_penjualan.potongan_istimewa) as total_potongan_istimewa'),
+                DB::raw('SUM(marketing_penjualan.penyesuaian) as total_penyesuaian'),
+                DB::raw('SUM(marketing_penjualan.ppn) as total_ppn')
+            )
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_penjualan->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $penjualan_data = $q_penjualan->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // 3. Retur on Credit Sales (PF)
+        $q_retur = DB::table('marketing_retur_detail')
+            ->select(
+                'cabang.kode_regional',
+                DB::raw('YEAR(marketing_penjualan.tanggal) as tahun'),
+                DB::raw('MONTH(marketing_penjualan.tanggal) as bulan'),
+                DB::raw('SUM(marketing_retur_detail.subtotal) as total_retur')
+            )
+            ->join('marketing_retur', 'marketing_retur_detail.no_retur', '=', 'marketing_retur.no_retur')
+            ->join('marketing_penjualan', 'marketing_retur.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan.status_batal', 0)
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.jenis_transaksi', 'K')
+            ->where('marketing_retur.jenis_retur', 'PF')
+            ->whereIn(DB::raw('YEAR(marketing_penjualan.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_retur->where('salesman.kode_cabang', $kode_cabang);
+        }
+
+        $retur_data = $q_retur->groupBy('cabang.kode_regional', DB::raw('YEAR(marketing_penjualan.tanggal)'), DB::raw('MONTH(marketing_penjualan.tanggal)'))
+            ->get();
+
+        // Calculate Piutang per Regional per Year per Month
+        $piutang_map = [];
+
+        foreach ($bruto_data as $b) {
+            if (!isset($piutang_map[$b->kode_regional][$b->tahun][$b->bulan])) {
+                $piutang_map[$b->kode_regional][$b->tahun][$b->bulan] = 0;
+            }
+            $piutang_map[$b->kode_regional][$b->tahun][$b->bulan] += $b->total_bruto;
+        }
+
+        foreach ($penjualan_data as $p) {
+            if (!isset($piutang_map[$p->kode_regional][$p->tahun][$p->bulan])) {
+                $piutang_map[$p->kode_regional][$p->tahun][$p->bulan] = 0;
+            }
+            $piutang_map[$p->kode_regional][$p->tahun][$p->bulan] += (- $p->total_potongan - $p->total_potongan_istimewa - $p->total_penyesuaian + $p->total_ppn);
+        }
+
+        foreach ($retur_data as $r) {
+            if (!isset($piutang_map[$r->kode_regional][$r->tahun][$r->bulan])) {
+                $piutang_map[$r->kode_regional][$r->tahun][$r->bulan] = 0;
+            }
+            $piutang_map[$r->kode_regional][$r->tahun][$r->bulan] -= $r->total_retur;
+        }
+
+        $data['regional_list'] = $regional_list;
+        $data['years'] = $years;
+        $data['piutang_map'] = $piutang_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Piutang per Regional Multi Tahun.xls");
+        }
+
+        return view('marketing.laporan.rekappiutang_multitahun_perregional_cetak', $data);
     }
 
     public function cetak_rekapaup($kode_cabang, Request $request)
