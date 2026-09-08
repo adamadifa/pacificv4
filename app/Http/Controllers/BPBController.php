@@ -276,7 +276,7 @@ class BPBController extends Controller
             if ($request->approve == '1') {
                 $updated = DB::table('bpb')
                     ->where('no_bpb', $kode_bpb)
-                    ->where('approve_head_dept', '1')
+                    ->where('approve_gudang', '0')
                     ->update([
                         'approve_gudang' => '1',
                         'tgl_gudang' => now(),

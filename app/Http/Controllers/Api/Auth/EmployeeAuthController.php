@@ -26,6 +26,13 @@ class EmployeeAuthController extends Controller
             ], 401);
         }
 
+        if ($employee->status_aktif_karyawan != '1') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun Anda sudah nonaktif. Silakan hubungi HRD.',
+            ], 403);
+        }
+
         $token = $employee->createToken('employee-token')->plainTextToken;
         $employeeData = Karyawan::getKaryawan($employee->nik);
 
@@ -49,7 +56,16 @@ class EmployeeAuthController extends Controller
 
     public function me(Request $request)
     {
-        $employee = Karyawan::getKaryawan($request->user()->nik);
+        $user = $request->user();
+        if ($user->status_aktif_karyawan != '1') {
+            $user->currentAccessToken()->delete();
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun Anda sudah nonaktif. Silakan hubungi HRD.',
+            ], 403);
+        }
+
+        $employee = Karyawan::getKaryawan($user->nik);
         return response()->json([
             'success' => true,
             'data' => $employee

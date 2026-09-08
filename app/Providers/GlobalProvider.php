@@ -412,7 +412,6 @@ class GlobalProvider extends ServiceProvider
 
                 if ($user_id == '67') {
                     $notifikasi_bpb = \DB::table('bpb')
-                        ->where('approve_head_dept', '1')
                         ->where('approve_gudang', '0')
                         ->count();
                 } else {
