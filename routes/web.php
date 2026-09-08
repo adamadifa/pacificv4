@@ -1051,6 +1051,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporangudanglogistik/cetakbarangkeluar', 'cetakbarangkeluar')->name('laporangudanglogistik.cetakbarangkeluar')->can('gl.barangkeluar');
         Route::post('/laporangudanglogistik/cetakpersediaan', 'cetakpersediaan')->name('laporangudanglogistik.cetakpersediaan')->can('gl.persediaan');
         Route::post('/laporangudanglogistik/cetakpersediaanopname', 'cetakpersediaanopname')->name('laporangudanglogistik.cetakpersediaanopname')->can('gl.persediaanopname');
+        Route::post('/laporangudanglogistik/cetakbpb', 'cetakbpb')->name('laporangudanglogistik.cetakbpb')->can('gl.bpb');
     });
 
     //Gudang Jadi Cabang
