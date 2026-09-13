@@ -155,16 +155,16 @@ class ReturController extends Controller
             }
             if ($request->jenis_retur == "PF") {
 
-                if ($faktur->jenis_bayar == "TN") {
+                if ($faktur && $faktur->jenis_bayar == "TN") {
                     $cekbayar = Historibayarpenjualan::where('no_faktur', $request->no_faktur)
                         ->where('voucher', 0)
                         ->where('tanggal', $faktur->tanggal)
                         ->orderBy('no_bukti')
                         ->first();
-                    $jumlah = $cekbayar->jumlah - $total;
 
-                    $oldbayar = $cekbayar->getAttributes();
                     if ($cekbayar != null) {
+                        $jumlah = $cekbayar->jumlah - $total;
+                        $oldbayar = $cekbayar->getAttributes();
                         $cekbayar->update([
                             'jumlah' => $jumlah
                         ]);
@@ -237,22 +237,19 @@ class ReturController extends Controller
 
             if ($retur->jenis_retur == "PF") {
                 $faktur = Penjualan::where('no_faktur', $retur->no_faktur)->first();
-                if ($faktur->jenis_bayar == "TN") {
+                if ($faktur && $faktur->jenis_bayar == "TN") {
                     $cekbayar = Historibayarpenjualan::where('no_faktur', $retur->no_faktur)
                         ->where('voucher', 0)
                         ->where('tanggal', $faktur->tanggal)
                         ->orderBy('no_bukti')
                         ->first();
 
-                    $jumlah = $cekbayar->jumlah + $detailretur->total_retur;
-                    $oldbayar = $cekbayar->getAttributes();
-
                     if ($cekbayar != null) {
+                        $jumlah = $cekbayar->jumlah + $detailretur->total_retur;
+                        $oldbayar = $cekbayar->getAttributes();
                         $cekbayar->update([
                             'jumlah' => $jumlah
                         ]);
-
-
 
                         $historibayar_log = [
                             'old' => $oldbayar,

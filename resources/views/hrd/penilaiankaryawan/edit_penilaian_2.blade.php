@@ -113,11 +113,6 @@
                                     <label class="form-check-label" for="inlineCheckbox1">Tidak di Perpanjang</label>
                                 </div>
                                 <div class="form-check form-check-inline mt-3">
-                                    <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox2" value="K3" name="masa_kontrak"
-                                        {{ $penilaiankaryawan->masa_kontrak == 'K3' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="inlineCheckbox2">3 Bulan</label>
-                                </div>
-                                <div class="form-check form-check-inline mt-3">
                                     <input class="form-check-input chbmk" type="checkbox" id="inlineCheckbox3" value="K6" name="masa_kontrak"
                                         {{ $penilaiankaryawan->masa_kontrak == 'K6' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="inlineCheckbox3">6 Bulan</label>
