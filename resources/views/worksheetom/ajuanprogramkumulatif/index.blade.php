@@ -68,131 +68,125 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th rowspan="2">No.</th>
-                                            <th rowspan="2">No Pengajuan</th>
-                                            {{-- <th rowspan="2">No. Dok</th> --}}
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">Cabang</th>
-                                            <th colspan="4">Persetujuan</th>
-                                            <th rowspan="2">Status</th>
-                                            <th rowspan="2">#</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center">OM</th>
-                                            <th class="text-center">RSM</th>
-                                            <th class="text-center">GM</th>
-                                            <th class="text-center">Direktur</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($ajuankumulatif as $d)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $d->no_pengajuan }}</td>
-                                                {{-- <td>{{ $d->nomor_dokumen }}</td> --}}
-                                                <td>{{ formatIndo($d->tanggal) }}</td>
+                            @if ($ajuankumulatif->isEmpty())
+                                <div class="alert alert-warning text-center">
+                                    <i class="ti ti-info-circle me-1"></i> Tidak ada data ajuan program kumulatif ditemukan.
+                                </div>
+                            @else
+                                @foreach ($ajuankumulatif as $d)
+                                    <div class="card mb-3 border border-light shadow-sm" style="border-radius: 8px;">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <!-- Cabang & Tanggal -->
+                                                <div class="col-lg-2 col-md-3 col-12 mb-2 mb-md-0">
+                                                    <span class="badge bg-label-primary px-3 py-2 rounded text-uppercase fw-bold d-block mb-1 text-center" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                                                        {{ strtoupper($d->nama_cabang) }}
+                                                    </span>
+                                                    <small class="text-muted d-block text-center" style="font-size: 0.75rem;">
+                                                        <i class="ti ti-calendar me-1"></i>{{ formatIndo($d->tanggal) }}
+                                                    </small>
+                                                </div>
 
-                                                <td>{{ strtoUpper($d->nama_cabang) }}</td>
+                                                <!-- No Pengajuan & Dokumen -->
+                                                <div class="col-lg-3 col-md-4 col-12 mb-2 mb-md-0">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm me-2 bg-label-info p-2 rounded">
+                                                            <i class="ti ti-file-description text-info fs-4"></i>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-dark fw-bold d-block" style="font-size: 0.9rem;">{{ $d->no_pengajuan }}</span>
+                                                            @if (!empty($d->nomor_dokumen))
+                                                                <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                                    <i class="ti ti-notes me-1"></i>{{ $d->nomor_dokumen }}
+                                                                </small>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                <td class="text-center">
-                                                    @if (empty($d->om))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->rsm))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->gm))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->direktur))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($d->status == '0')
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @elseif ($d->status == '1')
-                                                        <i class="ti ti-checks text-success"></i>
-                                                    @elseif($d->status == '2')
-                                                        <span class="badge bg-danger">Ditolak</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
+                                                <!-- Persetujuan Hirarki -->
+                                                <div class="col-lg-3 col-md-5 col-12 mb-2 mb-md-0">
+                                                    <small class="text-muted d-block mb-1 fw-semibold" style="font-size: 0.75rem;">Status Persetujuan:</small>
+                                                    <div class="d-flex flex-wrap gap-1">
+                                                        <!-- OM -->
+                                                        <span class="badge {{ empty($d->om) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="Operation Manager">
+                                                            <i class="ti {{ empty($d->om) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>OM
+                                                        </span>
+                                                        <!-- RSM -->
+                                                        <span class="badge {{ empty($d->rsm) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="Regional Sales Manager">
+                                                            <i class="ti {{ empty($d->rsm) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>RSM
+                                                        </span>
+                                                        <!-- GM -->
+                                                        <span class="badge {{ empty($d->gm) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="General Manager">
+                                                            <i class="ti {{ empty($d->gm) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>GM
+                                                        </span>
+                                                        <!-- Direktur -->
+                                                        <span class="badge {{ empty($d->direktur) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="Direktur">
+                                                            <i class="ti {{ empty($d->direktur) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>Dir
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Status Overall & Actions -->
+                                                <div class="col-lg-4 col-md-12 col-12 text-lg-end d-flex flex-wrap justify-content-lg-end justify-content-between align-items-center gap-2 mt-2 mt-lg-0">
+                                                    <div>
+                                                        @if ($d->status == '0')
+                                                            <span class="badge bg-label-warning px-3 py-2 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                                <i class="ti ti-hourglass-empty me-1"></i> Pending
+                                                            </span>
+                                                        @elseif ($d->status == '1')
+                                                            <span class="badge bg-label-success px-3 py-2 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                                <i class="ti ti-checks me-1"></i> Disetujui
+                                                            </span>
+                                                        @elseif ($d->status == '2')
+                                                            <span class="badge bg-label-danger px-3 py-2 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                                <i class="ti ti-x me-1"></i> Ditolak
+                                                            </span>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="d-flex align-items-center gap-1">
                                                         @can('ajuankumulatif.approve')
-                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif($user->hasRole(['super admin', 'direktur']))
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
+                                                            @if (
+                                                                ($user->hasRole('operation manager') && $d->rsm == null) ||
+                                                                ($user->hasRole('regional sales manager') && $d->gm == null) ||
+                                                                ($user->hasRole('gm marketing') && $d->direktur == null) ||
+                                                                $user->hasRole(['super admin', 'direktur'])
+                                                            )
+                                                                <a href="#" class="btn btn-sm btn-outline-success btnApprove"
+                                                                    no_pengajuan="{{ Crypt::encrypt($d->no_pengajuan) }}" title="Approve / Review">
+                                                                    <i class="ti ti-external-link me-1"></i> Approve
                                                                 </a>
                                                             @endif
                                                         @endcan
+
                                                         @can('ajuankumulatif.edit')
                                                             <a href="{{ route('ajuankumulatif.setajuankumulatif', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                class="me-1">
-                                                                <i class="ti ti-settings text-primary"></i>
+                                                                class="btn btn-sm btn-outline-primary" title="Atur Ajuan">
+                                                                <i class="ti ti-settings me-1"></i> Atur
                                                             </a>
                                                         @endcan
-                                                        {{-- @can('ajuankumulatif.show')
-                                                            <a href="{{ route('ajuankumulatif.cetak', Crypt::encrypt($d->no_pengajuan)) }}"
-                                                                target="_blank">
-                                                                <i class="ti ti-printer text-success"></i>
-                                                            </a>
-                                                        @endcan --}}
 
                                                         @can('ajuankumulatif.delete')
                                                             @if ($user->hasRole(['operation manager', 'sales marketing manager']) && $d->rsm == null)
-                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                <form method="POST" name="deleteform" class="deleteform d-inline"
                                                                     action="{{ route('ajuankumulatif.delete', Crypt::encrypt($d->no_pengajuan)) }}">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
+                                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-confirm" title="Hapus">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </button>
                                                                 </form>
                                                             @endif
                                                         @endcan
-
-
                                                     </div>
-                                                </td>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             <div style="float: right;">
                                 {{ $ajuankumulatif->links() }}
                             </div>

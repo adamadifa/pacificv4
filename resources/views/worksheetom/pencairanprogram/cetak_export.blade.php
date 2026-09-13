@@ -106,11 +106,13 @@
                         'TN' => 'Tunai',
                         'TF' => 'Transfer',
                         'VC' => 'Voucher',
+                        'SM' => 'Simpanan',
                     ];
                     $subtotal_cashback = 0;
                     $subtotal_voucher = 0;
                     $subtotal_transfer = 0;
                     $subtotal_tunai = 0;
+                    $subtotal_simpanan = 0;
                 @endphp
                 @foreach ($detailpencairan as $key => $d)
                     @php
@@ -119,6 +121,7 @@
                         $subtotal_voucher += $d->metode_bayar == 'VC' ? $cashback : 0;
                         $subtotal_transfer += $d->metode_bayar == 'TF' ? $cashback : 0;
                         $subtotal_tunai += $d->metode_bayar == 'TN' ? $cashback : 0;
+                        $subtotal_simpanan += $d->metode_bayar == 'SM' ? $cashback : 0;
                         $subtotal_cashback += $cashback;
                     @endphp
                     <tr>
@@ -136,7 +139,7 @@
                     </tr>
                     @if ($d->metode_bayar != $next_metode_pembayaran)
                         <tr>
-                            <th colspan="6">Total {{ $metode_pembayaran[$d->metode_bayar] }}</th>
+                            <th colspan="6">Total {{ !empty($d->metode_bayar) && isset($metode_pembayaran[$d->metode_bayar]) ? $metode_pembayaran[$d->metode_bayar] : '' }}</th>
                             <th class="right">{{ formatAngka($subtotal_cashback) }}</th>
                             <th colspan="4"></th>
                         </tr>
@@ -155,13 +158,17 @@
                 <th>Voucher</th>
                 <td>{{ formatAngka($subtotal_voucher) }}</td>
             </tr>
-            <tr></tr>
-            <th>Transfer</th>
-            <td>{{ formatAngka($subtotal_transfer) }}</td>
+            <tr>
+                <th>Transfer</th>
+                <td>{{ formatAngka($subtotal_transfer) }}</td>
             </tr>
             <tr>
                 <th>Tunai</th>
                 <td>{{ formatAngka($subtotal_tunai) }}</td>
+            </tr>
+            <tr>
+                <th>Simpanan</th>
+                <td>{{ formatAngka($subtotal_simpanan) }}</td>
             </tr>
         </table>
     </body>

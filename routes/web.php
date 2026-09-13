@@ -2415,6 +2415,17 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pencairanprogram/{kode_pencairan}/upload', 'upload')->name('pencairanprogram.upload')->can('pencairanprogramikt.upload');
         Route::post('/pencairanprogram/{kode_pencairan}/storeupload', 'storeupload')->name('pencairanprogram.storeupload')->can('pencairanprogramikt.upload');
+
+        // Simpanan Program Kumulatif
+        Route::get('/pencairanprogram/saldosimpanan', 'saldosimpanan')->name('pencairanprogram.saldosimpanan')->can('pencairanprogram.index');
+        Route::get('/pencairanprogram/{kode_pelanggan}/getdetailsimpanan', 'getdetailsimpanan')->name('pencairanprogram.getdetailsimpanan');
+        Route::get('/pencairanprogram/{kode_pelanggan}/createpencairansimpanan', 'createpencairansimpanan')->name('pencairanprogram.createpencairansimpanan');
+        Route::post('/pencairanprogram/{kode_pelanggan}/storepencairansimpanan', 'storepencairansimpanan')->name('pencairanprogram.storepencairansimpanan');
+        Route::get('/pencairanprogram/pencairansimpanan', 'pencairansimpanan')->name('pencairanprogram.pencairansimpanan')->can('pencairanprogram.index');
+        Route::get('/pencairanprogram/{kode_pencairan}/approvepencairansimpanan', 'approvepencairansimpanan')->name('pencairanprogram.approvepencairansimpanan')->can('pencairanprogram.index');
+        Route::post('/pencairanprogram/{kode_pencairan}/storeapprovepencairansimpanan', 'storeapprovepencairansimpanan')->name('pencairanprogram.storeapprovepencairansimpanan')->can('pencairanprogram.index');
+        Route::delete('/pencairanprogram/{kode_pencairan}/deletepencairansimpanan', 'deletepencairansimpanan')->name('pencairanprogram.deletepencairansimpanan');
+        Route::get('/pencairanprogram/{kode_pencairan}/cetakpencairansimpanan', 'cetakpencairansimpanan')->name('pencairanprogram.cetakpencairansimpanan');
     });
 
     Route::controller(PencairanprogramikatanController::class)->group(function () {

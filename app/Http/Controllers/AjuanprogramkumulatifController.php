@@ -110,6 +110,7 @@ class AjuanprogramkumulatifController extends Controller
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getCabang();
         $data['user'] = $user;
+        $data['roles_show_cabang'] = config('global.roles_show_cabang');
 
         return view('worksheetom.ajuanprogramkumulatif.index', $data);
     }

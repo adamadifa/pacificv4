@@ -9,6 +9,7 @@ use App\Models\Detailpenjualan;
 use App\Models\Diskon;
 use App\Models\Pelanggan;
 use App\Models\Pencairanprogram;
+use App\Models\Pencairansimpanankumulatif;
 use App\Models\Penjualan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class PencairanprogramController extends Controller
             $kode_cabang = $request->kode_cabang;
         }
         $query = Pencairanprogram::query();
+        $query->select('marketing_program_pencairan.*', 'cabang.nama_cabang');
 
         $query->join('cabang', 'marketing_program_pencairan.kode_cabang', '=', 'cabang.kode_cabang');
         if (!$user->hasRole($roles_access_all_cabang)) {
@@ -137,6 +139,7 @@ class PencairanprogramController extends Controller
         $cabang = $cbg->getCabang();
         $data['cabang'] = $cabang;
         $data['user'] = $user;
+        $data['roles_show_cabang'] = config('global.roles_show_cabang');
         return view('worksheetom.pencairanprogram.index', $data);
     }
 
@@ -509,9 +512,15 @@ class PencairanprogramController extends Controller
                     'message' => 'Data sudah ada'
                 ], 400);
             }
-            $pelanggan = Detailajuanprogramkumulatif::where('kode_pelanggan', $request->kode_pelanggan)->first();
-            $selisih = $request->diskon_kumulatif - $request->diskon_reguler;
-            $metode_pembayaran = $selisih < 100000 ? 'VC' : $pelanggan->metode_pembayaran;
+            $pencairanprogram = Pencairanprogram::where('kode_pencairan', $request->kode_pencairan)->first();
+            if ($pencairanprogram && $pencairanprogram->tahun == '2026' && $pencairanprogram->bulan >= 8 && $pencairanprogram->bulan <= 12) {
+                $metode_pembayaran = 'SM';
+            } else {
+                $pelanggan = Detailajuanprogramkumulatif::where('kode_pelanggan', $request->kode_pelanggan)->first();
+                $selisih = $request->diskon_kumulatif - $request->diskon_reguler;
+                $metode_pembayaran = $selisih < 100000 ? 'VC' : ($pelanggan ? $pelanggan->metode_pembayaran : 'TN');
+            }
+
             Detailpencairan::create([
                 'kode_pencairan' => $request->kode_pencairan,
                 'kode_pelanggan' => $request->kode_pelanggan,
@@ -599,10 +608,9 @@ class PencairanprogramController extends Controller
     }
 
 
-    public function approve(Request $request)
+    public function approve($kode_pencairan)
     {
-
-        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
         $detailpencairan = Detailpencairan::where('kode_pencairan', $kode_pencairan)
             ->select(
                 'marketing_program_pencairan_detail.kode_pelanggan',
@@ -621,6 +629,8 @@ class PencairanprogramController extends Controller
         $data['detailpencairan'] = $detailpencairan;
         $pencairanprogram = Pencairanprogram::where('kode_pencairan', $kode_pencairan)->first();
         $data['pencairanprogram'] = $pencairanprogram;
+        $data['namabulan'] = config('global.nama_bulan');
+        $data['level_user'] = auth()->user()->roles->first()->name ?? '';
         return view('worksheetom.pencairanprogram.approve', $data);
     }
 
@@ -650,10 +660,22 @@ class PencairanprogramController extends Controller
         $kode_pencairan = Crypt::decrypt($kode_pencairan);
         try {
             if ($user->hasRole('super admin')) {
-                Pencairanprogram::where('kode_pencairan', $kode_pencairan)
-                    ->update([
-                        'status' => $status
-                    ]);
+                if (isset($_POST['cancel'])) {
+                    Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                        ->update([
+                            'status' => 0,
+                            'keuangan' => 0
+                        ]);
+                } else {
+                    Pencairanprogram::where('kode_pencairan', $kode_pencairan)
+                        ->update([
+                            'om' => auth()->user()->id,
+                            'rsm' => auth()->user()->id,
+                            'gm' => auth()->user()->id,
+                            'direktur' => auth()->user()->id,
+                            'status' => $status
+                        ]);
+                }
             } else {
                 Pencairanprogram::where('kode_pencairan', $kode_pencairan)
                     ->update([
@@ -738,5 +760,273 @@ class PencairanprogramController extends Controller
         } catch (\Exception $e) {
             return Redirect::back()->with(messageError($e->getMessage()));
         }
+    }
+
+    public function saldosimpanan(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $qpencairansimpanan = Pencairansimpanankumulatif::query();
+        $qpencairansimpanan->select('kode_pelanggan', DB::raw('SUM(jumlah) as total_pencairan'));
+        if (!empty($kode_cabang)) {
+            $qpencairansimpanan->where('kode_cabang', $kode_cabang);
+        }
+        $qpencairansimpanan->groupBy('kode_pelanggan');
+
+        $query = Detailpencairan::query();
+        $query->select(
+            'marketing_program_pencairan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            DB::raw('SUM(diskon_kumulatif - diskon_reguler) as total_reward'),
+            'total_pencairan'
+        );
+        $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
+        $query->join('cabang', 'marketing_program_pencairan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->where('marketing_program_pencairan_detail.metode_pembayaran', 'SM');
+        $query->where('marketing_program_pencairan.status', 1);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $query->where('cabang.kode_regional', auth()->user()->kode_regional);
+            } else {
+                $query->where('marketing_program_pencairan.kode_cabang', $kode_cabang);
+            }
+        }
+
+        if (!empty($request->kode_cabang)) {
+            $query->where('marketing_program_pencairan.kode_cabang', $request->kode_cabang);
+        }
+
+        $query->leftJoinSub($qpencairansimpanan, 'pencairansimpanan', function ($join) {
+            $join->on('marketing_program_pencairan_detail.kode_pelanggan', '=', 'pencairansimpanan.kode_pelanggan');
+        });
+        $query->groupBy(
+            'marketing_program_pencairan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            'total_pencairan'
+        );
+        if (!empty($request->nama_pelanggan)) {
+            $query->where('pelanggan.nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
+        }
+        $query->orderBy('nama_pelanggan');
+        $saldosimpanan = $query->paginate(20);
+        $saldosimpanan->appends(request()->query());
+
+        $data['saldosimpanan'] = $saldosimpanan;
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $data['roles_show_cabang'] = config('global.roles_show_cabang');
+        return view('worksheetom.simpanankumulatif.saldosimpanan', $data);
+    }
+
+    public function getdetailsimpanan($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $query = Detailpencairan::query();
+        $query->select(
+            'marketing_program_pencairan.tanggal',
+            'marketing_program_pencairan.bulan',
+            'marketing_program_pencairan.tahun',
+            'marketing_program_pencairan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'no_rekening',
+            'bank',
+            'pemilik_rekening',
+            'nama_salesman',
+            'nama_wilayah',
+            'marketing_program_pencairan.kode_program',
+            DB::raw('(diskon_kumulatif - diskon_reguler) as total_reward')
+        );
+        $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
+        $query->where('marketing_program_pencairan_detail.metode_pembayaran', 'SM');
+        $query->where('marketing_program_pencairan_detail.kode_pelanggan', $kode_pelanggan);
+        $query->where('marketing_program_pencairan.status', 1);
+        $query->orderBy('marketing_program_pencairan.tanggal', 'desc');
+        $data['detailsimpanan'] = $query->get();
+
+        return view('worksheetom.simpanankumulatif.getdetailsimpanan', $data);
+    }
+
+    public function createpencairansimpanan($kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+
+        $qpencairansimpanan = Pencairansimpanankumulatif::query();
+        $qpencairansimpanan->select('kode_pelanggan', DB::raw('SUM(jumlah) as total_pencairan'));
+        $qpencairansimpanan->where('kode_pelanggan', $kode_pelanggan);
+        $qpencairansimpanan->groupBy('kode_pelanggan');
+
+        $query = Detailpencairan::query();
+        $query->select(
+            'marketing_program_pencairan_detail.kode_pelanggan',
+            'nama_pelanggan',
+            'nama_salesman',
+            'nama_wilayah',
+            DB::raw('SUM(diskon_kumulatif - diskon_reguler) as total_reward'),
+            'total_pencairan'
+        );
+        $query->join('pelanggan', 'marketing_program_pencairan_detail.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah');
+        $query->join('marketing_program_pencairan', 'marketing_program_pencairan_detail.kode_pencairan', '=', 'marketing_program_pencairan.kode_pencairan');
+        $query->leftJoinSub($qpencairansimpanan, 'pencairansimpanan', function ($join) {
+            $join->on('marketing_program_pencairan_detail.kode_pelanggan', '=', 'pencairansimpanan.kode_pelanggan');
+        });
+        $query->where('marketing_program_pencairan_detail.metode_pembayaran', 'SM');
+        $query->where('marketing_program_pencairan.status', 1);
+        $query->where('marketing_program_pencairan_detail.kode_pelanggan', $kode_pelanggan);
+        $query->groupBy('marketing_program_pencairan_detail.kode_pelanggan', 'nama_pelanggan', 'nama_salesman', 'nama_wilayah', 'total_pencairan');
+        $simpanan = $query->first();
+
+        $data['simpanan'] = $simpanan;
+        return view('worksheetom.simpanankumulatif.createpencairansimpanan', $data);
+    }
+
+    public function storepencairansimpanan(Request $request, $kode_pelanggan)
+    {
+        $kode_pelanggan = Crypt::decrypt($kode_pelanggan);
+        $pelanggan = Pelanggan::where('kode_pelanggan', $kode_pelanggan)->first();
+        $kode_cabang = $pelanggan->kode_cabang;
+        $lastpencairan = Pencairansimpanankumulatif::select('kode_pencairan')->orderBy('kode_pencairan', 'desc')
+            ->whereRaw('YEAR(marketing_pencairan_simpanan_kumulatif.tanggal)="' . date('Y', strtotime(date('Y-m-d'))) . '"')
+            ->where('kode_cabang', $kode_cabang)
+            ->first();
+        $last_kode_pencairan = $lastpencairan != null ? $lastpencairan->kode_pencairan : '';
+
+        $kode_pencairan = buatkode($last_kode_pencairan, "PSK" . $kode_cabang . date('y', strtotime(date('Y-m-d'))), 4);
+
+        DB::beginTransaction();
+        try {
+            Pencairansimpanankumulatif::create([
+                'kode_pencairan' => $kode_pencairan,
+                'tanggal' => date('Y-m-d'),
+                'kode_pelanggan' => $kode_pelanggan,
+                'jumlah' => toNumber($request->jumlah),
+                'status' => 0,
+                'kode_cabang' => $kode_cabang,
+                'metode_pembayaran' => $request->metode_pembayaran
+            ]);
+
+            DB::commit();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function pencairansimpanan(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+        $cbg = new Cabang();
+        $query = Pencairansimpanankumulatif::query();
+        $query->select(
+            'marketing_pencairan_simpanan_kumulatif.*',
+            'nama_pelanggan',
+            'no_rekening',
+            'bank',
+            'pemilik_rekening',
+            'nama_salesman'
+        );
+
+        if (!empty($kode_cabang)) {
+            $query->where('marketing_pencairan_simpanan_kumulatif.kode_cabang', $kode_cabang);
+        }
+        $query->join('pelanggan', 'marketing_pencairan_simpanan_kumulatif.kode_pelanggan', '=', 'pelanggan.kode_pelanggan');
+        $query->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman');
+        $query->orderBy('marketing_pencairan_simpanan_kumulatif.kode_pencairan', 'desc');
+        $pencairan = $query->paginate(15);
+        $pencairan->appends($request->all());
+        $data['pencairan'] = $pencairan;
+        $data['cabang'] = $cbg->getCabang();
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = config('global.start_year');
+        $data['roles_show_cabang'] = config('global.roles_show_cabang');
+        return view('worksheetom.simpanankumulatif.pencairansimpanan', $data);
+    }
+
+    public function deletepencairansimpanan($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        try {
+            $pencairanprogram = Pencairansimpanankumulatif::where('kode_pencairan', $kode_pencairan)->firstorFail();
+            $pencairanprogram->delete();
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));
+        } catch (\Exception $e) {
+            return Redirect::back()->with(messageError($e->getMessage()));
+        }
+    }
+
+    public function approvepencairansimpanan($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $pencairansimpanan = Pencairansimpanankumulatif::where('kode_pencairan', $kode_pencairan)
+            ->join('pelanggan', 'marketing_pencairan_simpanan_kumulatif.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->firstorFail();
+        return view('worksheetom.simpanankumulatif.approvepencairansimpanan', compact('pencairansimpanan'));
+    }
+
+    public function storeapprovepencairansimpanan(Request $request)
+    {
+        $kode_pencairan = Crypt::decrypt($request->kode_pencairan);
+
+        if (isset($_POST['cancel'])) {
+            Pencairansimpanankumulatif::where('kode_pencairan', $kode_pencairan)
+                ->update([
+                    'status' => 0
+                ]);
+            return Redirect::back()->with(messageSuccess('Data Berhasil Dibatalkan'));
+        }
+
+        $pencairansimpanan = Pencairansimpanankumulatif::where('kode_pencairan', $kode_pencairan)->firstorFail();
+        $pencairansimpanan->status = 1;
+        $pencairansimpanan->save();
+        return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
+    }
+
+    public function cetakpencairansimpanan($kode_pencairan)
+    {
+        $kode_pencairan = Crypt::decrypt($kode_pencairan);
+        $pencairansimpanan = Pencairansimpanankumulatif::where('kode_pencairan', $kode_pencairan)
+            ->join('pelanggan', 'marketing_pencairan_simpanan_kumulatif.kode_pelanggan', '=', 'pelanggan.kode_pelanggan')
+            ->join('salesman', 'pelanggan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->firstorFail();
+        $data['pencairansimpanan'] = $pencairansimpanan;
+        return view('worksheetom.simpanankumulatif.pencairansimpanan_cetak', $data);
     }
 }

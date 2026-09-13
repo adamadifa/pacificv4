@@ -78,166 +78,169 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <div class="table-responsive mb-2">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th rowspan="2" valign="middle">No. Ajuan</th>
-                                            <th rowspan="2" valign="middle">Tanggal</th>
-                                            <th rowspan="2" valign="middle">Bulan</th>
-                                            <th rowspan="2" valign="middle">Tahun</th>
-                                            <th rowspan="2" valign="middle">Program</th>
-                                            <th rowspan="2" valign="middle">Cabang</th>
-                                            <th colspan="4" valign="middle" class="text-center">Persetujuan</th>
-                                            {{-- <th rowspan="2" valign="middle">Keuangan</th> --}}
-                                            <th rowspan="2" valign="middle">Status</th>
-                                            <th rowspan="2" valign="middle">Keuangan</th>
-                                            <th rowspan="2" valign="middle"><i class="ti ti-file-description"></i></th>
-                                            <th rowspan="2" valign="middle">#</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center">OM</th>
-                                            <th class="text-center">RSM</th>
-                                            <th class="text-center">GM</th>
-                                            <th class="text-center">Direktur</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($pencairanprogram as $d)
-                                            <tr>
-                                                <td>{{ $d->kode_pencairan }}</td>
-                                                <td>{{ DateToIndo($d->tanggal) }}</td>
-                                                <td>{{ $namabulan[$d->bulan] }}</td>
-                                                <td>{{ $d->tahun }}</td>
-                                                <td>{{ $d->kode_program == 'PR001' ? 'BB & DP' : 'AIDA' }}</td>
-                                                <td>{{ $d->kode_cabang }}</td>
-                                                <td class="text-center">
-                                                    @if (empty($d->om))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->rsm))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->gm))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if (empty($d->direktur))
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                {{-- <td class="text-center">
-                                                    <i class="ti ti-hourglass-empty text-warning"></i>
-                                                </td> --}}
-                                                <td class="text-center">
-                                                    @if ($d->status == '0')
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @elseif ($d->status == '1')
-                                                        <i class="ti ti-checks text-success"></i>
-                                                    @elseif($d->status == '2')
-                                                        <span class="badge bg-danger">Ditolak</span>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($d->keuangan == null)
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @else
-                                                        <i class="ti ti-square-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if (!empty($d->bukti_transfer))
-                                                        <a href="{{ url($d->bukti_transfer) }}" target="_blank">
-                                                            <i class="ti ti-receipt text-success"></i>
-                                                        </a>
-                                                    @else
-                                                        <i class="ti ti-hourglass-empty text-warning"></i>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex">
+                            @if ($pencairanprogram->isEmpty())
+                                <div class="alert alert-warning text-center">
+                                    <i class="ti ti-info-circle me-1"></i> Tidak ada data pencairan program ditemukan.
+                                </div>
+                            @else
+                                @foreach ($pencairanprogram as $d)
+                                    <div class="card mb-3 border border-light shadow-sm" style="border-radius: 8px;">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <!-- Cabang, Periode, & Tanggal -->
+                                                <div class="col-lg-2 col-md-3 col-12 mb-2 mb-md-0">
+                                                    <span class="badge bg-label-primary px-3 py-2 rounded text-uppercase fw-bold d-block mb-1 text-center" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                                                        {{ strtoupper($d->kode_cabang) }}
+                                                    </span>
+                                                    <div class="text-center">
+                                                        <span class="badge bg-label-secondary px-2 py-1 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                            {{ $namabulan[$d->bulan] }} {{ $d->tahun }}
+                                                        </span>
+                                                        <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">
+                                                            <i class="ti ti-calendar me-1"></i>{{ DateToIndo($d->tanggal) }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Kode Pencairan & Program -->
+                                                <div class="col-lg-3 col-md-4 col-12 mb-2 mb-md-0">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm me-2 bg-label-info p-2 rounded">
+                                                            <i class="ti ti-receipt text-info fs-4"></i>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-dark fw-bold d-block" style="font-size: 0.9rem;">{{ $d->kode_pencairan }}</span>
+                                                            <span class="badge {{ $d->kode_program == 'PR001' ? 'bg-label-info' : 'bg-label-warning' }} py-1 px-2 mt-1" style="font-size: 0.72rem;">
+                                                                <i class="ti ti-tag me-1"></i>{{ $d->kode_program == 'PR001' ? 'BB & DP' : 'AIDA' }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Persetujuan Hirarki & Status -->
+                                                <div class="col-lg-3 col-md-5 col-12 mb-2 mb-md-0">
+                                                    <small class="text-muted d-block mb-1 fw-semibold" style="font-size: 0.75rem;">Status Persetujuan:</small>
+                                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                                        <!-- OM -->
+                                                        <span class="badge {{ empty($d->om) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="Operation Manager">
+                                                            <i class="ti {{ empty($d->om) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>OM
+                                                        </span>
+                                                        <!-- RSM -->
+                                                        <span class="badge {{ empty($d->rsm) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="Regional Sales Manager">
+                                                            <i class="ti {{ empty($d->rsm) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>RSM
+                                                        </span>
+                                                        <!-- GM -->
+                                                        <span class="badge {{ empty($d->gm) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="General Manager">
+                                                            <i class="ti {{ empty($d->gm) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>GM
+                                                        </span>
+                                                        <!-- Direktur -->
+                                                        <span class="badge {{ empty($d->direktur) ? 'bg-label-warning' : 'bg-label-success' }} py-1 px-2" style="font-size: 0.75rem;" title="Direktur">
+                                                            <i class="ti {{ empty($d->direktur) ? 'ti-hourglass-empty' : 'ti-check' }} me-1"></i>Dir
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="d-flex flex-wrap align-items-center gap-1">
+                                                        <small class="text-muted fw-semibold" style="font-size: 0.75rem;">Keuangan:</small>
+                                                        @if ($d->keuangan == null)
+                                                            <span class="badge bg-label-warning py-1 px-2" style="font-size: 0.72rem;">
+                                                                <i class="ti ti-hourglass-empty me-1"></i>Belum
+                                                            </span>
+                                                        @else
+                                                            <span class="badge bg-label-success py-1 px-2" style="font-size: 0.72rem;">
+                                                                <i class="ti ti-square-check me-1"></i>Selesai
+                                                            </span>
+                                                        @endif
+
+                                                        @if (!empty($d->bukti_transfer))
+                                                            <a href="{{ url($d->bukti_transfer) }}" target="_blank" class="badge bg-label-primary py-1 px-2 text-decoration-none" style="font-size: 0.72rem;">
+                                                                <i class="ti ti-file-text me-1"></i>Bukti Transfer
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                                <!-- Status Overall & Actions -->
+                                                <div class="col-lg-4 col-md-12 col-12 text-lg-end d-flex flex-wrap justify-content-lg-end justify-content-between align-items-center gap-2 mt-2 mt-lg-0">
+                                                    <div>
+                                                        @if ($d->status == '0')
+                                                            <span class="badge bg-label-warning px-3 py-2 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                                <i class="ti ti-hourglass-empty me-1"></i> Pending
+                                                            </span>
+                                                        @elseif ($d->status == '1')
+                                                            <span class="badge bg-label-success px-3 py-2 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                                <i class="ti ti-checks me-1"></i> Disetujui
+                                                            </span>
+                                                        @elseif ($d->status == '2')
+                                                            <span class="badge bg-label-danger px-3 py-2 rounded fw-semibold" style="font-size: 0.75rem;">
+                                                                <i class="ti ti-x me-1"></i> Ditolak
+                                                            </span>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="d-flex flex-wrap align-items-center gap-1">
                                                         @can('pencairanprogram.approve')
-                                                            @if ($user->hasRole('operation manager') && $d->rsm == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole('regional sales manager') && $d->gm == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole('gm marketing') && $d->direktur == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole(['manager keuangan', 'staff keuangan']) && $d->status == 1)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
-                                                                </a>
-                                                            @elseif ($user->hasRole(['super admin', 'direktur']) && $d->keuangan == null)
-                                                                <a href="#" class="btnApprove me-1"
-                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}">
-                                                                    <i class="ti ti-external-link text-success"></i>
+                                                            @if (
+                                                                $user->hasRole('super admin') ||
+                                                                ($user->hasRole('operation manager') && $d->rsm == null) ||
+                                                                ($user->hasRole('regional sales manager') && $d->gm == null) ||
+                                                                ($user->hasRole('gm marketing') && $d->direktur == null) ||
+                                                                ($user->hasRole(['manager keuangan', 'staff keuangan']) && $d->status == 1) ||
+                                                                ($user->hasRole('direktur') && $d->keuangan == null)
+                                                            )
+                                                                <a href="#" class="btn btn-sm btn-outline-success btnApprove"
+                                                                    kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}" title="Approve / Review">
+                                                                    <i class="ti ti-external-link me-1"></i> Approve
                                                                 </a>
                                                             @endif
                                                         @endcan
+
                                                         @can('pencairanprogram.edit')
                                                             <a href="{{ route('pencairanprogram.setpencairan', Crypt::encrypt($d->kode_pencairan)) }}"
-                                                                class="me-1">
-                                                                <i class="ti ti-settings text-primary"></i>
+                                                                class="btn btn-sm btn-outline-primary" title="Atur Pencairan">
+                                                                <i class="ti ti-settings me-1"></i> Atur
                                                             </a>
                                                         @endcan
+
                                                         @can('pencairanprogram.show')
-                                                            <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}"
-                                                                class="me-1" target="_blank">
-                                                                <i class="ti ti-printer text-success"></i>
-                                                            </a>
-                                                            <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
-                                                                class="me-1" target="_blank">
-                                                                <i class="ti ti-download text-success"></i>
-                                                            </a>
+                                                            <div class="btn-group">
+                                                                <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}"
+                                                                    class="btn btn-sm btn-outline-secondary" target="_blank" title="Cetak Laporan">
+                                                                    <i class="ti ti-printer"></i>
+                                                                </a>
+                                                                <a href="{{ route('pencairanprogram.cetak', Crypt::encrypt($d->kode_pencairan)) }}?export=true"
+                                                                    class="btn btn-sm btn-outline-secondary" target="_blank" title="Export Excel">
+                                                                    <i class="ti ti-download"></i>
+                                                                </a>
+                                                            </div>
                                                         @endcan
+
                                                         @can('pencairanprogramikt.upload')
-                                                            <a href="#"
-                                                                kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}"class="btnUpload">
-                                                                <i class="ti ti-upload text-primary"></i>
+                                                            <a href="#" class="btn btn-sm btn-outline-info btnUpload"
+                                                                kode_pencairan="{{ Crypt::encrypt($d->kode_pencairan) }}" title="Upload Bukti Transfer">
+                                                                <i class="ti ti-upload"></i>
                                                             </a>
                                                         @endcan
+
                                                         @can('pencairanprogram.delete')
                                                             @if ($user->hasRole('operation manager') && $d->rsm == null)
-                                                                <form method="POST" name="deleteform" class="deleteform"
+                                                                <form method="POST" name="deleteform" class="deleteform d-inline"
                                                                     action="{{ route('pencairanprogram.delete', Crypt::encrypt($d->kode_pencairan)) }}">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <a href="#" class="delete-confirm ml-1">
-                                                                        <i class="ti ti-trash text-danger"></i>
-                                                                    </a>
+                                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-confirm" title="Hapus">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </button>
                                                                 </form>
                                                             @endif
                                                         @endcan
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             <div style="float: right;">
                                 {{ $pencairanprogram->links() }}
                             </div>

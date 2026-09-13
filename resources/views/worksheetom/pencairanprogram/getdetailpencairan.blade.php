@@ -4,6 +4,7 @@
         'TN' => 'Tunai',
         'TF' => 'Transfer',
         'VC' => 'Voucher',
+        'SM' => 'Simpanan',
     ];
 @endphp
 @foreach ($detailpencairan as $d)
