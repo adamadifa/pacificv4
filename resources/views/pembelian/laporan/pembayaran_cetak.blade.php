@@ -33,23 +33,48 @@
         <div class="freeze-table">
             <table class="datatable3">
                 <thead class="table-dark">
-                    <tr>
-                        <th rowspan="2">NO</th>
-                        <th rowspan="2">TGL</th>
-                        <th rowspan="2">NO BUKTI</th>
-                        <th rowspan="2">SUPPLIER</th>
-                        <th rowspan="2">NO KONTRABON</th>
-                        <th colspan="{{ count($bank) }}">BANK</th>
-                        <th rowspan="2">TOTAL</th>
-                    </tr>
-                    <tr>
-                        @foreach ($bank as $d)
-                            <th>{{ $format_bank == 'kode' ? $d->kode_bank : $d->nama_bank }}</th>
-                            @php
-                                ${"total_$d->kode_bank"} = 0;
-                            @endphp
-                        @endforeach
-                    </tr>
+                    @if ($format_bank == 'kode')
+                        <tr>
+                            <th rowspan="3">NO</th>
+                            <th rowspan="3">TGL</th>
+                            <th rowspan="3">NO BUKTI</th>
+                            <th rowspan="3">SUPPLIER</th>
+                            <th rowspan="3">NO KONTRABON</th>
+                            <th colspan="{{ count($bank) }}">BANK</th>
+                            <th rowspan="3">TOTAL</th>
+                        </tr>
+                        <tr>
+                            @foreach ($bank as $d)
+                                <th>{{ $d->kode_bank }}</th>
+                            @endforeach
+                        </tr>
+                        <tr>
+                            @foreach ($bank as $d)
+                                <th>{{ $d->nama_bank }}</th>
+                                @php
+                                    ${"total_$d->kode_bank"} = 0;
+                                @endphp
+                            @endforeach
+                        </tr>
+                    @else
+                        <tr>
+                            <th rowspan="2">NO</th>
+                            <th rowspan="2">TGL</th>
+                            <th rowspan="2">NO BUKTI</th>
+                            <th rowspan="2">SUPPLIER</th>
+                            <th rowspan="2">NO KONTRABON</th>
+                            <th colspan="{{ count($bank) }}">BANK</th>
+                            <th rowspan="2">TOTAL</th>
+                        </tr>
+                        <tr>
+                            @foreach ($bank as $d)
+                                <th>{{ $d->nama_bank }}</th>
+                                @php
+                                    ${"total_$d->kode_bank"} = 0;
+                                @endphp
+                            @endforeach
+                        </tr>
+                    @endif
                 </thead>
                 <tbody>
                     @php

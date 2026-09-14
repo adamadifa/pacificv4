@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\Barangpembelian;
 use App\Models\Detailkontrabonpembelian;
 use App\Models\Detailpembelian;
@@ -53,18 +54,30 @@ class LaporanpembelianController extends Controller
         $query->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun');
         $query->leftJoin('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang');
         $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
-        if (!empty($request->kode_supplier)) {
-            $query->where('pembelian.kode_supplier', $request->kode_supplier);
+        if (!empty($request->kode_supplier_pembelian)) {
+            $query->where('pembelian.kode_supplier', $request->kode_supplier_pembelian);
         }
 
-        if ($request->ppn === "0") {
-            $query->where('pembelian.ppn', 0);
-        } else if ($request->ppn == "1") {
-            $query->where('pembelian.ppn', 1);
+        if (!empty($request->kode_asal_pengajuan_pembelian)) {
+            $query->where('kode_asal_pengajuan', $request->kode_asal_pengajuan_pembelian);
         }
 
-        if (!empty($request->kode_asal_pengajuan)) {
-            $query->where('pembelian.kode_asal_pengajuan', $request->kode_asal_pengajuan);
+        if ($request->ppn_pembelian === "0") {
+            $query->where('ppn', 0);
+        } else if ($request->ppn_pembelian == "1") {
+            $query->where('ppn', 1);
+        }
+
+        if (!empty($request->kode_akun_pembelian)) {
+            $query->where('pembelian_detail.kode_akun', $request->kode_akun_pembelian);
+        }
+
+        if (!empty($request->kode_jenis_barang_pembelian)) {
+            $query->where('kode_jenis_barang', $request->kode_jenis_barang_pembelian);
+        }
+
+        if (!empty($request->kategori_transaksi_pembelian)) {
+            $query->where('kategori_transaksi', $request->kategori_transaksi_pembelian);
         }
 
         // if (Auth::user()->level == "general affair") {
@@ -72,14 +85,11 @@ class LaporanpembelianController extends Controller
         // }
         $query->orderBy('tanggal');
         $query->orderBy('pembelian_detail.no_bukti');
-        $query->orderBy('pembelian_detail.kode_transaksi');
 
-        $pmb = $query->get();
-        $data['pembelian'] = $pmb;
-
+        $data['pembelian'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
-        $data['supplier'] = Supplier::where('kode_supplier', $request->kode_supplier)->first();
+
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "hasil-export.xls"
@@ -98,8 +108,25 @@ class LaporanpembelianController extends Controller
         $bank = Historibayarpembelian::select('pembelian_historibayar.kode_bank', 'nama_bank')
             ->join('bank', 'pembelian_historibayar.kode_bank', '=', 'bank.kode_bank')
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
-            ->groupBy('kode_bank', 'nama_bank')
+            ->whereNotIn('pembelian_historibayar.kode_bank', ['BK048', 'BK060'])
+            ->groupBy('pembelian_historibayar.kode_bank', 'nama_bank')
             ->get();
+
+        $extraBankCodes = ['BK048', 'BK060'];
+        $extraBanks = Bank::whereIn('kode_bank', $extraBankCodes)
+            ->get(['kode_bank', 'nama_bank'])
+            ->keyBy('kode_bank');
+
+        foreach ($extraBankCodes as $code) {
+            if ($extraBanks->has($code)) {
+                $bank->push($extraBanks->get($code));
+            } else {
+                $bank->push((object)[
+                    'kode_bank' => $code,
+                    'nama_bank' => $code == 'BK048' ? 'BCA VALLAS' : 'BNI MP VALLAS',
+                ]);
+            }
+        }
 
         $selectColumnsbank = [];
         foreach ($bank as $b) {
