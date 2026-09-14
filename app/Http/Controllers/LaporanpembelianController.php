@@ -108,11 +108,11 @@ class LaporanpembelianController extends Controller
         $bank = Historibayarpembelian::select('pembelian_historibayar.kode_bank', 'nama_bank')
             ->join('bank', 'pembelian_historibayar.kode_bank', '=', 'bank.kode_bank')
             ->whereBetween('tanggal', [$request->dari, $request->sampai])
-            ->whereNotIn('pembelian_historibayar.kode_bank', ['BK048', 'BK060'])
+            ->whereNotIn('pembelian_historibayar.kode_bank', ['BK074', 'BK060'])
             ->groupBy('pembelian_historibayar.kode_bank', 'nama_bank')
             ->get();
 
-        $extraBankCodes = ['BK048', 'BK060'];
+        $extraBankCodes = ['BK074', 'BK060'];
         $extraBanks = Bank::whereIn('kode_bank', $extraBankCodes)
             ->get(['kode_bank', 'nama_bank'])
             ->keyBy('kode_bank');
@@ -123,7 +123,7 @@ class LaporanpembelianController extends Controller
             } else {
                 $bank->push((object)[
                     'kode_bank' => $code,
-                    'nama_bank' => $code == 'BK048' ? 'BCA VALLAS' : 'BNI MP VALLAS',
+                    'nama_bank' => $code == 'BK074' ? 'BCA VALLAS CV MP' : 'BNI MP VALLAS',
                 ]);
             }
         }
