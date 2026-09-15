@@ -481,12 +481,12 @@
          </li>
          @endcan
 
-         <li class="menu-item {{ request()->is(['wa-komplain', 'wa-komplain/*']) ? 'active' : '' }}">
+         {{-- <li class="menu-item {{ request()->is(['wa-komplain', 'wa-komplain/*']) ? 'active' : '' }}">
              <a href="{{ route('wa-komplain.index') }}" class="menu-link">
                  <i class="menu-icon tf-icons ti ti-brand-whatsapp"></i>
                  <div>Komplain WA</div>
              </a>
-         </li>
+         </li> --}}
 
          @if (auth()->user()->hasRole(['super admin', 'gm administrasi']))
              <li class="menu-item {{ request()->is(['panduan', 'panduan/*']) ? 'active' : '' }}">
