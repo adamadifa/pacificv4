@@ -54,30 +54,37 @@ class LaporanpembelianController extends Controller
         $query->join('coa', 'pembelian_detail.kode_akun', '=', 'coa.kode_akun');
         $query->leftJoin('pembelian_barang', 'pembelian_detail.kode_barang', '=', 'pembelian_barang.kode_barang');
         $query->whereBetween('tanggal', [$request->dari, $request->sampai]);
-        if (!empty($request->kode_supplier_pembelian)) {
-            $query->where('pembelian.kode_supplier', $request->kode_supplier_pembelian);
+        $kode_supplier = $request->kode_supplier_pembelian ?? $request->kode_supplier;
+        $kode_asal_pengajuan = $request->kode_asal_pengajuan_pembelian ?? $request->kode_asal_pengajuan;
+        $ppn = $request->ppn_pembelian ?? $request->ppn;
+        $kode_akun = $request->kode_akun_pembelian ?? $request->kode_akun;
+        $kode_jenis_barang = $request->kode_jenis_barang_pembelian ?? $request->kode_jenis_barang;
+        $kategori_transaksi = $request->kategori_transaksi_pembelian ?? $request->kategori_transaksi;
+
+        if (!empty($kode_supplier)) {
+            $query->where('pembelian.kode_supplier', $kode_supplier);
         }
 
-        if (!empty($request->kode_asal_pengajuan_pembelian)) {
-            $query->where('kode_asal_pengajuan', $request->kode_asal_pengajuan_pembelian);
+        if (!empty($kode_asal_pengajuan)) {
+            $query->where('kode_asal_pengajuan', $kode_asal_pengajuan);
         }
 
-        if ($request->ppn_pembelian === "0") {
+        if ($ppn === "0") {
             $query->where('ppn', 0);
-        } else if ($request->ppn_pembelian == "1") {
+        } else if ($ppn == "1") {
             $query->where('ppn', 1);
         }
 
-        if (!empty($request->kode_akun_pembelian)) {
-            $query->where('pembelian_detail.kode_akun', $request->kode_akun_pembelian);
+        if (!empty($kode_akun)) {
+            $query->where('pembelian_detail.kode_akun', $kode_akun);
         }
 
-        if (!empty($request->kode_jenis_barang_pembelian)) {
-            $query->where('kode_jenis_barang', $request->kode_jenis_barang_pembelian);
+        if (!empty($kode_jenis_barang)) {
+            $query->where('kode_jenis_barang', $kode_jenis_barang);
         }
 
-        if (!empty($request->kategori_transaksi_pembelian)) {
-            $query->where('kategori_transaksi', $request->kategori_transaksi_pembelian);
+        if (!empty($kategori_transaksi)) {
+            $query->where('kategori_transaksi', $kategori_transaksi);
         }
 
         // if (Auth::user()->level == "general affair") {
@@ -89,7 +96,7 @@ class LaporanpembelianController extends Controller
         $data['pembelian'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
-        $data['supplier'] = Supplier::where('kode_supplier', $request->kode_supplier_pembelian)->first();
+        $data['supplier'] = !empty($kode_supplier) ? Supplier::where('kode_supplier', $kode_supplier)->first() : null;
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
