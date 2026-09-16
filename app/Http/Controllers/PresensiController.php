@@ -908,6 +908,8 @@ class PresensiController extends Controller
 
 
         $qkaryawan = Karyawan::query();
+        $qkaryawan->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $qkaryawan->select('hrd_karyawan.*');
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
             if ($user->hasRole('regional sales manager')) {
                 $qkaryawan->where('cabang.kode_regional', auth()->user()->kode_regional);

@@ -42,7 +42,7 @@
             LAPORAN PEMBELIAN<br>
         </h4>
         <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
-        @if ($supplier != null)
+        @if (!empty($supplier))
             <h4>
                 {{ $supplier->kode_supplier }} - {{ $supplier->nama_supplier }}
             </h4>

@@ -51,6 +51,7 @@ class LaporanhrdController extends Controller
         // $kode_cabang = $request->kode_cabang;
         $query = Karyawan::query();
         $query->join('hrd_departemen', 'hrd_departemen.kode_dept', '=', 'hrd_karyawan.kode_dept');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->select('hrd_karyawan.kode_dept', 'nama_dept');
         $query->distinct();
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
@@ -119,6 +120,7 @@ class LaporanhrdController extends Controller
 
         $query = Karyawan::query();
         $query->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->select('hrd_karyawan.kode_group', 'nama_group');
         $query->distinct();
         if (!$user->hasRole($roles_access_all_karyawan) || $user->hasRole(['staff keuangan', 'manager keuangan', 'gm administrasi'])) {
@@ -393,6 +395,7 @@ class LaporanhrdController extends Controller
         $query->leftJoin('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group');
         $query->leftJoin('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->leftJoin('hrd_klasifikasi', 'hrd_karyawan.kode_klasifikasi', '=', 'hrd_klasifikasi.kode_klasifikasi');
+        $query->leftJoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->leftjoinSub($qpresensi, 'hrd_presensi', 'hrd_karyawan.nik', '=', 'hrd_presensi.nik');
         $query->leftjoinSub($gajiTerakhir, 'hrd_gaji', 'hrd_karyawan.nik', '=', 'hrd_gaji.nik');
         $query->leftjoinSub($insentif, 'hrd_insentif', 'hrd_karyawan.nik', '=', 'hrd_insentif.nik');

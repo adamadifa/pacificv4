@@ -89,6 +89,7 @@ class LaporanpembelianController extends Controller
         $data['pembelian'] = $query->get();
         $data['dari'] = $request->dari;
         $data['sampai'] = $request->sampai;
+        $data['supplier'] = Supplier::where('kode_supplier', $request->kode_supplier_pembelian)->first();
 
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
