@@ -1,7 +1,7 @@
 <form action="{{ route('laporanpembelian.cetakpembelian') }}" method="POST" id="formLapPembelian" target="_blank">
     @csrf
-    <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
-        select2="select2Kodesupplier" hideLabel="true" />
+    <x-select label="Supplier" name="kode_supplier" id="kode_supplier_pembelian" :data="$supplier" key="kode_supplier" textShow="nama_supplier" upperCase="true"
+        select2="select2Kodesupplierpembelian" showKey="true" hideLabel="true" />
     <div class="form-group mb-3">
         <select name="kode_asal_pengajuan" id="kode_asal_pengajuan" class="form-select">
             <option value="">Semua Asal Ajuan</option>
@@ -45,14 +45,15 @@
     <script>
         $(function() {
             const formLapPembelian = $('#formLapPembelian');
-            const select2KodeSupplier = $('.select2Kodesupplier');
-            if (select2KodeSupplier.length) {
-                select2KodeSupplier.each(function() {
+            const select2Kodesupplierpembelian = $('.select2Kodesupplierpembelian');
+            if (select2Kodesupplierpembelian.length) {
+                select2Kodesupplierpembelian.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Supplier',
                         allowClear: true,
-                        dropdownParent: $this.parent()
+                        dropdownParent: $this.parent(),
+                        width: '100%'
                     });
                 });
             }

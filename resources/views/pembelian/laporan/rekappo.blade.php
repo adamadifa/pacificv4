@@ -1,7 +1,7 @@
-<form action="{{ route('laporanpembelian.cetakrekappo') }}" method="POST" id="frmLapPembayaran" target="_blank">
+<form action="{{ route('laporanpembelian.cetakrekappo') }}" method="POST" id="formLapRekapPo" target="_blank">
     @csrf
-    <x-select label="Supplier" name="kode_supplier" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
-        upperCase="true" select2="select2Kodesupplier" hideLabel="true" />
+    <x-select label="Supplier" name="kode_supplier" id="kode_supplier_rekappo" :data="$supplier" key="kode_supplier" textShow="nama_supplier"
+        upperCase="true" select2="select2Kodesupplierrekappo" showKey="true" hideLabel="true" />
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-input-with-icon icon="ti ti-calendar" label="Dari" name="dari" datepicker="flatpickr-date" hideLabel="true" />
@@ -27,21 +27,22 @@
 @push('myscript')
     <script>
         $(function() {
-            const formLapPembelian = $('#formLapPembelian');
-            const select2KodeSupplier = $('.select2Kodesupplier');
-            if (select2KodeSupplier.length) {
-                select2KodeSupplier.each(function() {
+            const formLapRekapPo = $('#formLapRekapPo');
+            const select2Kodesupplierrekappo = $('.select2Kodesupplierrekappo');
+            if (select2Kodesupplierrekappo.length) {
+                select2Kodesupplierrekappo.each(function() {
                     var $this = $(this);
                     $this.wrap('<div class="position-relative"></div>').select2({
                         placeholder: 'Semua Supplier',
                         allowClear: true,
-                        dropdownParent: $this.parent()
+                        dropdownParent: $this.parent(),
+                        width: '100%'
                     });
                 });
             }
 
 
-            frmLapPembayaran.submit(function(e) {
+            formLapRekapPo.submit(function(e) {
                 const dari = $(this).find("#dari").val();
                 const sampai = $(this).find("#sampai").val();
                 var start = new Date(dari);
