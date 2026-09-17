@@ -128,40 +128,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 mt-2">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Rekap DPPP</h4>
-                </div>
-                <div class="card-body">
-                    <form action="#" id="formDppp">
-                        @hasanyrole($roles_show_cabang)
-                            <x-select label="Cabang" name="kode_cabang_rekapdppp" :data="$cabang" key="kode_cabang" textShow="nama_cabang"
-                                select2="select2Kodecabangrekapdppp" upperCase="true" />
-                        @endhasanyrole
-                        <div class="form-group mb-3">
-                            <select name="bulan" id="bulan" class="form-select">
-                                <option value="">Bulan</option>
-                                @foreach ($list_bulan as $d)
-                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <select name="tahun" id="tahun" class="form-select">
-                                <option value="">Tahun</option>
-                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <button class="btn btn-primary w-100" id="btnRekapdppp"><i class="ti ti-eye me-1"></i>Tampilkan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+
         <div class="col-12 mt-2">
             <div class="card">
                 <div class="card-header">
