@@ -831,6 +831,32 @@ function getdirumahkan($dari, $sampai)
     return $libur;
 }
 
+function getmarketingimpact($dari, $sampai)
+{
+    $no = 1;
+    $libur = [];
+    $ceklibur = Detailharilibur::select(
+        'nik',
+        'tanggal',
+        'kode_cabang',
+        'keterangan',
+    )
+        ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
+        ->where('kategori', 5)
+        ->whereBetween('tanggal', [$dari, $sampai])->get();
+
+    foreach ($ceklibur as $d) {
+        $libur[] = [
+            'nik' => $d->nik,
+            'kode_cabang' => $d->kode_cabang,
+            'tanggal' => $d->tanggal,
+            'keterangan' => $d->keterangan
+        ];
+    }
+
+    return $libur;
+}
+
 function getliburpengganti($dari, $sampai)
 {
     $no = 1;

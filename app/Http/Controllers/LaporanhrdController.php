@@ -646,6 +646,7 @@ class LaporanhrdController extends Controller
 
         $data['dataliburnasional'] = getdataliburnasional($start_date, $end_date);
         $data['datadirumahkan'] = getdirumahkan($start_date, $end_date);
+        $data['datamarketingimpact'] = getmarketingimpact($start_date, $end_date);
         $data['dataliburpengganti'] = getliburpengganti($start_date, $end_date);
         $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
         $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);
@@ -1147,6 +1148,7 @@ class LaporanhrdController extends Controller
 
         $data['dataliburnasional'] = getdataliburnasional($start_date, $end_date);
         $data['datadirumahkan'] = getdirumahkan($start_date, $end_date);
+        $data['datamarketingimpact'] = getmarketingimpact($start_date, $end_date);
         $data['dataliburpengganti'] = getliburpengganti($start_date, $end_date);
         $data['dataminggumasuk'] = getminggumasuk($start_date, $end_date);
         $data['datatanggallimajam'] = gettanggallimajam($start_date, $end_date);

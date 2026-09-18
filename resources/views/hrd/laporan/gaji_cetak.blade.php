@@ -314,6 +314,7 @@
                                 ];
 
                                 $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                $cekmarketingimpact = ceklibur($datamarketingimpact, $search); // Cek Marketing Impact
                                 $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
                                 $cektanggallimajam = ceklibur($datatanggallimajam, $search); // Cek Tanggal Lima Jam
                                 $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
@@ -716,6 +717,24 @@
                                         $keterangan = '';
                                         $total_jam = 0;
                                         $potongan_jam_dirumahkan = 0;
+                                    @endphp
+                                @elseif(!empty($cekmarketingimpact))
+                                    @php
+                                        $color = '#6c757d';
+                                        $keterangan = 'Marketing Impact';
+                                        if (getNamahari($tanggal_presensi) == 'Sabtu' || !empty($cektanggallimajam)) {
+                                            $total_jam = 2.5;
+                                            $potongan_jam_dirumahkan = 2.5;
+                                        } else {
+                                            $total_jam = 3.5;
+                                            $potongan_jam_dirumahkan = 3.5;
+                                        }
+                                        if (
+                                            in_array($d['nik'], $privillage_karyawan) &&
+                                            $tanggal_presensi >= '2024-11-21'
+                                        ) {
+                                            $potongan_jam_dirumahkan = 0;
+                                        }
                                     @endphp
                                 @elseif(!empty($cekdirumahkan))
                                     @php

@@ -45,6 +45,7 @@
                         <th rowspan="3">Σ Jam (1 Bulan)</th>
                         <th rowspan="3">Telat</th>
                         <th rowspan="3">Dirumahkan</th>
+                        <th rowspan="3">MI</th>
                         <th rowspan="3">Keluar</th>
                         <th rowspan="3">PC</th>
                         <th rowspan="3">TH</th>
@@ -110,6 +111,7 @@
                                 $tanggal_presensi = $start_date;
                                 $total_potongan_jam_terlambat = 0;
                                 $total_potongan_jam_dirumahkan = 0;
+                                $total_potongan_jam_marketingimpact = 0;
                                 $total_potongan_jam_izinkeluar = 0;
                                 $total_potongan_jam_pulangcepat = 0;
                                 $total_potongan_jam_tidakhadir = 0;
@@ -136,6 +138,7 @@
                                         'tanggal' => $tanggal_presensi,
                                     ];
                                     $cekdirumahkan = ceklibur($datadirumahkan, $search); // Cek Dirumahkan
+                                    $cekmarketingimpact = ceklibur($datamarketingimpact, $search); // Cek Marketing Impact
                                     $cekliburnasional = ceklibur($dataliburnasional, $search); // Cek Libur Nasional
                                     $cektanggallimajam = ceklibur($datatanggallimajam, $search); // Cek Tanggal Lima Jam
                                     $cekliburpengganti = ceklibur($dataliburpengganti, $search); // Cek Libur Pengganti
@@ -164,6 +167,9 @@
                                         $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
                                         $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
                                     }
+
+                                    $potongan_jam_marketingimpact = 0;
+                                    $potongan_jam_dirumahkan = 0;
                                 @endphp
                                 @if (isset($d[$tanggal_presensi]))
                                     @php
@@ -621,6 +627,8 @@
                                         $potongan_jam_tidakhadir = 0;
                                         $potongan_jam_izin = 0;
                                         $potongan_jam_sakit = 0;
+                                        $potongan_jam_dirumahkan = 0;
+                                        $potongan_jam_marketingimpact = 0;
                                         $jumlah_denda = 0;
                                     @endphp
                                     @if (getNamahari($tanggal_presensi) == 'Minggu')
@@ -630,9 +638,26 @@
                                             $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
                                         @endphp
+                                    @elseif(!empty($cekmarketingimpact))
+                                        @php
+                                            $color = '#6c757d';
+                                            if (getNamahari($tanggal_presensi) == 'Sabtu' || !empty($cektanggallimajam)) {
+                                                $total_jam = 2.5;
+                                                $potongan_jam_marketingimpact = 2.5;
+                                            } else {
+                                                $total_jam = 3.5;
+                                                $potongan_jam_marketingimpact = 3.5;
+                                            }
+                                            if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
+                                                $potongan_jam_marketingimpact = 0;
+                                            }
+                                            $potongan_jam_dirumahkan = 0;
+                                            $keterangan = 'MI' . $potongan_jam_marketingimpact;
+                                        @endphp
                                     @elseif(!empty($cekdirumahkan))
                                         @php
                                             $color = 'rgb(69, 2, 140)';
+                                            $potongan_jam_marketingimpact = 0;
 
                                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                 if ($tanggal_presensi == '2024-10-26') {
@@ -684,6 +709,7 @@
                                                 $total_jam = 7;
                                             }
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                         @endphp
                                     @elseif(!empty($cekliburpengganti))
                                         @php
@@ -693,6 +719,7 @@
                                             $keterangan = '';
                                             $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                         @endphp
                                     @else
                                         @php
@@ -710,6 +737,7 @@
 
                                             // $total_jam = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                             if (!empty($cekdirumahkan)) {
                                                 if (getNamahari($tanggal_presensi) == 'Sabtu') {
                                                     $potongan_jam_tidakhadir = 2.5;
@@ -736,6 +764,7 @@
                                             $potongan_jam_izinkeluar +
                                             $potongan_jam_terlambat +
                                             $potongan_jam_dirumahkan +
+                                            $potongan_jam_marketingimpact +
                                             $potongan_jam_tidakhadir +
                                             $potongan_jam_izin;
                                     @endphp
@@ -762,6 +791,7 @@
                                 @php
                                     $total_potongan_jam_terlambat += $potongan_jam_terlambat;
                                     $total_potongan_jam_dirumahkan += $potongan_jam_dirumahkan;
+                                    $total_potongan_jam_marketingimpact += $potongan_jam_marketingimpact;
                                     $total_potongan_jam_izinkeluar += $potongan_jam_izinkeluar;
                                     $total_potongan_jam_pulangcepat += $potongan_jam_pulangcepat;
                                     $total_potongan_jam_tidakhadir += $potongan_jam_tidakhadir;
@@ -783,6 +813,9 @@
                             </td>
                             <td style="font-weight: bold; color:#f40505; text-align:center">
                                 {{ formatAngkaDesimal($total_potongan_jam_dirumahkan) }}
+                            </td>
+                            <td style="font-weight: bold; color:#f40505; text-align:center">
+                                {{ formatAngkaDesimal($total_potongan_jam_marketingimpact) }}
                             </td>
                             <td style="font-weight: bold; color:#f40505; text-align:center">
                                 {{ formatAngkaDesimal($total_potongan_jam_izinkeluar) }}

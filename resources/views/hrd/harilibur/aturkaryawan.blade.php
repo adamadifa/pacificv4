@@ -1,41 +1,42 @@
 <form action="#" id="frmKaryawan">
-    <div class="row mb-3">
-        <div class="col">
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-primary" id="tambahkansemua"><i class="ti ti-plus me-1"></i> Tambahkan Semua
-                </button>
-                <button class="btn btn-danger" id="batalkansemua"><i class="ti ti-circle-minus me-1"></i> Batalkan Semua
-                </button>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-primary" id="tambahkansemua">
+                <i class="ti ti-plus me-1"></i> Tambahkan Semua
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" id="batalkansemua">
+                <i class="ti ti-minus me-1"></i> Batalkan Semua
+            </button>
         </div>
     </div>
-    <div class="row mb-3">
+
+    <div class="row g-2 mb-3">
         <div class="col-lg-6 col-md-12 col-sm-12">
             <x-select label="Group" name="kode_group" :data="$group" key="kode_group" textShow="nama_group"
                 select2="select2Group" upperCase="true" />
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" icon="ti ti-user" />
+            <x-input-with-icon label="Nama Karyawan" name="nama_karyawan" icon="ti ti-search" />
         </div>
     </div>
 
-    <div class="row">
-        <div class="col">
-            <table class="table table-bordered table-striped table-hover" id="tabelkaryawan">
-                <thead class="table-dark">
-                    <tr>
-                        <th>No.</th>
-                        <th>NIK</th>
-                        <th>Nama Karyawan</th>
-                        <th>Group</th>
-                        <th>#</th>
-                    </tr>
-                </thead>
-                <tbody id="loadkaryawan">
-
-                </tbody>
-            </table>
-        </div>
+    <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
+        <table class="table table-bordered table-striped table-hover mb-0" id="tabelkaryawan">
+            <thead class="text-white sticky-top">
+                <tr style="background-color: #284c9a;">
+                    <th class="text-white text-center" style="width: 50px;">No.</th>
+                    <th class="text-white" style="width: 130px;">NIK</th>
+                    <th class="text-white">Nama Karyawan</th>
+                    <th class="text-white" style="width: 140px;">Group</th>
+                    <th class="text-white text-center" style="width: 70px;">#</th>
+                </tr>
+            </thead>
+            <tbody id="loadkaryawan">
+                <tr>
+                    <td colspan="5" class="text-center py-3 text-muted">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </form>
 <script>

@@ -263,6 +263,7 @@ class PresensiController extends Controller
 
         $data['dataliburnasional'] = getdataliburnasional($tanggal, $tanggal);
         $data['datadirumahkan'] = getdirumahkan($tanggal, $tanggal);
+        $data['datamarketingimpact'] = getmarketingimpact($tanggal, $tanggal);
         $data['dataliburpengganti'] = getliburpengganti($tanggal, $tanggal);
         $data['dataminggumasuk'] = getminggumasuk($tanggal, $tanggal);
         $data['datatanggallimajam'] = gettanggallimajam($tanggal, $tanggal);

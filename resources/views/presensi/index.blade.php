@@ -60,6 +60,7 @@
                     $search = ['nik' => $d->nik, 'tanggal' => $tanggal];
                     $cekliburnasional = ceklibur($dataliburnasional, $search);
                     $cekdirumahkan = ceklibur($datadirumahkan, $search);
+                    $cekmarketingimpact = ceklibur($datamarketingimpact, $search);
                     $cekliburpengganti = ceklibur($dataliburpengganti, $search);
                     $cektanggallimajam = ceklibur($datatanggallimajam, $search);
 
@@ -121,6 +122,10 @@
                                                 <span class="badge bg-label-danger">Alfa</span>
                                             @elseif ($d->status_kehadiran == 'c')
                                                 <span class="badge bg-label-primary">Cuti</span>
+                                            @elseif (!empty($cekmarketingimpact))
+                                                <span class="badge bg-label-secondary">Marketing Impact</span>
+                                            @elseif (!empty($cekdirumahkan))
+                                                <span class="badge bg-label-warning">Dirumahkan</span>
                                             @else
                                                 <span class="badge bg-label-danger">Belum Absen</span>
                                             @endif

@@ -411,6 +411,7 @@ class SlipgajiController extends Controller
 
         $dataliburnasional = getdataliburnasional($start_date, $end_date);
         $datadirumahkan = getdirumahkan($start_date, $end_date);
+        $datamarketingimpact = getmarketingimpact($start_date, $end_date);
         $dataliburpengganti = getliburpengganti($start_date, $end_date);
         $dataminggumasuk = getminggumasuk($start_date, $end_date);
         $datatanggallimajam = gettanggallimajam($start_date, $end_date);
@@ -463,6 +464,7 @@ class SlipgajiController extends Controller
         while (strtotime($tanggal_presensi) <= strtotime($end_date)) {
             $search = ['nik' => $d['nik'], 'tanggal' => $tanggal_presensi];
             $cekdirumahkan = ceklibur($datadirumahkan, $search);
+            $cekmarketingimpact = ceklibur($datamarketingimpact, $search);
             $cekliburnasional = ceklibur($dataliburnasional, $search);
             $cektanggallimajam = ceklibur($datatanggallimajam, $search);
             $cekliburpengganti = ceklibur($dataliburpengganti, $search);
@@ -577,6 +579,14 @@ class SlipgajiController extends Controller
             } else {
                 if (getNamahari($tanggal_presensi) == 'Minggu') {
                     $jam_kerja_hari = 0;
+                } else if (!empty($cekmarketingimpact)) {
+                    if (getNamahari($tanggal_presensi) == 'Sabtu' || !empty($cektanggallimajam)) {
+                        $jam_kerja_hari = 2.5;
+                        $pot_jam_d = 2.5;
+                    } else {
+                        $jam_kerja_hari = 3.5;
+                        $pot_jam_d = 3.5;
+                    }
                 } else if (!empty($cekdirumahkan)) {
                     $h_base = (getNamahari($tanggal_presensi) == 'Sabtu') ? (($tanggal_presensi == '2024-10-26') ? 3.5 : 2.5) : (!empty($cektanggallimajam) ? 2.5 : 3.5);
                     if ($tanggal_presensi >= '2024-11-21') {
@@ -593,7 +603,7 @@ class SlipgajiController extends Controller
                 } else if (!empty($cekliburpengganti)) {
                     $jam_kerja_hari = 0;
                 } else {
-                    $pot_jam_th = (!empty($cekdirumahkan)) ? (getNamahari($tanggal_presensi) == 'Sabtu' ? ($tanggal_presensi == '2024-10-26' ? 3.5 : 2.5) : 3.5) : (getNamahari($tanggal_presensi) == 'Sabtu' ? 5 : 7);
+                    $pot_jam_th = (!empty($cekdirumahkan) || !empty($cekmarketingimpact)) ? (getNamahari($tanggal_presensi) == 'Sabtu' ? ($tanggal_presensi == '2024-10-26' ? 3.5 : 2.5) : 3.5) : (getNamahari($tanggal_presensi) == 'Sabtu' ? 5 : 7);
                     $jam_kerja_hari = $pot_jam_th;
                 }
             }
@@ -699,6 +709,7 @@ class SlipgajiController extends Controller
                 'presensi'    => $datapresensi,
                 'dataliburnasional' => $dataliburnasional,
                 'datadirumahkan' => $datadirumahkan,
+                'datamarketingimpact' => $datamarketingimpact,
                 'dataliburpengganti' => $dataliburpengganti,
                 'dataminggumasuk' => $dataminggumasuk,
                 'datatanggallimajam' => $datatanggallimajam,
