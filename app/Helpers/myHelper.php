@@ -76,7 +76,11 @@ function getfotoKaryawan($file)
     if (strpos($file, 'http') === 0) {
         return $file;
     }
-    $url = url('storage/karyawan/' . $file);
+
+    $filePath = storage_path('app/public/karyawan/' . $file);
+    $version = file_exists($filePath) ? filemtime($filePath) : time();
+
+    $url = url('storage/karyawan/' . $file) . '?v=' . $version;
     return $url;
 }
 

@@ -242,7 +242,7 @@
              if ($user->username) {
                  $karyawan = DB::table('hrd_karyawan')->where('nik', $user->username)->select('foto')->first();
                  if ($karyawan && !empty($karyawan->foto)) {
-                     $photo = url('/storage/karyawan/' . $karyawan->foto);
+                     $photo = getfotoKaryawan($karyawan->foto);
                  }
              }
          @endphp

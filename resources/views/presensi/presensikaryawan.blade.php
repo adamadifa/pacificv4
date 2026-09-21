@@ -149,8 +149,8 @@
                                 {{-- Section 1: Identity & Date --}}
                                 <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 280px; background-color: #284c9a;">
                                     <div class="avatar avatar-md me-3 bg-white bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
-                                        @if ($d->foto && Storage::disk('public')->exists('karyawan/' . $d->foto))
-                                            <img src="{{ asset('storage/karyawan/' . $d->foto) }}" alt="Avatar" class="rounded-circle w-100 h-100" style="object-fit: cover;">
+                                        @if ($d->foto && Storage::disk('public')->exists('karyawan/' . ($d instanceof App\Models\Karyawan ? $d->getRawOriginal('foto') : $d->foto)))
+                                            <img src="{{ getfotoKaryawan($d->foto) }}" alt="Avatar" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                                         @else
                                             <span class="text-white fw-bold fs-4">{{ getInitials($d->nama_karyawan) }}</span>
                                         @endif

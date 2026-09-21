@@ -36,7 +36,10 @@ class Karyawan extends Authenticatable
             return $value;
         }
 
-        return url('storage/karyawan/' . $value);
+        $filePath = storage_path('app/public/karyawan/' . $value);
+        $version = file_exists($filePath) ? filemtime($filePath) : time();
+
+        return url('storage/karyawan/' . $value) . '?v=' . $version;
     }
 
 

@@ -92,8 +92,8 @@
                                 {{-- Section 1: Employee Avatar & Identity --}}
                                 <div class="p-3 border-end-md d-flex align-items-center" style="min-width: 250px; background-color: #284c9a;">
                                     <div class="avatar avatar-lg me-3 border border-2 border-white-50 rounded-circle">
-                                        @if (!empty($d->foto) && file_exists(public_path('storage/karyawan/' . $d->foto)))
-                                            <img src="{{ asset('storage/karyawan/' . $d->foto) }}" alt="Avatar" class="rounded-circle">
+                                        @if (!empty($d->foto) && file_exists(public_path('storage/karyawan/' . ($d instanceof App\Models\Karyawan ? $d->getRawOriginal('foto') : $d->foto))))
+                                            <img src="{{ getfotoKaryawan($d->foto) }}" alt="Avatar" class="rounded-circle">
                                         @else
                                             <span class="avatar-initial rounded-circle {{ $avatar_bg }} fw-bold" style="font-size: 1.4rem;">
                                                 {{ getInitials($d->nama_karyawan) }}
