@@ -406,6 +406,7 @@
                                         @php
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
@@ -415,12 +416,14 @@
                                         @endphp
                                         @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                             @php
-                                                if (!in_array($d['nik'], $privillage_karyawan)) {
+                                                if (!empty($cekmarketingimpact)) {
+                                                    $total_jam = $total_jam_jadwal / 2;
+                                                    $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                                } elseif (!in_array($d['nik'], $privillage_karyawan)) {
                                                     $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 } else {
                                                     $total_jam = $total_jam_jadwal;
                                                 }
-                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 $potongan_jam_sakit = 0;
                                                 if (!empty($cekdirumahkan) && !in_array($d['nik'], $privillage_karyawan)) {
                                                     $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
@@ -429,10 +432,16 @@
                                             @endphp
                                         @else
                                             @php
-                                                $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
-                                                $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
-                                                if (!empty($cekdirumahkan)) {
-                                                    $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                if (!empty($cekmarketingimpact)) {
+                                                    $total_jam = $total_jam_jadwal / 2;
+                                                    $potongan_jam_sakit = $total_jam;
+                                                    $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                                } else {
+                                                    $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
+                                                    $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam : $total_jam;
+                                                    if (!empty($cekdirumahkan)) {
+                                                        $potongan_jam_dirumahkan = $total_jam_jadwal == 7 ? 1.75 : 1.25;
+                                                    }
                                                 }
                                                 $keterangan = 'SKT';
                                             @endphp
@@ -444,15 +453,6 @@
                                         @endif
 
                                         <td style="padding: 10px; background-color: #f4858e">
-                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
-                                            <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
-                                                {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
-                                            </p>
-                                            <p style="margin:0">
-                                                <span style="color: white">SAKIT {{ !empty($keterangan) ? '(' . $keterangan . ')' : '' }}</span>
-                                                <br>
-                                                <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
-                                            </p> --}}
                                             {{ $keterangan }}
                                             @if (!empty($ceklembur))
                                                 <p style="margin:0; color:rgb(0, 42, 255); font-weight:bold">
@@ -474,6 +474,7 @@
                                                 $potongan_jam_izinkeluar +
                                                 $potongan_jam_terlambat +
                                                 $potongan_jam_dirumahkan +
+                                                $potongan_jam_marketingimpact +
                                                 $potongan_jam_tidakhadir +
                                                 $potongan_jam_izin;
                                         @endphp
@@ -482,7 +483,11 @@
                                             // $total_jam = $total_jam_jadwal;
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
-                                            if ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
+                                            $potongan_jam_marketingimpact = 0;
+                                            if (!empty($cekmarketingimpact)) {
+                                                $total_jam = $total_jam_jadwal / 2;
+                                                $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                            } elseif ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
                                                 if ($tanggal_presensi >= '2024-11-21') {
                                                     if (!empty($cekdirumahkan)) {
                                                         $total_jam = ROUND($total_jam_jadwal / 1.33, 2);
@@ -524,21 +529,13 @@
                                                 $potongan_jam_izinkeluar +
                                                 $potongan_jam_terlambat +
                                                 $potongan_jam_dirumahkan +
+                                                $potongan_jam_marketingimpact +
                                                 $potongan_jam_tidakhadir +
                                                 $potongan_jam_izin;
 
                                             $jumlah_denda = 0;
                                         @endphp
                                         <td style="padding: 10px; background-color: #1794e1d3">
-                                            {{-- <h4 style="font-weight: bold; margin-bottom:8px">{{ $d[$tanggal_presensi]['nama_jadwal'] }}</h4>
-                                            <p style="color:rgb(38, 86, 197); margin:0; font-weight:bold">
-                                                {{ date('H:i', strtotime($jam_mulai)) }} - {{ date('H:i', strtotime($jam_selesai)) }}
-                                            </p>
-                                            <p style="margin:0">
-                                                <span style="color: white">CUTI ({{ $d[$tanggal_presensi]['nama_cuti'] }})</span>
-                                                <br>
-                                                <span style="font-weight: bold ;color:#024a0d">Total Jam :{{ $total_jam }}</span>
-                                            </p> --}}
                                             @if ($d[$tanggal_presensi]['kode_cuti'] == 'C01')
                                                 C
                                             @else
@@ -561,11 +558,20 @@
                                         @php
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
                                             $potongan_jam_sakit = 0;
-                                            if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
+                                            if (!empty($cekmarketingimpact)) {
+                                                $total_jam = $total_jam_jadwal / 2;
+                                                $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                                if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
+                                                    $potongan_jam_izin = 0;
+                                                } else {
+                                                    $potongan_jam_izin = $total_jam;
+                                                }
+                                            } elseif ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
                                                 $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                                                 $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam : 0;
                                             } else {
@@ -586,6 +592,7 @@
                                                 $potongan_jam_izinkeluar +
                                                 $potongan_jam_terlambat +
                                                 $potongan_jam_dirumahkan +
+                                                $potongan_jam_marketingimpact +
                                                 $potongan_jam_tidakhadir +
                                                 $potongan_jam_izin;
 

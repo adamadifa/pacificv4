@@ -410,6 +410,7 @@
                                         @php
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
@@ -419,8 +420,10 @@
                                         @endphp
                                         @if (!empty($d[$tanggal_presensi]['doc_sid']) || $d[$tanggal_presensi]['izin_sakit_direktur'] == '1')
                                             @php
-
-                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                if (!empty($cekmarketingimpact)) {
+                                                    $total_jam = $total_jam_jadwal / 2;
+                                                    $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                                } elseif ($tanggal_presensi >= '2024-11-21') {
                                                     if (!in_array($d['nik'], $privillage_karyawan)) {
                                                         $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
                                                     } else {
@@ -439,7 +442,11 @@
                                             @endphp
                                         @else
                                             @php
-                                                if ($tanggal_presensi >= '2024-11-21') {
+                                                if (!empty($cekmarketingimpact)) {
+                                                    $total_jam = $total_jam_jadwal / 2;
+                                                    $potongan_jam_sakit = $total_jam;
+                                                    $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                                } elseif ($tanggal_presensi >= '2024-11-21') {
                                                     $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
                                                     $potongan_jam_sakit = !empty($cekdirumahkan) ? $total_jam_jadwal - $total_jam : $total_jam;
                                                     if (!empty($cekdirumahkan)) {
@@ -498,6 +505,7 @@
                                                 $potongan_jam_izinkeluar +
                                                 $potongan_jam_terlambat +
                                                 $potongan_jam_dirumahkan +
+                                                $potongan_jam_marketingimpact +
                                                 $potongan_jam_tidakhadir +
                                                 $potongan_jam_izin;
                                         @endphp
@@ -506,7 +514,11 @@
 
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
-                                            if ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
+                                            $potongan_jam_marketingimpact = 0;
+                                            if (!empty($cekmarketingimpact)) {
+                                                $total_jam = $total_jam_jadwal / 2;
+                                                $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                            } elseif ($d[$tanggal_presensi]['kode_cuti'] != 'C01') {
                                                 if ($tanggal_presensi >= '2024-11-21') {
                                                     if (!empty($cekdirumahkan)) {
                                                         $total_jam = ROUND($total_jam_jadwal / 1.33, 2);
@@ -548,6 +560,7 @@
                                                 $potongan_jam_izinkeluar +
                                                 $potongan_jam_terlambat +
                                                 $potongan_jam_dirumahkan +
+                                                $potongan_jam_marketingimpact +
                                                 $potongan_jam_tidakhadir +
                                                 $potongan_jam_izin;
 
@@ -584,11 +597,20 @@
                                         @php
                                             $potongan_jam_terlambat = 0;
                                             $potongan_jam_dirumahkan = 0;
+                                            $potongan_jam_marketingimpact = 0;
                                             $potongan_jam_izinkeluar = 0;
                                             $potongan_jam_pulangcepat = 0;
                                             $potongan_jam_tidakhadir = 0;
                                             $potongan_jam_sakit = 0;
-                                            if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
+                                            if (!empty($cekmarketingimpact)) {
+                                                $total_jam = $total_jam_jadwal / 2;
+                                                $potongan_jam_marketingimpact = !in_array($d['nik'], $privillage_karyawan) ? $total_jam_jadwal / 2 : 0;
+                                                if ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
+                                                    $potongan_jam_izin = 0;
+                                                } else {
+                                                    $potongan_jam_izin = $total_jam;
+                                                }
+                                            } elseif ($d[$tanggal_presensi]['izin_absen_direktur'] == '1') {
                                                 if ($tanggal_presensi >= '2024-11-21') {
                                                     $total_jam = !empty($cekdirumahkan) ? ROUND($total_jam_jadwal / 1.33, 2) : $total_jam_jadwal;
                                                     $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal - $total_jam : 0;
@@ -620,6 +642,7 @@
                                                 $potongan_jam_izinkeluar +
                                                 $potongan_jam_terlambat +
                                                 $potongan_jam_dirumahkan +
+                                                $potongan_jam_marketingimpact +
                                                 $potongan_jam_tidakhadir +
                                                 $potongan_jam_izin;
 

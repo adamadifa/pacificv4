@@ -547,16 +547,30 @@ class SlipgajiController extends Controller
                     }
                 } else if ($row['status'] == 's') {
                     if (!empty($row['doc_sid']) || $row['izin_sakit_direktur'] == '1') {
-                        $jam_kerja_hari = !empty($cekdirumahkan) ? $row['total_jam'] / 2 : $row['total_jam'];
-                        if (!empty($cekdirumahkan)) $pot_jam_d = $row['total_jam'] == 7 ? 1.75 : 1.25;
+                        if (!empty($cekmarketingimpact)) {
+                            $jam_kerja_hari = $row['total_jam'] / 2;
+                            $pot_jam_d = !in_array($d['nik'], $privillage_karyawan) ? $row['total_jam'] / 2 : 0;
+                        } else {
+                            $jam_kerja_hari = !empty($cekdirumahkan) ? $row['total_jam'] / 2 : $row['total_jam'];
+                            if (!empty($cekdirumahkan)) $pot_jam_d = $row['total_jam'] == 7 ? 1.75 : 1.25;
+                        }
                     } else {
-                        $jam_kerja_hari = !empty($cekdirumahkan) ? $row['total_jam'] / 2 : $row['total_jam'];
-                        $pot_jam_s = $jam_kerja_hari;
-                        if (!empty($cekdirumahkan)) $pot_jam_d = $row['total_jam'] == 7 ? 1.75 : 1.25;
+                        if (!empty($cekmarketingimpact)) {
+                            $jam_kerja_hari = $row['total_jam'] / 2;
+                            $pot_jam_s = $jam_kerja_hari;
+                            $pot_jam_d = !in_array($d['nik'], $privillage_karyawan) ? $row['total_jam'] / 2 : 0;
+                        } else {
+                            $jam_kerja_hari = !empty($cekdirumahkan) ? $row['total_jam'] / 2 : $row['total_jam'];
+                            $pot_jam_s = $jam_kerja_hari;
+                            if (!empty($cekdirumahkan)) $pot_jam_d = $row['total_jam'] == 7 ? 1.75 : 1.25;
+                        }
                     }
                     if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21') $pot_jam_s = 0;
                 } else if ($row['status'] == 'c') {
-                    if ($row['kode_cuti'] != 'C01') {
+                    if (!empty($cekmarketingimpact)) {
+                        $jam_kerja_hari = $row['total_jam'] / 2;
+                        $pot_jam_d = !in_array($d['nik'], $privillage_karyawan) ? $row['total_jam'] / 2 : 0;
+                    } else if ($row['kode_cuti'] != 'C01') {
                         if ($tanggal_presensi >= '2024-11-21') {
                             if (!empty($cekdirumahkan)) {
                                 $jam_kerja_hari = round($row['total_jam'] / 1.33, 2);
@@ -572,8 +586,14 @@ class SlipgajiController extends Controller
                         $jam_kerja_hari = $row['total_jam'];
                     }
                 } else if ($row['status'] == 'i') {
-                    $jam_kerja_hari = !empty($cekdirumahkan) ? $row['total_jam'] / 2 : $row['total_jam'];
-                    $pot_jam_i = ($row['izin_absen_direktur'] == '1') ? (!empty($cekdirumahkan) ? $jam_kerja_hari : 0) : $jam_kerja_hari;
+                    if (!empty($cekmarketingimpact)) {
+                        $jam_kerja_hari = $row['total_jam'] / 2;
+                        $pot_jam_d = !in_array($d['nik'], $privillage_karyawan) ? $row['total_jam'] / 2 : 0;
+                        $pot_jam_i = ($row['izin_absen_direktur'] == '1') ? 0 : $jam_kerja_hari;
+                    } else {
+                        $jam_kerja_hari = !empty($cekdirumahkan) ? $row['total_jam'] / 2 : $row['total_jam'];
+                        $pot_jam_i = ($row['izin_absen_direktur'] == '1') ? (!empty($cekdirumahkan) ? $jam_kerja_hari : 0) : $jam_kerja_hari;
+                    }
                     if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21') $pot_jam_i = 0;
                 }
             } else {
