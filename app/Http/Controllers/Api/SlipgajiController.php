@@ -395,12 +395,36 @@ class SlipgajiController extends Controller
                 } else {
                     if (!empty($row->status_denda)) $data[$row->tanggal]['status_denda'] = $row->status_denda;
                     if (!empty($row->alasan)) $data[$row->tanggal]['alasan'] = $row->alasan;
-                    if (!empty($row->kode_izin_keluar)) $data[$row->tanggal]['kode_izin_keluar'] = $row->kode_izin_keluar;
-                    if (!empty($row->kode_izin_terlambat)) $data[$row->tanggal]['kode_izin_terlambat'] = $row->kode_izin_terlambat;
-                    if (!empty($row->kode_izin_sakit)) $data[$row->tanggal]['kode_izin_sakit'] = $row->kode_izin_sakit;
-                    if (!empty($row->kode_izin_pulang)) $data[$row->tanggal]['kode_izin_pulang'] = $row->kode_izin_pulang;
-                    if (!empty($row->kode_izin_cuti)) $data[$row->tanggal]['kode_izin_cuti'] = $row->kode_izin_cuti;
-                    if (!empty($row->kode_izin)) $data[$row->tanggal]['kode_izin'] = $row->kode_izin;
+                    if (!empty($row->kode_izin_keluar)) {
+                        $data[$row->tanggal]['kode_izin_keluar'] = $row->kode_izin_keluar;
+                        $data[$row->tanggal]['jam_keluar'] = $row->jam_keluar;
+                        $data[$row->tanggal]['jam_kembali'] = $row->jam_kembali;
+                        $data[$row->tanggal]['keperluan'] = $row->keperluan;
+                        $data[$row->tanggal]['izin_keluar_direktur'] = $row->izin_keluar_direktur;
+                    }
+                    if (!empty($row->kode_izin_terlambat)) {
+                        $data[$row->tanggal]['kode_izin_terlambat'] = $row->kode_izin_terlambat;
+                        $data[$row->tanggal]['izin_terlambat_direktur'] = $row->izin_terlambat_direktur;
+                    }
+                    if (!empty($row->kode_izin_sakit)) {
+                        $data[$row->tanggal]['kode_izin_sakit'] = $row->kode_izin_sakit;
+                        $data[$row->tanggal]['doc_sid'] = $row->doc_sid;
+                        $data[$row->tanggal]['izin_sakit_direktur'] = $row->izin_sakit_direktur;
+                    }
+                    if (!empty($row->kode_izin_pulang)) {
+                        $data[$row->tanggal]['kode_izin_pulang'] = $row->kode_izin_pulang;
+                        $data[$row->tanggal]['izin_pulang_direktur'] = $row->izin_pulang_direktur;
+                    }
+                    if (!empty($row->kode_izin_cuti)) {
+                        $data[$row->tanggal]['kode_izin_cuti'] = $row->kode_izin_cuti;
+                        $data[$row->tanggal]['kode_cuti'] = $row->kode_cuti;
+                        $data[$row->tanggal]['izin_cuti_direktur'] = $row->izin_cuti_direktur;
+                        $data[$row->tanggal]['nama_cuti'] = $row->nama_cuti;
+                    }
+                    if (!empty($row->kode_izin)) {
+                        $data[$row->tanggal]['kode_izin'] = $row->kode_izin;
+                        $data[$row->tanggal]['izin_absen_direktur'] = $row->izin_absen_direktur;
+                    }
                 }
             }
             return $data;
