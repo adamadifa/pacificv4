@@ -114,6 +114,60 @@
 
         gethistoribayar();
 
+        $(document).off('change', '#switchKategori').on('change', '#switchKategori', function(e) {
+            e.preventDefault();
+            const checkbox = $(this);
+            const isChecked = checkbox.is(':checked');
+            const targetKategori = isChecked ? 'EK' : 'KA';
+            const targetNama = isChecked ? 'Piutang Eks Karyawan' : 'Piutang Karyawan';
+
+            Swal.fire({
+                title: "Konfirmasi Ubah Kategori",
+                text: `Apakah Anda yakin ingin mengubah kategori piutang ini menjadi "${targetNama}"?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#284c9a",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Ubah!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/piutangkaryawan/${no_pinjaman}/updatekategori`,
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            kategori: targetKategori
+                        },
+                        cache: false,
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: "Berhasil!",
+                                    text: response.message,
+                                    icon: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                getpiutang();
+                                // Refresh halaman belakang bila modal ditutup nanti
+                                $("#modal").data('kategori-changed', true);
+                            } else {
+                                Swal.fire("Gagal!", response.message, "error");
+                                checkbox.prop('checked', !isChecked);
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire("Error!", xhr.responseJSON?.message || "Terjadi kesalahan server", "error");
+                            checkbox.prop('checked', !isChecked);
+                        }
+                    });
+                } else {
+                    checkbox.prop('checked', !isChecked);
+                }
+            });
+        });
+
         $(document).on('submit', '#formPembayaranpituangkaryawan', function(e) {
             e.preventDefault();
             e.stopImmediatePropagation();

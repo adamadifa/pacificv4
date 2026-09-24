@@ -1577,6 +1577,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/piutangkaryawan/{no_pinjaman}/delete', 'destroy')->name('piutangkaryawan.delete')->can('piutangkaryawan.delete');
         Route::get('/piutangkaryawan/{no_pinjaman}/show', 'show')->name('piutangkaryawan.show')->can('piutangkaryawan.show');
         Route::get('/piutangkaryawan/{no_pinjaman}/getpiutangkaryawan', 'getpiutangkaryawan')->name('piutangkaryawan.getpiutangkaryawan')->can('piutangkaryawan.show');
+        Route::post('/piutangkaryawan/{no_pinjaman}/updatekategori', 'updatekategori')->name('piutangkaryawan.updatekategori')->can('piutangkaryawan.edit');
     });
 
     Route::controller(PembayaranpiutangkaryawanController::class)->group(function () {

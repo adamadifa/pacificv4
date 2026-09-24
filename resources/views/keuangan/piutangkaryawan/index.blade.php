@@ -326,6 +326,12 @@
 
         });
 
+        $('#modal').on('hidden.bs.modal', function () {
+            if ($(this).data('kategori-changed')) {
+                location.reload();
+            }
+        });
+
     });
 </script>
 @endpush

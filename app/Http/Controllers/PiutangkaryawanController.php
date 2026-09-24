@@ -97,6 +97,36 @@ class PiutangkaryawanController extends Controller
     }
 
 
+    public function updatekategori(Request $request, $no_pinjaman)
+    {
+        $no_pinjaman = Crypt::decrypt($no_pinjaman);
+        $piutangkaryawan = Piutangkaryawan::find($no_pinjaman);
+        if (!$piutangkaryawan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        try {
+            $kategori_baru = $request->kategori ?? ($piutangkaryawan->kategori == 'EK' ? 'KA' : 'EK');
+            $piutangkaryawan->kategori = $kategori_baru;
+            $piutangkaryawan->save();
+
+            $label = $kategori_baru == 'EK' ? 'Piutang Eks Karyawan' : 'Piutang Karyawan';
+            return response()->json([
+                'success' => true,
+                'message' => "Kategori piutang berhasil diubah ke {$label}",
+                'kategori' => $kategori_baru
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy($no_pinjaman)
     {
         $no_pinjaman = Crypt::decrypt($no_pinjaman);

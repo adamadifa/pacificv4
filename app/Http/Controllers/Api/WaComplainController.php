@@ -22,13 +22,14 @@ class WaComplainController extends Controller
             'chat_history' => 'nullable|array'
         ]);
 
-        // Clean WA number format to standard format or search as is
+        // Clean WA number format to search in pelanggan table (support 628xxx and 08xxx)
         $waNumber = $request->wa_number;
-        // Lookup matching customer by whatsapp/phone number in pelanggan table
-        // We'll search in no_hp or similar column in pelanggan table. Let's lookup pelanggan fields.
-        // For now, we will do a simple match on contact or phone columns.
-        $pelanggan = Pelanggan::where('no_hp', 'like', "%{$waNumber}%")
-            ->orWhere('no_hp', 'like', '%' . substr($waNumber, 4) . '%')
+        $normalizedNumber = preg_replace('/[^0-9]/', '', $waNumber);
+        $localNumber = preg_replace('/^62/', '0', $normalizedNumber);
+        
+        $pelanggan = Pelanggan::where('no_hp_pelanggan', 'like', "%{$normalizedNumber}%")
+            ->orWhere('no_hp_pelanggan', 'like', "%{$localNumber}%")
+            ->orWhere('no_hp_pelanggan', 'like', '%' . substr($normalizedNumber, 4) . '%')
             ->first();
 
         // Generate no_komplain: KMP/MM/YY/XXXX
