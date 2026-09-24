@@ -1761,7 +1761,7 @@ class LaporankeuanganController extends Controller
             $query->where('keuangan_piutangkaryawan.kategori', $request->status_aktif_piutangkaryawan);
         }
 
-        $query = Pjp::applyPjpAccess($query, $user);
+        $query = Piutangkaryawan::applyPiutangAccess($query, $user);
 
         if (!$user->hasRole($roles_access_all_piutang)) {
             $query->where('keuangan_piutangkaryawan.status', '0');

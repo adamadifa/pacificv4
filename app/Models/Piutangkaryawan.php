@@ -79,7 +79,7 @@ class Piutangkaryawan extends Model
         //     $query->where('pjp.status', $request->status);
         // }
 
-        $query = Pjp::applyPjpAccess($query, $user);
+        $query = self::applyPiutangAccess($query, $user);
 
         if (!$user->hasRole($roles_access_all_piutang)) {
             $query->where('keuangan_piutangkaryawan.status', '0');
@@ -91,6 +91,43 @@ class Piutangkaryawan extends Model
 
         $query->orderBy('keuangan_piutangkaryawan.tanggal', 'desc');
         $query->orderBy('keuangan_piutangkaryawan.no_pinjaman', 'desc');
+        return $query;
+    }
+
+    public static function applyPiutangAccess($query, $user)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+
+        $pjp_cabang_access = json_decode($user->pjp_cabang_access, true) ?? [];
+        $pjp_dept_access = json_decode($user->pjp_dept_access, true) ?? [];
+        $pjp_jabatan_access = json_decode($user->pjp_jabatan_access, true) ?? [];
+        $pjp_karyawan_access = json_decode($user->pjp_karyawan_access, true) ?? [];
+        $pjp_group_access = json_decode($user->pjp_group_access, true) ?? [];
+
+        if (!in_array('all', $pjp_cabang_access)) {
+            $query->whereIn('hrd_karyawan.kode_cabang', $pjp_cabang_access);
+        }
+
+        if (!in_array('all', $pjp_dept_access)) {
+            $query->whereIn('hrd_karyawan.kode_dept', $pjp_dept_access);
+        }
+
+        if (!in_array('all', $pjp_jabatan_access)) {
+            $query->whereIn('hrd_karyawan.kode_jabatan', $pjp_jabatan_access);
+        }
+
+        if (!in_array('all', $pjp_karyawan_access)) {
+            $query->whereIn('hrd_karyawan.nik', $pjp_karyawan_access);
+        }
+
+        if (!empty($pjp_group_access) && !in_array('all', $pjp_group_access)) {
+            $query->whereIn('hrd_karyawan.kode_group', $pjp_group_access);
+        }
+
+        if (!$user->hasRole($roles_access_all_cabang) && empty($pjp_cabang_access)) {
+            $query->where('hrd_karyawan.kode_cabang', $user->kode_cabang);
+        }
+
         return $query;
     }
 }
