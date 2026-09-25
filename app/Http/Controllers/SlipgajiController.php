@@ -118,6 +118,7 @@ class SlipgajiController extends Controller
             '15.10.143',
             '03.03.065',
             '23.12.337',
+            '20.04.110',
         ];
         $data['privillage_karyawan'] = $privillage_karyawan;
 

@@ -482,7 +482,7 @@ class SlipgajiController extends Controller
         $privillage_karyawan = [
             '16.11.266', '22.08.339', '19.10.142', '17.03.025', '00.12.062', 
             '08.07.092', '16.05.259', '17.08.023', '15.10.043', '17.07.302', 
-            '15.10.143', '03.03.065', '23.12.337'
+            '15.10.143', '03.03.065', '23.12.337', '20.04.110'
         ];
 
         while (strtotime($tanggal_presensi) <= strtotime($end_date)) {
