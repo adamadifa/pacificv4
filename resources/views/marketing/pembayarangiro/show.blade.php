@@ -3,7 +3,7 @@
       <table class="table">
          <tr>
             <th>Kode Giro</th>
-            <td>{{ $giro->kode_transfer }}</td>
+            <td>{{ $giro->kode_giro }}</td>
          </tr>
          <tr>
             <th>Tanggal</th>
@@ -24,6 +24,18 @@
          <tr>
             <th>Jatuh Tempo</th>
             <td>{{ DateToIndo($giro->jatuh_tempo) }}</td>
+         </tr>
+         <tr>
+            <th>Dokumen Giro</th>
+            <td>
+               @if (!empty($giro->foto) && Storage::disk('public')->exists('/giro/' . $giro->foto))
+                  <a href="{{ getfotoGiro($giro->foto) }}" target="_blank">
+                     <img src="{{ getfotoGiro($giro->foto) }}" alt="Dokumen Giro" class="rounded img-fluid" style="max-height: 150px;">
+                  </a>
+               @else
+                  <span class="text-muted">Tidak ada dokumen</span>
+               @endif
+            </td>
          </tr>
          <tr>
             <th>Status</th>

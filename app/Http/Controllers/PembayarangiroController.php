@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class PembayarangiroController extends Controller
 {
@@ -104,6 +105,15 @@ class PembayarangiroController extends Controller
 
             $last_kode_giro = $lastgiro != null ? $lastgiro->kode_giro : '';
             $kode_giro  = buatkode($last_kode_giro, "GR" . $tahun, 4);
+
+            $foto = null;
+            if ($request->hasFile('foto')) {
+                $foto_name = $kode_giro . "." . $request->file('foto')->getClientOriginalExtension();
+                $destination_foto_path = "/public/giro";
+                $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                $foto = $foto_name;
+            }
+
             Giro::create([
                 'kode_giro' => $kode_giro,
                 'kode_pelanggan' => $penjualan->kode_pelanggan,
@@ -113,6 +123,7 @@ class PembayarangiroController extends Controller
                 'bank_pengirim' => $request->bank_pengirim,
                 'jatuh_tempo' => $request->jatuh_tempo,
                 'keterangan' => $request->keterangan,
+                'foto' => $foto,
                 'status' => 0,
             ]);
 
@@ -126,7 +137,6 @@ class PembayarangiroController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
@@ -167,6 +177,14 @@ class PembayarangiroController extends Controller
             $last_kode_giro = $lastgiro != null ? $lastgiro->kode_giro : '';
             $kode_giro  = buatkode($last_kode_giro, "GR" . $tahun, 4);
 
+            $foto = null;
+            if ($request->hasFile('foto')) {
+                $foto_name = $kode_giro . "." . $request->file('foto')->getClientOriginalExtension();
+                $destination_foto_path = "/public/giro";
+                $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                $foto = $foto_name;
+            }
+
             // dd($kode_giro);
             Giro::create([
                 'kode_giro' => $kode_giro,
@@ -177,6 +195,7 @@ class PembayarangiroController extends Controller
                 'bank_pengirim' => $request->bank_pengirim,
                 'jatuh_tempo' => $request->jatuh_tempo,
                 'keterangan' => $request->keterangan,
+                'foto' => $foto,
                 'status' => 0,
             ]);
 
@@ -194,7 +213,6 @@ class PembayarangiroController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
@@ -216,11 +234,12 @@ class PembayarangiroController extends Controller
             'marketing_penjualan_giro.tanggal',
             'bank_pengirim',
             'kode_salesman',
+            'marketing_penjualan_giro.foto',
             'marketing_penjualan_giro_detail.*',
             'jatuh_tempo',
             'status',
             'tanggal_ditolak',
-            'keterangan',
+            'keterangan'
         )
             ->join('marketing_penjualan_giro', 'marketing_penjualan_giro_detail.kode_giro', '=', 'marketing_penjualan_giro.kode_giro')
             ->where('marketing_penjualan_giro_detail.no_faktur', $no_faktur)
@@ -273,6 +292,18 @@ class PembayarangiroController extends Controller
             if ($ceksetoran > 0) {
                 return Redirect::back()->with(messageError("No. Giro Sudah Di Setor"));
             }
+
+            $foto = $giro->foto;
+            if ($request->hasFile('foto')) {
+                $foto_name = $kode_giro . "." . $request->file('foto')->getClientOriginalExtension();
+                $destination_foto_path = "/public/giro";
+                if (!empty($giro->foto) && Storage::disk('public')->exists('giro/' . $giro->foto)) {
+                    Storage::delete($destination_foto_path . "/" . $giro->foto);
+                }
+                $request->file('foto')->storeAs($destination_foto_path, $foto_name);
+                $foto = $foto_name;
+            }
+
             $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
             Giro::where('kode_giro', $kode_giro)->update([
                 'kode_pelanggan' => $penjualan->kode_pelanggan,
@@ -282,6 +313,7 @@ class PembayarangiroController extends Controller
                 'bank_pengirim' => $request->bank_pengirim,
                 'jatuh_tempo' => $request->jatuh_tempo,
                 'keterangan' => $request->keterangan,
+                'foto' => $foto,
             ]);
 
             Detailgiro::where('kode_giro', $kode_giro)->where('no_faktur', $no_faktur)->update([
@@ -292,7 +324,6 @@ class PembayarangiroController extends Controller
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Disimpan'));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             return Redirect::back()->with(messageError($e->getMessage()));
         }
@@ -322,6 +353,10 @@ class PembayarangiroController extends Controller
             Detailgiro::where('no_faktur', $no_faktur)->where('kode_giro', $kode_giro)->delete();
             $cekdetailgiro = Detailgiro::where('kode_giro', $kode_giro)->count();
             if (empty($cekdetailgiro)) {
+                if (!empty($giro->foto)) {
+                    $destination_foto_path = "/public/giro";
+                    Storage::delete($destination_foto_path . "/" . $giro->foto);
+                }
                 Giro::where('kode_giro', $kode_giro)->delete();
             }
             DB::commit();
@@ -553,7 +588,11 @@ class PembayarangiroController extends Controller
             if ($cektutuplaporan > 0) {
                 return Redirect::back()->with(messageError('Periode Laporan Sudah Ditutup !'));
             }
-            //Hapus Surat Jalan
+            //Hapus Giro
+            if (!empty($giro->foto)) {
+                $destination_foto_path = "/public/giro";
+                Storage::delete($destination_foto_path . "/" . $giro->foto);
+            }
             Giro::where('kode_giro', $kode_giro)->delete();
             DB::commit();
             return Redirect::back()->with(messageSuccess('Data Berhasil Dihapus'));

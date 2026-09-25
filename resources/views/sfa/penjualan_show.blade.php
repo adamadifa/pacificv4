@@ -475,6 +475,13 @@
 
                                             <h5 class="mb-1">{{ formatAngka($d->jumlah) }}</h5>
                                             <p class="text-muted mb-0">{{ $d->bank_pengirim }}</p>
+                                            @if (!empty($d->foto) && Storage::disk('public')->exists('/giro/' . $d->foto))
+                                                <div class="mt-1">
+                                                    <a href="{{ getfotoGiro($d->foto) }}" target="_blank" class="badge bg-label-info">
+                                                        <i class="ti ti-file-image me-1"></i>Lihat Dokumen
+                                                    </a>
+                                                </div>
+                                            @endif
                                         </div>
                                         @if ($d->status == '0')
                                             <div class="d-flex">

@@ -1,4 +1,4 @@
-<form id="formBayar" method="POST" action="{{ route('pembayarangiro.store', Crypt::encrypt($no_faktur)) }}">
+<form id="formBayar" method="POST" action="{{ route('pembayarangiro.store', Crypt::encrypt($no_faktur)) }}" enctype="multipart/form-data">
     @csrf
     <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" hideLabel="true" />
     <x-input-with-icon icon="ti ti-calendar" label="Tanggal Giro" name="tanggal" datepicker="flatpickr-date" hideLabel="true" />
@@ -12,6 +12,7 @@
     <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" hideLabel="true" />
     <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" datepicker="flatpickr-date" hideLabel="true" />
     <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" hideLabel="true" />
+    <x-input-file name="foto" label="Upload Dokumen Giro" />
     <div class="row">
         <div class="col">
             <button class="btn btn-primary w-100" id="btnSimpan"><i class="ti ti-send me-1"></i>Submit</button>

@@ -1020,6 +1020,7 @@ class PenjualanController extends Controller
             'no_giro',
             'marketing_penjualan_giro.tanggal',
             'bank_pengirim',
+            'marketing_penjualan_giro.foto',
             'marketing_penjualan_giro_detail.*',
             'jatuh_tempo',
             'status',

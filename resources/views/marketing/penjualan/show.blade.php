@@ -573,7 +573,7 @@
                             <table class="table table-bordered">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th colspan="8">Histori Pembayaran Giro</th>
+                                        <th colspan="9">Histori Pembayaran Giro</th>
                                     </tr>
                                     <tr>
                                         <th>No. Giro</th>
@@ -581,6 +581,7 @@
                                         <th>Bank</th>
                                         <th>Jumlah</th>
                                         <th>Jatuh Tempo</th>
+                                        <th class="text-center">Dokumen</th>
                                         <th class="text-center">Status</th>
                                         <th>Salesman</th>
                                         <th>#</th>
@@ -594,6 +595,15 @@
                                             <td>{{ $d->bank_pengirim }}</td>
                                             <td class="text-end">{{ formatAngka($d->jumlah) }}</td>
                                             <td>{{ date('d-m-y', strtotime($d->jatuh_tempo)) }}</td>
+                                            <td class="text-center">
+                                                @if (!empty($d->foto) && Storage::disk('public')->exists('/giro/' . $d->foto))
+                                                    <a href="{{ getfotoGiro($d->foto) }}" target="_blank">
+                                                        <img src="{{ getfotoGiro($d->foto) }}" alt="Foto Giro" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    </a>
+                                                @else
+                                                    <i class="ti ti-file-x text-muted" data-bs-toggle="tooltip" title="Tidak ada dokumen"></i>
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                 @if ($d->status == '0')
                                                     <i class="ti ti-hourglass-low text-warning"></i>

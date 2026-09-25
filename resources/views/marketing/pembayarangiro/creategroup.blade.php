@@ -1,4 +1,4 @@
-<form action="{{ route('pembayarangiro.storegroup') }}" method="POST" id="formCreategrouptransfer">
+<form action="{{ route('pembayarangiro.storegroup') }}" method="POST" id="formCreategrouptransfer" enctype="multipart/form-data">
     @csrf
     <x-input-with-icon label="Auto" icon="ti ti-barcode" disabled="true" name="kode_giro" hideLabel="true" />
     <x-input-with-icon label="Tanggal" icon="ti ti-calendar" datepicker="flatpickr-date" name="tanggal" hideLabel="true" />
@@ -41,6 +41,7 @@
             <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" hideLabel="true" />
             <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" datepicker="flatpickr-date" hideLabel="true" />
             <x-input-with-icon label="Keterangan" name="keterangan" icon="ti ti-file-description" hideLabel="true" />
+            <x-input-file name="foto" label="Upload Dokumen Giro" />
         </div>
     </div>
     <div class="divider text-start">

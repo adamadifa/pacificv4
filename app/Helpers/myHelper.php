@@ -56,6 +56,12 @@ function getfotoPelanggan($file)
     return $url;
 }
 
+function getfotoGiro($file)
+{
+    $url = url('/storage/giro/' . $file);
+    return $url;
+}
+
 function getfotoPelangganowner($file)
 {
     $url = url('/storage/pelanggan/owner/' . $file);

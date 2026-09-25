@@ -1,4 +1,4 @@
-<form id="formBayar" method="POST" action="{{ route('pembayarangiro.update', [Crypt::encrypt($no_faktur), Crypt::encrypt($kode_giro)]) }}">
+<form id="formBayar" method="POST" action="{{ route('pembayarangiro.update', [Crypt::encrypt($no_faktur), Crypt::encrypt($kode_giro)]) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <x-input-with-icon icon="ti ti-barcode" label="No. Giro" name="no_giro" value="{{ $giro->no_giro }}" hideLabel="true" />
@@ -14,6 +14,16 @@
     <x-input-with-icon icon="ti ti-building" label="Bank Pengirim" name="bank_pengirim" value="{{ $giro->bank_pengirim }}" hideLabel="true" />
     <x-input-with-icon icon="ti ti-calendar" label="Jatuh Tempo" name="jatuh_tempo" value="{{ $giro->jatuh_tempo }}" datepicker="flatpickr-date" hideLabel="true" />
     <x-input-with-icon icon="ti ti-file-description" label="Keterangan" name="keterangan" value="{{ $giro->keterangan }}" hideLabel="true" />
+    <x-input-file name="foto" label="Upload Dokumen Giro" />
+    @if (!empty($giro->foto))
+        @if (Storage::disk('public')->exists('/giro/' . $giro->foto))
+            <div class="mb-3">
+                <a href="{{ getfotoGiro($giro->foto) }}" target="_blank">
+                    <img src="{{ getfotoGiro($giro->foto) }}" alt="Dokumen Giro" class="rounded img-fluid" style="max-height: 150px;">
+                </a>
+            </div>
+        @endif
+    @endif
     <div class="row">
         <div class="col">
             <button class="btn btn-primary w-100"><i class="ti ti-send me-1"></i>Submit</button>
