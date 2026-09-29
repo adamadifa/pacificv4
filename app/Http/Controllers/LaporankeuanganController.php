@@ -1763,7 +1763,9 @@ class LaporankeuanganController extends Controller
 
         $query = Piutangkaryawan::applyPiutangAccess($query, $user);
 
-        if (!$user->hasRole($roles_access_all_piutang)) {
+        if ($user->hasRole('super admin') && $request->status_akses === 'all') {
+            // Super admin memilih tampilkan semua (status 0 dan status 1)
+        } else {
             $query->where('keuangan_piutangkaryawan.status', '0');
         }
 

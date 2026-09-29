@@ -6,6 +6,18 @@
         <x-select label="Semua Departemen" name="kode_dept_kartupiutangkaryawan" :data="$departemen_pjp" key="kode_dept" textShow="nama_dept" upperCase="true"
             select2="select2Kodedeptkartupiutangekskaryawan" hideLabel="true" />
     @endrole
+    @role('super admin')
+        <div class="row">
+            <div class="col">
+                <div class="form-group mb-3">
+                    <select name="status_akses" id="status_akses_kartupiutangekskaryawan" class="form-select">
+                        <option value="0">Sembunyikan Piutang Keuangan</option>
+                        <option value="all">Tampilkan Semua (Termasuk Piutang Keuangan)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    @endrole
 
     <input type="hidden" name="status_aktif_piutangkaryawan" value="EK">
     <div class="row">
