@@ -2225,6 +2225,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporanaccounting/cetakrekapbj', 'cetakrekapbj')->name('laporanaccounting.cetakrekapbj')->can('akt.rekapbj');
         Route::post('/laporanaccounting/cetakrekappersediaan', 'cetakrekappersediaan')->name('laporanaccounting.cetakrekappersediaan')->can('akt.rekappersediaan');
         Route::post('/laporanaccounting/cetakcostratio', 'cetakcostratio')->name('laporanaccounting.cetakcostratio')->can('akt.costratio');
+        Route::post('/laporanaccounting/cetakrekapcostratio', 'cetakrekapcostratio')->name('laporanaccounting.cetakrekapcostratio')->can('akt.rekapcostratio');
         Route::post('/laporanaccounting/cetakjurnalumum', 'cetakjurnalumum')->name('laporanaccounting.cetakjurnalumum')->can('akt.jurnalumum');
         Route::post('/laporanaccounting/updatestatuspajakjurnalumum', 'updatestatuspajakjurnalumum')->name('laporanaccounting.updatestatuspajakjurnalumum');
         Route::post('/laporanaccounting/syncallpajakjurnalumum', 'syncAllPajakJurnalUmum')->name('laporanaccounting.syncallpajakjurnalumum');

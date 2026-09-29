@@ -886,6 +886,266 @@ class LaporanaccountingController extends Controller
         }
     }
 
+    public function cetakrekapcostratio(Request $request)
+    {
+        $roles_access_all_cabang = config('global.roles_access_all_cabang');
+        $user = User::findorfail(auth()->user()->id);
+
+        if (!$user->hasRole($roles_access_all_cabang)) {
+            if ($user->hasRole('regional sales manager')) {
+                $kode_cabang = $request->kode_cabang;
+            } else {
+                $kode_cabang = $user->kode_cabang;
+            }
+        } else {
+            $kode_cabang = $request->kode_cabang;
+        }
+
+        $years = $request->tahun;
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        sort($years);
+
+        if (!empty($kode_cabang)) {
+            $cabang_list = Cabang::where('kode_cabang', $kode_cabang)->get();
+        } else {
+            $cbg = new Cabang();
+            $cabang_list = $cbg->getCabang();
+        }
+
+        // Kategori Biaya COA yang digunakan
+        $kategori_list = [
+            'C01' => 'Biaya Penjualan',
+            'C02' => 'Biaya Operasional',
+            'C03' => 'Biaya Fasilitas',
+            'C04' => 'Biaya Tenaga Kerja',
+        ];
+
+        // 1. Data Biaya Cost Ratio dari accounting_costratio
+        $q_cr = Costratio::query()
+            ->select(
+                'accounting_costratio.kode_cabang',
+                'coa.kode_kategori',
+                DB::raw('YEAR(accounting_costratio.tanggal) as tahun'),
+                DB::raw('MONTH(accounting_costratio.tanggal) as bulan'),
+                DB::raw('SUM(accounting_costratio.jumlah) as total_biaya')
+            )
+            ->join('coa', 'accounting_costratio.kode_akun', '=', 'coa.kode_akun')
+            ->whereIn(DB::raw('YEAR(accounting_costratio.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_cr->where('accounting_costratio.kode_cabang', $kode_cabang);
+        }
+
+        $cr_data = $q_cr->groupBy(
+            'accounting_costratio.kode_cabang',
+            'coa.kode_kategori',
+            DB::raw('YEAR(accounting_costratio.tanggal)'),
+            DB::raw('MONTH(accounting_costratio.tanggal)')
+        )->get();
+
+        // 2. Data Logistik per cabang, tahun, bulan
+        $q_logistik = Detailbarangkeluargudanglogistik::query()
+            ->select(
+                'gudang_logistik_barang_keluar_detail.kode_cabang',
+                DB::raw('YEAR(gudang_logistik_barang_keluar.tanggal) as tahun'),
+                DB::raw('MONTH(gudang_logistik_barang_keluar.tanggal) as bulan'),
+                DB::raw("SUM(IF(gudang_logistik_barang_keluar_detail.kode_cabang IS NOT NULL, jumlah *
+                    CASE
+                        WHEN sa.hargasaldoawal IS NULL THEN gm.hargapemasukan
+                        WHEN gm.hargapemasukan IS NULL THEN sa.hargasaldoawal
+                        ELSE (sa.totalsa + gm.totalpemasukan) / (sa.qtysaldoawal + gm.qtypemasukan)
+                    END, 0)) as total_logistik")
+            )
+            ->join('gudang_logistik_barang_keluar', 'gudang_logistik_barang_keluar_detail.no_bukti', '=', 'gudang_logistik_barang_keluar.no_bukti')
+            ->join('pembelian_barang', 'gudang_logistik_barang_keluar_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT gudang_logistik_saldoawal_detail.kode_barang, gudang_logistik_saldoawal.bulan, gudang_logistik_saldoawal.tahun,
+                    SUM(harga) AS hargasaldoawal,
+                    SUM(jumlah) AS qtysaldoawal,
+                    SUM(harga * jumlah) AS totalsa FROM gudang_logistik_saldoawal_detail
+                    INNER JOIN gudang_logistik_saldoawal ON gudang_logistik_saldoawal_detail.kode_saldo_awal=gudang_logistik_saldoawal.kode_saldo_awal
+                    GROUP BY kode_barang, gudang_logistik_saldoawal.bulan, gudang_logistik_saldoawal.tahun
+                ) sa"),
+                function ($join) {
+                    $join->on('gudang_logistik_barang_keluar_detail.kode_barang', '=', 'sa.kode_barang')
+                        ->on(DB::raw('MONTH(gudang_logistik_barang_keluar.tanggal)'), '=', 'sa.bulan')
+                        ->on(DB::raw('YEAR(gudang_logistik_barang_keluar.tanggal)'), '=', 'sa.tahun');
+                }
+            )
+            ->leftJoin(
+                DB::raw("(
+                    SELECT gudang_logistik_barang_masuk_detail.kode_barang,
+                    MONTH(gudang_logistik_barang_masuk.tanggal) as bulan,
+                    YEAR(gudang_logistik_barang_masuk.tanggal) as tahun,
+                    SUM(penyesuaian) AS penyesuaian,
+                    SUM(jumlah) AS qtypemasukan,
+                    SUM(harga) AS hargapemasukan,
+                    SUM(harga * jumlah) AS totalpemasukan FROM
+                    gudang_logistik_barang_masuk_detail
+                    INNER JOIN gudang_logistik_barang_masuk ON gudang_logistik_barang_masuk_detail.no_bukti = gudang_logistik_barang_masuk.no_bukti
+                    GROUP BY kode_barang, MONTH(gudang_logistik_barang_masuk.tanggal), YEAR(gudang_logistik_barang_masuk.tanggal)
+                ) gm"),
+                function ($join) {
+                    $join->on('gudang_logistik_barang_keluar_detail.kode_barang', '=', 'gm.kode_barang')
+                        ->on(DB::raw('MONTH(gudang_logistik_barang_keluar.tanggal)'), '=', 'gm.bulan')
+                        ->on(DB::raw('YEAR(gudang_logistik_barang_keluar.tanggal)'), '=', 'gm.tahun');
+                }
+            )
+            ->where('pembelian_barang.kode_kategori', 'K001')
+            ->whereIn(DB::raw('YEAR(gudang_logistik_barang_keluar.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_logistik->where('gudang_logistik_barang_keluar_detail.kode_cabang', $kode_cabang);
+        }
+
+        $logistik_data = $q_logistik->groupBy(
+            'gudang_logistik_barang_keluar_detail.kode_cabang',
+            DB::raw('YEAR(gudang_logistik_barang_keluar.tanggal)'),
+            DB::raw('MONTH(gudang_logistik_barang_keluar.tanggal)')
+        )->get();
+
+        // 3. Data Penggunaan Bahan Kemasan per cabang, tahun, bulan
+        $q_bahan = Detailbarangkeluargudangbahan::query()
+            ->select(
+                'gudang_bahan_barang_keluar.kode_cabang',
+                DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal) as tahun'),
+                DB::raw('MONTH(gudang_bahan_barang_keluar.tanggal) as bulan'),
+                DB::raw("SUM(
+                    CASE
+                        WHEN satuan = 'KG' THEN qty_berat * 1000
+                        WHEN satuan = 'LITER' THEN qty_berat * 1000 * IFNULL((SELECT harga FROM harga_minyak WHERE bulan = MONTH(gudang_bahan_barang_keluar.tanggal) AND tahun = YEAR(gudang_bahan_barang_keluar.tanggal) AND kode_cabang = gudang_bahan_barang_keluar.kode_cabang LIMIT 1), 0)
+                        ELSE qty_unit
+                    END
+                    *
+                    CASE
+                        WHEN satuan = 'KG' THEN (IFNULL(hrgsa.harga, 0) + IFNULL(dp.totalharga, 0) + IF(IFNULL(gm.qtypengganti2, 0) = 0, 0, (gm.qtypengganti2 * 1000) * (IF(IFNULL(gm.qtypemb2, 0) = 0, (IFNULL(hrgsa.harga, 0) / (IFNULL(sa.qtyberatsa, 1) * 1000)), IFNULL(dp.totalharga, 0) / (gm.qtypemb2 * 1000)))) + IF(IFNULL(gm.qtylainnya2, 0) = 0, 0, (gm.qtylainnya2 * 1000) * (IF(IFNULL(gm.qtypemb2, 0) = 0, (IFNULL(hrgsa.harga, 0) / (IFNULL(sa.qtyberatsa, 1) * 1000)), IFNULL(dp.totalharga, 0) / (gm.qtypemb2 * 1000))))) / ((IFNULL(sa.qtyberatsa, 0) * 1000) + (IFNULL(gm.qtypemb2, 0) * 1000) + (IFNULL(gm.qtylainnya2, 0) * 1000) + (IFNULL(gm.qtypengganti2, 0) * 1000))
+                        ELSE (IFNULL(hrgsa.harga, 0) + IFNULL(dp.totalharga, 0) + IF(IFNULL(gm.qtylainnya1, 0) = 0, 0, gm.qtylainnya1 * IF(IFNULL(gm.qtypemb1, 0) = 0, IFNULL(hrgsa.harga, 0) / IFNULL(sa.qtyunitsa, 1), IFNULL(dp.totalharga, 0) / gm.qtypemb1)) + IF(IFNULL(gm.qtypengganti1, 0) = 0, 0, gm.qtypengganti1 * IF(IFNULL(gm.qtypemb1, 0) = 0, IFNULL(hrgsa.harga, 0) / IFNULL(sa.qtyunitsa, 1), IFNULL(dp.totalharga, 0) / gm.qtypemb1))) / (IFNULL(sa.qtyunitsa, 0) + IFNULL(gm.qtypemb1, 0) + IFNULL(gm.qtylainnya1, 0) + IFNULL(gm.qtypengganti1, 0))
+                    END
+                ) as total_bahan")
+            )
+            ->join('pembelian_barang', 'gudang_bahan_barang_keluar_detail.kode_barang', '=', 'pembelian_barang.kode_barang')
+            ->join('gudang_bahan_barang_keluar', 'gudang_bahan_barang_keluar_detail.no_bukti', '=', 'gudang_bahan_barang_keluar.no_bukti')
+            ->leftJoin(
+                DB::raw("(
+                    SELECT
+                    gudang_bahan_barang_masuk_detail.kode_barang,
+                    MONTH(gudang_bahan_barang_masuk.tanggal) as bulan,
+                    YEAR(gudang_bahan_barang_masuk.tanggal) as tahun,
+                    SUM(IF(kode_asal_barang = 'PMB', qty_unit, 0)) AS qtypemb1,
+                    SUM(IF(kode_asal_barang = 'LNY', qty_unit, 0)) AS qtylainnya1,
+                    SUM(IF(kode_asal_barang = 'RTP', qty_unit, 0)) AS qtypengganti1,
+                    SUM(IF(kode_asal_barang = 'PMB', qty_berat, 0)) AS qtypemb2,
+                    SUM(IF(kode_asal_barang = 'LNY', qty_berat, 0)) AS qtylainnya2,
+                    SUM(IF(kode_asal_barang = 'RTP', qty_berat, 0)) AS qtypengganti2
+                    FROM
+                    gudang_bahan_barang_masuk_detail
+                    INNER JOIN gudang_bahan_barang_masuk ON gudang_bahan_barang_masuk_detail.no_bukti = gudang_bahan_barang_masuk.no_bukti
+                    GROUP BY gudang_bahan_barang_masuk_detail.kode_barang, MONTH(gudang_bahan_barang_masuk.tanggal), YEAR(gudang_bahan_barang_masuk.tanggal)
+                ) gm"),
+                function ($join) {
+                    $join->on('gudang_bahan_barang_keluar_detail.kode_barang', '=', 'gm.kode_barang')
+                        ->on(DB::raw('MONTH(gudang_bahan_barang_keluar.tanggal)'), '=', 'gm.bulan')
+                        ->on(DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal)'), '=', 'gm.tahun');
+                }
+            )
+            ->leftJoin(
+                DB::raw("(
+                    SELECT SUM((jumlah*harga)+penyesuaian) as totalharga, kode_barang,
+                    MONTH(pembelian.tanggal) as bulan,
+                    YEAR(pembelian.tanggal) as tahun
+                    FROM pembelian_detail
+                    INNER JOIN pembelian ON pembelian_detail.no_bukti = pembelian.no_bukti
+                    GROUP BY kode_barang, MONTH(pembelian.tanggal), YEAR(pembelian.tanggal)
+                ) dp"),
+                function ($join) {
+                    $join->on('gudang_bahan_barang_keluar_detail.kode_barang', '=', 'dp.kode_barang')
+                        ->on(DB::raw('MONTH(gudang_bahan_barang_keluar.tanggal)'), '=', 'dp.bulan')
+                        ->on(DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal)'), '=', 'dp.tahun');
+                }
+            )
+            ->leftJoin(
+                DB::raw("(
+                    SELECT kode_barang, harga, gudang_bahan_saldoawal_harga.bulan, gudang_bahan_saldoawal_harga.tahun
+                    FROM gudang_bahan_saldoawal_harga_detail
+                    INNER JOIN gudang_bahan_saldoawal_harga ON gudang_bahan_saldoawal_harga_detail.kode_saldo_awal = gudang_bahan_saldoawal_harga.kode_saldo_awal
+                    GROUP BY kode_barang, harga, gudang_bahan_saldoawal_harga.bulan, gudang_bahan_saldoawal_harga.tahun
+                ) hrgsa"),
+                function ($join) {
+                    $join->on('gudang_bahan_barang_keluar_detail.kode_barang', '=', 'hrgsa.kode_barang')
+                        ->on(DB::raw('MONTH(gudang_bahan_barang_keluar.tanggal)'), '=', 'hrgsa.bulan')
+                        ->on(DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal)'), '=', 'hrgsa.tahun');
+                }
+            )
+            ->leftJoin(
+                DB::raw("(
+                    SELECT gudang_bahan_saldoawal_detail.kode_barang, gudang_bahan_saldoawal.bulan, gudang_bahan_saldoawal.tahun,
+                    SUM(qty_unit) AS qtyunitsa,
+                    SUM(qty_berat) AS qtyberatsa
+                    FROM gudang_bahan_saldoawal_detail
+                    INNER JOIN gudang_bahan_saldoawal ON gudang_bahan_saldoawal_detail.kode_saldo_awal=gudang_bahan_saldoawal.kode_saldo_awal
+                    GROUP BY gudang_bahan_saldoawal_detail.kode_barang, gudang_bahan_saldoawal.bulan, gudang_bahan_saldoawal.tahun
+                ) sa"),
+                function ($join) {
+                    $join->on('gudang_bahan_barang_keluar_detail.kode_barang', '=', 'sa.kode_barang')
+                        ->on(DB::raw('MONTH(gudang_bahan_barang_keluar.tanggal)'), '=', 'sa.bulan')
+                        ->on(DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal)'), '=', 'sa.tahun');
+                }
+            )
+            ->where('gudang_bahan_barang_keluar.kode_jenis_pengeluaran', 'CBG')
+            ->whereIn(DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal)'), $years);
+
+        if (!empty($kode_cabang)) {
+            $q_bahan->where('gudang_bahan_barang_keluar.kode_cabang', $kode_cabang);
+        }
+
+        $bahan_data = $q_bahan->groupBy(
+            'gudang_bahan_barang_keluar.kode_cabang',
+            DB::raw('YEAR(gudang_bahan_barang_keluar.tanggal)'),
+            DB::raw('MONTH(gudang_bahan_barang_keluar.tanggal)')
+        )->get();
+
+        // Mapping Data: costratio_map[kode_cabang][item_key][tahun][bulan]
+        $costratio_map = [];
+
+        foreach ($cr_data as $row) {
+            $costratio_map[$row->kode_cabang][$row->kode_kategori][$row->tahun][$row->bulan] = (float) $row->total_biaya;
+        }
+
+        foreach ($logistik_data as $row) {
+            $costratio_map[$row->kode_cabang]['LOGISTIK'][$row->tahun][$row->bulan] = (float) $row->total_logistik;
+        }
+
+        foreach ($bahan_data as $row) {
+            $costratio_map[$row->kode_cabang]['BAHAN'][$row->tahun][$row->bulan] = (float) $row->total_bahan;
+        }
+
+        // List item kolom yang akan direkap
+        $items = [
+            'C01' => 'Biaya Penjualan',
+            'C02' => 'Biaya Operasional',
+            'C03' => 'Biaya Fasilitas',
+            'C04' => 'Biaya Tenaga Kerja',
+            'LOGISTIK' => 'Logistik',
+            'BAHAN' => 'Penggunaan Bahan Kemasan',
+        ];
+
+        $data['cabang_list'] = $cabang_list;
+        $data['years'] = $years;
+        $data['items'] = $items;
+        $data['costratio_map'] = $costratio_map;
+        $data['cabang'] = Cabang::where('kode_cabang', $kode_cabang)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap Cost Ratio Multi Tahun.xls");
+        }
+
+        return view('accounting.laporan.rekapcostratio_cetak', $data);
+    }
+
     public function cetakjurnalumum(Request $request)
     {
         $user = User::findorfail(auth()->user()->id);

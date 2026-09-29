@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
             Ticketpermissionseeder::class,
             BpbPermissionSeeder::class,
             Kategoridiskonpermissionseeder::class,
+            Rekapcostratiopermissionseeder::class,
         ]);
     }
 }

@@ -8,6 +8,7 @@
             'akt.rekapbj',
             'akt.rekappersediaan',
             'akt.costratio',
+            'akt.rekapcostratio',
             'akt.jurnalumum',
             'saldoawalbukubesar.index',
         ]))
@@ -63,7 +64,7 @@
                 </li>
             @endif
 
-            @if (auth()->user()->hasAnyPermission(['akt.rekapbj', 'akt.rekappersediaan', 'akt.costratio', 'akt.jurnalumum']))
+            @if (auth()->user()->hasAnyPermission(['akt.rekapbj', 'akt.rekappersediaan', 'akt.costratio', 'akt.rekapcostratio', 'akt.jurnalumum']))
                 <li
                     class="menu-item {{ request()->is(['laporanaccounting', 'laporanaccounting/*']) ? 'active' : '' }}">
                     <a href="{{ route('laporanaccounting.index') }}" class="menu-link">

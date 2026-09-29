@@ -108,8 +108,26 @@
             };
 
             setupSelect2(".select2Kodecabang", 'Semua Cabang');
+            setupSelect2(".select2Kodecabangrekapcostratio", 'Semua Cabang');
+            setupSelect2(".select2Tahunrekapcostratio", 'Pilih Tahun');
             setupSelect2(".select2Kodeakundari", 'Semua Akun');
             setupSelect2(".select2Kodeakunsampai", 'Semua Akun');
+
+            $(`#formRekapcostratio`).submit(function(e) {
+                const tahun = $(this).find('#tahun_rekapcostratio').val();
+                if (!tahun || tahun.length === 0) {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "Tahun Harus Diisi !",
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: () => {
+                            $(this).find("#tahun_rekapcostratio").focus();
+                        },
+                    });
+                    return false;
+                }
+            });
 
             // Buku Besar Specific Logic
             const formLedger = $("#formLedger");
@@ -209,6 +227,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('akt.rekapcostratio')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapcostratio"
+                            aria-controls="rekapcostratio" aria-selected="false" tabindex="-1">
+                            <i class="ti ti-chart-arrows me-2"></i> Rekap Cost Ratio
+                        </button>
+                    </li>
+                @endcan
                 @can('akt.jurnalumum')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#jurnalumum"
@@ -259,6 +285,18 @@
                             </div>
                             <div class="card-body pt-4">
                                 @include('accounting.laporan.costratio')
+                            </div>
+                        </div>
+                    </div>
+                @endcan
+                @can('akt.rekapcostratio')
+                    <div class="tab-pane fade" id="rekapcostratio" role="tabpanel">
+                        <div class="card shadow-none border">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-chart-arrows me-2"></i>Laporan Rekap Cost Ratio Multi Tahun</h6>
+                            </div>
+                            <div class="card-body pt-4">
+                                @include('accounting.laporan.rekapcostratio')
                             </div>
                         </div>
                     </div>
