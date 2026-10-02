@@ -1305,11 +1305,11 @@ class LaporankeuanganController extends Controller
             $queryPjp = Pjp::query();
             $queryPjp->select(
                 DB::raw("SUM(IF(keuangan_pjp.tanggal < '$dari', jumlah_pinjaman, 0)) as jumlah_pinjamanlast"),
-                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
-                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(hb.totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(hb.totalpelunasanlast) as total_pelunasanlast"),
                 DB::raw("SUM(IF(keuangan_pjp.tanggal BETWEEN '$dari' AND '$sampai', jumlah_pinjaman, 0)) as jumlah_pinjamannow"),
-                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
-                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+                DB::raw("SUM(hb.totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(hb.totalpelunasannow) as total_pelunasannow")
             );
             $queryPjp->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
             $queryPjp->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -1318,42 +1318,16 @@ class LaporankeuanganController extends Controller
 
             $queryPjp->leftJoin(
                 DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpembayaranlast 
+                    SELECT no_pinjaman, 
+                    SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                    SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                    SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayarannow
                     FROM keuangan_pjp_historibayar
-                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    WHERE tanggal <= '$tanggal_potongan'
                     GROUP BY no_pinjaman
                 ) hb"),
                 'keuangan_pjp.no_pinjaman', '=', 'hb.no_pinjaman'
-            );
-
-            $queryPjp->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasanlast 
-                    FROM keuangan_pjp_historibayar
-                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                    GROUP BY no_pinjaman
-                ) hbpllast"),
-                'keuangan_pjp.no_pinjaman', '=', 'hbpllast.no_pinjaman'
-            );
-
-            $queryPjp->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasannow 
-                    FROM keuangan_pjp_historibayar
-                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                    GROUP BY no_pinjaman
-                ) hbplnow"),
-                'keuangan_pjp.no_pinjaman', '=', 'hbplnow.no_pinjaman'
-            );
-
-            $queryPjp->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpembayarannow 
-                    FROM keuangan_pjp_historibayar
-                    WHERE tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL
-                    GROUP BY no_pinjaman
-                ) hbnow"),
-                'keuangan_pjp.no_pinjaman', '=', 'hbnow.no_pinjaman'
             );
 
             $queryPjp->where('keuangan_pjp.tanggal', '<=', $sampai);
@@ -1381,11 +1355,11 @@ class LaporankeuanganController extends Controller
             $queryKasbon = Kasbon::query();
             $queryKasbon->select(
                 DB::raw("SUM(IF(keuangan_kasbon.tanggal < '$dari', jumlah, 0)) as jumlah_kasbonlast"),
-                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
-                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(hb.totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(hb.totalpelunasanlast) as total_pelunasanlast"),
                 DB::raw("SUM(IF(keuangan_kasbon.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_kasbonnow"),
-                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
-                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+                DB::raw("SUM(hb.totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(hb.totalpelunasannow) as total_pelunasannow")
             );
             $queryKasbon->join('hrd_karyawan', 'keuangan_kasbon.nik', '=', 'hrd_karyawan.nik');
             $queryKasbon->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -1394,42 +1368,16 @@ class LaporankeuanganController extends Controller
 
             $queryKasbon->leftJoin(
                 DB::raw("(
-                    SELECT no_kasbon, SUM(jumlah) as totalpembayaranlast 
+                    SELECT no_kasbon, 
+                    SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                    SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                    SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayarannow
                     FROM keuangan_kasbon_historibayar
-                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    WHERE tanggal <= '$tanggal_potongan'
                     GROUP BY no_kasbon
                 ) hb"),
                 'keuangan_kasbon.no_kasbon', '=', 'hb.no_kasbon'
-            );
-
-            $queryKasbon->leftJoin(
-                DB::raw("(
-                    SELECT no_kasbon, SUM(jumlah) as totalpelunasanlast 
-                    FROM keuangan_kasbon_historibayar
-                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                    GROUP BY no_kasbon
-                ) hbpllast"),
-                'keuangan_kasbon.no_kasbon', '=', 'hbpllast.no_kasbon'
-            );
-
-            $queryKasbon->leftJoin(
-                DB::raw("(
-                    SELECT no_kasbon, SUM(jumlah) as totalpelunasannow 
-                    FROM keuangan_kasbon_historibayar
-                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                    GROUP BY no_kasbon
-                ) hbplnow"),
-                'keuangan_kasbon.no_kasbon', '=', 'hbplnow.no_kasbon'
-            );
-
-            $queryKasbon->leftJoin(
-                DB::raw("(
-                    SELECT no_kasbon, SUM(jumlah) as totalpembayarannow 
-                    FROM keuangan_kasbon_historibayar
-                    WHERE tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL
-                    GROUP BY no_kasbon
-                ) hbnow"),
-                'keuangan_kasbon.no_kasbon', '=', 'hbnow.no_kasbon'
             );
 
             $queryKasbon->where('keuangan_kasbon.tanggal', '<=', $sampai);
@@ -1457,14 +1405,14 @@ class LaporankeuanganController extends Controller
             $queryPiutangKaryawan = Piutangkaryawan::query();
             $queryPiutangKaryawan->select(
                 DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal < '$dari', jumlah, 0)) as jumlah_pinjamanlast"),
-                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
-                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(hb.totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(hb.totalpelunasanlast) as total_pelunasanlast"),
                 DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_pinjamannow"),
-                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
-                DB::raw("SUM(totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
-                DB::raw("SUM(totalpembayarantitipan) as total_pembayarantitipan"),
-                DB::raw("SUM(totalpembayaranlainnya) as total_pembayaranlainnya"),
-                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+                DB::raw("SUM(hb.totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(hb.totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
+                DB::raw("SUM(hb.totalpembayarantitipan) as total_pembayarantitipan"),
+                DB::raw("SUM(hb.totalpembayaranlainnya) as total_pembayaranlainnya"),
+                DB::raw("SUM(hb.totalpelunasannow) as total_pelunasannow")
             );
             $queryPiutangKaryawan->join('hrd_karyawan', 'keuangan_piutangkaryawan.nik', '=', 'hrd_karyawan.nik');
             $queryPiutangKaryawan->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -1473,46 +1421,19 @@ class LaporankeuanganController extends Controller
 
             $queryPiutangKaryawan->leftJoin(
                 DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpembayaranlast 
+                    SELECT no_pinjaman, 
+                    SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                    SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                    SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 1, jumlah, 0)) as totalpembayarannow,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 2, jumlah, 0)) as totalpembayaranpotongkomisi,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 3, jumlah, 0)) as totalpembayarantitipan,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 4, jumlah, 0)) as totalpembayaranlainnya
                     FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    WHERE tanggal <= '$tanggal_potongan'
                     GROUP BY no_pinjaman
                 ) hb"),
                 'keuangan_piutangkaryawan.no_pinjaman', '=', 'hb.no_pinjaman'
-            );
-
-            $queryPiutangKaryawan->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasanlast 
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                    GROUP BY no_pinjaman
-                ) hbpllast"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbpllast.no_pinjaman'
-            );
-
-            $queryPiutangKaryawan->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasannow 
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                    GROUP BY no_pinjaman
-                ) hbplnow"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbplnow.no_pinjaman'
-            );
-
-            $queryPiutangKaryawan->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman,
-                    SUM(IF(jenis_bayar=1, jumlah, 0)) as totalpembayarannow,
-                    SUM(IF(jenis_bayar=2, jumlah, 0)) as totalpembayaranpotongkomisi,
-                    SUM(IF(jenis_bayar=3, jumlah, 0)) as totalpembayarantitipan,
-                    SUM(IF(jenis_bayar=4, jumlah, 0)) as totalpembayaranlainnya
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal = '$tanggal_potongan'
-                    GROUP BY no_pinjaman
-                ) hbnow"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbnow.no_pinjaman'
             );
 
             $queryPiutangKaryawan->where('keuangan_piutangkaryawan.tanggal', '<=', $sampai);
@@ -1535,21 +1456,21 @@ class LaporankeuanganController extends Controller
             $piutangkaryawan_gaji = $piutangKaryawan->total_pembayarannow ?? 0;
             $piutangkaryawan_pot_komisi = $piutangKaryawan->total_pembayaranpotongkomisi ?? 0;
             $piutangkaryawan_titipan = $piutangKaryawan->total_pembayarantitipan ?? 0;
-            $piutangkaryawan_lainnya = ($piutangKaryawan->total_pembayaranlainnya ?? 0) + ($piutangKaryawan->total_pelunasannow ?? 0);
+            $piutangkaryawan_lainnya = ($piutangKaryawan->total_pembayaranlainnya ?? 0) + ($piutangKaryawan->totalpelunasannow ?? 0);
             $piutangkaryawan_saldoakhir = $piutangkaryawan_saldoawal + $piutangkaryawan_penambahan - ($piutangkaryawan_gaji + $piutangkaryawan_pot_komisi + $piutangkaryawan_titipan + $piutangkaryawan_lainnya);
 
             // 4. PIUTANG EKS KARYAWAN
             $queryPiutangEk = Piutangkaryawan::query();
             $queryPiutangEk->select(
                 DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal < '$dari', jumlah, 0)) as jumlah_pinjamanlast"),
-                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
-                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(hb.totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(hb.totalpelunasanlast) as total_pelunasanlast"),
                 DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_pinjamannow"),
-                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
-                DB::raw("SUM(totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
-                DB::raw("SUM(totalpembayarantitipan) as total_pembayarantitipan"),
-                DB::raw("SUM(totalpembayaranlainnya) as total_pembayaranlainnya"),
-                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+                DB::raw("SUM(hb.totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(hb.totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
+                DB::raw("SUM(hb.totalpembayarantitipan) as total_pembayarantitipan"),
+                DB::raw("SUM(hb.totalpembayaranlainnya) as total_pembayaranlainnya"),
+                DB::raw("SUM(hb.totalpelunasannow) as total_pelunasannow")
             );
             $queryPiutangEk->join('hrd_karyawan', 'keuangan_piutangkaryawan.nik', '=', 'hrd_karyawan.nik');
             $queryPiutangEk->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -1558,46 +1479,19 @@ class LaporankeuanganController extends Controller
 
             $queryPiutangEk->leftJoin(
                 DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpembayaranlast 
+                    SELECT no_pinjaman, 
+                    SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                    SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                    SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 1, jumlah, 0)) as totalpembayarannow,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 2, jumlah, 0)) as totalpembayaranpotongkomisi,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 3, jumlah, 0)) as totalpembayarantitipan,
+                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 4, jumlah, 0)) as totalpembayaranlainnya
                     FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    WHERE tanggal <= '$tanggal_potongan'
                     GROUP BY no_pinjaman
                 ) hb"),
                 'keuangan_piutangkaryawan.no_pinjaman', '=', 'hb.no_pinjaman'
-            );
-
-            $queryPiutangEk->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasanlast 
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                    GROUP BY no_pinjaman
-                ) hbpllast"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbpllast.no_pinjaman'
-            );
-
-            $queryPiutangEk->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasannow 
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                    GROUP BY no_pinjaman
-                ) hbplnow"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbplnow.no_pinjaman'
-            );
-
-            $queryPiutangEk->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman,
-                    SUM(IF(jenis_bayar=1, jumlah, 0)) as totalpembayarannow,
-                    SUM(IF(jenis_bayar=2, jumlah, 0)) as totalpembayaranpotongkomisi,
-                    SUM(IF(jenis_bayar=3, jumlah, 0)) as totalpembayarantitipan,
-                    SUM(IF(jenis_bayar=4, jumlah, 0)) as totalpembayaranlainnya
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal = '$tanggal_potongan'
-                    GROUP BY no_pinjaman
-                ) hbnow"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbnow.no_pinjaman'
             );
 
             $queryPiutangEk->where('keuangan_piutangkaryawan.tanggal', '<=', $sampai);
@@ -1620,7 +1514,7 @@ class LaporankeuanganController extends Controller
             $piutangek_gaji = $piutangEk->total_pembayarannow ?? 0;
             $piutangek_pot_komisi = $piutangEk->total_pembayaranpotongkomisi ?? 0;
             $piutangek_titipan = $piutangEk->total_pembayarantitipan ?? 0;
-            $piutangek_lainnya = ($piutangEk->total_pembayaranlainnya ?? 0) + ($piutangEk->total_pelunasannow ?? 0);
+            $piutangek_lainnya = ($piutangEk->total_pembayaranlainnya ?? 0) + ($piutangEk->totalpelunasannow ?? 0);
             $piutangek_saldoakhir = $piutangek_saldoawal + $piutangek_penambahan - ($piutangek_gaji + $piutangek_pot_komisi + $piutangek_titipan + $piutangek_lainnya);
 
             $data['rekap'] = [
@@ -1720,37 +1614,24 @@ class LaporankeuanganController extends Controller
         $query->leftJoin(
             DB::raw("(
             SELECT keuangan_pjp.nik,
-            SUM(IF(tanggal < '$dari',jumlah_pinjaman,0)) as jumlah_pinjamanlast,
-            SUM(totalpembayaranlast) as total_pembayaranlast,
-            SUM(totalpelunasanlast) as total_pelunasanlast,
-            SUM(IF(tanggal BETWEEN '$dari' AND '$sampai',jumlah_pinjaman,0)) as jumlah_pinjamannow,
-            SUM(totalpembayarannow) as total_pembayarannow,
-            SUM(totalpelunasannow) as total_pelunasannow
+            SUM(IF(keuangan_pjp.tanggal < '$dari', jumlah_pinjaman, 0)) as jumlah_pinjamanlast,
+            SUM(hb.totalpembayaranlast) as total_pembayaranlast,
+            SUM(hb.totalpelunasanlast) as total_pelunasanlast,
+            SUM(IF(keuangan_pjp.tanggal BETWEEN '$dari' AND '$sampai', jumlah_pinjaman, 0)) as jumlah_pinjamannow,
+            SUM(hb.totalpembayarannow) as total_pembayarannow,
+            SUM(hb.totalpelunasannow) as total_pelunasannow
             FROM keuangan_pjp
             LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpembayaranlast FROM keuangan_pjp_historibayar
-                WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                SELECT no_pinjaman,
+                SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                SUM(IF(tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayarannow
+                FROM keuangan_pjp_historibayar
+                WHERE tanggal <= '$tanggal_potongan'
                 GROUP BY no_pinjaman
             ) hb ON (keuangan_pjp.no_pinjaman = hb.no_pinjaman)
-
-            LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpelunasanlast FROM keuangan_pjp_historibayar
-                WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                GROUP BY no_pinjaman
-            ) hbplast ON (keuangan_pjp.no_pinjaman = hbplast.no_pinjaman)
-
-            LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpelunasannow FROM keuangan_pjp_historibayar
-                WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                GROUP BY no_pinjaman
-            ) hbplnow ON (keuangan_pjp.no_pinjaman = hbplnow.no_pinjaman)
-
-            LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpembayarannow FROM keuangan_pjp_historibayar
-                WHERE tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL
-                GROUP BY no_pinjaman
-            ) hbnow ON (keuangan_pjp.no_pinjaman = hbnow.no_pinjaman)
-            WHERE tanggal <= '$sampai'
+            WHERE keuangan_pjp.tanggal <= '$sampai'
             GROUP BY keuangan_pjp.nik
         ) pjp"),
             function ($join) {
@@ -1762,38 +1643,24 @@ class LaporankeuanganController extends Controller
         $query->leftJoin(
             DB::raw("(
             SELECT keuangan_kasbon.nik,
-            SUM(IF(tanggal < '$dari',jumlah,0)) as jumlah_kasbonlast,
-            SUM(totalpembayaranlast) as total_pembayaranlast,
-            SUM(totalpelunasanlast) as total_pelunasanlast,
-            SUM(IF(tanggal BETWEEN '$dari' AND '$sampai',jumlah,0)) as jumlah_kasbonnow,
-            SUM(totalpembayarannow) as total_pembayarannow,
-            SUM(totalpelunasannow) as total_pelunasannow
+            SUM(IF(keuangan_kasbon.tanggal < '$dari', jumlah, 0)) as jumlah_kasbonlast,
+            SUM(hb.totalpembayaranlast) as total_pembayaranlast,
+            SUM(hb.totalpelunasanlast) as total_pelunasanlast,
+            SUM(IF(keuangan_kasbon.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_kasbonnow,
+            SUM(hb.totalpembayarannow) as total_pembayarannow,
+            SUM(hb.totalpelunasannow) as total_pelunasannow
             FROM keuangan_kasbon
             LEFT JOIN (
-                SELECT no_kasbon,SUM(jumlah) as totalpembayaranlast FROM keuangan_kasbon_historibayar
-                WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                SELECT no_kasbon,
+                SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                SUM(IF(tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayarannow
+                FROM keuangan_kasbon_historibayar
+                WHERE tanggal <= '$tanggal_potongan'
                 GROUP BY no_kasbon
             ) hb ON (keuangan_kasbon.no_kasbon = hb.no_kasbon)
-
-            LEFT JOIN (
-                SELECT no_kasbon,SUM(jumlah) as totalpelunasanlast FROM    keuangan_kasbon_historibayar
-                WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                GROUP BY no_kasbon
-            ) hbpllast ON (keuangan_kasbon.no_kasbon = hbpllast.no_kasbon)
-
-            LEFT JOIN (
-                SELECT no_kasbon,SUM(jumlah) as totalpelunasannow FROM keuangan_kasbon_historibayar
-                WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                GROUP BY no_kasbon
-            ) hbplnow ON (keuangan_kasbon.no_kasbon = hbplnow.no_kasbon)
-
-            LEFT JOIN (
-                SELECT no_kasbon,SUM(jumlah) as totalpembayarannow FROM keuangan_kasbon_historibayar
-                WHERE tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL
-                GROUP BY no_kasbon
-            ) hbnow ON (keuangan_kasbon.no_kasbon = hbnow.no_kasbon)
-
-            WHERE tanggal <= '$sampai'
+            WHERE keuangan_kasbon.tanggal <= '$sampai'
             GROUP BY keuangan_kasbon.nik
         ) kasbon"),
             function ($join) {
@@ -1805,49 +1672,30 @@ class LaporankeuanganController extends Controller
         $query->leftJoin(
             DB::raw("(
             SELECT keuangan_piutangkaryawan.nik,
-            SUM(IF(tanggal < '$dari',jumlah,0)) as jumlah_pinjamanlast,
-            SUM(totalpembayaranlast) as total_pembayaranlast,
-            SUM(totalpelunasanlast) as total_pelunasanlast,
-            SUM(IF(tanggal BETWEEN '$dari' AND '$sampai',jumlah,0)) as jumlah_pinjamannow,
-            SUM(totalpembayarannow) as total_pembayarannow,
-            SUM(totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi,
-            SUM(totalpembayarantitipan) as total_pembayarantitipan,
-            SUM(totalpembayaranlainnya) as total_pembayaranlainnya,
-            SUM(totalpelunasannow) as total_pelunasannow
+            SUM(IF(keuangan_piutangkaryawan.tanggal < '$dari', jumlah, 0)) as jumlah_pinjamanlast,
+            SUM(hb.totalpembayaranlast) as total_pembayaranlast,
+            SUM(hb.totalpelunasanlast) as total_pelunasanlast,
+            SUM(IF(keuangan_piutangkaryawan.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_pinjamannow,
+            SUM(hb.totalpembayarannow) as total_pembayarannow,
+            SUM(hb.totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi,
+            SUM(hb.totalpembayarantitipan) as total_pembayarantitipan,
+            SUM(hb.totalpembayaranlainnya) as total_pembayaranlainnya,
+            SUM(hb.totalpelunasannow) as total_pelunasannow
             FROM keuangan_piutangkaryawan
             LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpembayaranlast FROM keuangan_piutangkaryawan_historibayar
-                WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                SELECT no_pinjaman,
+                SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
+                SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
+                SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
+                SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 1, jumlah, 0)) as totalpembayarannow,
+                SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 2, jumlah, 0)) as totalpembayaranpotongkomisi,
+                SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 3, jumlah, 0)) as totalpembayarantitipan,
+                SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 4, jumlah, 0)) as totalpembayaranlainnya
+                FROM keuangan_piutangkaryawan_historibayar
+                WHERE tanggal <= '$tanggal_potongan'
                 GROUP BY no_pinjaman
             ) hb ON (keuangan_piutangkaryawan.no_pinjaman = hb.no_pinjaman)
-
-
-            LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpelunasanlast FROM keuangan_piutangkaryawan_historibayar
-                WHERE tanggal < '$dari' AND kode_potongan IS NULL
-                GROUP BY no_pinjaman
-            ) hbpllast ON (keuangan_piutangkaryawan.no_pinjaman = hbpllast.no_pinjaman)
-
-
-            LEFT JOIN (
-                SELECT no_pinjaman,SUM(jumlah) as totalpelunasannow FROM keuangan_piutangkaryawan_historibayar
-                WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
-                GROUP BY no_pinjaman
-            ) hbplnow ON (keuangan_piutangkaryawan.no_pinjaman = hbplnow.no_pinjaman)
-
-
-            LEFT JOIN (
-                SELECT no_pinjaman,
-                SUM(IF(jenis_bayar=1,jumlah,0)) as totalpembayarannow,
-                SUM(IF(jenis_bayar=2,jumlah,0)) as totalpembayaranpotongkomisi,
-                SUM(IF(jenis_bayar=3,jumlah,0)) as totalpembayarantitipan,
-                SUM(IF(jenis_bayar=4,jumlah,0)) as totalpembayaranlainnya
-                FROM keuangan_piutangkaryawan_historibayar
-                WHERE tanggal = '$tanggal_potongan'
-                GROUP BY no_pinjaman
-            ) hbnow ON (keuangan_piutangkaryawan.no_pinjaman = hbnow.no_pinjaman)
-
-            WHERE tanggal <= '$sampai' AND keuangan_piutangkaryawan.kategori != 'EK' AND keuangan_piutangkaryawan.status = '0'
+            WHERE keuangan_piutangkaryawan.tanggal <= '$sampai' AND keuangan_piutangkaryawan.kategori != 'EK' AND keuangan_piutangkaryawan.status = '0'
             GROUP BY keuangan_piutangkaryawan.nik
         ) piutang"),
             function ($join) {
@@ -1857,6 +1705,8 @@ class LaporankeuanganController extends Controller
 
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->whereRaw('(pjp.nik IS NOT NULL OR kasbon.nik IS NOT NULL OR piutang.nik IS NOT NULL)');
+
         if (!empty($request->kode_cabang_rekapkartupiutang)) {
             $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_rekapkartupiutang);
         }

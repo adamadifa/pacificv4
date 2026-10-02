@@ -92,6 +92,7 @@
                         $total_all_upah = 0;
                         $total_all_cash = 0;
                         $total_all_saldoakhir = 0;
+                        $no = 1;
                     @endphp
                     @foreach ($piutangkaryawan as $d)
                         @php
@@ -186,30 +187,46 @@
                             $total_all_upah += $upah_all;
                             $total_all_cash += $cash_all;
                             $total_all_saldoakhir += $all_saldoakhir;
+
+                            $has_transaction = !empty($all_saldoawal) ||
+                                !empty($pjp_jumlah_pinjamannow) ||
+                                !empty($kasbon_jumlah_kasbonnow) ||
+                                !empty($piutang_jumlah_pinjamannow) ||
+                                !empty($upah_all) ||
+                                !empty($cash_all) ||
+                                !empty($piutang_jumlah_pembayaranpotongkomisi) ||
+                                !empty($piutang_jumlah_pembayarantitipan) ||
+                                !empty($piutang_jumlah_pembayaranlainnya) ||
+                                !empty($all_saldoakhir);
                         @endphp
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>'{{ $d->nik }}</td>
-                            <td>{{ $d->nama_karyawan }}</td>
-                            <td align="right">
-                                {{ !empty($all_saldoawal) ? formatAngka($all_saldoawal) : '' }}
-                            </td>
-                            <td style="text-align: right">{{ !empty($pjp_jumlah_pinjamannow) ? formatAngka($pjp_jumlah_pinjamannow) : '' }}</td>
-                            <td style="text-align: right">{{ !empty($kasbon_jumlah_kasbonnow) ? formatAngka($kasbon_jumlah_kasbonnow) : '' }}</td>
-                            <td style="text-align: right">{{ !empty($piutang_jumlah_pinjamannow) ? formatAngka($piutang_jumlah_pinjamannow) : '' }}
-                            </td>
-                            <td style="text-align: right">{{ !empty($upah_all) ? formatAngka($upah_all) : '' }}</td>
-                            <td style="text-align: right">{{ !empty($cash_all) ? formatAngka($cash_all) : '' }}</td>
-                            <td style="text-align: right">
-                                {{ !empty($piutang_jumlah_pembayaranpotongkomisi) ? formatAngka($piutang_jumlah_pembayaranpotongkomisi) : '' }}</td>
-                            <td style="text-align: right">
-                                {{ !empty($piutang_jumlah_pembayarantitipan) ? formatAngka($piutang_jumlah_pembayarantitipan) : '' }}
-                            </td>
-                            <td style="text-align: right">
-                                {{ !empty($piutang_jumlah_pembayaranlainnya) ? formatAngka($piutang_jumlah_pembayaranlainnya) : '' }}
-                            </td>
-                            <td style="text-align: right">{{ !empty($all_saldoakhir) ? formatAngka($all_saldoakhir) : '' }}</td>
-                        </tr>
+                        @if ($has_transaction)
+                            <tr>
+                                <td>{{ $no }}</td>
+                                <td>'{{ $d->nik }}</td>
+                                <td>{{ $d->nama_karyawan }}</td>
+                                <td align="right">
+                                    {{ !empty($all_saldoawal) ? formatAngka($all_saldoawal) : '' }}
+                                </td>
+                                <td style="text-align: right">{{ !empty($pjp_jumlah_pinjamannow) ? formatAngka($pjp_jumlah_pinjamannow) : '' }}</td>
+                                <td style="text-align: right">{{ !empty($kasbon_jumlah_kasbonnow) ? formatAngka($kasbon_jumlah_kasbonnow) : '' }}</td>
+                                <td style="text-align: right">{{ !empty($piutang_jumlah_pinjamannow) ? formatAngka($piutang_jumlah_pinjamannow) : '' }}
+                                </td>
+                                <td style="text-align: right">{{ !empty($upah_all) ? formatAngka($upah_all) : '' }}</td>
+                                <td style="text-align: right">{{ !empty($cash_all) ? formatAngka($cash_all) : '' }}</td>
+                                <td style="text-align: right">
+                                    {{ !empty($piutang_jumlah_pembayaranpotongkomisi) ? formatAngka($piutang_jumlah_pembayaranpotongkomisi) : '' }}</td>
+                                <td style="text-align: right">
+                                    {{ !empty($piutang_jumlah_pembayarantitipan) ? formatAngka($piutang_jumlah_pembayarantitipan) : '' }}
+                                </td>
+                                <td style="text-align: right">
+                                    {{ !empty($piutang_jumlah_pembayaranlainnya) ? formatAngka($piutang_jumlah_pembayaranlainnya) : '' }}
+                                </td>
+                                <td style="text-align: right">{{ !empty($all_saldoakhir) ? formatAngka($all_saldoakhir) : '' }}</td>
+                            </tr>
+                            @php
+                                $no++;
+                            @endphp
+                        @endif
                     @endforeach
                 </tbody>
                 <tr bgcolor=" #024a75" style=" color:white; font-size:12;">
