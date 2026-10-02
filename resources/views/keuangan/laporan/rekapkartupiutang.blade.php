@@ -9,6 +9,17 @@
     <div class="row">
         <div class="col">
             <div class="form-group mb-3">
+                <select name="formatlaporan" id="formatlaporan" class="form-select">
+                    <option value="">Format Laporan</option>
+                    <option value="1">Detail</option>
+                    <option value="2">Rekap</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-group mb-3">
                 <select name="bulan" id="bulan" class="form-select">
                     <option value="">Bulan</option>
                     @foreach ($list_bulan as $d)
@@ -62,9 +73,21 @@
 
 
             formRekapkartupiutang.submit(function(e) {
+                const formatlaporan = formRekapkartupiutang.find("#formatlaporan").val();
                 const bulan = formRekapkartupiutang.find("#bulan").val();
                 const tahun = formRekapkartupiutang.find("#tahun").val();
-                if (bulan == "") {
+                if (formatlaporan == "") {
+                    Swal.fire({
+                        title: "Oops!",
+                        text: 'Format Laporan Harus Diisi !',
+                        icon: "warning",
+                        showConfirmButton: true,
+                        didClose: (e) => {
+                            formRekapkartupiutang.find("#formatlaporan").focus();
+                        },
+                    });
+                    return false;
+                } else if (bulan == "") {
                     Swal.fire({
                         title: "Oops!",
                         text: 'Bulan Harus Diisi !',

@@ -1300,6 +1300,394 @@ class LaporankeuanganController extends Controller
 
         $user = User::findorfail(auth()->user()->id);
 
+        if ($request->formatlaporan == '2') {
+            // 1. PJP
+            $queryPjp = Pjp::query();
+            $queryPjp->select(
+                DB::raw("SUM(IF(keuangan_pjp.tanggal < '$dari', jumlah_pinjaman, 0)) as jumlah_pinjamanlast"),
+                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(IF(keuangan_pjp.tanggal BETWEEN '$dari' AND '$sampai', jumlah_pinjaman, 0)) as jumlah_pinjamannow"),
+                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+            );
+            $queryPjp->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
+            $queryPjp->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+            $queryPjp->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+            $queryPjp->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+
+            $queryPjp->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpembayaranlast 
+                    FROM keuangan_pjp_historibayar
+                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    GROUP BY no_pinjaman
+                ) hb"),
+                'keuangan_pjp.no_pinjaman', '=', 'hb.no_pinjaman'
+            );
+
+            $queryPjp->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasanlast 
+                    FROM keuangan_pjp_historibayar
+                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
+                    GROUP BY no_pinjaman
+                ) hbpllast"),
+                'keuangan_pjp.no_pinjaman', '=', 'hbpllast.no_pinjaman'
+            );
+
+            $queryPjp->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasannow 
+                    FROM keuangan_pjp_historibayar
+                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
+                    GROUP BY no_pinjaman
+                ) hbplnow"),
+                'keuangan_pjp.no_pinjaman', '=', 'hbplnow.no_pinjaman'
+            );
+
+            $queryPjp->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpembayarannow 
+                    FROM keuangan_pjp_historibayar
+                    WHERE tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    GROUP BY no_pinjaman
+                ) hbnow"),
+                'keuangan_pjp.no_pinjaman', '=', 'hbnow.no_pinjaman'
+            );
+
+            $queryPjp->where('keuangan_pjp.tanggal', '<=', $sampai);
+
+            if (!empty($request->kode_cabang_rekapkartupiutang)) {
+                $queryPjp->where('hrd_karyawan.kode_cabang', $request->kode_cabang_rekapkartupiutang);
+            }
+
+            if (!empty($request->kode_dept_rekapkartupiutang)) {
+                $queryPjp->where('hrd_karyawan.kode_dept', $request->kode_dept_rekapkartupiutang);
+            }
+
+            $queryPjp = Pjp::applyPjpAccess($queryPjp, $user);
+            $pjp = $queryPjp->first();
+
+            $pjp_saldoawal = ($pjp->jumlah_pinjamanlast ?? 0) - ($pjp->total_pembayaranlast ?? 0) - ($pjp->total_pelunasanlast ?? 0);
+            $pjp_penambahan = $pjp->jumlah_pinjamannow ?? 0;
+            $pjp_gaji = $pjp->total_pembayarannow ?? 0;
+            $pjp_pot_komisi = 0;
+            $pjp_titipan = 0;
+            $pjp_lainnya = $pjp->total_pelunasannow ?? 0;
+            $pjp_saldoakhir = $pjp_saldoawal + $pjp_penambahan - ($pjp_gaji + $pjp_pot_komisi + $pjp_titipan + $pjp_lainnya);
+
+            // 2. KASBON
+            $queryKasbon = Kasbon::query();
+            $queryKasbon->select(
+                DB::raw("SUM(IF(keuangan_kasbon.tanggal < '$dari', jumlah, 0)) as jumlah_kasbonlast"),
+                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(IF(keuangan_kasbon.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_kasbonnow"),
+                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+            );
+            $queryKasbon->join('hrd_karyawan', 'keuangan_kasbon.nik', '=', 'hrd_karyawan.nik');
+            $queryKasbon->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+            $queryKasbon->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+            $queryKasbon->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+
+            $queryKasbon->leftJoin(
+                DB::raw("(
+                    SELECT no_kasbon, SUM(jumlah) as totalpembayaranlast 
+                    FROM keuangan_kasbon_historibayar
+                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    GROUP BY no_kasbon
+                ) hb"),
+                'keuangan_kasbon.no_kasbon', '=', 'hb.no_kasbon'
+            );
+
+            $queryKasbon->leftJoin(
+                DB::raw("(
+                    SELECT no_kasbon, SUM(jumlah) as totalpelunasanlast 
+                    FROM keuangan_kasbon_historibayar
+                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
+                    GROUP BY no_kasbon
+                ) hbpllast"),
+                'keuangan_kasbon.no_kasbon', '=', 'hbpllast.no_kasbon'
+            );
+
+            $queryKasbon->leftJoin(
+                DB::raw("(
+                    SELECT no_kasbon, SUM(jumlah) as totalpelunasannow 
+                    FROM keuangan_kasbon_historibayar
+                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
+                    GROUP BY no_kasbon
+                ) hbplnow"),
+                'keuangan_kasbon.no_kasbon', '=', 'hbplnow.no_kasbon'
+            );
+
+            $queryKasbon->leftJoin(
+                DB::raw("(
+                    SELECT no_kasbon, SUM(jumlah) as totalpembayarannow 
+                    FROM keuangan_kasbon_historibayar
+                    WHERE tanggal = '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    GROUP BY no_kasbon
+                ) hbnow"),
+                'keuangan_kasbon.no_kasbon', '=', 'hbnow.no_kasbon'
+            );
+
+            $queryKasbon->where('keuangan_kasbon.tanggal', '<=', $sampai);
+
+            if (!empty($request->kode_cabang_rekapkartupiutang)) {
+                $queryKasbon->where('hrd_karyawan.kode_cabang', $request->kode_cabang_rekapkartupiutang);
+            }
+
+            if (!empty($request->kode_dept_rekapkartupiutang)) {
+                $queryKasbon->where('hrd_karyawan.kode_dept', $request->kode_dept_rekapkartupiutang);
+            }
+
+            $queryKasbon = Pjp::applyPjpAccess($queryKasbon, $user);
+            $kasbon = $queryKasbon->first();
+
+            $kasbon_saldoawal = ($kasbon->jumlah_kasbonlast ?? 0) - ($kasbon->total_pembayaranlast ?? 0) - ($kasbon->total_pelunasanlast ?? 0);
+            $kasbon_penambahan = $kasbon->jumlah_kasbonnow ?? 0;
+            $kasbon_gaji = $kasbon->total_pembayarannow ?? 0;
+            $kasbon_pot_komisi = 0;
+            $kasbon_titipan = 0;
+            $kasbon_lainnya = $kasbon->total_pelunasannow ?? 0;
+            $kasbon_saldoakhir = $kasbon_saldoawal + $kasbon_penambahan - ($kasbon_gaji + $kasbon_pot_komisi + $kasbon_titipan + $kasbon_lainnya);
+
+            // 3. PIUTANG KARYAWAN
+            $queryPiutangKaryawan = Piutangkaryawan::query();
+            $queryPiutangKaryawan->select(
+                DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal < '$dari', jumlah, 0)) as jumlah_pinjamanlast"),
+                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_pinjamannow"),
+                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
+                DB::raw("SUM(totalpembayarantitipan) as total_pembayarantitipan"),
+                DB::raw("SUM(totalpembayaranlainnya) as total_pembayaranlainnya"),
+                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+            );
+            $queryPiutangKaryawan->join('hrd_karyawan', 'keuangan_piutangkaryawan.nik', '=', 'hrd_karyawan.nik');
+            $queryPiutangKaryawan->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+            $queryPiutangKaryawan->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+            $queryPiutangKaryawan->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+
+            $queryPiutangKaryawan->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpembayaranlast 
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    GROUP BY no_pinjaman
+                ) hb"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hb.no_pinjaman'
+            );
+
+            $queryPiutangKaryawan->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasanlast 
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
+                    GROUP BY no_pinjaman
+                ) hbpllast"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbpllast.no_pinjaman'
+            );
+
+            $queryPiutangKaryawan->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasannow 
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
+                    GROUP BY no_pinjaman
+                ) hbplnow"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbplnow.no_pinjaman'
+            );
+
+            $queryPiutangKaryawan->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman,
+                    SUM(IF(jenis_bayar=1, jumlah, 0)) as totalpembayarannow,
+                    SUM(IF(jenis_bayar=2, jumlah, 0)) as totalpembayaranpotongkomisi,
+                    SUM(IF(jenis_bayar=3, jumlah, 0)) as totalpembayarantitipan,
+                    SUM(IF(jenis_bayar=4, jumlah, 0)) as totalpembayaranlainnya
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal = '$tanggal_potongan'
+                    GROUP BY no_pinjaman
+                ) hbnow"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbnow.no_pinjaman'
+            );
+
+            $queryPiutangKaryawan->where('keuangan_piutangkaryawan.tanggal', '<=', $sampai);
+            $queryPiutangKaryawan->where('keuangan_piutangkaryawan.kategori', '!=', 'EK');
+            $queryPiutangKaryawan->where('keuangan_piutangkaryawan.status', '0');
+
+            if (!empty($request->kode_cabang_rekapkartupiutang)) {
+                $queryPiutangKaryawan->where('hrd_karyawan.kode_cabang', $request->kode_cabang_rekapkartupiutang);
+            }
+
+            if (!empty($request->kode_dept_rekapkartupiutang)) {
+                $queryPiutangKaryawan->where('hrd_karyawan.kode_dept', $request->kode_dept_rekapkartupiutang);
+            }
+
+            $queryPiutangKaryawan = Piutangkaryawan::applyPiutangAccess($queryPiutangKaryawan, $user);
+            $piutangKaryawan = $queryPiutangKaryawan->first();
+
+            $piutangkaryawan_saldoawal = ($piutangKaryawan->jumlah_pinjamanlast ?? 0) - ($piutangKaryawan->total_pembayaranlast ?? 0) - ($piutangKaryawan->total_pelunasanlast ?? 0);
+            $piutangkaryawan_penambahan = $piutangKaryawan->jumlah_pinjamannow ?? 0;
+            $piutangkaryawan_gaji = $piutangKaryawan->total_pembayarannow ?? 0;
+            $piutangkaryawan_pot_komisi = $piutangKaryawan->total_pembayaranpotongkomisi ?? 0;
+            $piutangkaryawan_titipan = $piutangKaryawan->total_pembayarantitipan ?? 0;
+            $piutangkaryawan_lainnya = ($piutangKaryawan->total_pembayaranlainnya ?? 0) + ($piutangKaryawan->total_pelunasannow ?? 0);
+            $piutangkaryawan_saldoakhir = $piutangkaryawan_saldoawal + $piutangkaryawan_penambahan - ($piutangkaryawan_gaji + $piutangkaryawan_pot_komisi + $piutangkaryawan_titipan + $piutangkaryawan_lainnya);
+
+            // 4. PIUTANG EKS KARYAWAN
+            $queryPiutangEk = Piutangkaryawan::query();
+            $queryPiutangEk->select(
+                DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal < '$dari', jumlah, 0)) as jumlah_pinjamanlast"),
+                DB::raw("SUM(totalpembayaranlast) as total_pembayaranlast"),
+                DB::raw("SUM(totalpelunasanlast) as total_pelunasanlast"),
+                DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_pinjamannow"),
+                DB::raw("SUM(totalpembayarannow) as total_pembayarannow"),
+                DB::raw("SUM(totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
+                DB::raw("SUM(totalpembayarantitipan) as total_pembayarantitipan"),
+                DB::raw("SUM(totalpembayaranlainnya) as total_pembayaranlainnya"),
+                DB::raw("SUM(totalpelunasannow) as total_pelunasannow")
+            );
+            $queryPiutangEk->join('hrd_karyawan', 'keuangan_piutangkaryawan.nik', '=', 'hrd_karyawan.nik');
+            $queryPiutangEk->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+            $queryPiutangEk->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+            $queryPiutangEk->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+
+            $queryPiutangEk->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpembayaranlast 
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL
+                    GROUP BY no_pinjaman
+                ) hb"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hb.no_pinjaman'
+            );
+
+            $queryPiutangEk->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasanlast 
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal < '$dari' AND kode_potongan IS NULL
+                    GROUP BY no_pinjaman
+                ) hbpllast"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbpllast.no_pinjaman'
+            );
+
+            $queryPiutangEk->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman, SUM(jumlah) as totalpelunasannow 
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL
+                    GROUP BY no_pinjaman
+                ) hbplnow"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbplnow.no_pinjaman'
+            );
+
+            $queryPiutangEk->leftJoin(
+                DB::raw("(
+                    SELECT no_pinjaman,
+                    SUM(IF(jenis_bayar=1, jumlah, 0)) as totalpembayarannow,
+                    SUM(IF(jenis_bayar=2, jumlah, 0)) as totalpembayaranpotongkomisi,
+                    SUM(IF(jenis_bayar=3, jumlah, 0)) as totalpembayarantitipan,
+                    SUM(IF(jenis_bayar=4, jumlah, 0)) as totalpembayaranlainnya
+                    FROM keuangan_piutangkaryawan_historibayar
+                    WHERE tanggal = '$tanggal_potongan'
+                    GROUP BY no_pinjaman
+                ) hbnow"),
+                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hbnow.no_pinjaman'
+            );
+
+            $queryPiutangEk->where('keuangan_piutangkaryawan.tanggal', '<=', $sampai);
+            $queryPiutangEk->where('keuangan_piutangkaryawan.kategori', 'EK');
+            $queryPiutangEk->where('keuangan_piutangkaryawan.status', '0');
+
+            if (!empty($request->kode_cabang_rekapkartupiutang)) {
+                $queryPiutangEk->where('hrd_karyawan.kode_cabang', $request->kode_cabang_rekapkartupiutang);
+            }
+
+            if (!empty($request->kode_dept_rekapkartupiutang)) {
+                $queryPiutangEk->where('hrd_karyawan.kode_dept', $request->kode_dept_rekapkartupiutang);
+            }
+
+            $queryPiutangEk = Piutangkaryawan::applyPiutangAccess($queryPiutangEk, $user);
+            $piutangEk = $queryPiutangEk->first();
+
+            $piutangek_saldoawal = ($piutangEk->jumlah_pinjamanlast ?? 0) - ($piutangEk->total_pembayaranlast ?? 0) - ($piutangEk->total_pelunasanlast ?? 0);
+            $piutangek_penambahan = $piutangEk->jumlah_pinjamannow ?? 0;
+            $piutangek_gaji = $piutangEk->total_pembayarannow ?? 0;
+            $piutangek_pot_komisi = $piutangEk->total_pembayaranpotongkomisi ?? 0;
+            $piutangek_titipan = $piutangEk->total_pembayarantitipan ?? 0;
+            $piutangek_lainnya = ($piutangEk->total_pembayaranlainnya ?? 0) + ($piutangEk->total_pelunasannow ?? 0);
+            $piutangek_saldoakhir = $piutangek_saldoawal + $piutangek_penambahan - ($piutangek_gaji + $piutangek_pot_komisi + $piutangek_titipan + $piutangek_lainnya);
+
+            $data['rekap'] = [
+                [
+                    'jenis' => 'PJP',
+                    'saldo_awal' => $pjp_saldoawal,
+                    'penambahan' => $pjp_penambahan,
+                    'gaji' => $pjp_gaji,
+                    'pot_komisi' => $pjp_pot_komisi,
+                    'titipan' => $pjp_titipan,
+                    'lainnya' => $pjp_lainnya,
+                    'saldo_akhir' => $pjp_saldoakhir,
+                ],
+                [
+                    'jenis' => 'KASBON',
+                    'saldo_awal' => $kasbon_saldoawal,
+                    'penambahan' => $kasbon_penambahan,
+                    'gaji' => $kasbon_gaji,
+                    'pot_komisi' => $kasbon_pot_komisi,
+                    'titipan' => $kasbon_titipan,
+                    'lainnya' => $kasbon_lainnya,
+                    'saldo_akhir' => $kasbon_saldoakhir,
+                ],
+                [
+                    'jenis' => 'PIUTANG KARYAWAN',
+                    'saldo_awal' => $piutangkaryawan_saldoawal,
+                    'penambahan' => $piutangkaryawan_penambahan,
+                    'gaji' => $piutangkaryawan_gaji,
+                    'pot_komisi' => $piutangkaryawan_pot_komisi,
+                    'titipan' => $piutangkaryawan_titipan,
+                    'lainnya' => $piutangkaryawan_lainnya,
+                    'saldo_akhir' => $piutangkaryawan_saldoakhir,
+                ],
+                [
+                    'jenis' => 'PIUTANG EKS KARYAWAN',
+                    'saldo_awal' => $piutangek_saldoawal,
+                    'penambahan' => $piutangek_penambahan,
+                    'gaji' => $piutangek_gaji,
+                    'pot_komisi' => $piutangek_pot_komisi,
+                    'titipan' => $piutangek_titipan,
+                    'lainnya' => $piutangek_lainnya,
+                    'saldo_akhir' => $piutangek_saldoakhir,
+                ],
+            ];
+
+            $data['total'] = [
+                'saldo_awal' => $pjp_saldoawal + $kasbon_saldoawal + $piutangkaryawan_saldoawal + $piutangek_saldoawal,
+                'penambahan' => $pjp_penambahan + $kasbon_penambahan + $piutangkaryawan_penambahan + $piutangek_penambahan,
+                'gaji' => $pjp_gaji + $kasbon_gaji + $piutangkaryawan_gaji + $piutangek_gaji,
+                'pot_komisi' => $pjp_pot_komisi + $kasbon_pot_komisi + $piutangkaryawan_pot_komisi + $piutangek_pot_komisi,
+                'titipan' => $pjp_titipan + $kasbon_titipan + $piutangkaryawan_titipan + $piutangek_titipan,
+                'lainnya' => $pjp_lainnya + $kasbon_lainnya + $piutangkaryawan_lainnya + $piutangek_lainnya,
+                'saldo_akhir' => $pjp_saldoakhir + $kasbon_saldoakhir + $piutangkaryawan_saldoakhir + $piutangek_saldoakhir,
+            ];
+
+            $data['bulan'] = $request->bulan;
+            $data['tahun'] = $request->tahun;
+            $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_rekapkartupiutang)->first();
+            $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_rekapkartupiutang)->first();
+
+            if (isset($_POST['exportButton'])) {
+                header("Content-type: application/vnd-ms-excel");
+                header("Content-Disposition: attachment; filename=Rekap Kartu Pinjaman $request->bulan-$request->tahun.xls");
+            }
+            return view('keuangan.laporan.rekapkartupiutang_rekap_cetak', $data);
+        }
+
         $query = Karyawan::query();
         $query->select(
             'hrd_karyawan.nik',
@@ -1436,7 +1824,7 @@ class LaporankeuanganController extends Controller
 
             LEFT JOIN (
                 SELECT no_pinjaman,SUM(jumlah) as totalpelunasanlast FROM keuangan_piutangkaryawan_historibayar
-                WHERE tanggal < '$tanggal_potongan' AND kode_potongan IS NULL
+                WHERE tanggal < '$dari' AND kode_potongan IS NULL
                 GROUP BY no_pinjaman
             ) hbpllast ON (keuangan_piutangkaryawan.no_pinjaman = hbpllast.no_pinjaman)
 
@@ -1488,7 +1876,7 @@ class LaporankeuanganController extends Controller
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "-SahabatEkspor.xls"
-            header("Content-Disposition: attachment; filename=Rekap Kartu Piutang $request->dari-$request->sampai.xls");
+            header("Content-Disposition: attachment; filename=Rekap Kartu Pinjaman Detail $request->bulan-$request->tahun.xls");
         }
         return view('keuangan.laporan.rekapkartupiutang_cetak', $data);
     }
