@@ -1459,64 +1459,6 @@ class LaporankeuanganController extends Controller
             $piutangkaryawan_lainnya = ($piutangKaryawan->total_pembayaranlainnya ?? 0) + ($piutangKaryawan->totalpelunasannow ?? 0);
             $piutangkaryawan_saldoakhir = $piutangkaryawan_saldoawal + $piutangkaryawan_penambahan - ($piutangkaryawan_gaji + $piutangkaryawan_pot_komisi + $piutangkaryawan_titipan + $piutangkaryawan_lainnya);
 
-            // 4. PIUTANG EKS KARYAWAN
-            $queryPiutangEk = Piutangkaryawan::query();
-            $queryPiutangEk->select(
-                DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal < '$dari', jumlah, 0)) as jumlah_pinjamanlast"),
-                DB::raw("SUM(hb.totalpembayaranlast) as total_pembayaranlast"),
-                DB::raw("SUM(hb.totalpelunasanlast) as total_pelunasanlast"),
-                DB::raw("SUM(IF(keuangan_piutangkaryawan.tanggal BETWEEN '$dari' AND '$sampai', jumlah, 0)) as jumlah_pinjamannow"),
-                DB::raw("SUM(hb.totalpembayarannow) as total_pembayarannow"),
-                DB::raw("SUM(hb.totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi"),
-                DB::raw("SUM(hb.totalpembayarantitipan) as total_pembayarantitipan"),
-                DB::raw("SUM(hb.totalpembayaranlainnya) as total_pembayaranlainnya"),
-                DB::raw("SUM(hb.totalpelunasannow) as total_pelunasannow")
-            );
-            $queryPiutangEk->join('hrd_karyawan', 'keuangan_piutangkaryawan.nik', '=', 'hrd_karyawan.nik');
-            $queryPiutangEk->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
-            $queryPiutangEk->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
-            $queryPiutangEk->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
-
-            $queryPiutangEk->leftJoin(
-                DB::raw("(
-                    SELECT no_pinjaman, 
-                    SUM(IF(tanggal < '$tanggal_potongan' AND kode_potongan IS NOT NULL, jumlah, 0)) as totalpembayaranlast,
-                    SUM(IF(tanggal < '$dari' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasanlast,
-                    SUM(IF(tanggal BETWEEN '$dari' AND '$sampai' AND kode_potongan IS NULL, jumlah, 0)) as totalpelunasannow,
-                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 1, jumlah, 0)) as totalpembayarannow,
-                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 2, jumlah, 0)) as totalpembayaranpotongkomisi,
-                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 3, jumlah, 0)) as totalpembayarantitipan,
-                    SUM(IF(tanggal = '$tanggal_potongan' AND jenis_bayar = 4, jumlah, 0)) as totalpembayaranlainnya
-                    FROM keuangan_piutangkaryawan_historibayar
-                    WHERE tanggal <= '$tanggal_potongan'
-                    GROUP BY no_pinjaman
-                ) hb"),
-                'keuangan_piutangkaryawan.no_pinjaman', '=', 'hb.no_pinjaman'
-            );
-
-            $queryPiutangEk->where('keuangan_piutangkaryawan.tanggal', '<=', $sampai);
-            $queryPiutangEk->where('keuangan_piutangkaryawan.kategori', 'EK');
-            $queryPiutangEk->where('keuangan_piutangkaryawan.status', '0');
-
-            if (!empty($request->kode_cabang_rekapkartupiutang)) {
-                $queryPiutangEk->where('hrd_karyawan.kode_cabang', $request->kode_cabang_rekapkartupiutang);
-            }
-
-            if (!empty($request->kode_dept_rekapkartupiutang)) {
-                $queryPiutangEk->where('hrd_karyawan.kode_dept', $request->kode_dept_rekapkartupiutang);
-            }
-
-            $queryPiutangEk = Piutangkaryawan::applyPiutangAccess($queryPiutangEk, $user);
-            $piutangEk = $queryPiutangEk->first();
-
-            $piutangek_saldoawal = ($piutangEk->jumlah_pinjamanlast ?? 0) - ($piutangEk->total_pembayaranlast ?? 0) - ($piutangEk->total_pelunasanlast ?? 0);
-            $piutangek_penambahan = $piutangEk->jumlah_pinjamannow ?? 0;
-            $piutangek_gaji = $piutangEk->total_pembayarannow ?? 0;
-            $piutangek_pot_komisi = $piutangEk->total_pembayaranpotongkomisi ?? 0;
-            $piutangek_titipan = $piutangEk->total_pembayarantitipan ?? 0;
-            $piutangek_lainnya = ($piutangEk->total_pembayaranlainnya ?? 0) + ($piutangEk->totalpelunasannow ?? 0);
-            $piutangek_saldoakhir = $piutangek_saldoawal + $piutangek_penambahan - ($piutangek_gaji + $piutangek_pot_komisi + $piutangek_titipan + $piutangek_lainnya);
-
             $data['rekap'] = [
                 [
                     'jenis' => 'PJP',
@@ -1548,26 +1490,16 @@ class LaporankeuanganController extends Controller
                     'lainnya' => $piutangkaryawan_lainnya,
                     'saldo_akhir' => $piutangkaryawan_saldoakhir,
                 ],
-                [
-                    'jenis' => 'PIUTANG EKS KARYAWAN',
-                    'saldo_awal' => $piutangek_saldoawal,
-                    'penambahan' => $piutangek_penambahan,
-                    'gaji' => $piutangek_gaji,
-                    'pot_komisi' => $piutangek_pot_komisi,
-                    'titipan' => $piutangek_titipan,
-                    'lainnya' => $piutangek_lainnya,
-                    'saldo_akhir' => $piutangek_saldoakhir,
-                ],
             ];
 
             $data['total'] = [
-                'saldo_awal' => $pjp_saldoawal + $kasbon_saldoawal + $piutangkaryawan_saldoawal + $piutangek_saldoawal,
-                'penambahan' => $pjp_penambahan + $kasbon_penambahan + $piutangkaryawan_penambahan + $piutangek_penambahan,
-                'gaji' => $pjp_gaji + $kasbon_gaji + $piutangkaryawan_gaji + $piutangek_gaji,
-                'pot_komisi' => $pjp_pot_komisi + $kasbon_pot_komisi + $piutangkaryawan_pot_komisi + $piutangek_pot_komisi,
-                'titipan' => $pjp_titipan + $kasbon_titipan + $piutangkaryawan_titipan + $piutangek_titipan,
-                'lainnya' => $pjp_lainnya + $kasbon_lainnya + $piutangkaryawan_lainnya + $piutangek_lainnya,
-                'saldo_akhir' => $pjp_saldoakhir + $kasbon_saldoakhir + $piutangkaryawan_saldoakhir + $piutangek_saldoakhir,
+                'saldo_awal' => $pjp_saldoawal + $kasbon_saldoawal + $piutangkaryawan_saldoawal,
+                'penambahan' => $pjp_penambahan + $kasbon_penambahan + $piutangkaryawan_penambahan,
+                'gaji' => $pjp_gaji + $kasbon_gaji + $piutangkaryawan_gaji,
+                'pot_komisi' => $pjp_pot_komisi + $kasbon_pot_komisi + $piutangkaryawan_pot_komisi,
+                'titipan' => $pjp_titipan + $kasbon_titipan + $piutangkaryawan_titipan,
+                'lainnya' => $pjp_lainnya + $kasbon_lainnya + $piutangkaryawan_lainnya,
+                'saldo_akhir' => $pjp_saldoakhir + $kasbon_saldoakhir + $piutangkaryawan_saldoakhir,
             ];
 
             $data['bulan'] = $request->bulan;
