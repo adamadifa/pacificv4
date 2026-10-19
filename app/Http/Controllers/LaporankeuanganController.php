@@ -203,17 +203,22 @@ class LaporankeuanganController extends Controller
     {
         $query = Ledger::query();
         $query->select(
+            'bank.kode_akun',
             'keuangan_ledger.kode_bank',
             'nama_bank',
             'no_rekening',
+            DB::raw('COUNT(keuangan_ledger.no_bukti) as jml_transaksi'),
             DB::raw('SUM(IF(debet_kredit="D",jumlah,0)) as jmldebet'),
             DB::raw('SUM(IF(debet_kredit="K",jumlah,0)) as jmlkredit')
         );
 
         $query->join('bank', 'keuangan_ledger.kode_bank', '=', 'bank.kode_bank');
         $query->whereBetween('keuangan_ledger.tanggal', [$request->dari, $request->sampai]);
+        $query->groupBy('bank.kode_akun', 'keuangan_ledger.kode_bank', 'nama_bank', 'no_rekening');
+        if (auth()->user()->hasRole('super admin')) {
+            $query->orderByDesc('jml_transaksi');
+        }
         $query->orderBy('nama_bank');
-        $query->groupBy('keuangan_ledger.kode_bank', 'nama_bank', 'no_rekening');
         $data['ledger'] = $query->get();
         if (isset($_POST['exportButton'])) {
             header("Content-type: application/vnd-ms-excel");

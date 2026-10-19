@@ -26,8 +26,8 @@
         const formRekapledger = $("#formRekapledger");
 
         formRekapledger.submit(function(e) {
-            const dari = formLedger.find("#dari").val();
-            const sampai = formLedger.find("#sampai").val();
+            const dari = formRekapledger.find("#dari").val();
+            const sampai = formRekapledger.find("#sampai").val();
             const start = new Date(dari);
             const end = new Date(sampai);
             if (dari == "") {
@@ -37,7 +37,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formLedger.find("#dari").focus();
+                        formRekapledger.find("#dari").focus();
                     },
                 });
                 return false;
@@ -48,7 +48,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formLedger.find("#sampai").focus();
+                        formRekapledger.find("#sampai").focus();
                     },
                 });
                 return false;
@@ -59,7 +59,7 @@
                     icon: "warning",
                     showConfirmButton: true,
                     didClose: (e) => {
-                        formLedger.find("#sampai").focus();
+                        formRekapledger.find("#sampai").focus();
                     },
                 });
                 return false;
