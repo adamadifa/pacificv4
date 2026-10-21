@@ -1491,7 +1491,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sakasbesarkeuangan', 'index')->name('sakasbesarkeuangan.index')->can('sakasbesarkeuangan.index');
         Route::get('/sakasbesarkeuanganpusat', 'index')->name('sakasbesarkeuanganpusat.index')->can('sakasbesarkeuangan.index');
         Route::get('/sakasbesarkeuangan/create', 'create')->name('sakasbesarkeuangan.create')->can('sakasbesarkeuangan.create');
-        Route::get('/sakasbesarkeuangan/createpusat', 'create')->name('sakasbesarkeuangan.create')->can('sakasbesarkeuangan.create');
+        Route::get('/sakasbesarkeuangan/createpusat', 'create')->name('sakasbesarkeuanganpusat.create')->can('sakasbesarkeuangan.create');
         Route::post('/sakasbesarkeuangan/store', 'store')->name('sakasbesarkeuangan.store')->can('sakasbesarkeuangan.store');
         Route::get('/sakasbesarkeuangan/{id}/edit', 'edit')->name('sakasbesarkeuangan.edit')->can('sakasbesarkeuangan.edit');
         Route::put('/sakasbesarkeuangan/{id}/update', 'update')->name('sakasbesarkeuangan.update')->can('sakasbesarkeuangan.update');
@@ -2122,7 +2122,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/penyupah/{kode_penyupah}/update', 'update')->name('penyupah.update')->can('penyupah.update');
         Route::delete('/penyupah/{kode_penyupah}/delete', 'destroy')->name('penyupah.delete')->can('penyupah.delete');
 
-        Route::get('/penyupah/{kode_gaji}/tambahkaryawan', 'tambahkaryawan')->name('penyupah.create')->can('penyupah.create');
+        Route::get('/penyupah/{kode_gaji}/tambahkaryawan', 'tambahkaryawan')->name('penyupah.tambahkaryawan')->can('penyupah.create');
         Route::post('/penyupah/{kode_gaji}/storekaryawan', 'storekaryawan')->name('penyupah.storekaryawan')->can('penyupah.store');
         Route::delete('/penyupah/{kode_gaji}/{nik}/deletekaryawan', 'deletekaryawan')->name('penyupah.deletekaryawan')->can('penyupah.delete');
     });
@@ -2264,13 +2264,13 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(MonitoringreturController::class)->group(function () {
-        Route::get('/monitoringretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
+        Route::get('/monitoringretur/{no_retur}/create', 'create')->name('monitoringretur.create')->can('worksheetom.monitoringretur');
         Route::post('/monitoringretur/{no_retur}/store', 'store')->name('monitoringretur.store')->can('worksheetom.monitoringretur');
         Route::get('/monitoringretur/cetak', 'cetak')->name('monitoringretur.cetak')->can('worksheetom.monitoringretur');
     });
 
     Route::controller(PelunasanreturController::class)->group(function () {
-        Route::get('/pelunasanretur/{no_retur}/create', 'create')->name('monitoringretur.index')->can('worksheetom.monitoringretur');
+        Route::get('/pelunasanretur/{no_retur}/create', 'create')->name('pelunasanretur.create')->can('worksheetom.monitoringretur');
         Route::post('/pelunasanretur/{no_retur}/store', 'store')->name('pelunasanretur.store')->can('worksheetom.monitoringretur');
     });
 
@@ -2486,7 +2486,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/programikatan2026/{no_pengajuan}/approve', 'approve')->name('programikatan2026.approve');
         Route::post('/programikatan2026/{no_pengajuan}/storeapprove', 'storeapprove')->name('programikatan2026.storeapprove');
         Route::get('/programikatan2026/{no_pengajuan}/cetak', 'cetak')->name('programikatan2026.cetak');
-        Route::get('/programikatan2026/{no_pengajuan}/cetakkesepakatan', 'cetakkesepakatan')->name('programikatan2026.cetakkesepakatan');
         Route::get('/programikatan2026/{no_pengajuan}/getpelangganjson', 'getPelangganJson')->name('programikatan2026.getpelangganjson');
 
         // Detail Pelanggan Routes
