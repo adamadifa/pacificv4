@@ -2124,7 +2124,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/penyupah/{kode_gaji}/tambahkaryawan', 'tambahkaryawan')->name('penyupah.tambahkaryawan')->can('penyupah.create');
         Route::post('/penyupah/{kode_gaji}/storekaryawan', 'storekaryawan')->name('penyupah.storekaryawan')->can('penyupah.store');
+        Route::get('/penyupah/{kode_gaji}/{nik}/editkaryawan', 'editkaryawan')->name('penyupah.editkaryawan')->can('penyupah.edit');
+        Route::put('/penyupah/{kode_gaji}/{nik}/updatekaryawan', 'updatekaryawan')->name('penyupah.updatekaryawan')->can('penyupah.edit');
         Route::delete('/penyupah/{kode_gaji}/{nik}/deletekaryawan', 'deletekaryawan')->name('penyupah.deletekaryawan')->can('penyupah.delete');
+
+        Route::get('/penyupah/{kode_gaji}/downloadtemplate', 'downloadtemplate')->name('penyupah.downloadtemplate')->can('penyupah.create');
+        Route::post('/penyupah/{kode_gaji}/import', 'import')->name('penyupah.import')->can('penyupah.create');
     });
     Route::controller(LaporangeneralaffairController::class)->group(function () {
         Route::get('/laporanga', 'index')->name('laporanga.index')->can('ga.servicekendaraan', 'ga.rekapbadstok');
