@@ -589,6 +589,640 @@ class DashboardController extends Controller
     }
 
 
+    public function grafik()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = 2023; // Permintaan user: dari tahun 2023
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        return view('dashboard.grafik', $data);
+    }
+
+    public function grafikQty()
+    {
+        $data['list_bulan'] = config('global.list_bulan');
+        $data['start_year'] = 2023;
+        $cbg = new Cabang();
+        $data['cabang'] = $cbg->getCabang();
+        $data['produk'] = Produk::where('status_aktif_produk', 1)->orderBy('nama_produk')->get();
+        return view('dashboard.grafik_qty', $data);
+    }
+
+    public function getGrafikCashIn(Request $request)
+    {
+        $mode = $request->mode ?? 'bulan'; // 'bulan' atau 'tahun'
+        $tahun = $request->tahun ?? date('Y');
+        $bulan = $request->bulan; // '' atau 1-12
+        $kode_cabang = $request->kode_cabang; // '' atau kode_cabang spesifik
+        $start_year = 2023;
+        $current_year = (int) date('Y');
+
+        $user = auth()->user();
+        $roles_access_all_cabang = config('global.roles_access_all_cabang') ?? [
+            'super admin', 'direktur', 'gm marketing', 'gm administrasi',
+            'regional sales manager', 'manager keuangan', 'manager audit'
+        ];
+
+        // Base query cabang restriction
+        $applyCabangFilter = function ($q) use ($user, $roles_access_all_cabang, $kode_cabang) {
+            if (!$user->hasAnyRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $q->where('cabang.kode_regional', $user->kode_regional);
+                    if (!empty($kode_cabang)) {
+                        $q->where('cabang.kode_cabang', $kode_cabang);
+                    }
+                } else {
+                    $q->where('cabang.kode_cabang', $user->kode_cabang);
+                }
+            } elseif (!empty($kode_cabang)) {
+                $q->where('cabang.kode_cabang', $kode_cabang);
+            }
+        };
+
+        $nama_bulan_singkat = config('global.nama_bulan_singkat') ?? ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        if ($mode == 'tahun') {
+            // Mode: By Tahun (2023 - saat ini)
+            $qBase = DB::table('marketing_penjualan_historibayar')
+                ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
+                ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+                ->where('marketing_penjualan_historibayar.voucher', 0)
+                ->whereYear('marketing_penjualan_historibayar.tanggal', '>=', $start_year);
+
+            $applyCabangFilter($qBase);
+
+            // 1. Tren Per Tahun
+            $trenPerTahun = (clone $qBase)
+                ->selectRaw('YEAR(marketing_penjualan_historibayar.tanggal) as thn, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                ->groupBy(DB::raw('YEAR(marketing_penjualan_historibayar.tanggal)'))
+                ->pluck('total', 'thn');
+
+            $categoriesTren = [];
+            $seriesTren = [];
+            for ($y = $start_year; $y <= $current_year; $y++) {
+                $categoriesTren[] = (string) $y;
+                $seriesTren[] = (float) ($trenPerTahun[$y] ?? 0);
+            }
+
+            // 2. Cash In Per Cabang (Multi-Year)
+            $cabangData = (clone $qBase)
+                ->selectRaw('cabang.kode_cabang, cabang.nama_cabang, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+                ->orderByDesc('total')
+                ->get();
+
+            // 3. Cash In Per Sales (Multi-Year)
+            $limitSales = $request->limit_sales ?? (empty($kode_cabang) ? 15 : 'all');
+            $qSales = (clone $qBase)
+                ->selectRaw('salesman.kode_salesman, salesman.nama_salesman, cabang.nama_cabang, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                ->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'cabang.nama_cabang')
+                ->orderByDesc('total');
+            if ($limitSales !== 'all' && is_numeric($limitSales)) {
+                $qSales->limit((int) $limitSales);
+            }
+            $salesData = $qSales->get();
+
+            $totalCashIn = array_sum($seriesTren);
+            $totalTahunCount = max(1, count($categoriesTren));
+            $rataRata = $totalCashIn / $totalTahunCount;
+            $rataRataLabel = 'Rata-rata / Tahun';
+            $periodeTitle = "Periode $start_year - $current_year";
+
+        } else {
+            // Mode: By Bulan dalam Tahun Terpilih
+            $qBase = DB::table('marketing_penjualan_historibayar')
+                ->join('salesman', 'marketing_penjualan_historibayar.kode_salesman', '=', 'salesman.kode_salesman')
+                ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+                ->where('marketing_penjualan_historibayar.voucher', 0)
+                ->whereYear('marketing_penjualan_historibayar.tanggal', $tahun);
+
+            $applyCabangFilter($qBase);
+
+            $limitSales = $request->limit_sales ?? (empty($kode_cabang) ? 15 : 'all');
+
+            if (empty($bulan)) {
+                // Semua Bulan dalam Tahun Terpilih (Tren 12 Bulan)
+                $trenPerBulan = (clone $qBase)
+                    ->selectRaw('MONTH(marketing_penjualan_historibayar.tanggal) as bln, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                    ->groupBy(DB::raw('MONTH(marketing_penjualan_historibayar.tanggal)'))
+                    ->pluck('total', 'bln');
+
+                $categoriesTren = [];
+                $seriesTren = [];
+                for ($m = 1; $m <= 12; $m++) {
+                    $categoriesTren[] = $nama_bulan_singkat[$m] ?? "Bln $m";
+                    $seriesTren[] = (float) ($trenPerBulan[$m] ?? 0);
+                }
+
+                $cabangData = (clone $qBase)
+                    ->selectRaw('cabang.kode_cabang, cabang.nama_cabang, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                    ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+                    ->orderByDesc('total')
+                    ->get();
+
+                $qSales = (clone $qBase)
+                    ->selectRaw('salesman.kode_salesman, salesman.nama_salesman, cabang.nama_cabang, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                    ->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'cabang.nama_cabang')
+                    ->orderByDesc('total');
+                if ($limitSales !== 'all' && is_numeric($limitSales)) {
+                    $qSales->limit((int) $limitSales);
+                }
+                $salesData = $qSales->get();
+
+                $totalCashIn = array_sum($seriesTren);
+                $activeMonths = ($tahun == $current_year) ? max(1, (int) date('n')) : 12;
+                $rataRata = $totalCashIn / $activeMonths;
+                $rataRataLabel = 'Rata-rata / Bulan';
+                $periodeTitle = "Tahun $tahun (Semua Bulan)";
+
+            } else {
+                // Bulan Tertentu dalam Tahun Terpilih (Tren Harian Tgl 1 s/d Akhir Bulan)
+                $qBulan = (clone $qBase)->whereMonth('marketing_penjualan_historibayar.tanggal', $bulan);
+
+                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int) $bulan, (int) $tahun);
+                $trenPerHari = (clone $qBulan)
+                    ->selectRaw('DAY(marketing_penjualan_historibayar.tanggal) as tgl, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                    ->groupBy(DB::raw('DAY(marketing_penjualan_historibayar.tanggal)'))
+                    ->pluck('total', 'tgl');
+
+                $categoriesTren = [];
+                $seriesTren = [];
+                for ($d = 1; $d <= $daysInMonth; $d++) {
+                    $categoriesTren[] = (string) $d;
+                    $seriesTren[] = (float) ($trenPerHari[$d] ?? 0);
+                }
+
+                $cabangData = (clone $qBulan)
+                    ->selectRaw('cabang.kode_cabang, cabang.nama_cabang, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                    ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+                    ->orderByDesc('total')
+                    ->get();
+
+                $qSales = (clone $qBulan)
+                    ->selectRaw('salesman.kode_salesman, salesman.nama_salesman, cabang.nama_cabang, SUM(marketing_penjualan_historibayar.jumlah) as total')
+                    ->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'cabang.nama_cabang')
+                    ->orderByDesc('total');
+                if ($limitSales !== 'all' && is_numeric($limitSales)) {
+                    $qSales->limit((int) $limitSales);
+                }
+                $salesData = $qSales->get();
+
+                $totalCashIn = array_sum($seriesTren);
+                $rataRata = $totalCashIn / max(1, $daysInMonth);
+                $rataRataLabel = 'Rata-rata / Hari';
+                $namaBulanPilihan = $nama_bulan_singkat[(int) $bulan] ?? "Bulan $bulan";
+                $periodeTitle = "$namaBulanPilihan $tahun";
+            }
+        }
+
+        // Format Cabang
+        $categoriesCabang = [];
+        $seriesCabang = [];
+        $listCabang = [];
+        foreach ($cabangData as $c) {
+            $categoriesCabang[] = $c->nama_cabang;
+            $seriesCabang[] = (float) $c->total;
+            $pct = $totalCashIn > 0 ? round(($c->total / $totalCashIn) * 100, 1) : 0;
+            $listCabang[] = [
+                'kode_cabang' => $c->kode_cabang,
+                'nama_cabang' => $c->nama_cabang,
+                'total' => (float) $c->total,
+                'formatted' => 'Rp ' . number_format($c->total, 0, ',', '.'),
+                'persentase' => $pct
+            ];
+        }
+
+        // Format Sales
+        $categoriesSales = [];
+        $seriesSales = [];
+        $listSales = [];
+        foreach ($salesData as $s) {
+            $displayName = empty($kode_cabang) ? $s->nama_salesman . ' (' . $s->nama_cabang . ')' : $s->nama_salesman;
+            $categoriesSales[] = $displayName;
+            $seriesSales[] = (float) $s->total;
+            $pct = $totalCashIn > 0 ? round(($s->total / $totalCashIn) * 100, 1) : 0;
+            $listSales[] = [
+                'kode_salesman' => $s->kode_salesman,
+                'nama_salesman' => $s->nama_salesman,
+                'display_name' => $displayName,
+                'nama_cabang' => $s->nama_cabang,
+                'total' => (float) $s->total,
+                'formatted' => 'Rp ' . number_format($s->total, 0, ',', '.'),
+                'persentase' => $pct
+            ];
+        }
+
+        $topCabang = $cabangData->first();
+        $topSales = $salesData->first();
+
+        return response()->json([
+            'status' => true,
+            'kpi' => [
+                'total_cashin' => $totalCashIn,
+                'total_cashin_formatted' => 'Rp ' . number_format($totalCashIn, 0, ',', '.'),
+                'rata_rata' => $rataRata,
+                'rata_rata_formatted' => 'Rp ' . number_format($rataRata, 0, ',', '.'),
+                'rata_rata_label' => $rataRataLabel,
+                'periode_title' => $periodeTitle,
+                'top_cabang' => $topCabang ? [
+                    'nama_cabang' => $topCabang->nama_cabang,
+                    'total_formatted' => 'Rp ' . number_format($topCabang->total, 0, ',', '.')
+                ] : null,
+                'top_sales' => $topSales ? [
+                    'nama_salesman' => $topSales->nama_salesman,
+                    'nama_cabang' => $topSales->nama_cabang,
+                    'total_formatted' => 'Rp ' . number_format($topSales->total, 0, ',', '.')
+                ] : null,
+            ],
+            'tren' => [
+                'categories' => $categoriesTren,
+                'series' => $seriesTren,
+                'title' => ($mode == 'tahun')
+                    ? 'Tren Cash In Tahunan (2023 - Sekarang)'
+                    : (empty($bulan) ? "Tren Cash In Bulanan Tahun $tahun" : "Tren Cash In Harian ($periodeTitle)")
+            ],
+            'cabang' => [
+                'categories' => $categoriesCabang,
+                'series' => $seriesCabang,
+                'list' => $listCabang
+            ],
+            'sales' => [
+                'categories' => $categoriesSales,
+                'series' => $seriesSales,
+                'list' => $listSales,
+                'is_limited' => empty($kode_cabang) && count($cabangData) > 1
+            ]
+        ]);
+    }
+
+    public function getGrafikQty(Request $request)
+    {
+        $mode = $request->mode ?? 'bulan'; // 'bulan' atau 'tahun'
+        $tahun = $request->tahun ?? date('Y');
+        $bulan = $request->bulan; // '' atau 1-12
+        $kode_cabang = $request->kode_cabang; // '' atau kode_cabang spesifik
+        $kode_produk = $request->kode_produk; // '' atau kode_produk spesifik
+        $limit_sales = $request->limit_sales ?? (empty($kode_cabang) ? 15 : 'all');
+        $start_year = 2023;
+        $current_year = (int) date('Y');
+
+        $user = auth()->user();
+        $roles_access_all_cabang = config('global.roles_access_all_cabang') ?? [
+            'super admin', 'direktur', 'gm marketing', 'gm administrasi',
+            'regional sales manager', 'manager keuangan', 'manager audit'
+        ];
+
+        // Base query cabang restriction
+        $applyCabangFilter = function ($q) use ($user, $roles_access_all_cabang, $kode_cabang) {
+            if (!$user->hasAnyRole($roles_access_all_cabang)) {
+                if ($user->hasRole('regional sales manager')) {
+                    $q->where('cabang.kode_regional', $user->kode_regional);
+                    if (!empty($kode_cabang)) {
+                        $q->where('cabang.kode_cabang', $kode_cabang);
+                    }
+                } else {
+                    $q->where('cabang.kode_cabang', $user->kode_cabang);
+                }
+            } elseif (!empty($kode_cabang)) {
+                $q->where('cabang.kode_cabang', $kode_cabang);
+            }
+        };
+
+        $nama_bulan_singkat = config('global.nama_bulan_singkat') ?? ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        // Base query
+        $qBase = DB::table('marketing_penjualan_detail')
+            ->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur')
+            ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
+            ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
+            ->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman')
+            ->join('cabang', 'salesman.kode_cabang', '=', 'cabang.kode_cabang')
+            ->where('marketing_penjualan_detail.status_promosi', '0')
+            ->where('marketing_penjualan.status_sampel', 0)
+            ->where('marketing_penjualan.status_batal', 0);
+
+        if (!empty($kode_produk)) {
+            $qBase->where('produk.kode_produk', $kode_produk);
+        }
+
+        $applyCabangFilter($qBase);
+
+        if ($mode == 'tahun') {
+            $qBase->whereYear('marketing_penjualan.tanggal', '>=', $start_year);
+
+            // 1. Tren Per Produk Per Tahun
+            $categoriesTren = [];
+            for ($y = $start_year; $y <= $current_year; $y++) {
+                $categoriesTren[] = (string) $y;
+            }
+
+            $trenGrouped = (clone $qBase)
+                ->selectRaw('produk.kode_produk, produk.nama_produk, YEAR(marketing_penjualan.tanggal) as period_key, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                ->groupBy('produk.kode_produk', 'produk.nama_produk', DB::raw('YEAR(marketing_penjualan.tanggal)'))
+                ->get();
+
+            $mapTren = [];
+            $productNames = [];
+            $productTotals = [];
+            foreach ($trenGrouped as $row) {
+                $mapTren[$row->kode_produk][$row->period_key] = (float) $row->total;
+                $productNames[$row->kode_produk] = $row->nama_produk;
+                $productTotals[$row->kode_produk] = ($productTotals[$row->kode_produk] ?? 0) + (float) $row->total;
+            }
+            arsort($productTotals);
+
+            $seriesTren = [];
+            foreach (array_keys($productTotals) as $kdProduk) {
+                $dataPoints = [];
+                for ($y = $start_year; $y <= $current_year; $y++) {
+                    $dataPoints[] = round($mapTren[$kdProduk][$y] ?? 0, 1);
+                }
+                $seriesTren[] = [
+                    'name' => $productNames[$kdProduk],
+                    'data' => $dataPoints
+                ];
+            }
+
+            // 2. Qty Per Cabang
+            $cabangData = (clone $qBase)
+                ->selectRaw('cabang.kode_cabang, cabang.nama_cabang, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+                ->orderByDesc('total')
+                ->get();
+
+            // 3. Qty Per Sales
+            $qSales = (clone $qBase)
+                ->selectRaw('salesman.kode_salesman, salesman.nama_salesman, cabang.nama_cabang, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                ->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'cabang.nama_cabang')
+                ->orderByDesc('total');
+            if ($limit_sales !== 'all' && is_numeric($limit_sales)) {
+                $qSales->limit((int) $limit_sales);
+            }
+            $salesData = $qSales->get();
+
+            // 4. Breakdown Per Produk
+            $produkData = (clone $qBase)
+                ->selectRaw('produk.kode_produk, produk.nama_produk, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                ->groupBy('produk.kode_produk', 'produk.nama_produk')
+                ->orderByDesc('total')
+                ->get();
+
+            $totalQty = array_sum($productTotals);
+            $totalTahunCount = max(1, count($categoriesTren));
+            $rataRata = $totalQty / $totalTahunCount;
+            $rataRataLabel = 'Rata-rata / Tahun';
+            $periodeTitle = "Periode $start_year - $current_year";
+
+        } else {
+            // Mode: By Bulan dalam Tahun Terpilih
+            $qBase->whereYear('marketing_penjualan.tanggal', $tahun);
+
+            if (empty($bulan)) {
+                // Semua Bulan (Tren 12 Bulan)
+                $categoriesTren = [];
+                for ($m = 1; $m <= 12; $m++) {
+                    $categoriesTren[] = $nama_bulan_singkat[$m] ?? "Bln $m";
+                }
+
+                $trenGrouped = (clone $qBase)
+                    ->selectRaw('produk.kode_produk, produk.nama_produk, MONTH(marketing_penjualan.tanggal) as period_key, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('produk.kode_produk', 'produk.nama_produk', DB::raw('MONTH(marketing_penjualan.tanggal)'))
+                    ->get();
+
+                $mapTren = [];
+                $productNames = [];
+                $productTotals = [];
+                foreach ($trenGrouped as $row) {
+                    $mapTren[$row->kode_produk][$row->period_key] = (float) $row->total;
+                    $productNames[$row->kode_produk] = $row->nama_produk;
+                    $productTotals[$row->kode_produk] = ($productTotals[$row->kode_produk] ?? 0) + (float) $row->total;
+                }
+                arsort($productTotals);
+
+                $seriesTren = [];
+                foreach (array_keys($productTotals) as $kdProduk) {
+                    $dataPoints = [];
+                    for ($m = 1; $m <= 12; $m++) {
+                        $dataPoints[] = round($mapTren[$kdProduk][$m] ?? 0, 1);
+                    }
+                    $seriesTren[] = [
+                        'name' => $productNames[$kdProduk],
+                        'data' => $dataPoints
+                    ];
+                }
+
+                $cabangData = (clone $qBase)
+                    ->selectRaw('cabang.kode_cabang, cabang.nama_cabang, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+                    ->orderByDesc('total')
+                    ->get();
+
+                $qSales = (clone $qBase)
+                    ->selectRaw('salesman.kode_salesman, salesman.nama_salesman, cabang.nama_cabang, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'cabang.nama_cabang')
+                    ->orderByDesc('total');
+                if ($limit_sales !== 'all' && is_numeric($limit_sales)) {
+                    $qSales->limit((int) $limit_sales);
+                }
+                $salesData = $qSales->get();
+
+                $produkData = (clone $qBase)
+                    ->selectRaw('produk.kode_produk, produk.nama_produk, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('produk.kode_produk', 'produk.nama_produk')
+                    ->orderByDesc('total')
+                    ->get();
+
+                $totalQty = array_sum($productTotals);
+                $activeMonths = ($tahun == $current_year) ? max(1, (int) date('n')) : 12;
+                $rataRata = $totalQty / $activeMonths;
+                $rataRataLabel = 'Rata-rata / Bulan';
+                $periodeTitle = "Tahun $tahun (Semua Bulan)";
+
+            } else {
+                // Bulan Tertentu (Tren Harian Tgl 1 s/d Akhir Bulan)
+                $qBulan = (clone $qBase)->whereMonth('marketing_penjualan.tanggal', $bulan);
+
+                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int) $bulan, (int) $tahun);
+                $categoriesTren = [];
+                for ($d = 1; $d <= $daysInMonth; $d++) {
+                    $categoriesTren[] = (string) $d;
+                }
+
+                $trenGrouped = (clone $qBulan)
+                    ->selectRaw('produk.kode_produk, produk.nama_produk, DAY(marketing_penjualan.tanggal) as period_key, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('produk.kode_produk', 'produk.nama_produk', DB::raw('DAY(marketing_penjualan.tanggal)'))
+                    ->get();
+
+                $mapTren = [];
+                $productNames = [];
+                $productTotals = [];
+                foreach ($trenGrouped as $row) {
+                    $mapTren[$row->kode_produk][$row->period_key] = (float) $row->total;
+                    $productNames[$row->kode_produk] = $row->nama_produk;
+                    $productTotals[$row->kode_produk] = ($productTotals[$row->kode_produk] ?? 0) + (float) $row->total;
+                }
+                arsort($productTotals);
+
+                $seriesTren = [];
+                foreach (array_keys($productTotals) as $kdProduk) {
+                    $dataPoints = [];
+                    for ($d = 1; $d <= $daysInMonth; $d++) {
+                        $dataPoints[] = round($mapTren[$kdProduk][$d] ?? 0, 1);
+                    }
+                    $seriesTren[] = [
+                        'name' => $productNames[$kdProduk],
+                        'data' => $dataPoints
+                    ];
+                }
+
+                $cabangData = (clone $qBulan)
+                    ->selectRaw('cabang.kode_cabang, cabang.nama_cabang, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('cabang.kode_cabang', 'cabang.nama_cabang')
+                    ->orderByDesc('total')
+                    ->get();
+
+                $qSales = (clone $qBulan)
+                    ->selectRaw('salesman.kode_salesman, salesman.nama_salesman, cabang.nama_cabang, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('salesman.kode_salesman', 'salesman.nama_salesman', 'cabang.nama_cabang')
+                    ->orderByDesc('total');
+                if ($limit_sales !== 'all' && is_numeric($limit_sales)) {
+                    $qSales->limit((int) $limit_sales);
+                }
+                $salesData = $qSales->get();
+
+                $produkData = (clone $qBulan)
+                    ->selectRaw('produk.kode_produk, produk.nama_produk, SUM(marketing_penjualan_detail.jumlah / produk.isi_pcs_dus) as total')
+                    ->groupBy('produk.kode_produk', 'produk.nama_produk')
+                    ->orderByDesc('total')
+                    ->get();
+
+                $totalQty = array_sum($productTotals);
+                $rataRata = $totalQty / max(1, $daysInMonth);
+                $rataRataLabel = 'Rata-rata / Hari';
+                $namaBulanPilihan = $nama_bulan_singkat[(int) $bulan] ?? "Bulan $bulan";
+                $periodeTitle = "$namaBulanPilihan $tahun";
+            }
+        }
+
+        // Format Cabang
+        $categoriesCabang = [];
+        $seriesCabang = [];
+        $listCabang = [];
+        foreach ($cabangData as $c) {
+            $val = round((float) $c->total, 1);
+            $categoriesCabang[] = $c->nama_cabang;
+            $seriesCabang[] = $val;
+            $pct = $totalQty > 0 ? round(($val / $totalQty) * 100, 1) : 0;
+            $listCabang[] = [
+                'kode_cabang' => $c->kode_cabang,
+                'nama_cabang' => $c->nama_cabang,
+                'total' => $val,
+                'formatted' => number_format($val, 1, ',', '.') . ' Dus',
+                'persentase' => $pct
+            ];
+        }
+
+        // Format Sales
+        $categoriesSales = [];
+        $seriesSales = [];
+        $listSales = [];
+        foreach ($salesData as $s) {
+            $val = round((float) $s->total, 1);
+            $displayName = empty($kode_cabang) ? $s->nama_salesman . ' (' . $s->nama_cabang . ')' : $s->nama_salesman;
+            $categoriesSales[] = $displayName;
+            $seriesSales[] = $val;
+            $pct = $totalQty > 0 ? round(($val / $totalQty) * 100, 1) : 0;
+            $listSales[] = [
+                'kode_salesman' => $s->kode_salesman,
+                'nama_salesman' => $s->nama_salesman,
+                'display_name' => $displayName,
+                'nama_cabang' => $s->nama_cabang,
+                'total' => $val,
+                'formatted' => number_format($val, 1, ',', '.') . ' Dus',
+                'persentase' => $pct
+            ];
+        }
+
+        // Format Produk
+        $categoriesProduk = [];
+        $seriesProduk = [];
+        $listProduk = [];
+        foreach ($produkData as $p) {
+            $val = round((float) $p->total, 1);
+            $categoriesProduk[] = $p->nama_produk;
+            $seriesProduk[] = $val;
+            $pct = $totalQty > 0 ? round(($val / $totalQty) * 100, 1) : 0;
+            $listProduk[] = [
+                'kode_produk' => $p->kode_produk,
+                'nama_produk' => $p->nama_produk,
+                'total' => $val,
+                'formatted' => number_format($val, 1, ',', '.') . ' Dus',
+                'persentase' => $pct
+            ];
+        }
+
+        $topCabang = $cabangData->first();
+        $topSales = $salesData->first();
+        $topProduk = $produkData->first();
+
+        // Nama produk terpilih (jika difilter)
+        $namaProdukTerpilih = 'Semua Produk';
+        if (!empty($kode_produk)) {
+            $pr = Produk::where('kode_produk', $kode_produk)->first();
+            if ($pr) $namaProdukTerpilih = $pr->nama_produk;
+        }
+
+        return response()->json([
+            'status' => true,
+            'kpi' => [
+                'total_qty' => $totalQty,
+                'total_qty_formatted' => number_format($totalQty, 1, ',', '.') . ' Dus',
+                'rata_rata' => $rataRata,
+                'rata_rata_formatted' => number_format($rataRata, 1, ',', '.') . ' Dus',
+                'rata_rata_label' => $rataRataLabel,
+                'periode_title' => $periodeTitle,
+                'nama_produk_terpilih' => $namaProdukTerpilih,
+                'top_produk' => $topProduk ? [
+                    'nama_produk' => $topProduk->nama_produk,
+                    'total_formatted' => number_format($topProduk->total, 1, ',', '.') . ' Dus'
+                ] : null,
+                'top_cabang' => $topCabang ? [
+                    'nama_cabang' => $topCabang->nama_cabang,
+                    'total_formatted' => number_format($topCabang->total, 1, ',', '.') . ' Dus'
+                ] : null,
+                'top_sales' => $topSales ? [
+                    'nama_salesman' => $topSales->nama_salesman,
+                    'nama_cabang' => $topSales->nama_cabang,
+                    'total_formatted' => number_format($topSales->total, 1, ',', '.') . ' Dus'
+                ] : null,
+            ],
+            'tren' => [
+                'categories' => $categoriesTren,
+                'series' => $seriesTren,
+                'title' => ($mode == 'tahun')
+                    ? "Tren Qty ($namaProdukTerpilih) Tahunan (2023 - Sekarang)"
+                    : (empty($bulan) ? "Tren Qty ($namaProdukTerpilih) Bulanan Tahun $tahun" : "Tren Qty ($namaProdukTerpilih) Harian ($periodeTitle)")
+            ],
+            'cabang' => [
+                'categories' => $categoriesCabang,
+                'series' => $seriesCabang,
+                'list' => $listCabang
+            ],
+            'sales' => [
+                'categories' => $categoriesSales,
+                'series' => $seriesSales,
+                'list' => $listSales,
+                'is_limited' => empty($kode_cabang) && count($cabangData) > 1
+            ],
+            'produk' => [
+                'categories' => $categoriesProduk,
+                'series' => $seriesProduk,
+                'list' => $listProduk
+            ]
+        ]);
+    }
+
+
     public function operasional()
     {
         $data['list_bulan'] = config('global.list_bulan');

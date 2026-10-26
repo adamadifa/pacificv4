@@ -253,6 +253,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/hrd', 'hrd')->name('dashboard.hrd')->can('dashboard.hrd');
         Route::get('/dashboard/gudang', 'gudang')->name('dashboard.gudang')->can('dashboard.gudang');
         Route::get('/dashboard/marketing', 'marketing')->name('dashboard.marketing')->can('dashboard.marketing');
+        Route::get('/dashboard/grafik', 'grafik')->name('dashboard.grafik');
+        Route::get('/dashboard/grafik/qty', 'grafikQty')->name('dashboard.grafik.qty');
+        Route::post('/dashboard/grafik/getcashin', 'getGrafikCashIn')->name('dashboard.grafik.getcashin');
+        Route::post('/dashboard/grafik/getqty', 'getGrafikQty')->name('dashboard.grafik.getqty');
         Route::get('/dashboard/owner', 'dashboardowner')->name('dashboard.owner');
 
 
