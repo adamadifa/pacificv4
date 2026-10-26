@@ -1,4 +1,4 @@
-@if (auth()->user()->hasAnyPermission(['dashboard.marketing', 'dashboard.gudang', 'dashboard.produksi', 'dashboard.generalaffair', 'dashboard.grafik']) || auth()->user()->hasRole(['super admin', 'direktur', 'gm marketing', 'regional sales manager', 'manager keuangan']))
+@if (auth()->user()->hasAnyPermission(['dashboard.marketing', 'dashboard.gudang', 'dashboard.produksi', 'dashboard.generalaffair', 'dashboard.grafik']) || auth()->user()->hasRole(['super admin', 'direktur', 'gm marketing', 'regional sales manager', 'manager keuangan', 'regional operation manager']))
     @can('dashboard.marketing')
         <li class="nav-item" role="presentation">
             <a href="{{ route('dashboard.marketing') }}" class="nav-link {{ request()->is(['dashboard', 'dashboard/marketing']) ? 'active' : '' }}">
@@ -7,7 +7,7 @@
         </li>
     @endcan
 
-    @if (auth()->user()->hasAnyPermission(['dashboard.grafik', 'dashboard.marketing']) || auth()->user()->hasRole(['super admin', 'direktur', 'gm marketing', 'regional sales manager', 'manager keuangan']))
+    @if (auth()->user()->hasRole(['super admin', 'direktur', 'regional operation manager', 'rom']) || auth()->user()->can('dashboard.grafik'))
         <li class="nav-item" role="presentation">
             <a href="{{ route('dashboard.grafik') }}" class="nav-link {{ request()->routeIs('dashboard.grafik') ? 'active' : '' }}">
                 <i class="tf-icons ti ti-chart-dots ti-xs me-1"></i> Grafik Cash In

@@ -591,6 +591,10 @@ class DashboardController extends Controller
 
     public function grafik()
     {
+        if (!auth()->user()->hasRole(['super admin', 'direktur', 'regional operation manager', 'rom']) && !auth()->user()->can('dashboard.grafik')) {
+            abort(403, 'Akses tidak diizinkan');
+        }
+
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = 2023; // Permintaan user: dari tahun 2023
         $cbg = new Cabang();
@@ -600,6 +604,10 @@ class DashboardController extends Controller
 
     public function grafikQty()
     {
+        if (!auth()->user()->hasRole(['super admin', 'direktur', 'regional operation manager', 'rom']) && !auth()->user()->can('dashboard.grafik')) {
+            abort(403, 'Akses tidak diizinkan');
+        }
+
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = 2023;
         $cbg = new Cabang();
@@ -610,6 +618,10 @@ class DashboardController extends Controller
 
     public function getGrafikCashIn(Request $request)
     {
+        if (!auth()->user()->hasRole(['super admin', 'direktur', 'regional operation manager', 'rom']) && !auth()->user()->can('dashboard.grafik')) {
+            return response()->json(['error' => 'Akses tidak diizinkan'], 403);
+        }
+
         $mode = $request->mode ?? 'bulan'; // 'bulan' atau 'tahun'
         $tahun = $request->tahun ?? date('Y');
         $bulan = $request->bulan; // '' atau 1-12
@@ -857,6 +869,10 @@ class DashboardController extends Controller
 
     public function getGrafikQty(Request $request)
     {
+        if (!auth()->user()->hasRole(['super admin', 'direktur', 'regional operation manager', 'rom']) && !auth()->user()->can('dashboard.grafik')) {
+            return response()->json(['error' => 'Akses tidak diizinkan'], 403);
+        }
+
         $mode = $request->mode ?? 'bulan'; // 'bulan' atau 'tahun'
         $tahun = $request->tahun ?? date('Y');
         $bulan = $request->bulan; // '' atau 1-12
