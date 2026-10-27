@@ -649,7 +649,7 @@ class DashboardController extends Controller
             $periodExpr = 'MONTH(h.tanggal)';
         } else {
             $bulanInt = (int) $bulan;
-            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $bulanInt, (int) $tahun);
+            $daysInMonth = (int) date('t', strtotime(sprintf('%04d-%02d-01', $tahun, $bulanInt)));
             $dateFrom = sprintf('%04d-%02d-01', $tahun, $bulanInt);
             $dateTo = date('Y-m-d', strtotime("$dateFrom +1 month"));
             $periodExpr = 'DAY(h.tanggal)';
@@ -865,7 +865,7 @@ class DashboardController extends Controller
             $periodExpr = 'MONTH(mp.tanggal)';
         } else {
             $bulanInt = (int) $bulan;
-            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $bulanInt, (int) $tahun);
+            $daysInMonth = (int) date('t', strtotime(sprintf('%04d-%02d-01', $tahun, $bulanInt)));
             $dateFrom = sprintf('%04d-%02d-01', $tahun, $bulanInt);
             $dateTo = date('Y-m-d', strtotime("$dateFrom +1 month"));
             $periodExpr = 'DAY(mp.tanggal)';
@@ -911,7 +911,7 @@ class DashboardController extends Controller
             s.nama_salesman,
             c.kode_cabang,
             c.nama_cabang,
-            SUM(mpd.jumlah / p.isi_pcs_dus) as total
+            SUM(mpd.jumlah / NULLIF(p.isi_pcs_dus, 0)) as total
         ")
         ->groupBy(
             'p.kode_produk',
@@ -999,7 +999,7 @@ class DashboardController extends Controller
             $periodeTitle = "Tahun $tahun (Semua Bulan)";
 
         } else {
-            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int) $bulan, (int) $tahun);
+            $daysInMonth = (int) date('t', strtotime(sprintf('%04d-%02d-01', $tahun, (int) $bulan)));
             for ($d = 1; $d <= $daysInMonth; $d++) {
                 $categoriesTren[] = (string) $d;
             }
