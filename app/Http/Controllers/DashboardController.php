@@ -656,7 +656,7 @@ class DashboardController extends Controller
         }
 
         // Single unified query: 1 scan → tren, cabang, sales sekaligus
-        $qBase = DB::table(DB::raw('marketing_penjualan_historibayar h FORCE INDEX (idx_hb_voucher_tanggal)'))
+        $qBase = DB::table('marketing_penjualan_historibayar as h')
             ->join('salesman as s', 'h.kode_salesman', '=', 's.kode_salesman')
             ->join('cabang as c', 's.kode_cabang', '=', 'c.kode_cabang')
             ->where('h.voucher', '0')
@@ -871,9 +871,9 @@ class DashboardController extends Controller
             $periodExpr = 'DAY(mp.tanggal)';
         }
 
-        // Single unified query: 1 table scan via forced date index
-        $qBase = DB::table(DB::raw('marketing_penjualan_detail mpd'))
-            ->join(DB::raw('marketing_penjualan mp FORCE INDEX (idx_penjualan_tanggal_nofaktur)'), 'mpd.no_faktur', '=', 'mp.no_faktur')
+        // Single unified query: 1 table scan
+        $qBase = DB::table('marketing_penjualan_detail as mpd')
+            ->join('marketing_penjualan as mp', 'mpd.no_faktur', '=', 'mp.no_faktur')
             ->join('produk_harga as ph', 'mpd.kode_harga', '=', 'ph.kode_harga')
             ->join('produk as p', 'ph.kode_produk', '=', 'p.kode_produk')
             ->join('salesman as s', 'mp.kode_salesman', '=', 's.kode_salesman')
