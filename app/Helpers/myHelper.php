@@ -576,7 +576,7 @@ function pihakpertamacabang($cabang, $perusahaan)
         'KLT' => 'Alip Aswanto',
         'BGR' => 'Rizki Adam Husaeni',
         'GRT' => 'Enyang Hermawan, S.E',
-        'BKI' => 'Sumarido Tanjung',
+        'BKI' => 'Robertus David',
         'PWK' => 'M. Ridwan Nugraha',
         'TSM' => 'Aceng Saepul Anwar',
         'BTN' => 'Rizki Dwi Maulana',
