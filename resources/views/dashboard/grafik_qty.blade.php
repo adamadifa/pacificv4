@@ -86,14 +86,19 @@
                         <div class="card-body p-3">
                             <form id="formFilterGrafikQty" class="row g-3 align-items-end">
                                 <!-- Mode Tampilan -->
-                                <div class="col-lg-2 col-md-4 col-12">
+                                <div class="col-lg-3 col-md-6 col-12">
                                     <label class="form-label fw-semibold small text-muted text-uppercase mb-1">
-                                        <i class="ti ti-layout-grid me-1"></i> Mode
+                                        <i class="ti ti-layout-grid me-1"></i> Mode Tampilan
                                     </label>
                                     <div class="btn-group w-100" role="group">
                                         <input type="radio" class="btn-check" name="mode" id="modeBulan" value="bulan" checked>
                                         <label class="btn btn-outline-primary btn-sm py-2" for="modeBulan">
                                             By Bulan
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="mode" id="modeRangeBulan" value="range_bulan">
+                                        <label class="btn btn-outline-primary btn-sm py-2" for="modeRangeBulan">
+                                            Range Bulan
                                         </label>
 
                                         <input type="radio" class="btn-check" name="mode" id="modeTahun" value="tahun">
@@ -104,7 +109,7 @@
                                 </div>
 
                                 <!-- Filter Produk -->
-                                <div class="col-lg-3 col-md-4 col-12">
+                                <div class="col-lg-2 col-md-6 col-12">
                                     <label class="form-label fw-semibold small text-muted text-uppercase mb-1">
                                         <i class="ti ti-box me-1"></i> Produk
                                     </label>
@@ -116,8 +121,8 @@
                                     </select>
                                 </div>
 
-                                <!-- Filter Tahun -->
-                                <div class="col-lg-2 col-md-4 col-6" id="wrapTahun">
+                                <!-- Filter Tahun (Mode: By Bulan) -->
+                                <div class="col-lg-2 col-md-3 col-6" id="wrapTahun">
                                     <label class="form-label fw-semibold small text-muted text-uppercase mb-1">
                                         <i class="ti ti-calendar me-1"></i> Tahun
                                     </label>
@@ -128,8 +133,8 @@
                                     </select>
                                 </div>
 
-                                <!-- Filter Bulan -->
-                                <div class="col-lg-2 col-md-4 col-6" id="wrapBulan">
+                                <!-- Filter Bulan (Mode: By Bulan) -->
+                                <div class="col-lg-2 col-md-3 col-6" id="wrapBulan">
                                     <label class="form-label fw-semibold small text-muted text-uppercase mb-1">
                                         <i class="ti ti-calendar-stats me-1"></i> Bulan
                                     </label>
@@ -139,6 +144,50 @@
                                             <option value="{{ $b['kode_bulan'] }}">{{ $b['nama_bulan'] }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+
+                                <!-- Filter Range Bulan (Mode: Range Bulan) -->
+                                <div class="col-lg-4 col-md-6 col-12 d-none" id="wrapRangeBulan">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold small text-muted text-uppercase mb-1">
+                                                <i class="ti ti-calendar-down me-1"></i> Dari
+                                            </label>
+                                            <div class="input-group input-group-sm">
+                                                <select name="dari_bulan" id="dari_bulan" class="form-select py-2">
+                                                    @foreach ($list_bulan as $b)
+                                                        <option value="{{ $b['kode_bulan'] }}" {{ $b['kode_bulan'] == 1 ? 'selected' : '' }}>
+                                                            {{ substr($b['nama_bulan'], 0, 3) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <select name="dari_tahun" id="dari_tahun" class="form-select py-2">
+                                                    @for ($t = date('Y'); $t >= $start_year; $t--)
+                                                        <option value="{{ $t }}" {{ $t == date('Y') ? 'selected' : '' }}>{{ $t }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold small text-muted text-uppercase mb-1">
+                                                <i class="ti ti-calendar-up me-1"></i> Sampai
+                                            </label>
+                                            <div class="input-group input-group-sm">
+                                                <select name="sampai_bulan" id="sampai_bulan" class="form-select py-2">
+                                                    @foreach ($list_bulan as $b)
+                                                        <option value="{{ $b['kode_bulan'] }}" {{ $b['kode_bulan'] == (int) date('m') ? 'selected' : '' }}>
+                                                            {{ substr($b['nama_bulan'], 0, 3) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <select name="sampai_tahun" id="sampai_tahun" class="form-select py-2">
+                                                    @for ($t = date('Y'); $t >= $start_year; $t--)
+                                                        <option value="{{ $t }}" {{ $t == date('Y') ? 'selected' : '' }}>{{ $t }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Filter Cabang -->
@@ -267,9 +316,41 @@
                         </div>
                     </div>
 
-                    <!-- Row: Chart Cabang & Chart Sales -->
+                    <!-- Chart 2: Tren Qty Per Salesman (Line Chart) -->
+                    <div class="card border-0 shadow-sm mb-4 position-relative" id="cardSalesLine">
+                        <div class="loading-overlay d-none" id="loadingSalesLine">
+                            <div class="spinner-border text-warning" role="status"></div>
+                            <span class="small fw-semibold mt-2 text-muted">Memuat grafik tren per sales...</span>
+                        </div>
+                        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2 pb-2">
+                            <div>
+                                <h5 class="card-title mb-1 fw-bold">
+                                    <i class="ti ti-chart-line me-1 text-warning"></i> Tren Qty Penjualan Per Salesman
+                                </h5>
+                                <p class="text-muted small mb-0" id="subTitleSalesLine">Perbandingan tren volume penjualan produk antar salesman sepanjang periode (satuan Dus)</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="small text-muted fw-semibold me-1 d-none d-sm-inline">Tampilkan:</label>
+                                <select id="limit_sales" class="form-select form-select-sm py-1 fw-semibold" style="width: 140px; font-size: 12px;">
+                                    <option value="5">Top 5 Sales</option>
+                                    <option value="10" selected>Top 10 Sales</option>
+                                    <option value="15">Top 15 Sales</option>
+                                    <option value="all">Semua Sales</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="d-flex align-items-center mb-2 text-muted small">
+                                <i class="ti ti-info-circle me-1 text-primary"></i>
+                                <span>Tip: Klik nama salesman pada legenda grafik di bawah untuk menyembunyikan atau menampilkan garis.</span>
+                            </div>
+                            <div id="chartSalesQty" style="min-height: 380px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Row: Breakdown Cabang & Leaderboard Salesman (2 Kolom Berdampingan) -->
                     <div class="row g-4 mb-4">
-                        <!-- Chart 2: Qty per Cabang -->
+                        <!-- Col-lg-6: Qty per Cabang -->
                         <div class="col-lg-6 col-12">
                             <div class="card border-0 shadow-sm h-100 position-relative" id="cardCabang">
                                 <div class="loading-overlay d-none" id="loadingCabang">
@@ -279,7 +360,7 @@
                                 <div class="card-header d-flex justify-content-between align-items-center border-bottom pb-3">
                                     <div>
                                         <h5 class="card-title mb-0 fw-bold">
-                                            <i class="ti ti-building me-1 text-primary"></i> Qty per Cabang
+                                            <i class="ti ti-building me-1 text-success"></i> Qty per Cabang
                                         </h5>
                                         <small class="text-muted">Perbandingan volume penjualan produk antar cabang</small>
                                     </div>
@@ -302,7 +383,7 @@
                                             <div id="chartCabangQty" style="min-height: 380px;"></div>
                                         </div>
                                         <div class="tab-pane fade" id="tabCabangTabel">
-                                            <div class="table-responsive" style="max-height: 480px;">
+                                            <div class="table-responsive" style="max-height: 380px;">
                                                 <table class="table table-hover table-sm align-middle mb-0">
                                                     <thead class="table-light sticky-top">
                                                         <tr>
@@ -323,66 +404,40 @@
                             </div>
                         </div>
 
-                        <!-- Chart 3: Qty Per Sales -->
+                        <!-- Col-lg-6: Leaderboard Salesman -->
                         <div class="col-lg-6 col-12">
-                            <div class="card border-0 shadow-sm h-100 position-relative" id="cardSales">
-                                <div class="loading-overlay d-none" id="loadingSales">
-                                    <div class="spinner-border text-primary" role="status"></div>
-                                    <span class="small fw-semibold mt-2 text-muted">Memuat data sales...</span>
+                            <div class="card border-0 shadow-sm h-100 position-relative" id="cardSalesTable">
+                                <div class="loading-overlay d-none" id="loadingSalesTable">
+                                    <div class="spinner-border text-warning" role="status"></div>
+                                    <span class="small fw-semibold mt-2 text-muted">Memuat data ranking sales...</span>
                                 </div>
                                 <div class="card-header d-flex justify-content-between align-items-center border-bottom pb-3">
                                     <div>
                                         <h5 class="card-title mb-0 fw-bold">
-                                            <i class="ti ti-user-check me-1 text-primary"></i> Qty Per Sales
+                                            <i class="ti ti-trophy me-1 text-warning"></i> Leaderboard Salesman
                                         </h5>
-                                        <small class="text-muted" id="subTitleSales">Salesman volume penjualan</small>
+                                        <small class="text-muted">Peringkat kontribusi total volume dus per salesman</small>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <select id="limit_sales" class="form-select form-select-sm py-1" style="width: 125px; font-size: 12px;">
-                                            <option value="15" selected>Top 15 Sales</option>
-                                            <option value="30">Top 30 Sales</option>
-                                            <option value="50">Top 50 Sales</option>
-                                            <option value="all">Semua Sales</option>
-                                        </select>
-                                        <ul class="nav nav-pills nav-pills-sm" role="tablist">
-                                            <li class="nav-item">
-                                                <button class="nav-link active btn-sm py-1 px-2" data-bs-toggle="pill" data-bs-target="#tabSalesGrafik">
-                                                    <i class="ti ti-chart-bar-popular me-1"></i> Grafik
-                                                </button>
-                                            </li>
-                                            <li class="nav-item">
-                                                <button class="nav-link btn-sm py-1 px-2" data-bs-toggle="pill" data-bs-target="#tabSalesTabel">
-                                                    <i class="ti ti-table me-1"></i> Tabel
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <span class="badge bg-label-warning px-2 py-1 small fw-semibold">
+                                        <i class="ti ti-award me-1"></i> Ranking Total
+                                    </span>
                                 </div>
                                 <div class="card-body p-3">
-                                    <div class="tab-content p-0 border-0 shadow-none">
-                                        <div class="tab-pane fade show active" id="tabSalesGrafik">
-                                            <div style="max-height: 480px; overflow-y: auto; overflow-x: hidden;">
-                                                <div id="chartSalesQty"></div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="tabSalesTabel">
-                                            <div class="table-responsive" style="max-height: 480px;">
-                                                <table class="table table-hover table-sm align-middle mb-0">
-                                                    <thead class="table-light sticky-top">
-                                                        <tr>
-                                                            <th style="width: 40px;">#</th>
-                                                            <th>Salesman</th>
-                                                            <th>Cabang</th>
-                                                            <th class="text-end">Total Qty (Dus)</th>
-                                                            <th style="width: 100px;" class="text-center">Kontribusi</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="tbodySales">
-                                                        <!-- Injected via AJAX -->
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
+                                    <div class="table-responsive" style="max-height: 380px;">
+                                        <table class="table table-hover table-sm align-middle mb-0">
+                                            <thead class="table-light sticky-top">
+                                                <tr>
+                                                    <th style="width: 45px;" class="text-center">Rank</th>
+                                                    <th>Salesman</th>
+                                                    <th>Cabang</th>
+                                                    <th class="text-end">Total Qty (Dus)</th>
+                                                    <th style="width: 100px;" class="text-center">Kontribusi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbodySales">
+                                                <!-- Injected via AJAX -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -457,9 +512,15 @@ $(function() {
         if (mode === 'tahun') {
             $('#wrapTahun').addClass('d-none');
             $('#wrapBulan').addClass('d-none');
+            $('#wrapRangeBulan').addClass('d-none');
+        } else if (mode === 'range_bulan') {
+            $('#wrapTahun').addClass('d-none');
+            $('#wrapBulan').addClass('d-none');
+            $('#wrapRangeBulan').removeClass('d-none');
         } else {
             $('#wrapTahun').removeClass('d-none');
             $('#wrapBulan').removeClass('d-none');
+            $('#wrapRangeBulan').addClass('d-none');
         }
         loadDataGrafikQty();
     });
@@ -475,12 +536,16 @@ $(function() {
         const mode = $('input[name="mode"]:checked').val();
         const tahun = $('#tahun').val();
         const bulan = $('#bulan').val();
+        const dari_bulan = $('#dari_bulan').val();
+        const dari_tahun = $('#dari_tahun').val();
+        const sampai_bulan = $('#sampai_bulan').val();
+        const sampai_tahun = $('#sampai_tahun').val();
         const kode_cabang = $('#kode_cabang').val();
         const kode_produk = $('#kode_produk').val();
         const limit_sales = $('#limit_sales').val() || '15';
 
         // Show loading overlays
-        $('#loadingTren, #loadingCabang, #loadingSales').removeClass('d-none');
+        $('#loadingTren, #loadingCabang, #loadingSalesLine, #loadingSalesTable').removeClass('d-none');
         $('#btnTampilkan').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
 
         $.ajax({
@@ -491,6 +556,10 @@ $(function() {
                 mode: mode,
                 tahun: tahun,
                 bulan: bulan,
+                dari_bulan: dari_bulan,
+                dari_tahun: dari_tahun,
+                sampai_bulan: sampai_bulan,
+                sampai_tahun: sampai_tahun,
                 kode_cabang: kode_cabang,
                 kode_produk: kode_produk,
                 limit_sales: limit_sales
@@ -510,7 +579,7 @@ $(function() {
                 toastr.error("Gagal memuat data grafik Qty produk.");
             },
             complete: function() {
-                $('#loadingTren, #loadingCabang, #loadingSales').addClass('d-none');
+                $('#loadingTren, #loadingCabang, #loadingSalesLine, #loadingSalesTable').addClass('d-none');
                 $('#btnTampilkan').prop('disabled', false).html('<i class="ti ti-refresh"></i>');
             }
         });
@@ -693,21 +762,32 @@ $(function() {
         }
     }
 
-    // Render Chart 3: Sales Qty
+    // Render Chart 3: Sales Qty (Multi-Line Chart & Leaderboard Table)
     function renderChartSales(data) {
         if (data.is_limited) {
-            $('#subTitleSales').text('Top Salesman (Pilih Cabang untuk semua sales)');
+            $('#subTitleSalesLine').text('Tren pergerakan realisasi penjualan produk top salesman sepanjang periode (satuan Dus)');
         } else {
-            $('#subTitleSales').text('Semua Salesman pada filter cabang');
+            $('#subTitleSalesLine').text('Tren pergerakan realisasi penjualan produk salesman pada cabang sepanjang periode (satuan Dus)');
         }
 
-        // Render Tabel
+        // Render Tabel Leaderboard
         let tbody = '';
         if (data.list && data.list.length > 0) {
             data.list.forEach((item, idx) => {
+                let rankBadge = '';
+                if (idx === 0) {
+                    rankBadge = '<span class="badge bg-warning text-white rounded-pill px-2">🥇 1</span>';
+                } else if (idx === 1) {
+                    rankBadge = '<span class="badge bg-secondary text-white rounded-pill px-2">🥈 2</span>';
+                } else if (idx === 2) {
+                    rankBadge = '<span class="badge bg-label-warning rounded-pill px-2">🥉 3</span>';
+                } else {
+                    rankBadge = `<span class="fw-bold text-muted">${idx + 1}</span>`;
+                }
+
                 tbody += `
                     <tr>
-                        <td class="fw-bold text-muted">${idx + 1}</td>
+                        <td class="text-center">${rankBadge}</td>
                         <td class="fw-semibold text-heading">${item.nama_salesman}</td>
                         <td class="small text-muted"><span class="badge bg-label-secondary">${item.nama_cabang}</span></td>
                         <td class="text-end fw-bold text-warning">${item.formatted}</td>
@@ -727,45 +807,101 @@ $(function() {
         }
         $('#tbodySales').html(tbody);
 
-        // Render ApexChart Horizontal
-        const dynamicHeight = Math.max(380, data.categories.length * 28);
+        // Render ApexChart Multi-Line untuk Sales Qty
+        const lineSeries = (data.line_series && data.line_series.length > 0) ? data.line_series : [];
         const options = {
-            series: [{
-                name: 'Qty (Dus)',
-                data: data.series
-            }],
+            series: lineSeries,
             chart: {
-                type: 'bar',
-                height: dynamicHeight,
+                type: 'line',
+                height: 380,
                 fontFamily: 'inherit',
-                toolbar: { show: false }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                    borderRadius: 4,
-                    barHeight: '65%'
+                toolbar: {
+                    show: true,
+                    tools: {
+                        download: true,
+                        selection: false,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        reset: true
+                    }
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 700
                 }
             },
-            colors: ['#ff9f43'],
-            dataLabels: { enabled: false },
+            colors: [
+                '#ff9f43', '#7367f0', '#28c76f', '#00cfe8', '#ea5455',
+                '#6610f2', '#e83e8c', '#fd7e14', '#20c997', '#17a2b8',
+                '#5a8dee', '#39da8a', '#ff5b5c', '#fdac41', '#475f7b'
+            ],
+            stroke: {
+                curve: 'smooth',
+                width: 2.5
+            },
+            markers: {
+                size: 4,
+                strokeWidth: 2,
+                strokeColors: '#fff',
+                hover: {
+                    size: 7
+                }
+            },
+            legend: {
+                show: true,
+                position: 'top',
+                horizontalAlign: 'left',
+                floating: false,
+                fontSize: '12px',
+                fontWeight: 500,
+                markers: {
+                    radius: 12,
+                    width: 10,
+                    height: 10
+                },
+                itemMargin: {
+                    horizontal: 10,
+                    vertical: 4
+                }
+            },
             xaxis: {
                 categories: data.categories,
                 labels: {
-                    formatter: function(val) { return formatShortQty(val); },
-                    style: { colors: '#a1acb8', fontSize: '11px' }
-                }
+                    style: {
+                        colors: '#a1acb8',
+                        fontSize: '12px'
+                    }
+                },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
             },
             yaxis: {
                 labels: {
-                    style: { colors: '#566a7f', fontSize: '12px' }
+                    formatter: function(val) {
+                        return formatShortQty(val);
+                    },
+                    style: {
+                        colors: '#a1acb8',
+                        fontSize: '12px'
+                    }
                 }
             },
-            grid: { borderColor: '#e7eaf3', strokeDashArray: 4 },
+            grid: {
+                borderColor: '#e7eaf3',
+                strokeDashArray: 4,
+                padding: { top: 10, right: 20, bottom: 0, left: 10 }
+            },
             tooltip: {
                 theme: 'light',
+                shared: true,
+                intersect: false,
                 y: {
-                    formatter: function(val) { return formatNumber(val, 1) + ' Dus'; }
+                    formatter: function(val) {
+                        return formatNumber(val, 1) + ' Dus';
+                    }
                 }
             }
         };
@@ -850,7 +986,7 @@ $(function() {
         loadDataGrafikQty();
     });
 
-    $('#tahun, #bulan, #kode_cabang, #kode_produk, #limit_sales').change(function() {
+    $('#tahun, #bulan, #dari_bulan, #dari_tahun, #sampai_bulan, #sampai_tahun, #kode_cabang, #kode_produk, #limit_sales').change(function() {
         loadDataGrafikQty();
     });
 

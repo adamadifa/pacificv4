@@ -643,6 +643,29 @@ class DashboardController extends Controller
             $dateFrom = "$start_year-01-01";
             $dateTo = ($current_year + 1) . "-01-01";
             $periodExpr = 'YEAR(h.tanggal)';
+        } elseif ($mode == 'range_bulan') {
+            $dari_bulan = (int) ($request->dari_bulan ?? 1);
+            $dari_tahun = (int) ($request->dari_tahun ?? date('Y'));
+            $sampai_bulan = (int) ($request->sampai_bulan ?? date('n'));
+            $sampai_tahun = (int) ($request->sampai_tahun ?? date('Y'));
+
+            $startTs = strtotime(sprintf('%04d-%02d-01', $dari_tahun, $dari_bulan));
+            $endTs = strtotime(sprintf('%04d-%02d-01', $sampai_tahun, $sampai_bulan));
+
+            // Jika posisi tanggal terbalik, tukar posisinya
+            if ($startTs > $endTs) {
+                $tmp = $startTs;
+                $startTs = $endTs;
+                $endTs = $tmp;
+                $dari_bulan = (int) date('n', $startTs);
+                $dari_tahun = (int) date('Y', $startTs);
+                $sampai_bulan = (int) date('n', $endTs);
+                $sampai_tahun = (int) date('Y', $endTs);
+            }
+
+            $dateFrom = date('Y-m-01', $startTs);
+            $dateTo = date('Y-m-d', strtotime(date('Y-m-01', $endTs) . ' +1 month'));
+            $periodExpr = "DATE_FORMAT(h.tanggal, '%Y-%m')";
         } elseif (empty($bulan)) {
             $dateFrom = "$tahun-01-01";
             $dateTo = ((int) $tahun + 1) . "-01-01";
@@ -705,16 +728,25 @@ class DashboardController extends Controller
             // Sales
             $ks = $row->kode_salesman;
             if (!isset($salesMap[$ks])) {
-                $salesMap[$ks] = ['kode_salesman' => $ks, 'nama_salesman' => $row->nama_salesman, 'nama_cabang' => $row->nama_cabang, 'total' => 0];
+                $salesMap[$ks] = [
+                    'kode_salesman' => $ks,
+                    'nama_salesman' => $row->nama_salesman,
+                    'nama_cabang' => $row->nama_cabang,
+                    'total' => 0,
+                    'timeline' => []
+                ];
             }
             $salesMap[$ks]['total'] += $total;
+            $salesMap[$ks]['timeline'][(string) $row->period_key] = ($salesMap[$ks]['timeline'][(string) $row->period_key] ?? 0) + $total;
         }
 
         // Build tren categories/series
+        $periodKeys = [];
         $categoriesTren = [];
         $seriesTren = [];
         if ($mode == 'tahun') {
             for ($y = $start_year; $y <= $current_year; $y++) {
+                $periodKeys[] = (string) $y;
                 $categoriesTren[] = (string) $y;
                 $seriesTren[] = (float) ($trenMap[$y] ?? 0);
             }
@@ -722,8 +754,31 @@ class DashboardController extends Controller
             $rataRata = $totalCashIn / $totalTahunCount;
             $rataRataLabel = 'Rata-rata / Tahun';
             $periodeTitle = "Periode $start_year - $current_year";
+        } elseif ($mode == 'range_bulan') {
+            $curTs = $startTs;
+            $monthCount = 0;
+            $isCrossYear = ($dari_tahun != $sampai_tahun);
+            while ($curTs <= $endTs) {
+                $ymKey = date('Y-m', $curTs);
+                $monthNum = (int) date('n', $curTs);
+                $namaBulan = $nama_bulan_singkat[$monthNum] ?? date('M', $curTs);
+                $label = $isCrossYear ? "$namaBulan '" . date('y', $curTs) : $namaBulan;
+
+                $periodKeys[] = (string) $ymKey;
+                $categoriesTren[] = $label;
+                $seriesTren[] = (float) ($trenMap[$ymKey] ?? 0);
+
+                $curTs = strtotime('+1 month', $curTs);
+                $monthCount++;
+            }
+            $rataRata = $totalCashIn / max(1, $monthCount);
+            $rataRataLabel = 'Rata-rata / Bulan';
+            $namaDari = $nama_bulan_singkat[$dari_bulan] ?? "Bln $dari_bulan";
+            $namaSampai = $nama_bulan_singkat[$sampai_bulan] ?? "Bln $sampai_bulan";
+            $periodeTitle = "$namaDari $dari_tahun - $namaSampai $sampai_tahun";
         } elseif (empty($bulan)) {
             for ($m = 1; $m <= 12; $m++) {
+                $periodKeys[] = (string) $m;
                 $categoriesTren[] = $nama_bulan_singkat[$m] ?? "Bln $m";
                 $seriesTren[] = (float) ($trenMap[$m] ?? 0);
             }
@@ -733,6 +788,7 @@ class DashboardController extends Controller
             $periodeTitle = "Tahun $tahun (Semua Bulan)";
         } else {
             for ($d = 1; $d <= $daysInMonth; $d++) {
+                $periodKeys[] = (string) $d;
                 $categoriesTren[] = (string) $d;
                 $seriesTren[] = (float) ($trenMap[$d] ?? 0);
             }
@@ -745,11 +801,6 @@ class DashboardController extends Controller
         // Sort cabang dan sales by total desc
         usort($cabangMap, fn($a, $b) => $b['total'] <=> $a['total']);
         usort($salesMap, fn($a, $b) => $b['total'] <=> $a['total']);
-
-        // Apply limit sales
-        if ($limitSales !== 'all' && is_numeric($limitSales)) {
-            $salesMap = array_slice($salesMap, 0, (int) $limitSales);
-        }
 
         // Format Cabang
         $categoriesCabang = [];
@@ -768,14 +819,30 @@ class DashboardController extends Controller
             ];
         }
 
-        // Format Sales
-        $categoriesSales = [];
-        $seriesSales = [];
-        $listSales = [];
-        foreach ($salesMap as $s) {
+        // Format Sales Line Series (Tren per Sales)
+        $limitLine = ($limitSales === 'all' || !is_numeric($limitSales)) ? 10 : (int) $limitSales;
+        $topSalesForLine = array_slice($salesMap, 0, $limitLine);
+        $lineSeriesSales = [];
+        foreach ($topSalesForLine as $s) {
             $displayName = empty($kode_cabang) ? $s['nama_salesman'] . ' (' . $s['nama_cabang'] . ')' : $s['nama_salesman'];
-            $categoriesSales[] = $displayName;
-            $seriesSales[] = $s['total'];
+            $dataPoints = [];
+            foreach ($periodKeys as $pKey) {
+                $dataPoints[] = (float) ($s['timeline'][$pKey] ?? 0);
+            }
+            $lineSeriesSales[] = [
+                'name' => $displayName,
+                'data' => $dataPoints
+            ];
+        }
+
+        // Format Sales List (Tabel Ranking)
+        $listSales = [];
+        $salesForTable = ($limitSales !== 'all' && is_numeric($limitSales)) 
+            ? array_slice($salesMap, 0, (int) $limitSales) 
+            : $salesMap;
+
+        foreach ($salesForTable as $s) {
+            $displayName = empty($kode_cabang) ? $s['nama_salesman'] . ' (' . $s['nama_cabang'] . ')' : $s['nama_salesman'];
             $pct = $totalCashIn > 0 ? round(($s['total'] / $totalCashIn) * 100, 1) : 0;
             $listSales[] = [
                 'kode_salesman' => $s['kode_salesman'],
@@ -815,7 +882,9 @@ class DashboardController extends Controller
                 'series' => $seriesTren,
                 'title' => ($mode == 'tahun')
                     ? 'Tren Cash In Tahunan (2023 - Sekarang)'
-                    : (empty($bulan) ? "Tren Cash In Bulanan Tahun $tahun" : "Tren Cash In Harian ($periodeTitle)")
+                    : ($mode == 'range_bulan'
+                        ? "Tren Cash In ($periodeTitle)"
+                        : (empty($bulan) ? "Tren Cash In Bulanan Tahun $tahun" : "Tren Cash In Harian ($periodeTitle)"))
             ],
             'cabang' => [
                 'categories' => $categoriesCabang,
@@ -823,8 +892,8 @@ class DashboardController extends Controller
                 'list' => $listCabang
             ],
             'sales' => [
-                'categories' => $categoriesSales,
-                'series' => $seriesSales,
+                'categories' => $categoriesTren,
+                'line_series' => $lineSeriesSales,
                 'list' => $listSales,
                 'is_limited' => empty($kode_cabang) && count($cabangMap) > 1
             ]
@@ -859,6 +928,29 @@ class DashboardController extends Controller
             $dateFrom = "$start_year-01-01";
             $dateTo = ($current_year + 1) . "-01-01";
             $periodExpr = 'YEAR(mp.tanggal)';
+        } elseif ($mode == 'range_bulan') {
+            $dari_bulan = (int) ($request->dari_bulan ?? 1);
+            $dari_tahun = (int) ($request->dari_tahun ?? date('Y'));
+            $sampai_bulan = (int) ($request->sampai_bulan ?? date('n'));
+            $sampai_tahun = (int) ($request->sampai_tahun ?? date('Y'));
+
+            $startTs = strtotime(sprintf('%04d-%02d-01', $dari_tahun, $dari_bulan));
+            $endTs = strtotime(sprintf('%04d-%02d-01', $sampai_tahun, $sampai_bulan));
+
+            // Jika posisi tanggal terbalik, tukar posisinya
+            if ($startTs > $endTs) {
+                $tmp = $startTs;
+                $startTs = $endTs;
+                $endTs = $tmp;
+                $dari_bulan = (int) date('n', $startTs);
+                $dari_tahun = (int) date('Y', $startTs);
+                $sampai_bulan = (int) date('n', $endTs);
+                $sampai_tahun = (int) date('Y', $endTs);
+            }
+
+            $dateFrom = date('Y-m-01', $startTs);
+            $dateTo = date('Y-m-d', strtotime(date('Y-m-01', $endTs) . ' +1 month'));
+            $periodExpr = "DATE_FORMAT(mp.tanggal, '%Y-%m')";
         } elseif (empty($bulan)) {
             $dateFrom = "$tahun-01-01";
             $dateTo = ((int) $tahun + 1) . "-01-01";
@@ -933,6 +1025,7 @@ class DashboardController extends Controller
         $salesTotals = [];
         $salesNames = [];
         $salesCabang = [];
+        $salesTimeline = [];
 
         foreach ($rows as $row) {
             $val = (float) $row->total;
@@ -947,6 +1040,7 @@ class DashboardController extends Controller
             $salesTotals[$row->kode_salesman] = ($salesTotals[$row->kode_salesman] ?? 0) + $val;
             $salesNames[$row->kode_salesman] = $row->nama_salesman;
             $salesCabang[$row->kode_salesman] = $row->nama_cabang;
+            $salesTimeline[$row->kode_salesman][(string) $row->period_key] = ($salesTimeline[$row->kode_salesman][(string) $row->period_key] ?? 0) + $val;
         }
 
         // Urutkan per kategori secara descending
@@ -957,11 +1051,13 @@ class DashboardController extends Controller
         $totalQty = array_sum($productTotals);
 
         // Siapkan categories & series tren
+        $periodKeys = [];
         $categoriesTren = [];
         $seriesTren = [];
 
         if ($mode == 'tahun') {
             for ($y = $start_year; $y <= $current_year; $y++) {
+                $periodKeys[] = (string) $y;
                 $categoriesTren[] = (string) $y;
             }
             foreach (array_keys($productTotals) as $kdProduk) {
@@ -979,8 +1075,41 @@ class DashboardController extends Controller
             $rataRataLabel = 'Rata-rata / Tahun';
             $periodeTitle = "Periode $start_year - $current_year";
 
+        } elseif ($mode == 'range_bulan') {
+            $curTs = $startTs;
+            $monthCount = 0;
+            $isCrossYear = ($dari_tahun != $sampai_tahun);
+            while ($curTs <= $endTs) {
+                $ymKey = date('Y-m', $curTs);
+                $monthNum = (int) date('n', $curTs);
+                $namaBulan = $nama_bulan_singkat[$monthNum] ?? date('M', $curTs);
+                $label = $isCrossYear ? "$namaBulan '" . date('y', $curTs) : $namaBulan;
+
+                $periodKeys[] = (string) $ymKey;
+                $categoriesTren[] = $label;
+
+                $curTs = strtotime('+1 month', $curTs);
+                $monthCount++;
+            }
+            foreach (array_keys($productTotals) as $kdProduk) {
+                $dataPoints = [];
+                foreach ($periodKeys as $pKey) {
+                    $dataPoints[] = round($mapTren[$kdProduk][$pKey] ?? 0, 1);
+                }
+                $seriesTren[] = [
+                    'name' => $productNames[$kdProduk],
+                    'data' => $dataPoints
+                ];
+            }
+            $rataRata = $totalQty / max(1, $monthCount);
+            $rataRataLabel = 'Rata-rata / Bulan';
+            $namaDari = $nama_bulan_singkat[$dari_bulan] ?? "Bln $dari_bulan";
+            $namaSampai = $nama_bulan_singkat[$sampai_bulan] ?? "Bln $sampai_bulan";
+            $periodeTitle = "$namaDari $dari_tahun - $namaSampai $sampai_tahun";
+
         } elseif (empty($bulan)) {
             for ($m = 1; $m <= 12; $m++) {
+                $periodKeys[] = (string) $m;
                 $categoriesTren[] = $nama_bulan_singkat[$m] ?? "Bln $m";
             }
             foreach (array_keys($productTotals) as $kdProduk) {
@@ -1001,6 +1130,7 @@ class DashboardController extends Controller
         } else {
             $daysInMonth = (int) date('t', strtotime(sprintf('%04d-%02d-01', $tahun, (int) $bulan)));
             for ($d = 1; $d <= $daysInMonth; $d++) {
+                $periodKeys[] = (string) $d;
                 $categoriesTren[] = (string) $d;
             }
             foreach (array_keys($productTotals) as $kdProduk) {
@@ -1038,22 +1168,37 @@ class DashboardController extends Controller
             ];
         }
 
-        // Format Sales
-        $categoriesSales = [];
-        $seriesSales = [];
-        $listSales = [];
-        $countSales = 0;
-        foreach ($salesTotals as $kdSales => $tot) {
-            if ($limit_sales !== 'all' && is_numeric($limit_sales) && $countSales >= (int) $limit_sales) {
-                break;
-            }
-            $val = round((float) $tot, 1);
+        // Format Sales Line Series (Tren per Sales)
+        $limitLine = ($limit_sales === 'all' || !is_numeric($limit_sales)) ? 10 : (int) $limit_sales;
+        $topSalesKeys = array_slice(array_keys($salesTotals), 0, $limitLine);
+        $lineSeriesSales = [];
+        foreach ($topSalesKeys as $kdSales) {
             $nmSales = $salesNames[$kdSales] ?? $kdSales;
             $nmCabang = $salesCabang[$kdSales] ?? '';
             $displayName = empty($kode_cabang) ? "$nmSales ($nmCabang)" : $nmSales;
 
-            $categoriesSales[] = $displayName;
-            $seriesSales[] = $val;
+            $dataPoints = [];
+            foreach ($periodKeys as $pKey) {
+                $dataPoints[] = round((float) ($salesTimeline[$kdSales][$pKey] ?? 0), 1);
+            }
+            $lineSeriesSales[] = [
+                'name' => $displayName,
+                'data' => $dataPoints
+            ];
+        }
+
+        // Format Sales List (Tabel Ranking)
+        $listSales = [];
+        $salesForTable = ($limit_sales !== 'all' && is_numeric($limit_sales)) 
+            ? array_slice(array_keys($salesTotals), 0, (int) $limit_sales) 
+            : array_keys($salesTotals);
+
+        foreach ($salesForTable as $kdSales) {
+            $tot = $salesTotals[$kdSales];
+            $val = round((float) $tot, 1);
+            $nmSales = $salesNames[$kdSales] ?? $kdSales;
+            $nmCabang = $salesCabang[$kdSales] ?? '';
+            $displayName = empty($kode_cabang) ? "$nmSales ($nmCabang)" : $nmSales;
             $pct = $totalQty > 0 ? round(($val / $totalQty) * 100, 1) : 0;
             $listSales[] = [
                 'kode_salesman' => $kdSales,
@@ -1064,7 +1209,6 @@ class DashboardController extends Controller
                 'formatted' => number_format($val, 1, ',', '.') . ' Dus',
                 'persentase' => $pct
             ];
-            $countSales++;
         }
 
         // Format Produk
@@ -1127,7 +1271,9 @@ class DashboardController extends Controller
                 'series' => $seriesTren,
                 'title' => ($mode == 'tahun')
                     ? "Tren Qty ($namaProdukTerpilih) Tahunan (2023 - Sekarang)"
-                    : (empty($bulan) ? "Tren Qty ($namaProdukTerpilih) Bulanan Tahun $tahun" : "Tren Qty ($namaProdukTerpilih) Harian ($periodeTitle)")
+                    : ($mode == 'range_bulan'
+                        ? "Tren Qty ($namaProdukTerpilih) ($periodeTitle)"
+                        : (empty($bulan) ? "Tren Qty ($namaProdukTerpilih) Bulanan Tahun $tahun" : "Tren Qty ($namaProdukTerpilih) Harian ($periodeTitle)"))
             ],
             'cabang' => [
                 'categories' => $categoriesCabang,
@@ -1135,8 +1281,8 @@ class DashboardController extends Controller
                 'list' => $listCabang
             ],
             'sales' => [
-                'categories' => $categoriesSales,
-                'series' => $seriesSales,
+                'categories' => $categoriesTren,
+                'line_series' => $lineSeriesSales,
                 'list' => $listSales,
                 'is_limited' => empty($kode_cabang) && count($listCabang) > 1
             ],
