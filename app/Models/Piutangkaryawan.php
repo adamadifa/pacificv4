@@ -81,7 +81,9 @@ class Piutangkaryawan extends Model
 
         $query = self::applyPiutangAccess($query, $user);
 
-        if (!$user->hasRole($roles_access_all_piutang)) {
+        if ($request && $request->has('status_piutang') && $request->status_piutang !== null && $request->status_piutang !== '') {
+            $query->where('keuangan_piutangkaryawan.status', $request->status_piutang);
+        } else if (!$user->hasRole($roles_access_all_piutang)) {
             $query->where('keuangan_piutangkaryawan.status', '0');
         }
 

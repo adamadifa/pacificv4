@@ -1274,6 +1274,7 @@ class LaporankeuanganController extends Controller
             return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
         }
 
+        $request->merge(['status_piutang' => '0']);
         $pk = new Piutangkaryawan();
         $piutangkaryawan = $pk->getPiutangkaryawan(request: $request)->get();
         $data['piutangkaryawan'] = $piutangkaryawan;
@@ -1938,11 +1939,7 @@ class LaporankeuanganController extends Controller
 
         $query = Piutangkaryawan::applyPiutangAccess($query, $user);
 
-        if ($user->hasRole('super admin') && $request->status_akses === 'all') {
-            // Super admin memilih tampilkan semua (status 0 dan status 1)
-        } else {
-            $query->where('keuangan_piutangkaryawan.status', '0');
-        }
+        $query->where('keuangan_piutangkaryawan.status', '0');
 
         $query->groupByRaw('keuangan_piutangkaryawan.nik,nama_karyawan');
         $query->orderBy('nama_karyawan');
@@ -1960,6 +1957,95 @@ class LaporankeuanganController extends Controller
             header("Content-Disposition: attachment; filename=$filename.xls");
         }
         return view('keuangan.laporan.kartupiutangkaryawan_cetak', $data);
+    }
+
+    public function cetakkartupiutangkeuangan(Request $request)
+    {
+        $user = User::findorfail(auth()->user()->id);
+        if (!$user->hasRole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])) {
+            abort(403, 'Anda tidak memiliki hak akses untuk laporan ini.');
+        }
+
+        $dari = $request->tahun . '-' . $request->bulan . '-01';
+        $sampai = date('Y-m-t', strtotime($dari));
+
+        if (lockreport($dari) == "error") {
+            return Redirect::back()->with(messageError('Data Tidak Ditemukan'));
+        }
+
+        $bulanpotongan = getbulandantahunberikutnya($request->bulan, $request->tahun, "bulan");
+        $tahunpotongan = getbulandantahunberikutnya($request->bulan, $request->tahun, "tahun");
+        $tanggal_potongan = $tahunpotongan . '-' . $bulanpotongan . '-01';
+
+        $query = Piutangkaryawan::query();
+        $query->selectRaw("keuangan_piutangkaryawan.nik, nama_karyawan,
+        SUM(IF(tanggal < '$dari',jumlah,0)) as jumlah_pinjamanlast,
+        SUM(totalpembayaranlast) as total_pembayaranlast,
+        SUM(IF(tanggal BETWEEN '$dari' AND '$sampai',jumlah,0)) as jumlah_pinjamannow,
+        SUM(totalpembayarannow) as total_pembayarannow,
+        SUM(totalpembayaranpotongkomisi) as total_pembayaranpotongkomisi,
+        SUM(totalpembayarantitipan) as total_pembayarantitipan,
+        SUM(totalpembayaranlainnya) as total_pembayaranlainnya
+        ");
+        $query->join('hrd_karyawan', 'keuangan_piutangkaryawan.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
+        $query->leftJoin(
+            DB::raw("(
+            SELECT no_pinjaman,SUM(jumlah) as totalpembayaranlast FROM keuangan_piutangkaryawan_historibayar
+            WHERE tanggal < '$tanggal_potongan'
+            GROUP BY no_pinjaman
+        ) hb"),
+            function ($join) {
+                $join->on('keuangan_piutangkaryawan.no_pinjaman', '=', 'hb.no_pinjaman');
+            }
+        );
+
+        $query->leftJoin(
+            DB::raw("(
+            SELECT no_pinjaman,
+            SUM(IF(jenis_bayar=1,jumlah,0)) as totalpembayarannow,
+            SUM(IF(jenis_bayar=2,jumlah,0)) as totalpembayaranpotongkomisi,
+            SUM(IF(jenis_bayar=3,jumlah,0)) as totalpembayarantitipan,
+            SUM(IF(jenis_bayar=4,jumlah,0)) as totalpembayaranlainnya
+            FROM keuangan_piutangkaryawan_historibayar
+            WHERE tanggal = '$tanggal_potongan'
+            GROUP BY no_pinjaman
+        ) hbnow"),
+            function ($join) {
+                $join->on('keuangan_piutangkaryawan.no_pinjaman', '=', 'hbnow.no_pinjaman');
+            }
+        );
+        $query->where('tanggal', '<=', $sampai);
+        if (!empty($request->kode_cabang_kartupiutangkeuangan)) {
+            $query->where('hrd_karyawan.kode_cabang', $request->kode_cabang_kartupiutangkeuangan);
+        }
+
+        if (!empty($request->kode_dept_kartupiutangkeuangan)) {
+            $query->where('hrd_karyawan.kode_dept', $request->kode_dept_kartupiutangkeuangan);
+        }
+
+        $query = Piutangkaryawan::applyPiutangAccess($query, $user);
+
+        // Khusus Keuangan (status = 1)
+        $query->where('keuangan_piutangkaryawan.status', '1');
+
+        $query->groupByRaw('keuangan_piutangkaryawan.nik,nama_karyawan');
+        $query->orderBy('nama_karyawan');
+
+        $data['piutangkaryawan'] = $query->get();
+        $data['bulan'] = $request->bulan;
+        $data['tahun'] = $request->tahun;
+        $data['namabulan'] = config('global.nama_bulan');
+        $data['cabang'] = Cabang::where('kode_cabang', $request->kode_cabang_kartupiutangkeuangan)->first();
+        $data['departemen'] = Departemen::where('kode_dept', $request->kode_dept_kartupiutangkeuangan)->first();
+
+        if (isset($_POST['exportButton'])) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Kartu Piutang Khusus Keuangan $request->tahun-$request->bulan.xls");
+        }
+        return view('keuangan.laporan.kartupiutangkeuangan_cetak', $data);
     }
 
     public function cetakkaskecil(Request $request)

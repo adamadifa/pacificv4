@@ -160,6 +160,14 @@
                         </button>
                     </li>
                 @endcan
+                @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#kartupiutangkeuangan"
+                            aria-controls="kartupiutangkeuangan" aria-selected="false" tabindex="-1">
+                            <i class="ti ti-receipt me-2"></i> Kartu Piutang Khusus Keuangan
+                        </button>
+                    </li>
+                @endhasanyrole
                 @can('keu.rekapkartupiutang')
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#rekapkartupiutang"
@@ -370,6 +378,18 @@
                         </div>
                     </div>
                 @endcan
+                @hasanyrole(['super admin', 'gm administrasi', 'manager keuangan', 'direktur'])
+                    <div class="tab-pane fade" id="kartupiutangkeuangan" role="tabpanel">
+                        <div class="card shadow-none border">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-receipt me-2"></i>Kartu Piutang Khusus Keuangan</h6>
+                            </div>
+                            <div class="card-body pt-4">
+                                @include('keuangan.laporan.kartupiutangkeuangan')
+                            </div>
+                        </div>
+                    </div>
+                @endhasanyrole
                 @can('keu.rekapkartupiutang')
                     <div class="tab-pane fade" id="rekapkartupiutang" role="tabpanel">
                         <div class="card shadow-none border">

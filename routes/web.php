@@ -2181,6 +2181,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporankeuangan/cetakkartupjp', 'cetakkartupjp')->name('laporankeuangan.cetakkartupjp')->can('keu.kartupinjaman');
         Route::post('/laporankeuangan/cetakkartukasbon', 'cetakkartukasbon')->name('laporankeuangan.cetakkartukasbon')->can('keu.kartukasbon');
         Route::post('/laporankeuangan/cetakkartupiutangkaryawan', 'cetakkartupiutangkaryawan')->name('laporankeuangan.cetakkartupiutangkaryawan')->can('keu.kartupiutangkaryawan');
+        Route::post('/laporankeuangan/cetakkartupiutangkeuangan', 'cetakkartupiutangkeuangan')->name('laporankeuangan.cetakkartupiutangkeuangan');
         Route::get('/laporankeuangan/{dari}/{sampai}/{exportButton}/cetakmutasikategori', 'cetakmutasikategori')->name('laporankeuangan.cetakmutasikategori');
         Route::post('/laporankeuangan/updatestatuspajakkaskecil', 'updatestatuspajakkaskecil')->name('laporankeuangan.updatestatuspajakkaskecil');
         Route::post('/laporankeuangan/syncallpajakkaskecil', 'syncAllPajakKasKecil')->name('laporankeuangan.syncallpajakkaskecil');
