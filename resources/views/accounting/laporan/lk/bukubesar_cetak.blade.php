@@ -8,13 +8,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/report.css') }}">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="{{ asset('assets/vendor/libs/freeze/js/freeze-table.min.js') }}"></script>
-    {{-- <style>
-        .freeze-table {
-            height: auto;
-            max-height: 830px;
-            overflow: auto;
-        }
-    </style> --}}
     <style>
         .text-red {
             background-color: red;
@@ -29,133 +22,138 @@
             BUKU BESAR<br>
         </h4>
         <h4> PERIODE {{ DateToIndo($dari) }} s/d {{ DateToIndo($sampai) }}</h4>
+        @if (!empty($is_lazyload))
+            <p style="font-size: 11px; color: #666; margin-top: 4px;">* Tampilan bertahap aktif (Semua Akun). Gulir ke bawah untuk memuat akun berikutnya.</p>
+        @endif
     </div>
     <div class="content">
         <div class="freeze-table">
             <table class="datatable3">
-                {{-- <thead>
-                    
-                </thead> --}}
-                <tbody>
-                    @php
-                        $kode_akun = '';
-                        $total_debet = 0;
-                        $total_kredit = 0;
-                        $saldo = 0;
-                        $saldo_awal_kredit = 0;
-                        $saldo_awal_debet = 0;
-                    @endphp
-                    @foreach ($bukubesar as $key => $d)
-                        @php
-                            //$next_akun = @$bukubesar[$key + 1]->kode_akun;
-                            //$saldo_awal = $saldoawalCollection->firstWhere('kode_akun', $d->kode_akun)['jumlah'] ?? 0;
-                            $mutasi_debet =
-                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_debet ??
-                                0;
-                            $mutasi_kredit =
-                                optional($mutasiakunCollection->firstWhere('kode_akun', $d->kode_akun))->total_kredit ??
-                                0;
-                            // if ($d->jenis_akun == '1') {
-                            //     $saldo_awal = $saldo_awal + $mutasi_kredit - $mutasi_debet;
-                            // } else {
-                            //     $saldo_awal = $saldo_awal + $mutasi_debet - $mutasi_kredit;
-                            // }
-                            $akun = @$bukubesar[$key + 1]->kode_akun;
-                        @endphp
-                        @if ($kode_akun != $d->kode_akun)
-                            @php
-                                $saldo = 0;
-                            @endphp
-                            <tr>
-                                <td colspan="7" style="height: 50px; border:none; background:none;"></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; font-size:20px; border:none; background:none; font-weight:bold;"
-                                    colspan="7">
-                                    Akun : {{ $d->kode_akun }} - {{ $d->nama_akun }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th style="font-size:12; width: 10%;">TGL</th>
-                                <th style="font-size:12; width: 15%;">NO BUKTI</th>
-                                <th style="font-size:12; width: 15%;">SUMBER</th>
-                                <th style="font-size:12; width: 30%;">KETERANGAN</th>
-                                <th style="font-size:12; width: 10%;">DEBET</th>
-                                <th style="font-size:12; width: 10%;">KREDIT</th>
-                                <th style="font-size:12; width: 10%;">SALDO</th>
-                            </tr>
-                            {{-- <tr style="background-color:rgba(116, 170, 227, 0.465);">
-                                <th style="text-align: left" colspan="6">SALDO AWAL</th>
-                                <th style="text-align: right">{{ formatAngkaDesimal(abs($saldo_awal)) }}</th>
-                            </tr>
-                            @php
-                                $saldo = abs($saldo_awal);
-                            @endphp --}}
-                        @endif
-                        @php
-
-                            if ($d->jenis_akun == '1') {
-                                $saldo += $d->jml_kredit - $d->jml_debet;
-                            } else {
-                                $saldo += $d->jml_debet - $d->jml_kredit;
-                            }
-                            $total_debet = $total_debet + $d->jml_debet;
-                            $total_kredit = $total_kredit + $d->jml_kredit;
-                        @endphp
-                        @if ($d->sumber == 'SALDO AWAL')
-                            @if ($d->jenis_akun == '1')
-                                @php
-                                    $saldo_awal_kredit = $saldo;
-                                    $saldo_awal_debet = 0;
-                                @endphp
-                            @else
-                                @php
-                                    $saldo_awal_kredit = 0;
-                                    $saldo_awal_debet = $saldo;
-                                @endphp
-                            @endif
-                            <tr class="thead-dark">
-                                <th colspan="6">SALDO AWAL</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal(abs($saldo)) }}
-
-
-                                    {{-- {{ 'Saldo Awal Debet' }} {{ $saldo_awal_debet }}
-                                    {{ 'Saldo Awal Kredit' }} {{ $saldo_awal_kredit }} --}}
-                                </th>
-                            </tr>
-                        @else
-                            <tr>
-                                <td>{{ formatIndo($d->tanggal) }}</td>
-                                <td>{{ $d->no_bukti }}</td>
-                                <td>{{ textUpperCase($d->sumber) }}</td>
-                                <td>{{ textCamelCase($d->keterangan) }}</td>
-                                <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_debet) }}</td>
-                                <td style="text-align: right;">{{ formatAngkaDesimal($d->jml_kredit) }}</td>
-                                <td style="text-align: right;">{{ formatAngkaDesimal(abs($saldo)) }}</td>
-                            </tr>
-                        @endif
-
-                        @if ($akun != $d->kode_akun)
-                            <tr class="thead-dark">
-                                <th colspan="4">TOTAL {{ $d->kode_akun }} - {{ $d->nama_akun }}</th>
-                                <th style="text-align: right;">
-                                    {{ formatAngkaDesimal($total_debet - $saldo_awal_debet) }}</th>
-                                <th style="text-align: right;">
-                                    {{ formatAngkaDesimal($total_kredit - $saldo_awal_kredit) }}</th>
-                                <th style="text-align: right;">{{ formatAngkaDesimal(abs($saldo)) }}</th>
-                            </tr>
-                            @php
-                                $saldo_awal_debet = 0;
-                                $saldo_awal_kredit = 0;
-                                $total_debet = 0;
-                                $total_kredit = 0;
-                            @endphp
-                        @endif
-                        @php
-                            $kode_akun = $d->kode_akun;
-                        @endphp
-                    @endforeach
+                <tbody id="bukubesar-table-body">
+                    @if (!empty($is_lazyload))
+                        <!-- Baris akan dimuat bertahap via AJAX -->
+                    @else
+                        @include('accounting.laporan.lk.bukubesar_row_akun', ['bukubesar' => $bukubesar])
+                    @endif
                 </tbody>
             </table>
         </div>
+
+        @if (!empty($is_lazyload))
+            <div id="loading-container" style="text-align: center; padding: 25px 0; margin-top: 15px;">
+                <div class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 3px solid #ccc; border-top-color: #284c9a; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                <div id="loading-text" style="margin-top: 8px; font-weight: bold; color: #555; font-size: 13px;">
+                    Memuat data akun... (0 / {{ count($daftar_akun) }})
+                </div>
+                <button type="button" id="btn-load-all" style="margin-top: 10px; display: none; padding: 6px 14px; font-size: 12px; cursor: pointer; background: #284c9a; color: white; border: none; border-radius: 4px;">
+                    Muat Semua Akun Sekaligus
+                </button>
+            </div>
+            <style>
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            </style>
+            <script>
+                $(function() {
+                    const daftarAkun = @json($daftar_akun ?? []);
+                    const totalAkun = daftarAkun.length;
+                    const dari = "{{ $dari }}";
+                    const sampai = "{{ $sampai }}";
+                    const csrfToken = "{{ csrf_token() }}";
+                    const urlGetAkun = "{{ route('laporanaccounting.getbukubesarbyakun') }}";
+                    
+                    let currentIndex = 0;
+                    let isLoading = false;
+                    let akunAdaData = 0;
+                    let isAutoLoadingAll = false;
+
+                    function loadNextAccount(callback) {
+                        if (currentIndex >= totalAkun) {
+                            $('#loading-container').html('<div style="color: green; font-weight: bold; padding: 15px;">✓ Semua akun selesai dimuat. (' + akunAdaData + ' akun memiliki transaksi)</div>');
+                            return;
+                        }
+
+                        if (isLoading && !isAutoLoadingAll) return;
+                        isLoading = true;
+
+                        const akun = daftarAkun[currentIndex];
+                        $('#loading-text').text('Memuat: ' + akun.kode_akun + ' - ' + akun.nama_akun + ' (' + (currentIndex + 1) + ' dari ' + totalAkun + ' akun)...');
+
+                        $.ajax({
+                            url: urlGetAkun,
+                            type: 'POST',
+                            data: {
+                                _token: csrfToken,
+                                dari: dari,
+                                sampai: sampai,
+                                kode_akun: akun.kode_akun
+                            },
+                            success: function(res) {
+                                if (res.status && res.has_data && res.html) {
+                                    $('#bukubesar-table-body').append(res.html);
+                                    akunAdaData++;
+                                }
+                                currentIndex++;
+                                isLoading = false;
+
+                                if (callback) {
+                                    callback();
+                                } else if (isAutoLoadingAll) {
+                                    loadNextAccount();
+                                } else {
+                                    // Jika akun ini tidak ada transaksi, langsung lanjut ke akun berikutnya agar layar tidak kosong
+                                    if (!res.has_data && currentIndex < totalAkun) {
+                                        loadNextAccount();
+                                    }
+                                }
+                            },
+                            error: function() {
+                                currentIndex++;
+                                isLoading = false;
+                                if (callback) callback();
+                                else if (isAutoLoadingAll) loadNextAccount();
+                            }
+                        });
+                    }
+
+                    // Muat akun pertama secara otomatis
+                    loadNextAccount(function() {
+                        checkScrollLoad();
+                    });
+
+                    // Trigger saat scroll ke bawah
+                    function checkScrollLoad() {
+                        if (currentIndex >= totalAkun || isLoading || isAutoLoadingAll) return;
+
+                        const scrollPos = $(window).scrollTop() + $(window).height();
+                        const docHeight = $(document).height();
+
+                        // Jika mendekati 400px dari dasar halaman
+                        if (scrollPos >= docHeight - 400) {
+                            loadNextAccount(function() {
+                                checkScrollLoad();
+                            });
+                        }
+                    }
+
+                    $(window).on('scroll', checkScrollLoad);
+
+                    // Tombol muat semua akun jika user ingin langsung melihat/mencetak semuanya
+                    setTimeout(function() {
+                        if (currentIndex < totalAkun) {
+                            $('#btn-load-all').show();
+                        }
+                    }, 1500);
+
+                    $('#btn-load-all').on('click', function() {
+                        $(this).prop('disabled', true).text('Sedang memuat semua akun...');
+                        isAutoLoadingAll = true;
+                        loadNextAccount();
+                    });
+                });
+            </script>
+        @endif
     </div>
+</body>
+</html>

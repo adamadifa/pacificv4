@@ -60,8 +60,18 @@
                 }
             });
 
+            let isConfirmedSubmit = false;
+            let clickedButton = null;
+
+            $(document).on('click', '#formLedger button[type="submit"]', function() {
+                clickedButton = $(this).attr('name');
+            });
+
             $(`#formLedger`).submit(function(e) {
                 const formatlaporan = $(this).find("#formatlaporan").val();
+                const jenis_laporan = $(this).find("#jenis_laporan").val();
+                const kode_akun_dari = $(this).find("#kode_akun_dari").val();
+                const kode_akun_sampai = $(this).find("#kode_akun_sampai").val();
                 const dari = $(this).find("#dari").val();
                 const sampai = $(this).find("#sampai").val();
                 const tahun = $(this).find("#tahun").val();
@@ -89,6 +99,31 @@
                         Swal.fire({ title: "Oops!", text: 'Periode Tidak Valid !', icon: "warning", showConfirmButton: true });
                         return false;
                     }
+                }
+
+                // Cek jika mencetak Buku Besar Detail untuk Semua Akun
+                if (clickedButton !== 'exportButton' && formatlaporan === '1' && (jenis_laporan === '1' || !jenis_laporan) && !kode_akun_dari && !kode_akun_sampai && !isConfirmedSubmit) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "Perhatian: Data Sangat Besar",
+                        html: "Anda memilih <b>Semua Akun</b> dengan format <b>Detail</b>.<br>Jumlah transaksi sangat banyak. Disarankan menggunakan format <b>Rekap</b> atau <b>Export Excel</b>.<br><br>Jika tetap ingin melanjutkan, data akan ditampilkan <b>secara bertahap per akun</b> saat di-scroll agar tidak out of memory.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#284c9a",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Ya, Tetap Lanjutkan (Bertahap)",
+                        cancelButtonText: "Batal / Ubah Filter"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            isConfirmedSubmit = true;
+                            if (!$('#formLedger input[name="submitButton"]').length) {
+                                $('#formLedger').append('<input type="hidden" name="submitButton" value="1">');
+                            }
+                            $('#formLedger').submit();
+                            isConfirmedSubmit = false;
+                        }
+                    });
+                    return false;
                 }
             });
 

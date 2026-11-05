@@ -2246,6 +2246,7 @@ Route::middleware('auth')->group(function () {
 
         //Laporan Keuangan
         Route::post('/laporanaccounting/cetakbukubesar', 'cetakbukubesar')->name('laporanaccounting.cetakbukubesar')->can('lk.bukubesar');
+        Route::post('/laporanaccounting/getbukubesarbyakun', 'getbukubesarbyakun')->name('laporanaccounting.getbukubesarbyakun')->can('lk.bukubesar');
     });
 
     Route::controller(LaporanhrdController::class)->group(function () {
