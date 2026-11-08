@@ -269,27 +269,24 @@
                         @endif
 
 
-                        @if (substr($next_kode_akun, 0, 1) == 6 && substr($d->kode_akun, 0, 1) == 5)
+                        @if (substr($next_kode_akun ?? '', 0, 3) == '6-2' && (substr($d->kode_akun, 0, 3) == '6-1' || substr($d->kode_akun, 0, 1) == 5))
+                            @php
+                                $gross_profit = $subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan;
+                            @endphp
                             <tr class="subtotal-row">
                                 <td>
-                                    <b>GROSS PROFIT</b>
+                                    <b>TOTAL HARGA POKOK PENJUALAN</b>
                                 </td>
                                 <td style="text-align: right;">
-                                    @php
-                                        $gross_profit = $subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan;
-                                    @endphp
-                                    <b>{{ formatAngka($gross_profit) }}</b>
+                                    <b>{{ formatAngka($subtotal_akun_pokok_penjualan) }}</b>
                                 </td>
                             </tr>
-                        @endif
-
-                        @if (substr($next_kode_akun, 0, 3) == '6-2' && substr($d->kode_akun, 0, 3) == '6-1')
-                            <tr class="subtotal-row">
+                            <tr class="subtotal-row" style="background-color: #ffff00;">
                                 <td>
-                                    <b>TOTAL BIAYA PENJUALAN</b>
+                                    <b>LABA KOTOR</b>
                                 </td>
                                 <td style="text-align: right;">
-                                    <b>{{ formatAngka($subtotal_akun_biaya_penjualan) }}</b>
+                                    <b>{{ formatAngka($gross_profit) }}</b>
                                 </td>
                             </tr>
                         @endif

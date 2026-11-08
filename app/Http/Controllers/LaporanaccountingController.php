@@ -2229,7 +2229,7 @@ class LaporanaccountingController extends Controller
                     $subtotal_akun_pendapatan += $saldo_akhir;
                 }
 
-                if (substr($d->kode_akun, 0, 1) == $kode_akun_pokok_penjualan) {
+                if (substr($d->kode_akun, 0, 1) == $kode_akun_pokok_penjualan || substr($d->kode_akun, 0, 3) == '6-1') {
                     $subtotal_akun_pokok_penjualan += $saldo_akhir;
                 }
 
@@ -2241,17 +2241,13 @@ class LaporanaccountingController extends Controller
                     $subtotal_akun_biayalain += $saldo_akhir;
                 }
 
-                if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_penjualan) {
-                    $subtotal_akun_biaya_penjualan += $saldo_akhir;
-                }
-
                 if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_adm) {
                     $subtotal_akun_biaya_adm += $saldo_akhir;
                 }
             }
 
             $gross_profit = $subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan;
-            $biaya_operasional = $subtotal_akun_biaya_adm + $subtotal_akun_biaya_penjualan;
+            $biaya_operasional = $subtotal_akun_biaya_adm;
             $operating_profit = $gross_profit - $biaya_operasional;
             $net_profit_loss = $operating_profit + $subtotal_akun_pendapatanlain - $subtotal_akun_biayalain;
             // echo "Pendapatan: " . $subtotal_akun_pendapatan . "<br>";
@@ -3011,5 +3007,130 @@ class LaporanaccountingController extends Controller
                 'message' => 'Reset Gagal: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function cetakaruskas(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        set_time_limit(300);
+
+        if (!Auth::user()->hasRole(['super admin', 'gm administrasi']) && !Auth::user()->can('akt.aruskas')) {
+            abort(403, 'Anda tidak memiliki akses untuk mencetak laporan ini.');
+        }
+
+        $bulan = str_pad($request->bulan, 2, '0', STR_PAD_LEFT);
+        $tahun = $request->tahun;
+
+        $dari = $tahun . '-' . $bulan . '-01';
+        $sampai = date("Y-m-t", strtotime($dari));
+
+        // Bulan sebelumnya
+        $time_sebelum = strtotime("$dari -1 month");
+        $bulan_sebelum = date('m', $time_sebelum);
+        $tahun_sebelum = date('Y', $time_sebelum);
+        $dari_sebelum = $tahun_sebelum . '-' . $bulan_sebelum . '-01';
+        $sampai_sebelum = date("Y-m-t", strtotime($dari_sebelum));
+
+        $nama_bulan_list = config('global.nama_bulan');
+        $nama_bulan = $nama_bulan_list[(int)$bulan] ?? '';
+        $nama_bulan_sebelum = $nama_bulan_list[(int)$bulan_sebelum] ?? '';
+
+        // Union data buku besar bulan berjalan
+        $union_data = $this->buildBukubesarUnionQuery($dari, $sampai);
+
+        // 1. Hitung Laba Rugi (Net Profit Berjalan)
+        $kode_laba_rugi = array('4,5,6,7,8,9');
+        $rekapakunlabarugi = DB::query()->fromSub($union_data, 'rekap')
+            ->selectRaw('kode_akun, nama_akun,
+                SUM(IF(jenis_akun = 1, jml_kredit - jml_debet, jml_debet - jml_kredit)) as saldo_akhir')
+            ->whereRaw('LEFT(kode_akun,1) IN (' . implode(',', $kode_laba_rugi) . ')')
+            ->groupBy('kode_akun', 'nama_akun')
+            ->get();
+
+        $kode_akun_pendapatan = 4;
+        $kode_akun_pokok_penjualan = 5;
+        $kode_akun_pendapatanlain = 8;
+        $kode_akun_biayalain = 9;
+        $kode_akun_biaya_adm = '6-2';
+
+        $subtotal_akun_pendapatan = 0;
+        $subtotal_akun_pokok_penjualan = 0;
+        $subtotal_akun_pendapatanlain = 0;
+        $subtotal_akun_biayalain = 0;
+        $subtotal_akun_biaya_adm = 0;
+
+        $kode_akun_minus = [
+            '4-2101', '4-2201', '4-2202', '5-1202', '5-3200', '5-3400', '5-3800', '5-1203',
+        ];
+
+        foreach ($rekapakunlabarugi as $d) {
+            $saldo_akhir = in_array($d->kode_akun, $kode_akun_minus) ? $d->saldo_akhir * -1 : $d->saldo_akhir;
+            if (substr($d->kode_akun, 0, 1) == $kode_akun_pendapatan) {
+                $subtotal_akun_pendapatan += $saldo_akhir;
+            }
+            if (substr($d->kode_akun, 0, 1) == $kode_akun_pokok_penjualan || substr($d->kode_akun, 0, 3) == '6-1') {
+                $subtotal_akun_pokok_penjualan += $saldo_akhir;
+            }
+            if (substr($d->kode_akun, 0, 1) == $kode_akun_pendapatanlain) {
+                $subtotal_akun_pendapatanlain += $saldo_akhir;
+            }
+            if (substr($d->kode_akun, 0, 1) == $kode_akun_biayalain) {
+                $subtotal_akun_biayalain += $saldo_akhir;
+            }
+            if (substr($d->kode_akun, 0, 3) == $kode_akun_biaya_adm) {
+                $subtotal_akun_biaya_adm += $saldo_akhir;
+            }
+        }
+        $gross_profit = $subtotal_akun_pendapatan - $subtotal_akun_pokok_penjualan;
+        $biaya_operasional = $subtotal_akun_biaya_adm;
+        $operating_profit = $gross_profit - $biaya_operasional;
+        $net_profit_loss = $operating_profit + $subtotal_akun_pendapatanlain - $subtotal_akun_biayalain;
+
+        // 2. Mutasi transaksi (Debet & Kredit per akun di luar Saldo Awal)
+        $mutasi = DB::query()->fromSub($union_data, 'u')
+            ->where('sumber', '!=', 'SALDO AWAL')
+            ->selectRaw('kode_akun, nama_akun, SUM(jml_debet) as debet, SUM(jml_kredit) as kredit')
+            ->groupBy('kode_akun', 'nama_akun')
+            ->get()
+            ->keyBy('kode_akun');
+
+        // 3. Kas & Bank Neraca Bulan Berjalan
+        $rekapKasBank = DB::query()->fromSub($union_data, 'rekap')
+            ->selectRaw('SUM(IF(jenis_akun = 1, jml_kredit - jml_debet, jml_debet - jml_kredit)) as saldo_akhir')
+            ->where(function($q) {
+                $q->where('kode_akun', 'like', '1-11%')->orWhere('kode_akun', 'like', '1-12%');
+            })
+            ->value('saldo_akhir') ?? 0;
+
+        // 4. Kas & Bank Neraca Bulan Sebelumnya
+        $union_data_sebelum = $this->buildBukubesarUnionQuery($dari_sebelum, $sampai_sebelum);
+        $rekapKasBankSebelum = DB::query()->fromSub($union_data_sebelum, 'rekap')
+            ->selectRaw('SUM(IF(jenis_akun = 1, jml_kredit - jml_debet, jml_debet - jml_kredit)) as saldo_akhir')
+            ->where(function($q) {
+                $q->where('kode_akun', 'like', '1-11%')->orWhere('kode_akun', 'like', '1-12%');
+            })
+            ->value('saldo_akhir') ?? 0;
+
+        $data = [
+            'bulan' => $bulan,
+            'tahun' => $tahun,
+            'nama_bulan' => $nama_bulan,
+            'bulan_sebelum' => $bulan_sebelum,
+            'tahun_sebelum' => $tahun_sebelum,
+            'nama_bulan_sebelum' => $nama_bulan_sebelum,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'net_profit_loss' => $net_profit_loss,
+            'mutasi' => $mutasi,
+            'kas_bank_sebelum' => $rekapKasBankSebelum,
+            'kas_bank_berjalan' => $rekapKasBank,
+        ];
+
+        if (isset($_POST['exportButton']) || $request->has('exportButton')) {
+            header("Content-type: application/vnd-ms-excel");
+            header("Content-Disposition: attachment; filename=Laporan Arus Kas " . $nama_bulan . " " . $tahun . ".xls");
+        }
+
+        return view('accounting.laporan.aruskas_cetak', $data);
     }
 }

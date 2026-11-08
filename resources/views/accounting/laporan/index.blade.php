@@ -42,6 +42,11 @@
                 { id: 'tahun', label: 'Tahun' }
             ]);
 
+            validateForm('formAruskas', [
+                { id: 'bulan_aruskas', label: 'Bulan' },
+                { id: 'tahun_aruskas', label: 'Tahun' }
+            ]);
+
             $(`#formJurnalumum`).submit(function(e) {
                 const dari = $(this).find('#dari').val();
                 const sampai = $(this).find('#sampai').val();
@@ -286,6 +291,14 @@
                         </button>
                     </li>
                 @endcan
+                @can('akt.aruskas')
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#aruskas"
+                            aria-controls="aruskas" aria-selected="false" tabindex="-1">
+                            <i class="ti ti-cash me-2"></i> Laporan Arus Kas
+                        </button>
+                    </li>
+                @endcan
             </ul>
             <div class="tab-content" style="padding: 0 !important; border: none !important; background: transparent !important;">
                 @can('akt.rekappersediaan')
@@ -356,6 +369,18 @@
                             </div>
                             <div class="card-body pt-4">
                                 @include('accounting.laporan.lk.bukubesar')
+                            </div>
+                        </div>
+                    </div>
+                @endcan
+                @can('akt.aruskas')
+                    <div class="tab-pane fade" id="aruskas" role="tabpanel">
+                        <div class="card shadow-none border">
+                            <div class="card-header border-bottom py-3" style="background-color: #284c9a; border-radius: 0.375rem 0.375rem 0 0;">
+                                <h6 class="m-0 fw-bold text-white"><i class="ti ti-cash me-2"></i>Laporan Arus Kas (Sumber & Penggunaan Kas)</h6>
+                            </div>
+                            <div class="card-body pt-4">
+                                @include('accounting.laporan.aruskas')
                             </div>
                         </div>
                     </div>
