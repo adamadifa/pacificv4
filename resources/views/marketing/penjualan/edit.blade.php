@@ -580,14 +580,14 @@
         //GetPiutang
 
         function getPiutang(kode_pelanggan) {
-            const total_netto = "{{ $total_netto }}";
+            const piutang_faktur_lain = "{{ $piutang_faktur_lain ?? 0 }}";
             buttonDisable();
             $.ajax({
                 url: `/pelanggan/${kode_pelanggan}/getPiutangpelanggan`,
                 type: 'GET',
                 cache: false,
                 success: function(response) {
-                    const sisa_piutang = parseInt(response.data) - parseInt(total_netto);
+                    const sisa_piutang = parseInt(piutang_faktur_lain);
                     $("#sisa_piutang_text").text(convertToRupiah(sisa_piutang));
                     $("#sisa_piutang").val(sisa_piutang);
                     buttonEnable();
@@ -1706,12 +1706,15 @@
             const tanggal = $("#tanggal").val();
             const kode_pelanggan = $("#kode_pelanggan").val();
             const kode_salesman = $("#kode_salesman").val();
-            const sisa_piutang = $("#sisa_piutang").val();
+            const sisa_piutang_raw = $("#sisa_piutang").val();
+            const sisa_piutang = (sisa_piutang_raw !== "" && !isNaN(sisa_piutang_raw)) ? parseInt(sisa_piutang_raw) : 0;
             const gt = $("#grandtotal").val();
             const grandtotal = gt != "" ? parseInt(gt.replace(/\./g, '')) : 0;
-            const totalPiutang = parseInt(sisa_piutang) + parseInt(grandtotal);
-            const limit_pelanggan = $("#limit_pelanggan").val();
-            const siklus_pembayaran = $("#siklus_pembayaran").val();
+            const titipan_raw = $("#titipan").val();
+            const titipan = (titipan_raw != "" && !isNaN(titipan_raw.replace(/\./g, ''))) ? parseInt(titipan_raw.replace(/\./g, '')) : 0;
+            const totalPiutang = sisa_piutang + Math.max(0, grandtotal - titipan);
+            const limit_pelanggan = $("#limit_pelanggan").val() != "" ? parseInt($("#limit_pelanggan").val()) : 0;
+            const siklus_pembayaran = String($("#siklus_pembayaran").val() || '0');
             const max_kredit = $("#max_kredit").val();
             const jenis_transaksi = $("#jenis_transaksi").val();
             const jenis_bayar = $("#jenis_bayar").val();
@@ -1740,21 +1743,20 @@
             } else if (jenis_transaksi == "K" && sisa_piutang > 0 && keterangan == "") {
                 SwalWarning('keterangan', 'Keterangan Harus Diisi !');
                 return false;
+            } else if (jenis_transaksi == "K" && limit_pelanggan <= 0) {
+                SwalWarning('nama_pelanggan', 'Pelanggan belum memiliki limit kredit, silahkan ajukan limit terlebih dahulu !');
+                return false;
+            } else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && totalPiutang > limit_pelanggan) {
+                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+                return false;
+            } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && grandtotal > limit_pelanggan) {
+                SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
+                return false;
             } else {
                 $("#jenis_transaksi").prop("disabled", false);
                 $("#jenis_bayar").prop("disabled", false);
                 buttonDisable();
             }
-            // else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
-            //     parseInt(limit_pelanggan)) {
-            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-            //     return false;
-            // } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
-            //     parseInt(limit_pelanggan)) {
-            //     SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
-            //     return false;
-
-            // }
         });
 
     });

@@ -1521,6 +1521,10 @@ class SfaControler extends Controller
         $data['penjualan'] = $penjualan;
         $total_netto = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
         $data['total_netto'] = $total_netto;
+        $piutang_faktur_lama = $pj->getpiutangFaktur($penjualan->no_faktur)->first();
+        $sisa_piutang_lama = $piutang_faktur_lama != null ? $piutang_faktur_lama->sisa_piutang : 0;
+        $total_piutang_pelanggan = $pj->getPiutangpelanggan($penjualan->kode_pelanggan);
+        $data['piutang_faktur_lain'] = max(0, $total_piutang_pelanggan - $sisa_piutang_lama);
         $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_diskon')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')

@@ -768,13 +768,18 @@ class PenjualanController extends Controller
 
             $total_netto = $total_bruto - $total_potongan - $total_potongan_istimewa - $total_penyesuaian;
             $total_piutang = $sisa_piutang + $total_netto;
+            $siklus = (string)$siklus_pembayaran;
 
-            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan && $siklus_pembayaran === '0') {
-                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
-            } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
-                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
-            } else if ($unpaid_faktur > $max_faktur && $siklus_pembayaran === '0') {
-                return Redirect::back()->with(messageError('Melebihi Jumlah Faktur Kredit'));
+            if ($jenis_transaksi == 'K') {
+                if (empty($pelanggan->limit_pelanggan) || $pelanggan->limit_pelanggan <= 0) {
+                    return Redirect::back()->with(messageError('Pelanggan belum memiliki limit kredit. Silahkan ajukan limit terlebih dahulu.'));
+                } else if ($total_piutang > $pelanggan->limit_pelanggan && $siklus === '0') {
+                    return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+                } else if ($total_netto > $pelanggan->limit_pelanggan && $siklus === '1') {
+                    return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+                } else if ($unpaid_faktur >= $max_faktur && $siklus === '0') {
+                    return Redirect::back()->with(messageError('Melebihi Jumlah Faktur Kredit'));
+                }
             }
 
 
@@ -938,6 +943,10 @@ class PenjualanController extends Controller
         $data['penjualan'] = $penjualan;
         $total_netto = $penjualan->total_bruto - $penjualan->total_retur - $penjualan->potongan - $penjualan->potongan_istimewa - $penjualan->penyesuaian + $penjualan->ppn;
         $data['total_netto'] = $total_netto;
+        $piutang_faktur_lama = $pj->getpiutangFaktur($penjualan->no_faktur)->first();
+        $sisa_piutang_lama = $piutang_faktur_lama != null ? $piutang_faktur_lama->sisa_piutang : 0;
+        $total_piutang_pelanggan = $pj->getPiutangpelanggan($penjualan->kode_pelanggan);
+        $data['piutang_faktur_lain'] = max(0, $total_piutang_pelanggan - $sisa_piutang_lama);
         $data['detail'] = Detailpenjualan::select('marketing_penjualan_detail.*', 'produk_harga.kode_produk', 'nama_produk', 'isi_pcs_dus', 'isi_pcs_pack', 'kode_kategori_diskon')
             ->join('produk_harga', 'marketing_penjualan_detail.kode_harga', '=', 'produk_harga.kode_harga')
             ->join('produk', 'produk_harga.kode_produk', '=', 'produk.kode_produk')
@@ -1224,22 +1233,40 @@ class PenjualanController extends Controller
                     $changedDetailPenjualan[$key]['old'] = $value;
                 }
             }
-            $sisa_piutang = $penjualan->getPiutangpelanggan($penjualan->kode_pelanggan) - $total_netto_penjualan;
+            // Hitung sisa piutang riil faktur lama (setelah retur dan pembayaran lama)
+            $piutang_faktur_lama = $penjualan->getpiutangFaktur($penjualan->no_faktur)->first();
+            $sisa_piutang_lama = $piutang_faktur_lama != null ? $piutang_faktur_lama->sisa_piutang : 0;
+
+            // Piutang pelanggan di luar faktur ini
+            $total_piutang_pelanggan = $penjualan->getPiutangpelanggan($penjualan->kode_pelanggan);
+            $piutang_faktur_lain = max(0, $total_piutang_pelanggan - $sisa_piutang_lama);
 
             $faktur_kredit = $penjualan->getFakturkredit($penjualan->kode_pelanggan);
             $max_faktur = $faktur_kredit['jml_faktur'];
-            $unpaid_faktur = $faktur_kredit['unpaid_faktur'] - 1;
-            $siklus_pembayaran = $faktur_kredit['siklus_pembayaran'];
+            $unpaid_total = $faktur_kredit['unpaid_faktur'];
+            $siklus = (string)$faktur_kredit['siklus_pembayaran'];
 
             $total_netto = $total_bruto - $total_potongan - $total_potongan_istimewa - $total_penyesuaian;
-            $total_piutang = $sisa_piutang + $total_netto;
 
-            if ($jenis_transaksi == 'K' && $total_piutang > $pelanggan->limit_pelanggan && $siklus_pembayaran === '0') {
-                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
-            } else if ($jenis_transaksi == 'K' && $total_netto > $pelanggan->limit_pelanggan && $siklus_pembayaran == '1') {
-                return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
-            } else if ($unpaid_faktur > $max_faktur && $siklus_pembayaran === '0') {
-                return Redirect::back()->with(messageError('Melebihi Jumlah Faktur Kredit'));
+            // Sisa piutang baru faktur ini setelah dikurangi titipan baru
+            $piutang_faktur_baru = max(0, $total_netto - $titipan);
+
+            // Proyeksi total akumulasi piutang pelanggan setelah diedit
+            $total_piutang = $piutang_faktur_lain + $piutang_faktur_baru;
+
+            // Hitung unpaid faktur di luar faktur ini (jika faktur lama memang belum lunas, kurangi 1)
+            $unpaid_faktur_lain = ($sisa_piutang_lama > 0) ? max(0, $unpaid_total - 1) : $unpaid_total;
+
+            if ($jenis_transaksi == 'K') {
+                if (empty($pelanggan->limit_pelanggan) || $pelanggan->limit_pelanggan <= 0) {
+                    return Redirect::back()->with(messageError('Pelanggan belum memiliki limit kredit. Silahkan ajukan limit terlebih dahulu.'));
+                } else if ($total_piutang > $pelanggan->limit_pelanggan && $siklus === '0') {
+                    return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+                } else if ($total_netto > $pelanggan->limit_pelanggan && $siklus === '1') {
+                    return Redirect::back()->with(messageError('Melebihi Limit, Silahkan Ajukan Penambahan Limit'));
+                } else if ($piutang_faktur_baru > 0 && $unpaid_faktur_lain >= $max_faktur && $siklus === '0') {
+                    return Redirect::back()->with(messageError('Melebihi Jumlah Faktur Kredit'));
+                }
             }
 
             //No. Bukti Pembayaran

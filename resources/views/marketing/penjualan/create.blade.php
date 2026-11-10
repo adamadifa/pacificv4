@@ -1677,13 +1677,14 @@
             const tanggal = $("#tanggal").val();
             const kode_pelanggan = $("#kode_pelanggan").val();
             const kode_salesman = $("#kode_salesman").val();
-            const sisa_piutang = $("#sisa_piutang").val();
+            const sisa_piutang_raw = $("#sisa_piutang").val();
+            const sisa_piutang = (sisa_piutang_raw !== "" && !isNaN(sisa_piutang_raw)) ? parseInt(sisa_piutang_raw) : 0;
             const gt = $("#grandtotal").val();
             const grandtotal = gt != "" ? parseInt(gt.replace(/\./g, '')) : 0;
-            const totalPiutang = parseInt(sisa_piutang) + parseInt(grandtotal);
-            let limit_pelanggan = $("#limit_pelanggan").val() == "" ? 0 : $("#limit_pelanggan").val();
+            const totalPiutang = sisa_piutang + grandtotal;
+            let limit_pelanggan = $("#limit_pelanggan").val() != "" ? parseInt($("#limit_pelanggan").val()) : 0;
             // alert(limit_pelanggan);
-            const siklus_pembayaran = $("#siklus_pembayaran").val();
+            const siklus_pembayaran = String($("#siklus_pembayaran").val() || '0');
             const max_kredit = $("#max_kredit").val();
             const jenis_transaksi = $("#jenis_transaksi").val();
             const jenis_bayar = $("#jenis_bayar").val();
@@ -1710,12 +1711,13 @@
             } else if (jenis_transaksi == "T" && jenis_bayar == "") {
                 SwalWarning('jenis_bayar', 'Jenis Bayar Tidak Boleh Kosong');
                 return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && parseInt(totalPiutang) >
-                parseInt(limit_pelanggan)) {
+            } else if (jenis_transaksi == "K" && limit_pelanggan <= 0) {
+                SwalWarning('nama_pelanggan', 'Pelanggan belum memiliki limit kredit, silahkan ajukan limit terlebih dahulu !');
+                return false;
+            } else if (jenis_transaksi == "K" && siklus_pembayaran === '0' && totalPiutang > limit_pelanggan) {
                 SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
                 return false;
-            } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && parseInt(grandtotal) >
-                parseInt(limit_pelanggan)) {
+            } else if (jenis_transaksi == "K" && siklus_pembayaran === '1' && grandtotal > limit_pelanggan) {
                 SwalWarning('nama_produk', 'Melebihi Limit, Silahkan Ajukan Penambahan Limit !');
                 return false;
             } else if (jenis_transaksi == "K" && jmlfakturbelumlunas >= jmlfakturmax) {

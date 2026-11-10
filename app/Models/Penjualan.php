@@ -431,7 +431,7 @@ class Penjualan extends Model
             ->orderBy('tanggal', 'desc')
             ->first();
         $jml_faktur = $ajuanfaktur != null ? $ajuanfaktur->jumlah_faktur : 1;
-        $siklus_pembayaran = $ajuanfaktur != null ? $ajuanfaktur->siklus_pembayaran : 0;
+        $siklus_pembayaran = $ajuanfaktur != null ? (string)$ajuanfaktur->siklus_pembayaran : '0';
 
 
 
