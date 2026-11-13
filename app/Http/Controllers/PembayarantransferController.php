@@ -88,13 +88,14 @@ class PembayarantransferController extends Controller
             }
 
             $penjualan = Penjualan::where('no_faktur', $no_faktur)->first();
+            $format = "TR" . date('y', strtotime($request->tanggal));
             $lastransfer = Transfer::select('kode_transfer')
-                ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
+                ->where('kode_transfer', 'like', $format . '%')
                 ->orderBy("kode_transfer", "desc")
                 ->first();
 
             $last_kode_transfer = $lastransfer != null ? $lastransfer->kode_transfer : '';
-            $kode_transfer  = buatkode($last_kode_transfer, "TR" . $tahun, 4);
+            $kode_transfer  = buatkode($last_kode_transfer, $format, 6);
             Transfer::create([
                 'kode_transfer' => $kode_transfer,
                 'kode_pelanggan' => $penjualan->kode_pelanggan,
@@ -144,13 +145,14 @@ class PembayarantransferController extends Controller
                 return Redirect::back()->with(messageError('Detail Faktur Masih Kosong'));
             }
 
+            $format = "TR" . date('y', strtotime($request->tanggal));
             $lastransfer = Transfer::select('kode_transfer')
-                ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
+                ->where('kode_transfer', 'like', $format . '%')
                 ->orderBy("kode_transfer", "desc")
                 ->first();
 
             $last_kode_transfer = $lastransfer != null ? $lastransfer->kode_transfer : '';
-            $kode_transfer  = buatkode($last_kode_transfer, "TR" . $tahun, 4);
+            $kode_transfer  = buatkode($last_kode_transfer, $format, 6);
 
             Transfer::create([
                 'kode_transfer' => $kode_transfer,

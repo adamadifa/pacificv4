@@ -1303,13 +1303,13 @@ class SfaApiController extends Controller
             }
 
             // Generate Kode Transfer
-            $tahun = date('Y', strtotime($request->tanggal));
+            $format = "TR" . date('y', strtotime($request->tanggal));
             $lasttransfer = DB::table('marketing_penjualan_transfer')
-                ->whereRaw('YEAR(tanggal)="' . $tahun . '"')
+                ->where('kode_transfer', 'like', $format . '%')
                 ->orderBy('kode_transfer', 'desc')
                 ->first();
             $last_kode_transfer = $lasttransfer != null ? $lasttransfer->kode_transfer : '';
-            $kode_transfer = buatkode($last_kode_transfer, "TR" . $tahun, 4);
+            $kode_transfer = buatkode($last_kode_transfer, $format, 6);
 
             DB::table('marketing_penjualan_transfer')->insert([
                 'kode_transfer' => $kode_transfer,

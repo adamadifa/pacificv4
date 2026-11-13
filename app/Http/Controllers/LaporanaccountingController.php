@@ -704,6 +704,7 @@ class LaporanaccountingController extends Controller
         $qpenjualanbruto->join('marketing_penjualan', 'marketing_penjualan_detail.no_faktur', '=', 'marketing_penjualan.no_faktur');
         $qpenjualanbruto->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $qpenjualanbruto->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
+        $qpenjualanbruto->where('status_batal', 0);
         $qpenjualanbruto->where('marketing_penjualan.status_batal', 0);
         $qpenjualanbruto->where('marketing_penjualan.status_sampel', 0);
         $penjualanbruto = $qpenjualanbruto->first();
@@ -718,6 +719,7 @@ class LaporanaccountingController extends Controller
         );
         $qpenjualanpotongan->join('salesman', 'marketing_penjualan.kode_salesman', '=', 'salesman.kode_salesman');
         $qpenjualanpotongan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
+        $qpenjualanpotongan->where('status_batal', 0);
         $qpenjualanpotongan->where('marketing_penjualan.status_batal', 0);
         $qpenjualanpotongan->where('marketing_penjualan.status_sampel', 0);
         $penjualanpotongan = $qpenjualanpotongan->first();
@@ -852,6 +854,7 @@ class LaporanaccountingController extends Controller
         $querypenjualan->join('salesman', 'pindahfaktur.kode_salesman_baru', '=', 'salesman.kode_salesman');
         $querypenjualan->whereBetween('marketing_penjualan.tanggal', [$dari, $sampai]);
         $querypenjualan->where('jenis_transaksi', 'K');
+        $querypenjualan->where('status_batal', 0);
         $querypenjualan->where('marketing_penjualan.status_batal', 0);
         $querypenjualan->where('marketing_penjualan.status_sampel', 0);
         $querypenjualan->whereRaw("datediff('$sampai', marketing_penjualan.tanggal) > 31");
