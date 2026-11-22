@@ -74,7 +74,7 @@
             $masa_kerja = $diff->y . ' Th ' . $diff->m . ' Bln';
         @endphp
         <div class="col-12 mb-3">
-            <div class="card shadow-none border {{ $d->status_aktif_karyawan === '0' ? 'bg-label-danger border-danger' : 'border-light' }}">
+            <div class="card shadow-none border {{ $d->status_aktif_karyawan === '0' || $d->status_aktif_karyawan == 0 || $d->status_aktif_karyawan != 1 ? 'bg-label-danger border-danger' : 'border-light' }}">
                 <div class="card-body p-3">
                     <div class="row align-items-center g-3">
                         <!-- Left Section: Avatar & Basic Info -->

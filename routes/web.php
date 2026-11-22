@@ -265,11 +265,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/dashboard/rekapkendaraan', 'rekapkendaraan')->name('dashboard.rekapkendaraan');
         Route::post('/dashboard/rekapdppp', 'rekapdppp')->name('dashboard.rekapdppp');
         Route::post('/dashboard/rekapaup', 'rekapaup')->name('dashboard.rekapaup');
-        Route::post('/dashboard/rekapaupcabang ', 'rekapaupcabang')->name('dashboard.rekapaupcabang');
+        Route::post('/dashboard/rekapaupcabang', 'rekapaupcabang')->name('dashboard.rekapaupcabang');
 
         //Gudang Rekap DPB
-        Route::get('/dashboard/rekappersediaan ', 'rekappersediaan')->name('dashboard.rekappersediaan');
-        Route::get('/dashboard/rekappersediaancabang ', 'rekappersediaancabang')->name('dashboard.rekappersediaancabang');
+        Route::get('/dashboard/rekappersediaan', 'rekappersediaan')->name('dashboard.rekappersediaan');
+        Route::get('/dashboard/rekappersediaancabang', 'rekappersediaancabang')->name('dashboard.rekappersediaancabang');
 
 
         //Salesman
@@ -641,6 +641,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/bpbj/cekdetailtemp', 'cekdetailtemp')->name('bpbj.cekdetailtemp');
         Route::post('/bpbj/getrekaphasilproduksi', 'getrekaphasilproduksi')->name('bpbj.getrekaphasilproduksi');
         Route::post('/bpbj/getgrafikhasilproduksi', 'getgrafikhasilproduksi')->name('bpbj.getgrafikhasilproduksi');
+        Route::post('/bpbj/getgrafikhasilproduksijson', 'getgrafikhasilproduksijson')->name('bpbj.getgrafikhasilproduksijson');
     });
 
     Route::controller(FsthpController::class)->group(function () {

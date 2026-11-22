@@ -13,10 +13,13 @@ class RegionalController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Regional::query();
-        $regional = $query->get();
+        if (!empty($request->nama_regional)) {
+            $query->where('nama_regional', 'like', '%' . $request->nama_regional . '%');
+        }
+        $regional = $query->orderBy('kode_regional')->get();
         return view('datamaster.regional.index', compact('regional'));
     }
 

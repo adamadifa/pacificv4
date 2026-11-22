@@ -231,7 +231,7 @@ class Karyawan extends Authenticatable
         $start_date_duabulan = $tahunduabulan . "-" . $duabulan . "-01";
         $end_date_duabulan = date("Y-m-t", strtotime($start_date_duabulan));
         $query = Kontrakkaryawan::query();
-        $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang');
+        $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang', 'hrd_karyawan.foto');
         $query->join('hrd_karyawan', 'hrd_kontrak.nik', '=', 'hrd_karyawan.nik');
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
@@ -263,7 +263,7 @@ class Karyawan extends Authenticatable
     {
         $limitDate = date("Y-m-t", strtotime("+2 months"));
         $query = Kontrakkaryawan::query();
-        $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang');
+        $query->select('hrd_kontrak.no_kontrak', 'hrd_kontrak.nik', 'hrd_kontrak.sampai', 'hrd_karyawan.nama_karyawan', 'nama_jabatan', 'hrd_karyawan.kode_dept', 'hrd_karyawan.kode_cabang', 'nama_cabang', 'hrd_karyawan.foto');
         $query->join('hrd_karyawan', 'hrd_kontrak.nik', '=', 'hrd_karyawan.nik');
         $query->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');

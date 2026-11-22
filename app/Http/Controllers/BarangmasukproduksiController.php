@@ -37,7 +37,7 @@ class BarangmasukproduksiController extends Controller
         if (!empty($request->kode_asal_barang_search)) {
             $query->where('kode_asal_barang', $request->kode_asal_barang_search);
         }
-        $barangmasuk = $query->simplePaginate(20);
+        $barangmasuk = $query->paginate(20);
         $barangmasuk->appends(request()->all());
 
         $asal_barang = config('produksi.asal_barang_produksi');

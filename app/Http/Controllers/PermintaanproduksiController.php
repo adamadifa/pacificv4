@@ -144,6 +144,11 @@ class PermintaanproduksiController extends Controller
             ->first();
 
         if (empty($pp)) {
+            if (env('VIEW_THEME', 'v1') === 'v2') {
+                $bulan = $request->bulan;
+                $tahun = $request->tahun;
+                return view('produksi.permintaanproduksi.getrealisasi', compact('pp', 'bulan', 'tahun'));
+            }
             return '<div class="alert alert-warning d-flex align-items-center" role="alert">
                 <span class="alert-icon text-warning me-2">
                   <i class="ti ti-info-circle ti-xs"></i>

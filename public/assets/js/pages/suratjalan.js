@@ -16,13 +16,10 @@ $(function () {
 
     const select2Kodecabangsearch = $('.select2Kodecabangsearch');
     if (select2Kodecabangsearch.length) {
-        select2Kodecabangsearch.each(function () {
-            var $this = $(this);
-            $this.wrap('<div class="position-relative"></div>').select2({
-                placeholder: 'Semua Cabang',
-                allowClear: true,
-                dropdownParent: $this.parent()
-            });
+        select2Kodecabangsearch.select2({
+            placeholder: 'Semua Cabang',
+            allowClear: true,
+            width: '100%'
         });
     }
     $(".btnShow").click(function (e) {

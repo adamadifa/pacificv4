@@ -41,7 +41,7 @@ class BarangkeluarproduksiController extends Controller
         if (!empty($request->kode_jenis_pengeluaran_search)) {
             $query->where('kode_jenis_pengeluaran', $request->kode_jenis_pengeluaran_search);
         }
-        $barangkeluar = $query->simplePaginate(20);
+        $barangkeluar = $query->paginate(20);
         $barangkeluar->appends(request()->all());
 
 

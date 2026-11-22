@@ -29,7 +29,7 @@ class BpbjController extends Controller
             $query->whereBetween('tanggal_mutasi', [$start_date, $end_date]);
         }
         $query->where('jenis_mutasi', 'BPBJ');
-        $bpbj = $query->simplePaginate(20);
+        $bpbj = $query->paginate(20);
         $bpbj->appends(request()->all());
         return view('produksi.bpbj.index', compact('bpbj'));
     }
@@ -242,5 +242,43 @@ class BpbjController extends Controller
     {
         $data['chart'] = $chart->build($request->tahun);
         return view('produksi.bpbj.getgrafikhasilproduksi', $data);
+    }
+
+    public function getgrafikhasilproduksijson(Request $request)
+    {
+        $tahun = $request->tahun ?? date('Y');
+        $nama_bulan_singkat = config('global.nama_bulan_singkat');
+
+        $select_bulan = "";
+        for ($i = 1; $i <= 12; $i++) {
+            $select_bulan .= "SUM(IF(MONTH(tanggal_mutasi)='$i' AND jenis_mutasi='BPBJ',jumlah,0)) as " . $nama_bulan_singkat[$i] . ",";
+        }
+
+        $rekap = Detailmutasiproduksi::selectRaw("
+            $select_bulan
+            kode_produk
+        ")
+            ->whereRaw("YEAR(tanggal_mutasi)='$tahun'")
+            ->join("produksi_mutasi", "produksi_mutasi_detail.no_mutasi", "=", "produksi_mutasi.no_mutasi")
+            ->groupBy("kode_produk")
+            ->orderBy("kode_produk")
+            ->get();
+
+        $categories = array_values($nama_bulan_singkat);
+        $series = [];
+
+        foreach ($rekap as $d) {
+            $data = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $data[] = (int) ($d->{$nama_bulan_singkat[$i]} ?? 0);
+            }
+            $series[] = ['name' => $d->kode_produk, 'data' => $data];
+        }
+
+        return response()->json([
+            'status'     => true,
+            'series'     => $series,
+            'categories' => $categories,
+        ]);
     }
 }

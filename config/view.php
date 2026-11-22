@@ -13,9 +13,10 @@ return [
     |
     */
 
-    'paths' => [
+    'paths' => array_values(array_filter([
+        env('VIEW_THEME', 'v1') === 'v2' ? resource_path('views/v2') : null,
         resource_path('views'),
-    ],
+    ])),
 
     /*
     |--------------------------------------------------------------------------

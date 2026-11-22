@@ -30,7 +30,7 @@ class FsthpController extends Controller
             $query->whereBetween('tanggal_mutasi', [$start_date, $end_date]);
         }
         $query->where('jenis_mutasi', 'FSTHP');
-        $fsthp = $query->simplePaginate(20);
+        $fsthp = $query->paginate(20);
         $fsthp->appends(request()->all());
         return view('produksi.fsthp.index_produksi', compact('fsthp'));
     }
@@ -51,7 +51,7 @@ class FsthpController extends Controller
             $query->whereBetween('tanggal_mutasi', [$start_date, $end_date]);
         }
         $query->where('jenis_mutasi', 'FSTHP');
-        $fsthp = $query->simplePaginate(20);
+        $fsthp = $query->paginate(20);
         $fsthp->appends(request()->all());
         return view('produksi.fsthp.index_gudang', compact('fsthp'));
     }
