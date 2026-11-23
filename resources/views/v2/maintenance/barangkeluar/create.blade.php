@@ -56,8 +56,8 @@
     </div>
 
     <!-- SECTION INPUT DETAIL ITEM (TAMBAH BARANG) -->
-    <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 p-2.5 sm:p-3 bg-slate-50/50 dark:bg-slate-900/40">
-        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+    <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 p-3 sm:p-3.5 bg-slate-50/50 dark:bg-slate-900/40">
+        <div class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-2.5 flex items-center gap-1.5">
             <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
             <span>Tambah Item Barang Keluar</span>
         </div>
@@ -130,11 +130,11 @@
                 <thead class="sticky top-0 z-10">
                     <!-- Row 1: Header Strip (colspan=5) -->
                     <tr class="bg-[#284c9a] text-white">
-                        <th colspan="5" class="px-3.5 py-1.5 bg-[#284c9a] text-white border-0">
+                        <th colspan="5" class="px-3.5 py-2 bg-[#284c9a] text-white border-0">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <i data-lucide="boxes" class="w-3.5 h-3.5 text-blue-200"></i>
-                                    <span class="text-xs font-bold uppercase tracking-wider text-white">Daftar Barang Keluar</span>
+                                    <span class="text-xs font-bold text-white">Daftar Barang Keluar</span>
                                 </div>
                                 <span id="itemCountBadge" class="text-[10.5px] text-white/70 font-mono-num">0 item</span>
                             </div>
@@ -142,11 +142,11 @@
                     </tr>
                     <!-- Row 2: Column Titles -->
                     <tr class="bg-[#1e3a78] text-white text-[11px] border-none">
-                        <th class="py-1.5 px-3 w-32 font-bold uppercase tracking-wider text-white/90 border-none">KODE</th>
-                        <th class="py-1.5 px-3 font-bold uppercase tracking-wider text-white/90 border-none">NAMA BARANG</th>
-                        <th class="py-1.5 px-3 text-right w-24 font-bold uppercase tracking-wider text-white/90 border-none">JUMLAH</th>
-                        <th class="py-1.5 px-3 font-bold uppercase tracking-wider text-white/90 border-none">KETERANGAN</th>
-                        <th class="py-1.5 px-3 text-center w-14 font-bold uppercase tracking-wider text-white/90 border-none">#</th>
+                        <th class="py-2 px-3 w-32 font-bold uppercase tracking-wider text-white/90 border-none">KODE</th>
+                        <th class="py-2 px-3 font-bold uppercase tracking-wider text-white/90 border-none">NAMA BARANG</th>
+                        <th class="py-2 px-3 text-right w-24 font-bold uppercase tracking-wider text-white/90 border-none">JUMLAH</th>
+                        <th class="py-2 px-3 font-bold uppercase tracking-wider text-white/90 border-none">KETERANGAN</th>
+                        <th class="py-2 px-3 text-center w-14 font-bold uppercase tracking-wider text-white/90 border-none">#</th>
                     </tr>
                 </thead>
                 <tbody id="loadDetail" class="divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-900">
@@ -171,12 +171,14 @@
 
     <!-- FOOTER ACTIONS -->
     <div class="pt-2 border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
-            <input type="checkbox" id="agreement_check"
-                class="w-4 h-4 rounded-sm border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500 cursor-pointer">
-            <label for="agreement_check" class="text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer select-none">
-                Konfirmasi data sudah benar
-            </label>
+        <div class="field-group">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="agreement_check"
+                    class="w-4 h-4 rounded-sm border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                <label for="agreement_check" class="text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+                    Konfirmasi data sudah benar
+                </label>
+            </div>
         </div>
 
         <div class="flex items-center gap-2">
@@ -206,7 +208,7 @@
             dateFormat: "Y-m-d"
         });
 
-        // Initialize Select2 Departemen & Barang
+        // Initialize Select2 Departemen & Barang (Mount to document.body per GEMINI.md)
         $form.find('.select2Dept').select2({
             placeholder: "Pilih Departemen",
             allowClear: true,
@@ -219,21 +221,26 @@
             width: '100%'
         });
 
-        // Money formatting helper
-        $form.find('.money').mask("#.##0", {
-            reverse: true
-        });
+        // Masking via maskMoney (safe check)
+        if (typeof $.fn.maskMoney !== 'undefined') {
+            $form.find(".money").maskMoney({
+                thousands: '.',
+                decimal: ',',
+                precision: 0,
+                allowZero: true
+            });
+        }
 
         // Helper Error Display
         function showError($field, message) {
-            $field.addClass('border-rose-500 ring-1 ring-rose-500');
+            $field.addClass('!border-rose-500 !ring-1 !ring-rose-500');
             const $group = $field.closest('.field-group');
-            $group.find('.input-prefix-icon').addClass('text-rose-500');
+            $group.find('.input-prefix-icon').addClass('!text-rose-500');
             $group.find('.select2-selection').addClass('!border-rose-500 !ring-1 !ring-rose-500');
             $group.find('.field-error-msg').remove();
             $group.append(`
                 <p class="field-error-msg text-[11px] font-semibold text-rose-600 dark:text-rose-400 mt-1 pl-1 flex items-center gap-1">
-                    <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                     </svg>
                     <span>${message}</span>
@@ -242,9 +249,9 @@
         }
 
         function clearError($field) {
-            $field.removeClass('border-rose-500 ring-1 ring-rose-500');
+            $field.removeClass('!border-rose-500 !ring-1 !ring-rose-500');
             const $group = $field.closest('.field-group');
-            $group.find('.input-prefix-icon').removeClass('text-rose-500');
+            $group.find('.input-prefix-icon').removeClass('!text-rose-500');
             $group.find('.select2-selection').removeClass('!border-rose-500 !ring-1 !ring-rose-500');
             $group.find('.field-error-msg').remove();
         }
@@ -257,6 +264,13 @@
 
         $form.find('.select2Barang, .select2Dept').on('select2:select select2:clear', function() {
             clearError($(this));
+        });
+
+        $form.find('#agreement_check').on('change', function() {
+            if ($(this).is(':checked')) {
+                $(this).removeClass('!ring-2 !ring-rose-500');
+                $(this).closest('.field-group').find('.field-error-msg').remove();
+            }
         });
 
         function updateItemBadge() {
@@ -282,25 +296,38 @@
             const jumlah = $jumlah.val();
             const ket = $keterangan.val();
 
-            let hasError = false;
+            let hasAddError = false;
+            let $firstAddError = null;
 
             if (!kode) {
                 showError($kodeBarang, 'Pilih barang terlebih dahulu');
-                hasError = true;
+                hasAddError = true;
+                $firstAddError = $kodeBarang;
             }
 
             if (!jumlah || jumlah === '0') {
                 showError($jumlah, 'Jumlah wajib diisi');
-                hasError = true;
+                hasAddError = true;
+                if (!$firstAddError) $firstAddError = $jumlah;
             }
 
             // Check if already in table
             if (kode && $form.find(`tr[data-kode="${kode}"]`).length > 0) {
                 showError($kodeBarang, 'Barang ini sudah ada di dalam tabel');
-                hasError = true;
+                hasAddError = true;
+                if (!$firstAddError) $firstAddError = $kodeBarang;
             }
 
-            if (hasError) return;
+            if (hasAddError) {
+                if ($firstAddError) {
+                    if ($firstAddError.hasClass('select2Barang')) {
+                        $firstAddError.select2('open');
+                    } else {
+                        $firstAddError.focus();
+                    }
+                }
+                return;
+            }
 
             // Append row
             itemCount++;
@@ -332,6 +359,8 @@
             $kodeBarang.val('').trigger('change');
             $jumlah.val('');
             $keterangan.val('');
+            clearError($kodeBarang);
+            clearError($jumlah);
             updateItemBadge();
         });
 
@@ -349,41 +378,67 @@
             const $kodeDept = $form.find('#kode_dept_keluar');
             const $agreement = $form.find('#agreement_check');
             let hasError = false;
+            let $firstError = null;
 
             if (!$noBukti.val().trim()) {
                 showError($noBukti, 'No. Bukti wajib diisi');
                 hasError = true;
+                if (!$firstError) $firstError = $noBukti;
             }
 
             if (!$tanggal.val().trim()) {
                 showError($tanggal, 'Tanggal pengeluaran wajib diisi');
                 hasError = true;
+                if (!$firstError) $firstError = $tanggal;
             }
 
             if (!$kodeDept.val()) {
                 showError($kodeDept, 'Pilih departemen tujuan');
                 hasError = true;
+                if (!$firstError) $firstError = $kodeDept;
             }
 
             const totalRows = $form.find('#loadDetail tr:not(#emptyRow)').length;
             if (totalRows === 0) {
                 $('#errorDetailEmpty').removeClass('hidden');
                 hasError = true;
+                if (!$firstError) $firstError = $form.find('#kode_barang_select');
+            } else {
+                $('#errorDetailEmpty').addClass('hidden');
             }
 
             if (!$agreement.is(':checked')) {
-                $agreement.addClass('ring-2 ring-rose-500');
+                $agreement.addClass('!ring-2 !ring-rose-500');
+                const $agGroup = $agreement.closest('.field-group');
+                $agGroup.find('.field-error-msg').remove();
+                $agGroup.append(`
+                    <p class="field-error-msg text-[11px] font-semibold text-rose-600 dark:text-rose-400 mt-1 pl-1 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Centang konfirmasi terlebih dahulu</span>
+                    </p>
+                `);
                 hasError = true;
+                if (!$firstError) $firstError = $agreement;
             } else {
-                $agreement.removeClass('ring-2 ring-rose-500');
+                $agreement.removeClass('!ring-2 !ring-rose-500');
+                $agreement.closest('.field-group').find('.field-error-msg').remove();
             }
 
             if (hasError) {
                 e.preventDefault();
+                if ($firstError) {
+                    if ($firstError.hasClass('select2Dept') || $firstError.hasClass('select2Barang')) {
+                        $firstError.select2('open');
+                    } else {
+                        $firstError.focus();
+                    }
+                }
                 return false;
             }
 
-            // Double submit prevention
+            // Double submit prevention per GEMINI.md
             const $btn = $form.find('#btnSimpan');
             $btn.prop('disabled', true).addClass('opacity-75 cursor-not-allowed pointer-events-none');
             $btn.find('i').remove();

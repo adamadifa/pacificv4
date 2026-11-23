@@ -361,7 +361,7 @@
         $('.btnShow').on('click', function(e) {
             e.preventDefault();
             const noBukti = $(this).data('no-bukti');
-            openModal('Detail Barang Keluar', 'Rincian data pengeluaran barang maintenance', '!max-w-2xl');
+            openModal('Detail Barang Keluar', 'Rincian data pengeluaran barang maintenance', '!max-w-4xl');
             $.ajax({
                 url: `/barangkeluarmaintenance/${noBukti}/show`,
                 type: 'GET',

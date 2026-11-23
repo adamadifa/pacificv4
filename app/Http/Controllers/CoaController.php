@@ -12,16 +12,18 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CoaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // // Get all accounts with their sub-accounts
-        // $accounts = Coa::where('sub_akun', 0)->get();
+        $query = Coa::orderby('kode_akun')->whereNotIn('kode_akun', ['1', '2', '0-0000']);
 
-        // // Function to get sub-accounts recursively
-        // $accounts = $this->getSubAccounts($accounts);
+        if (!empty($request->nama_akun)) {
+            $query->where(function($q) use ($request) {
+                $q->where('nama_akun', 'like', '%' . $request->nama_akun . '%')
+                  ->orWhere('kode_akun', 'like', '%' . $request->nama_akun . '%');
+            });
+        }
 
-        $allAccounts = Coa::orderby('kode_akun')->whereNotIn('kode_akun', ['1', '2', '0-0000'])->get();
-
+        $allAccounts = $query->get();
 
         return view('accounting.coa.index', compact('allAccounts'));
     }
@@ -68,11 +70,22 @@ class CoaController extends Controller
             'kode_kategori' => 'required',
         ]);
 
+        $sub_akun = $request->sub_akun;
+        $level = 0;
+        if (!empty($sub_akun) && $sub_akun !== '0') {
+            $parent = Coa::where('kode_akun', $sub_akun)->first();
+            $level = $parent ? (($parent->level ?? 0) + 1) : 1;
+        } else {
+            $sub_akun = '0';
+            $level = 0;
+        }
+
         try {
             Coa::create([
                 'kode_akun' => $request->kode_akun,
                 'nama_akun' => $request->nama_akun,
-                'sub_akun' => $request->sub_akun,
+                'sub_akun' => $sub_akun,
+                'level' => $level,
                 'kode_kategori' => $request->kode_kategori
             ]);
 
@@ -111,11 +124,22 @@ class CoaController extends Controller
             'kode_kategori' => 'required',
         ]);
 
+        $sub_akun = $request->sub_akun;
+        $level = 0;
+        if (!empty($sub_akun) && $sub_akun !== '0') {
+            $parent = Coa::where('kode_akun', $sub_akun)->first();
+            $level = $parent ? (($parent->level ?? 0) + 1) : 1;
+        } else {
+            $sub_akun = '0';
+            $level = 0;
+        }
+
         try {
             $coa->update([
                 'kode_akun' => $request->kode_akun,
                 'nama_akun' => $request->nama_akun,
-                'sub_akun' => $request->sub_akun,
+                'sub_akun' => $sub_akun,
+                'level' => $level,
                 'kode_kategori' => $request->kode_kategori
             ]);
 

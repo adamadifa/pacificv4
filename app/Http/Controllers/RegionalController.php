@@ -15,7 +15,7 @@ class RegionalController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Regional::query();
+        $query = Regional::with('cabang');
         if (!empty($request->nama_regional)) {
             $query->where('nama_regional', 'like', '%' . $request->nama_regional . '%');
         }

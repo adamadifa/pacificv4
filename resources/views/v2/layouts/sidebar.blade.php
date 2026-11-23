@@ -310,6 +310,50 @@
         background: rgba(255, 255, 255, 0.2);
         border-radius: 9999px;
     }
+
+    /* ==========================================================================
+       SIDEBAR NOTIFICATION BADGES (RED PILL)
+       ========================================================================== */
+    #layout-menu-v2 .badge,
+    #layout-menu-v2 .badge.bg-danger {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-left: auto !important;
+        background-color: #e11d48 !important;
+        background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+        color: #ffffff !important;
+        font-size: 0.65rem !important;
+        font-weight: 800 !important;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+        min-width: 1.25rem !important;
+        height: 1.15rem !important;
+        padding: 0 0.375rem !important;
+        border-radius: 9999px !important;
+        line-height: 1 !important;
+        box-shadow: 0 2px 6px rgba(225, 29, 72, 0.45) !important;
+        flex-shrink: 0 !important;
+        z-index: 5 !important;
+    }
+
+    #layout-menu-v2 .rounded-pill {
+        border-radius: 9999px !important;
+    }
+
+    #layout-menu-v2 .ms-auto {
+        margin-left: auto !important;
+    }
+
+    /* When inside menu-toggle: offset to the left of the chevron arrow */
+    #layout-menu-v2 .menu-toggle .badge,
+    #layout-menu-v2 a.menu-toggle .badge {
+        margin-right: 1.25rem !important;
+    }
+
+    /* Submenu item with badge */
+    #layout-menu-v2 .menu-sub .badge {
+        margin-right: 0.25rem !important;
+    }
 </style>
 
 <!-- SIDEBAR V2 (Width 260px & Exact V1 Background Color) -->
@@ -503,7 +547,7 @@
                     auth()->user()->hasAnyPermission([
                         'omancabang.index', 'oman.index', 'permintaankiriman.index',
                         'targetkomisi.index', 'penjualan.index', 'retur.index',
-                        'ajuanlimit.index', 'sapiutangsales.index', 'movefaktur.index',
+                        'ajuanlimit.index', 'sapiutang.index', 'sapiutangsales.index', 'movefaktur.index',
                         'trackingtruck.index'
                     ]) ||
                     auth()->user()->hasAnyPermission([

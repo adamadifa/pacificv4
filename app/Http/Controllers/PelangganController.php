@@ -173,6 +173,7 @@ class PelangganController extends Controller
 
 
         $data_foto = [];
+        $data_foto_owner = [];
         if ($request->hasfile('foto')) {
             $foto_name =  $kode_pelanggan . "." . $request->file('foto')->getClientOriginalExtension();
             $destination_foto_path = "public/pelanggan";
@@ -182,18 +183,23 @@ class PelangganController extends Controller
             ];
         }
 
+        if ($request->hasfile('foto_owner')) {
+            $foto_owner_name =  $kode_pelanggan . "." . $request->file('foto_owner')->getClientOriginalExtension();
+            $destination_foto_owner_path = "public/pelanggan/owner";
+            $foto_owner = $foto_owner_name;
+            $data_foto_owner = [
+                'foto_owner' => $foto_owner
+            ];
+        }
 
-
-        // if (isset($request->lokasi)) {
-        //     $lokasi = explode(",", $request->lokasi);
-        //     $latitude = $lokasi[0];
-        //     $longitude = $lokasi[1];
-        // } else {
-        //     $latitude = NULL;
-        //     $longitude = NULL;
-        // }
-        $latitude = NULL;
-        $longitude = NULL;
+        if (isset($request->lokasi) && !empty($request->lokasi)) {
+            $lokasi = explode(",", $request->lokasi);
+            $latitude = $lokasi[0] ?? NULL;
+            $longitude = $lokasi[1] ?? NULL;
+        } else {
+            $latitude = NULL;
+            $longitude = NULL;
+        }
         $data_pelanggan = [
             'kode_pelanggan' => $kode_pelanggan,
             'tanggal_register' => date('Y-m-d'),
@@ -223,7 +229,7 @@ class PelangganController extends Controller
             'omset_toko' => isset($request->omset_toko) ?  toNumber($request->omset_toko) : NULL,
             'status_aktif_pelanggan' => $request->status_aktif_pelanggan,
         ];
-        $data = array_merge($data_pelanggan, $data_foto);
+        $data = array_merge($data_pelanggan, $data_foto, $data_foto_owner);
         DB::beginTransaction();
         try {
             $simpan = Pelanggan::create($data);
@@ -237,6 +243,17 @@ class PelangganController extends Controller
                     });
                     $img->encode('jpg', 70);
                     Storage::put($destination_foto_path . "/" . $foto_name, $img);
+                }
+
+                if ($request->hasfile('foto_owner')) {
+                    $image_owner = $request->file('foto_owner');
+                    $img_owner = Image::make($image_owner->getRealPath());
+                    $img_owner->resize(800, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                    $img_owner->encode('jpg', 70);
+                    Storage::put($destination_foto_owner_path . "/" . $foto_owner_name, $img_owner);
                 }
             }
             DB::commit();

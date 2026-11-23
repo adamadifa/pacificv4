@@ -350,7 +350,7 @@
         $('.btnShow').on('click', function(e) {
             e.preventDefault();
             const noBukti = $(this).data('no-bukti');
-            openModal('Detail Barang Masuk', 'Rincian data penerimaan suku cadang maintenance', '!max-w-2xl');
+            openModal('Detail Barang Masuk', 'Rincian data penerimaan suku cadang maintenance', '!max-w-4xl');
             $.ajax({
                 url: `/barangmasukmaintenance/${noBukti}/show`,
                 type: 'GET',

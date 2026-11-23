@@ -36,6 +36,10 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables/jquery.dataTables.css') }}?v=1.0.1" />
+    <script src="{{ asset('assets/vendor/libs/datatables/jquery.dataTables.js') }}?v=1.0.1"></script>
+
     <!-- ApexCharts Global Preload -->
     <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 
@@ -957,6 +961,44 @@
         .swal2-popup:not(.v2-toast-card) .swal2-confirm:active {
             transform: scale(0.98) !important;
         }
+        .swal2-popup:not(.v2-toast-card) .swal2-deny {
+            height: 36px !important;
+            min-width: 90px !important;
+            padding: 0 1.25rem !important;
+            border-radius: 0.5rem !important; /* rounded-lg (8px) */
+            background-color: #64748b !important; /* slate-500 */
+            color: #ffffff !important;
+            font-size: 0.75rem !important; /* 12px */
+            font-weight: 700 !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            border: none !important;
+            outline: none !important;
+            transition: all 0.15s ease-in-out !important;
+            cursor: pointer !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .swal2-popup:not(.v2-toast-card) .swal2-deny:not([style*="display: none"]):not(.swal2-hidden) {
+            display: inline-flex !important;
+        }
+        .swal2-popup:not(.v2-toast-card) .swal2-deny[style*="display: none"],
+        .swal2-popup:not(.v2-toast-card) .swal2-deny.swal2-hidden {
+            display: none !important;
+        }
+        .swal2-popup:not(.v2-toast-card) .swal2-deny:hover {
+            background-color: #475569 !important; /* slate-600 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        .swal2-popup:not(.v2-toast-card) .swal2-deny:active {
+            transform: scale(0.98) !important;
+        }
+        .dark .swal2-popup:not(.v2-toast-card) .swal2-deny {
+            background-color: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+        .dark .swal2-popup:not(.v2-toast-card) .swal2-deny:hover {
+            background-color: #475569 !important;
+        }
         .swal2-popup:not(.v2-toast-card) .swal2-cancel {
             height: 36px !important;
             min-width: 80px !important;
@@ -1151,6 +1193,305 @@
             height: 100% !important;
             background: rgba(255, 255, 255, 0.65) !important;
             display: block !important;
+        }
+
+        /* Legacy Bootstrap Badge Danger Support in V2 */
+        .badge.bg-danger {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+            color: #ffffff !important;
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+            min-width: 1.25rem !important;
+            height: 1.15rem !important;
+            padding: 0 0.35rem !important;
+            border-radius: 9999px !important;
+            line-height: 1 !important;
+            box-shadow: 0 2px 6px rgba(225, 29, 72, 0.4) !important;
+        }
+
+        /* ==========================================================================
+           DATATABLES V2 TAILWIND DESIGN SYSTEM OVERRIDES
+           ========================================================================== */
+        .dataTables_wrapper {
+            font-size: 0.75rem; /* text-xs */
+            color: #475569;
+            width: 100%;
+        }
+        .dataTables_wrapper:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-bottom: 0.875rem;
+        }
+        .dataTables_wrapper .dataTables_length label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .dark .dataTables_wrapper .dataTables_length label {
+            color: #94a3b8;
+        }
+        .dataTables_wrapper .dataTables_length select {
+            height: 34px;
+            padding: 0.25rem 1.75rem 0.25rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            border: 1px solid #cbd5e1;
+            background-color: #ffffff;
+            color: #1e293b;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .dark .dataTables_wrapper .dataTables_length select {
+            border-color: #334155;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .dataTables_wrapper .dataTables_length select:focus {
+            border-color: #284c9a;
+            box-shadow: 0 0 0 2px rgba(40, 76, 154, 0.2);
+        }
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-bottom: 0.875rem;
+        }
+        .dataTables_wrapper .dataTables_filter label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .dark .dataTables_wrapper .dataTables_filter label {
+            color: #94a3b8;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            height: 34px;
+            width: 240px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #cbd5e1;
+            background-color: #ffffff;
+            color: #1e293b;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+        .dark .dataTables_wrapper .dataTables_filter input {
+            border-color: #334155;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #284c9a;
+            box-shadow: 0 0 0 2px rgba(40, 76, 154, 0.2);
+            width: 280px;
+        }
+        .dataTables_wrapper .dataTables_info {
+            float: left;
+            padding-top: 0.875rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .dark .dataTables_wrapper .dataTables_info {
+            color: #94a3b8;
+        }
+        .dataTables_wrapper .dataTables_paginate {
+            float: right;
+            padding-top: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 0.5rem !important;
+            min-width: 28px !important;
+            height: 28px !important;
+            padding: 0 0.5rem !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #475569 !important;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .dark .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-color: #334155 !important;
+            background: #0f172a !important;
+            color: #94a3b8 !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: #284c9a !important;
+            color: #ffffff !important;
+            border-color: #284c9a !important;
+            font-weight: 700 !important;
+            box-shadow: 0 1px 2px rgba(40, 76, 154, 0.3) !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #f1f5f9 !important;
+            color: #1e293b !important;
+            border-color: #cbd5e1 !important;
+        }
+        .dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+            opacity: 0.35 !important;
+            cursor: not-allowed !important;
+            background: transparent !important;
+            border-color: #e2e8f0 !important;
+        }
+        .dark .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+        .dark .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+            border-color: #1e293b !important;
+        }
+        .pilihpelanggan {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 0.375rem;
+            background-color: #eff6ff;
+            color: #284c9a;
+            transition: all 0.15s ease;
+        }
+        .dark .pilihpelanggan {
+            background-color: rgba(30, 58, 138, 0.4);
+            color: #93c5fd;
+        }
+        .pilihpelanggan:hover {
+            background-color: #284c9a;
+            color: #ffffff;
+        }
+
+        /* Cart Table #tabelproduk styling */
+        #tabelproduk {
+            width: 100% !important;
+            border-collapse: collapse !important;
+        }
+        #tabelproduk th {
+            vertical-align: middle !important;
+        }
+        #tabelproduk td {
+            padding: 6px 12px !important; /* py-1.5 px-3 standard */
+            vertical-align: middle !important;
+            font-size: 12px !important;
+        }
+        #tabelproduk td:first-child,
+        #tabelproduk th:first-child {
+            padding-left: 14px !important;
+        }
+        #tabelproduk td:last-child,
+        #tabelproduk th:last-child {
+            padding-right: 14px !important;
+        }
+
+        /* Promotional item row styling (orange background) */
+        #tabelproduk tr.row-promosi,
+        #tabelproduk tr.bg-warning {
+            background-color: #f97316 !important; /* Tailwind orange-500 */
+            color: #ffffff !important;
+        }
+        #tabelproduk tr.row-promosi:hover,
+        #tabelproduk tr.bg-warning:hover {
+            background-color: #ea580c !important; /* Tailwind orange-600 */
+        }
+        #tabelproduk tr.row-promosi > td,
+        #tabelproduk tr.bg-warning > td {
+            color: #ffffff !important;
+        }
+
+        /* Action buttons on promotional row: Edit button */
+        #tabelproduk tr.row-promosi a.edit,
+        #tabelproduk tr.bg-warning a.edit,
+        #tabelproduk tr.row-promosi .btn-edit-item,
+        #tabelproduk tr.bg-warning .btn-edit-item {
+            background-color: #ffffff !important;
+            color: #059669 !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) !important;
+        }
+        #tabelproduk tr.row-promosi a.edit svg,
+        #tabelproduk tr.bg-warning a.edit svg,
+        #tabelproduk tr.row-promosi .btn-edit-item svg,
+        #tabelproduk tr.bg-warning .btn-edit-item svg,
+        #tabelproduk tr.row-promosi a.edit i,
+        #tabelproduk tr.bg-warning a.edit i,
+        #tabelproduk tr.row-promosi .btn-edit-item i,
+        #tabelproduk tr.bg-warning .btn-edit-item i {
+            color: #059669 !important;
+            stroke: #059669 !important;
+        }
+        #tabelproduk tr.row-promosi a.edit:hover,
+        #tabelproduk tr.bg-warning a.edit:hover,
+        #tabelproduk tr.row-promosi .btn-edit-item:hover,
+        #tabelproduk tr.bg-warning .btn-edit-item:hover {
+            background-color: #059669 !important;
+            color: #ffffff !important;
+        }
+        #tabelproduk tr.row-promosi a.edit:hover svg,
+        #tabelproduk tr.bg-warning a.edit:hover svg,
+        #tabelproduk tr.row-promosi .btn-edit-item:hover svg,
+        #tabelproduk tr.bg-warning .btn-edit-item:hover svg {
+            color: #ffffff !important;
+            stroke: #ffffff !important;
+        }
+
+        /* Action buttons on promotional row: Delete button */
+        #tabelproduk tr.row-promosi a.delete,
+        #tabelproduk tr.bg-warning a.delete,
+        #tabelproduk tr.row-promosi .btn-delete-item,
+        #tabelproduk tr.bg-warning .btn-delete-item {
+            background-color: #ffffff !important;
+            color: #e11d48 !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1) !important;
+        }
+        #tabelproduk tr.row-promosi a.delete svg,
+        #tabelproduk tr.bg-warning a.delete svg,
+        #tabelproduk tr.row-promosi .btn-delete-item svg,
+        #tabelproduk tr.bg-warning .btn-delete-item svg,
+        #tabelproduk tr.row-promosi a.delete i,
+        #tabelproduk tr.bg-warning a.delete i,
+        #tabelproduk tr.row-promosi .btn-delete-item i,
+        #tabelproduk tr.bg-warning .btn-delete-item i {
+            color: #e11d48 !important;
+            stroke: #e11d48 !important;
+        }
+        #tabelproduk tr.row-promosi a.delete:hover,
+        #tabelproduk tr.bg-warning a.delete:hover,
+        #tabelproduk tr.row-promosi .btn-delete-item:hover,
+        #tabelproduk tr.bg-warning .btn-delete-item:hover {
+            background-color: #e11d48 !important;
+            color: #ffffff !important;
+        }
+        #tabelproduk tr.row-promosi a.delete:hover svg,
+        #tabelproduk tr.bg-warning a.delete:hover svg,
+        #tabelproduk tr.row-promosi .btn-delete-item:hover svg,
+        #tabelproduk tr.bg-warning .btn-delete-item:hover svg {
+            color: #ffffff !important;
+            stroke: #ffffff !important;
         }
     </style>
 
@@ -1669,6 +2010,36 @@
                 }
             }
         })();
+    </script>
+
+    <!-- Global Helpers (SwalWarning & maskMoney) -->
+    <script>
+        window.SwalWarning = function(name, message) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: "Oops!",
+                    text: message,
+                    icon: "warning",
+                    showConfirmButton: true,
+                    didClose: function() {
+                        if (name) {
+                            $("#" + name).focus();
+                        }
+                    }
+                });
+            } else {
+                alert(message);
+                if (name) {
+                    $("#" + name).focus();
+                }
+            }
+        };
+
+        $(function() {
+            if ($.fn.maskMoney) {
+                $('.money').maskMoney({thousands: '.', decimal: ',', precision: 0});
+            }
+        });
     </script>
 
     <!-- Global Laravel Session Flash Notifications -->

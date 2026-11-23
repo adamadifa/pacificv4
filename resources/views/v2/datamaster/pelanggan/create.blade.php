@@ -406,6 +406,44 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
+                    <!-- Lama Langganan -->
+                    <div class="field-group">
+                        <label for="lama_langganan_create" class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">Lama Langganan</label>
+                        <div class="relative">
+                            <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10 transition-colors">
+                                <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                            </div>
+                            <select name="lama_langganan" id="lama_langganan_create" class="w-full h-[36px] pl-8 pr-6 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-hidden appearance-none cursor-pointer">
+                                <option value="">Pilih Lama Langganan</option>
+                                <option value="LL01">< 2 Tahun</option>
+                                <option value="LL02">> 2 Tahun</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-slate-400">
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jaminan -->
+                    <div class="field-group">
+                        <label for="jaminan_create" class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">Jaminan</label>
+                        <div class="relative">
+                            <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10 transition-colors">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                            </div>
+                            <select name="jaminan" id="jaminan_create" class="w-full h-[36px] pl-8 pr-6 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-hidden appearance-none cursor-pointer">
+                                <option value="">Pilih Jaminan</option>
+                                <option value="1">Ada</option>
+                                <option value="0">Tidak Ada</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-slate-400">
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
                     <!-- Titik Koordinat GPS -->
                     <div class="field-group">
                         <label for="lokasi_create" class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">Koordinat GPS</label>
@@ -433,28 +471,51 @@
                     </div>
                 </div>
 
-                <!-- Modern Photo Upload Card with Preview -->
-                <div class="field-group">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">Foto Toko / Outlet</label>
-                    <div class="relative border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-brand-500/60 dark:hover:border-brand-500/60 rounded-xl p-3 bg-slate-50/50 dark:bg-slate-800/30 transition-all group">
-                        <input type="file" name="foto" id="foto_create" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-                        
-                        <div class="flex items-center gap-3.5">
-                            <!-- Thumbnail / Placeholder with live preview -->
-                            <div id="preview_container_create" class="w-14 h-14 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs group-hover:scale-105 transition-transform">
-                                <i data-lucide="image-plus" id="preview_icon_create" class="w-6 h-6 text-slate-400 group-hover:text-brand-600 transition-colors"></i>
-                                <img id="preview_img_create" src="" alt="Preview" class="w-full h-full object-cover hidden">
-                            </div>
 
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-2xs group-hover:border-brand-500 group-hover:text-brand-600 transition">
-                                        <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-brand-600"></i>
+                <!-- Foto Upload: Toko & Owner -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- Foto Toko / Outlet -->
+                    <div class="field-group">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">Foto Toko / Outlet</label>
+                        <div class="relative border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-brand-500/60 dark:hover:border-brand-500/60 rounded-xl p-2.5 bg-slate-50/50 dark:bg-slate-800/30 transition-all group">
+                            <input type="file" name="foto" id="foto_create" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                            
+                            <div class="flex items-center gap-2.5">
+                                <div id="preview_container_create" class="w-12 h-12 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs group-hover:scale-105 transition-transform">
+                                    <i data-lucide="image-plus" id="preview_icon_create" class="w-5 h-5 text-slate-400 group-hover:text-brand-600 transition-colors"></i>
+                                    <img id="preview_img_create" src="" alt="Preview Toko" class="w-full h-full object-cover hidden">
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <span class="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold shadow-2xs group-hover:border-brand-500 group-hover:text-brand-600 transition">
+                                        <i data-lucide="upload-cloud" class="w-3 h-3 text-brand-600"></i>
                                         <span id="upload_label_create">Pilih Foto</span>
                                     </span>
-                                    <span id="file_name_create" class="text-xs text-slate-500 truncate hidden font-medium"></span>
+                                    <p class="text-[9px] text-slate-400 mt-1 truncate">Maks. 2MB</p>
                                 </div>
-                                <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG, WEBP (Maksimal 2MB)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Foto Owner / Pemilik -->
+                    <div class="field-group">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">Foto Owner / Pemilik</label>
+                        <div class="relative border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-brand-500/60 dark:hover:border-brand-500/60 rounded-xl p-2.5 bg-slate-50/50 dark:bg-slate-800/30 transition-all group">
+                            <input type="file" name="foto_owner" id="foto_owner_create" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+                            
+                            <div class="flex items-center gap-2.5">
+                                <div id="preview_container_owner_create" class="w-12 h-12 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs group-hover:scale-105 transition-transform">
+                                    <i data-lucide="user-plus" id="preview_icon_owner_create" class="w-5 h-5 text-slate-400 group-hover:text-brand-600 transition-colors"></i>
+                                    <img id="preview_img_owner_create" src="" alt="Preview Owner" class="w-full h-full object-cover hidden">
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <span class="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold shadow-2xs group-hover:border-brand-500 group-hover:text-brand-600 transition">
+                                        <i data-lucide="upload-cloud" class="w-3 h-3 text-brand-600"></i>
+                                        <span id="upload_label_owner_create">Pilih Foto</span>
+                                    </span>
+                                    <p class="text-[9px] text-slate-400 mt-1 truncate">Maks. 2MB</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -515,6 +576,20 @@
                     $("#preview_icon_create").addClass("hidden");
                     $("#file_name_create").text(file.name).removeClass("hidden");
                     $("#upload_label_create").text("Ganti Foto");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Live preview for owner photo upload
+        $("#foto_owner_create").on("change", function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    $("#preview_img_owner_create").attr("src", evt.target.result).removeClass("hidden");
+                    $("#preview_icon_owner_create").addClass("hidden");
+                    $("#upload_label_owner_create").text("Ganti Foto");
                 };
                 reader.readAsDataURL(file);
             }

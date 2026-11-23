@@ -311,6 +311,33 @@
                         <span class="text-slate-400 font-medium shrink-0">Omset Rata-Rata</span>
                         <span class="font-bold text-slate-800 dark:text-slate-100 font-mono-num">{{ formatRupiah($pelanggan->omset_toko) }}</span>
                     </div>
+                    @if (!empty($pelanggan->no_rekening) || !empty($pelanggan->bank))
+                        <div class="py-2 flex justify-between items-center gap-2">
+                            <span class="text-slate-400 font-medium shrink-0">Rekening Bank</span>
+                            <span class="font-semibold text-slate-700 dark:text-slate-300 font-mono-num text-right">
+                                {{ $pelanggan->bank }} {{ $pelanggan->no_rekening }}
+                                @if (!empty($pelanggan->pemilik_rekening))
+                                    <span class="block text-[10px] text-slate-400">a.n {{ $pelanggan->pemilik_rekening }}</span>
+                                @endif
+                            </span>
+                        </div>
+                    @endif
+                    @if (!empty($pelanggan->metode_bayar))
+                        <div class="py-2 flex justify-between items-center gap-2">
+                            <span class="text-slate-400 font-medium shrink-0">Metode Bayar Program</span>
+                            <span class="font-bold text-brand-600 dark:text-brand-400">
+                                @if ($pelanggan->metode_bayar == 'TN')
+                                    Tunai
+                                @elseif ($pelanggan->metode_bayar == 'TF')
+                                    Transfer
+                                @elseif ($pelanggan->metode_bayar == 'VC')
+                                    Voucher
+                                @else
+                                    {{ $pelanggan->metode_bayar }}
+                                @endif
+                            </span>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -353,6 +380,56 @@
                         <span class="font-semibold text-slate-700 dark:text-slate-300 font-mono-num">
                             {{ !empty($pelanggan->lama_langganan) ? ($lama_langganan[$pelanggan->lama_langganan] ?? $pelanggan->lama_langganan) : '-' }}
                         </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. DOKUMENTASI FOTO (TOKO & OWNER) -->
+            <div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-3.5 shadow-2xs">
+                <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-slate-100 dark:border-slate-800">
+                    <div class="w-6 h-6 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                        <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-800 dark:text-slate-200">Dokumentasi Foto Toko & Owner</h3>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <!-- Foto Toko -->
+                    <div class="space-y-1.5">
+                        <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">Foto Toko / Outlet</span>
+                        <div class="h-28 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 overflow-hidden flex items-center justify-center group relative">
+                            @if (!empty($pelanggan->foto) && Storage::disk('public')->exists('/pelanggan/' . $pelanggan->foto))
+                                <img src="{{ getfotoPelanggan($pelanggan->foto) }}" alt="Foto Toko" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                <a href="{{ getfotoPelanggan($pelanggan->foto) }}" target="_blank" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-semibold gap-1 transition">
+                                    <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                                    <span>Lihat</span>
+                                </a>
+                            @else
+                                <div class="text-center text-slate-400 p-2">
+                                    <i data-lucide="image-off" class="w-6 h-6 mx-auto mb-1 opacity-50"></i>
+                                    <span class="text-[10px] block">Belum ada foto</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Foto Owner -->
+                    <div class="space-y-1.5">
+                        <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">Foto Owner / Pemilik</span>
+                        <div class="h-28 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 overflow-hidden flex items-center justify-center group relative">
+                            @if (!empty($pelanggan->foto_owner) && Storage::disk('public')->exists('/pelanggan/owner/' . $pelanggan->foto_owner))
+                                <img src="{{ getfotoPelangganowner($pelanggan->foto_owner) }}" alt="Foto Owner" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                <a href="{{ getfotoPelangganowner($pelanggan->foto_owner) }}" target="_blank" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-semibold gap-1 transition">
+                                    <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                                    <span>Lihat</span>
+                                </a>
+                            @else
+                                <div class="text-center text-slate-400 p-2">
+                                    <i data-lucide="user-x" class="w-6 h-6 mx-auto mb-1 opacity-50"></i>
+                                    <span class="text-[10px] block">Belum ada foto</span>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

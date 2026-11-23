@@ -56,6 +56,16 @@ Untuk menjaga konsistensi tampilan seluruh halaman Version 2 (V2):
     - **Wajib Spacer Label Transparan pada Kolom Tombol**: Di atas tombol aksi, wajib menambahkan tag label spacer transparan yang menyamai ukuran dan margin label input di sampingnya:
       `<label class="hidden sm:block text-xs font-bold text-transparent mb-1 select-none pointer-events-none">&nbsp;</label>` (atau `text-[11px]` jika label form menggunakan `text-[11px]`).
       Hal ini menjamin tombol aksi selalu sejajar sempurna dengan kotak input, dan posisi tombol terkunci kokoh (*zero layout shift*) baik sebelum, saat, maupun setelah pesan error validasi muncul.
+    - **Judul Seksi / Sub-Header Form Natural (Dilarang Kapital Semua / Anti-Uppercase)**:
+      - Judul seksi pembagian di dalam formulir atau card modal (seperti "Tambah Rincian Produk", "Tambah Produk Baru ke Daftar", "Daftar Produk Permintaan", dsb.) **DILARANG KERAS** menggunakan format kapital semua / all-caps (`uppercase tracking-wider` atau `uppercase`).
+      - Wajib menggunakan huruf kapital di awal kata saja (Title Case / format normal) yang rapi, elegan, dan nyaman dibaca (misal: `text-xs font-bold text-slate-700 dark:text-slate-200` atau `text-white font-bold text-xs`).
+    - **Standar Padding Card Kontainer & Card Header Formulir**:
+      - **Padding Kontainer Card Seragam**: Seluruh card pembagian seksi di dalam modal formulir wajib menggunakan padding seragam `p-3 sm:p-3.5`. Dilarang menggunakan padding yang tidak konsisten (misal ada card `p-2.5 sm:p-3` dan card lain `p-3 sm:p-3.5`).
+      - **Struktur Header Seksi / Sub-Header Card**:
+        - Wajib dilengkapi icon prefix Lucide (`w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400`).
+        - Jarak margin bawah (*bottom margin*) header seksi wajib seragam `mb-2.5`.
+        - Jika card berupa ringkasan dokumen referensi (Executive Summary Strip), header wajib memiliki garis pembatas halus:
+          `<div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-200/80 dark:border-slate-800">`.
 
 - **Statistic & Metric Cards**:
   - **Satu Kesatuan Strip**: Disatukan dalam satu card container strip utuh (`rounded-xl overflow-hidden shadow-xs hover:shadow-md`), bukan card terpisah-pisah dengan jarak gap.
@@ -88,6 +98,15 @@ Untuk seluruh tabel data master dan transaksi Version 2:
 - **Header Tabel (`thead`) Tetap Utuh**:
   - Menggunakan kombinasi warna tema solid Pacific Navy (`bg-[#284c9a]` untuk strip judul tabel dan `bg-[#1e3a78]` untuk header kolom).
   - Teks header putih kontras tinggi, huruf kapital, tebal (`font-bold uppercase tracking-wider text-white/90`).
+- **Standar Padding & Tinggi Header Tabel (`thead`)**:
+  - **Baris 1 - Strip Judul Tabel (`bg-[#284c9a]`)**:
+    - Padding WAJIB `px-3.5 py-2` (atau `px-4 py-2`).
+    - DILARANG menggunakan padding terlalu tipis/gepeng (`py-1` atau `py-1.5`) dan dilarang terlalu tebal (`py-3` atau `py-3.5`).
+    - Memuat judul tabel `text-xs font-bold text-white`, icon tema `w-3.5 h-3.5` atau `w-4 h-4`, serta badge info / counter data di sebelah kanan.
+  - **Baris 2 - Header Kolom (`bg-[#1e3a78]`)**:
+    - Padding vertikal WAJIB `py-2` dan horizontal `px-3` (atau `px-3.5`), menghasilkan class `py-2 px-3`.
+    - DILARANG menggunakan `py-1.5` pada header kolom agar tidak terkesan gepeng atau menjepit teks kolom header.
+    - Teks: `text-[11px] font-bold uppercase tracking-wider text-white/90`.
 - **Padding Sel Data (`td`) Kompak**:
   - Padding vertikal wajib menggunakan `py-1.5` (6px atas & 6px bawah).
   - Padding horizontal `px-3` atau `px-3.5` untuk teks nama/deskripsi.
@@ -103,6 +122,16 @@ Untuk seluruh tabel data master dan transaksi Version 2:
   - Menghasilkan tinggi baris total **~36px** (standar emas enterprise ERP yang padat, rapi, dan mudah dibaca).
 - **Colspan Strip Judul Tabel Presisi**:
   - Atribut `colspan` pada baris strip judul tabel (`bg-[#284c9a]`) WAJIB sama persis dengan total seluruh jumlah kolom data (`td`/`th` aktif) agar tidak menyisakan ruang/celah kosong putih di ujung kanan header.
+- **Warna Background Card Header Pembungkus Tabel Samakan dengan Header Tabel**:
+  - Jika sebuah tabel dibungkus dalam card yang memiliki baris Card Header tersendiri (misal: memuat judul tabel serta tombol aksi seperti "+ Input Pembayaran", "+ Input Giro", dsb.):
+  - Warna latar belakang (*background color*) card header tersebut **WAJIB disamakan** dengan warna strip judul tabel Pacific Navy (`bg-[#284c9a] text-white`).
+  - Dilarang keras menggunakan card header berwarna putih (`bg-white` atau `border-b border-slate-100`) tepat di atas header kolom tabel `bg-[#1e3a78]`, karena akan menimbulkan kontras terputus yang tidak harmonis.
+  - Teks judul wajib `text-xs font-bold text-white uppercase tracking-wider`, icon Lucide `w-3.5 h-3.5 text-blue-200`, padding seragam `px-3.5 py-2`, dan tombol aksi menggunakan styling kompak (`h-[28px] px-3 rounded-lg text-xs font-bold`).
+- **Proteksi Dropdown Menu pada Kolom Freeze / Sticky (Anti-Tertutup Baris Lain)**:
+  - Pada kolom tabel yang memiliki posisi freeze / sticky (seperti kolom Aksi dengan `sticky right-0 z-10`), elemen dropdown menu (seperti tombol dropdown Cetak Faktur & Surat Jalan) yang dibuka WAJIB menaikkan stacking context parent cell (`<td>`) dan baris (`<tr>`) dengan class `!z-40` dan `!z-30 relative` saat menu terbuka.
+  - Alasan: Semua cell sticky memiliki z-index yang sama (`z-10`). Berdasarkan aturan CSS stacking context, baris di bawahnya di-render lebih akhir di DOM sehingga otomatis menimpa/menutupi menu dropdown yang berada di baris atasnya.
+  - Wajib selalu membersihkan class elevasi z-index ini (`$('td.sticky').removeClass('!z-40'); $('tr').removeClass('!z-30 relative');`) saat menu dropdown ditutup atau saat klik di luar menu.
+  - Container tabel scroll (`overflow-x-auto`) wajib diberikan ruang vertikal yang memadai (misal `min-h-[280px]`) dan handler dropdown dilengkapi deteksi cerdas dropup vs dropdown jika posisi tombol berada dekat dengan bagian bawah tabel/layar.
 
 ## 7. Standar Komponen Pagination V2
 Untuk seluruh halaman Version 2 yang menggunakan penomoran halaman (Pagination):
@@ -182,6 +211,85 @@ Untuk seluruh modal detail data (seperti Detail Transaksi, Detail BPB, Barang Ma
     - Tab Tidak Aktif: `bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-200 dark:hover:border-brand-900 hover:bg-brand-50/50 dark:hover:bg-brand-950/30`.
     - Icon: Lucide icon dengan ukuran `w-4 h-4`.
   - Dilarang membiarkan halaman V2 me-load navigasi Bootstrap lama (`<ul class="nav nav-pills nav-pills-custom">`) karena tag `<li>` tanpa Tailwind flex akan runtuh menjadi daftar vertikal bertumpuk.
+
+## 12. Prinsip Paritas Lengkap & Preservasi Istilah Asli (Zero Omission & 100% Label Parity)
+- **Wajib Audit Komprehensif Seluruh Elemen V1 Sebelum & Saat Migrasi**:
+  - Sebelum dan saat membuat halaman atau formulir Version 2 (baik halaman `index`, `create`, `edit`, `show`, modal dialog, maupun komponen terkait), asisten AI **WAJIB** membaca dan mengaudit seluruh file V1 padanannya terlebih dahulu secara menyeluruh baris demi baris.
+- **Dilarang Keras Menghilangkan / Melewatkan Field & Komponen Apapun (Anti-Omission)**:
+  - Setiap elemen input pada formulir V1 (input teks, select box, tanggal, radio/checkbox/switch, textarea, file upload, hidden input, peta/koordinat, dsb.) **WAJIB** dicantumkan lengkap pada formulir V2.
+  - Jangan sampai ada data, bagian, atau kontrol input yang hilang atau terlewat saat restyling ke V2 (seperti contoh kasus: field titik koordinat GPS / picker peta lokasi pelanggan, NIK, KK, limit kredit, status jaminan, opsi dropdown, keterangan tambahan, dsb.).
+  - Jika V1 memiliki fitur visual atau integrasi khusus (misal: Leaflet map, kalkulator dinamis, modal pencarian referensi, status baris, dsb.), seluruh fitur tersebut **WAJIB** diikutsertakan dan berfungsi 100% pada V2.
+- **Dilarang Keras Mengubah Istilah / Label Asli Bawaan V1 (Preservasi Label Verbatim)**:
+  - Teks label form, header kolom, judul ringkasan, dan baris footer tabel (`tfoot`) **DILARANG KERAS** diubah, diganti, disingkat, atau ditambahi kata-kata baru yang tidak ada pada V1.
+  - Wajib mempertahankan istilah dan penamaan asli dari V1 secara persis (*verbatim*).
+  - Contoh larangan:
+    - Dilarang mengubah `TOTAL` menjadi `TOTAL DPP` atau `TOTAL RETUR`. Jika di V1 tertulis `TOTAL`, maka di V2 wajib tetap tertulis `TOTAL`.
+    - Dilarang mengubah `GRAND TOTAL` menjadi `GRAND TOTAL NETTO`.
+    - Dilarang mengubah `JUMLAH BAYAR` menjadi `JUMLAH TERBAYAR`.
+    - Dilarang mengubah `SISA BAYAR` menjadi `SISA PIUTANG / TAGIHAN`.
+    - Dilarang mengubah `SUBTOTAL` menjadi `SUBTOTAL BRUTO`.
+    - Dilarang mengubah `POTONG FAKTUR` menjadi `POTONG FAKTUR (PF)`.
+    - Dilarang mengubah `GANTI BARANG` menjadi `GANTI BARANG (GB)`.
+  - Dilarang mengimprovisasi penamaan label tampilan UI berdasarkan nama variabel internal backend/PHP (contoh: variabel `$total_dpp` di controller/view tidak boleh dijadikan label tampilan `TOTAL DPP` apabila label UI aslinya adalah `TOTAL`).
+- **Audit Checklist Verifikasi Form V1 vs V2**:
+  - Setelah menyusun form Create atau Edit V2, lakukan verifikasi silang (*cross-check*) setiap atribut `name="..."` dan `id="..."` terhadap form V1 untuk menjamin tidak ada satu pun field yang tertinggal (*100% field parity*).
+  - Pastikan seluruh parameter dan data yang dikirimkan ke backend controller tidak berkurang sedikit pun dari versi V1.
+- **Paritas Fitur, Kolom Data, & Tombol Aksi**:
+  - Seluruh kolom data penting pada tabel V1 dan seluruh tombol aksi (Cetak, Export, Detail, Status, Logika Khusus, dsb.) harus tetap tersedia dan berfungsi dengan baik di V2.
+
+## 13. Standar Page Title Bar & Navigasi Breadcrumb V2 (Konsistensi Layout /penjualan)
+Untuk menjaga konsistensi arsitektur header dan navigasi di seluruh halaman Version 2:
+- **Navigasi Navbar (`@section('navigasi')`) HANYA untuk Breadcrumb Ringkas**:
+  - Blok `@section('navigasi')` di-render langsung di dalam top navbar global (`v2.layouts.navbar`).
+  - **DILARANG KERAS** meletakkan judul halaman (`<h3>`/`<h4>`), deskripsi/subjudul modul (`<p>`), tombol aksi, atau layout dua kolom di dalam `@section('navigasi')`.
+  - `@section('navigasi')` WAJIB HANYA berisi navigasi breadcrumb inline yang ringkas dengan teks abu-abu dan pemisah chevron (`chevron-right`):
+    ```html
+    @section('navigasi')
+        <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-slate-400">Home</span>
+            <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
+            <span class="text-slate-400">Marketing</span>
+            <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
+            <span class="text-brand-600 dark:text-brand-400 font-bold">Penjualan</span>
+        </div>
+    @endsection
+    ```
+- **Page Title Bar & Action Buttons Wajib di Dalam `@section('content')`**:
+  - Judul halaman (`<h3 class="text-base font-black text-slate-900 dark:text-white leading-tight">`), deskripsi halaman (`<p class="text-[11px] text-slate-400 mt-0.5">`), dan tombol aksi utama halaman (seperti `Input Penjualan`, `Input Retur`, `+ Tambah Data`, dsb.) **WAJIB diletakkan di baris paling atas di dalam `@section('content')`**:
+    ```html
+    <!-- PAGE TITLE BAR & ACTION BUTTONS -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div>
+            <h3 class="text-base font-black text-slate-900 dark:text-white leading-tight">Data Penjualan</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Kelola data transaksi penjualan barang, faktur, surat jalan, dan penerimaan pesanan.</p>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+            @can('penjualan.create')
+                <a href="{{ route('penjualan.create') }}" id="btnCreate"
+                    class="inline-flex items-center justify-center gap-1.5 h-[34px] px-3.5 rounded-lg bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-bold transition shadow-xs cursor-pointer shrink-0">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>Input Penjualan</span>
+                </a>
+            @endcan
+        </div>
+    </div>
+    ```
+- **Struktur Halaman Utama yang Rapi & Seragam**:
+  1. Top Navbar: Hanya breadcrumb ringkas (`@section('navigasi')`).
+  2. Main Content Area (`@section('content')`):
+     - Baris 1: Page Title Bar & Action Buttons (Judul `h3 font-black text-base`, deskripsi `p text-[11px] text-slate-400`, tombol aksi di kanan).
+     - Baris 2: Filter Card (No-Label, compact `h-[36px]`).
+     - Baris 3: Data Table Card (~36px compact rows, header solid Pacific Navy `#284c9a` & `#1e3a78`).
+
+- **Keselarasan Lebar Section Content (Page Title Bar, Filter, & Tabel Wajib Sejajar)**:
+  - Seluruh elemen utama pada area konten (Baris Page Title Bar beserta tombol aksi, Card Filter Pencarian, dan Card Tabel Data) **WAJIB dibungkus dalam satu kontainer dengan lebar yang seragam dan konsisten** (misal: `<div class="w-full space-y-3.5">` untuk tabel lebar seperti Penjualan/Retur, atau `<div class="max-w-4xl space-y-3.5">` / `<div class="max-w-5xl space-y-3.5">` untuk tabel ringkas seperti Saldo Awal).
+  - **DILARANG KERAS** membiarkan Page Title Bar melebar penuh ke kanan (`w-full`) sementara Card Filter menggunakan `max-w-3xl` dan Card Tabel menggunakan `max-w-4xl`/`max-w-5xl`. Hal tersebut menyebabkan tombol aksi utama terlempar jauh ke tepi kanan layar dan filter menjadi lebih pendek dari tabel (*misaligned / tidak sejajar*).
+  - Setiap elemen anak (Page Title Bar, Filter Card, dan Tabel Card) wajib menggunakan lebar penuh terhadap container pembungkusnya (`w-full` di dalam wrapper yang ditentukan), sehingga sisi kiri dan sisi kanan dari Page Title Bar, tombol aksi, filter form, dan tabel data selalu **sejajar sempurna (*perfectly aligned/flush*)**.
+  - **Tombol Aksi Tunggal (Anti-Duplikasi)**: Tombol aksi utama (seperti `Input Penjualan`, `Input Retur`, `+ Tambah Data`) cukup diletakkan pada Page Title Bar di kanan atas. Dilarang menduplikasi tombol yang sama di dalam header strip tabel (`thead`), kecuali jika halaman tidak menggunakan Page Title Bar terpisah. Header strip tabel cukup memuat Judul Tabel, Ikon, dan Counter Total Data (`Total: X Data`).
+
+
+
 
 
 

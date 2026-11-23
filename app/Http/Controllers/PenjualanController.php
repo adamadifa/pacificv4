@@ -1085,8 +1085,12 @@ class PenjualanController extends Controller
             ->get();
 
 
-        //dd($data['detail']);
-        $data['checkin'] = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+        // Ambil data check-in pada tanggal faktur, jika belum ada ambil riwayat check-in terakhir pelanggan
+        $checkin = Checkinpenjualan::where('tanggal', $penjualan->tanggal)->where('kode_pelanggan', $penjualan->kode_pelanggan)->first();
+        if (!$checkin) {
+            $checkin = Checkinpenjualan::where('kode_pelanggan', $penjualan->kode_pelanggan)->orderBy('tanggal', 'desc')->first();
+        }
+        $data['checkin'] = $checkin;
         return view('marketing.penjualan.show', $data);
     }
 

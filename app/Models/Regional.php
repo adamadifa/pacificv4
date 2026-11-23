@@ -22,6 +22,11 @@ class Regional extends Model
     {
         return $this->kode_regional; // Pastikan ini sesuai dengan primary key di tabel
     }
+
+    public function cabang()
+    {
+        return $this->hasMany(Cabang::class, 'kode_regional', 'kode_regional');
+    }
     public function getActivitylogOptions(): LogOptions
     {
         Log::info('Spatie Log Activity dipanggil untuk Regional'); // Debugging

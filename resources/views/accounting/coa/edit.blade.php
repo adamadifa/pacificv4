@@ -48,7 +48,9 @@
             });
         }
 
-        $("#kode_akun").mask('0-0000');
+        if ($.fn.mask) {
+            $("#kode_akun").mask('0-0000');
+        }
         form.submit(function() {
             const kode_akun = form.find("#kode_akun").val();
             const nama_akun = form.find("#nama_akun").val();
