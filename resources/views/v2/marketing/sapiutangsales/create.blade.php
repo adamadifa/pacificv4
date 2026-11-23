@@ -34,107 +34,109 @@
 
     <div class="max-w-5xl space-y-4">
         
-        <!-- CARD 1: PILIH PERIODE & CABANG (NO-LABEL, CARD HEADER PACIFIC NAVY) -->
-        <div class="rounded-xl overflow-hidden shadow-2xs border border-slate-200/80 dark:border-slate-800">
-            <div class="bg-[#284c9a] text-white px-3.5 py-2 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-200"></i>
-                    <span class="text-xs font-bold text-white uppercase tracking-wider">Pilih Periode & Cabang</span>
-                </div>
+        <!-- CARD 1: PILIH PERIODE & CABANG (NO-LABEL, KOMPAK ~36px) -->
+        <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 sm:p-4 shadow-2xs space-y-3">
+            <div class="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
+                <span>Pilih Periode & Cabang</span>
             </div>
 
-            <div class="p-3.5 sm:p-4 bg-white dark:bg-slate-900">
-                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-start">
-                    
-                    <!-- Bulan (No-label) -->
-                    <div class="sm:col-span-3 field-group">
-                        <div class="relative">
-                            <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
-                                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                            </div>
-                            <select name="bulan" id="bulan"
-                                class="w-full h-[36px] pl-8 pr-3 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#284c9a]/20 focus:border-[#284c9a] transition cursor-pointer">
-                                <option value="">Pilih Bulan</option>
-                                @foreach ($list_bulan as $d)
-                                    <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
-                                @endforeach
-                            </select>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-start">
+                
+                <!-- Bulan (No-label) -->
+                <div class="sm:col-span-3 field-group">
+                    <div class="relative">
+                        <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                         </div>
+                        <select name="bulan" id="bulan"
+                            class="w-full h-[36px] pl-8 pr-3 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition cursor-pointer">
+                            <option value="">Pilih Bulan</option>
+                            @foreach ($list_bulan as $d)
+                                <option value="{{ $d['kode_bulan'] }}">{{ $d['nama_bulan'] }}</option>
+                            @endforeach
+                        </select>
                     </div>
+                </div>
 
-                    <!-- Tahun (No-label) -->
-                    <div class="sm:col-span-3 field-group">
-                        <div class="relative">
-                            <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
-                                <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
-                            </div>
-                            <select name="tahun" id="tahun"
-                                class="w-full h-[36px] pl-8 pr-3 text-xs font-mono-num font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#284c9a]/20 focus:border-[#284c9a] transition cursor-pointer">
-                                <option value="">Pilih Tahun</option>
-                                @for ($t = $start_year; $t <= date('Y'); $t++)
-                                    <option value="{{ $t }}">{{ $t }}</option>
-                                @endfor
-                            </select>
+                <!-- Tahun (No-label) -->
+                <div class="sm:col-span-3 field-group">
+                    <div class="relative">
+                        <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
+                            <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
                         </div>
+                        <select name="tahun" id="tahun"
+                            class="w-full h-[36px] pl-8 pr-3 text-xs font-mono-num font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition cursor-pointer">
+                            <option value="">Pilih Tahun</option>
+                            @for ($t = $start_year; $t <= date('Y'); $t++)
+                                <option value="{{ $t }}">{{ $t }}</option>
+                            @endfor
+                        </select>
                     </div>
+                </div>
 
-                    <!-- Cabang (No-label) -->
-                    <div class="sm:col-span-3 field-group">
-                        <div class="relative">
-                            <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
-                                <i data-lucide="building-2" class="w-3.5 h-3.5"></i>
-                            </div>
-                            <select name="kode_cabang" id="kode_cabang"
-                                class="w-full h-[36px] pl-8 pr-3 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#284c9a]/20 focus:border-[#284c9a] transition cursor-pointer">
-                                <option value="">Pilih Cabang</option>
-                                @foreach ($cabang as $d)
-                                    <option value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
-                                @endforeach
-                            </select>
+                <!-- Cabang (No-label) -->
+                <div class="sm:col-span-3 field-group">
+                    <div class="relative">
+                        <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
+                            <i data-lucide="building-2" class="w-3.5 h-3.5"></i>
                         </div>
+                        <select name="kode_cabang" id="kode_cabang"
+                            class="w-full h-[36px] pl-8 pr-3 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition cursor-pointer">
+                            <option value="">Pilih Cabang</option>
+                            @foreach ($cabang as $d)
+                                <option value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
+                            @endforeach
+                        </select>
                     </div>
+                </div>
 
-                    <!-- Button Get Saldo -->
-                    <div class="sm:col-span-3">
-                        <button type="button" id="getsaldo"
-                            class="w-full h-[36px] px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition shadow-2xs cursor-pointer">
-                            <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
-                            <span>Get Saldo</span>
-                        </button>
-                    </div>
+                <!-- Button Get Saldo -->
+                <div class="sm:col-span-3">
+                    <button type="button" id="getsaldo"
+                        class="w-full h-[36px] px-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition shadow-2xs cursor-pointer">
+                        <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+                        <span>Get Saldo</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- CARD 2: RINCIAN SALDO AKHIR PIUTANG SALES -->
-        <div class="rounded-xl overflow-hidden shadow-2xs border border-slate-200/80 dark:border-slate-800">
-            <!-- Header Card Pacific Navy -->
-            <div class="bg-[#284c9a] text-white px-3.5 py-2 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="users" class="w-3.5 h-3.5 text-blue-200"></i>
-                    <span class="text-xs font-bold text-white uppercase tracking-wider">Rincian Saldo Akhir Piutang Sales</span>
-                </div>
-                <span id="badgeCounter" class="text-[10.5px] text-white/70 font-mono-num hidden">
-                    0 Salesman
-                </span>
-            </div>
-
-            <!-- Tabel Data -->
-            <div class="max-h-[50vh] overflow-y-auto bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800">
+        <!-- CARD 2: TABEL RINCIAN SALDO AKHIR PIUTANG SALES (KOMPAK ~36px) -->
+        <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
+            <div class="overflow-x-auto max-h-[50vh] overflow-y-auto">
                 <table class="w-full text-xs text-left border-separate border-spacing-0 whitespace-nowrap">
                     <thead class="sticky top-0 z-10">
+                        <!-- Baris 1: Strip Header Pacific Navy -->
+                        <tr class="bg-[#284c9a] text-white">
+                            <th colspan="3" class="px-3.5 py-2 bg-[#284c9a] text-white border-0">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5">
+                                        <i data-lucide="layers" class="w-3.5 h-3.5 text-blue-200"></i>
+                                        <span class="text-xs font-bold text-white">Rincian Saldo Akhir Piutang Sales</span>
+                                    </div>
+                                    <span class="text-[10.5px] text-white/70 font-mono-num hidden" id="badgeCounter">
+                                        0 Salesman
+                                    </span>
+                                </div>
+                            </th>
+                        </tr>
+
+                        <!-- Baris 2: Header Kolom -->
                         <tr class="bg-[#1e3a78] text-white text-[11px]">
                             <th class="py-2 px-3 font-bold uppercase tracking-wider text-white/90 border-b border-blue-900 w-36">KODE SALES</th>
                             <th class="py-2 px-3 font-bold uppercase tracking-wider text-white/90 border-b border-blue-900 min-w-[200px]">NAMA SALESMAN</th>
                             <th class="py-2 px-3 text-right font-bold uppercase tracking-wider text-white/90 border-b border-blue-900 w-44">SALDO</th>
                         </tr>
                     </thead>
-                    <tbody id="loaddetailsaldo" class="divide-y divide-slate-100 dark:divide-slate-800/80">
+                    <tbody id="loaddetailsaldo" class="divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-900">
                         <tr>
-                            <td colspan="3" class="py-10 text-center text-slate-400">
+                            <td colspan="3" class="py-12 px-4 text-center text-slate-400">
                                 <div class="flex flex-col items-center justify-center gap-2">
-                                    <i data-lucide="arrow-up-circle" class="w-7 h-7 text-slate-300 dark:text-slate-600"></i>
-                                    <span class="text-xs">Silakan pilih bulan, tahun, cabang lalu klik <b>Get Saldo</b>.</span>
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
+                                        <i data-lucide="database" class="w-5 h-5"></i>
+                                    </div>
+                                    <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih periode, cabang, dan klik tombol "Get Saldo" untuk menampilkan data rincian piutang</span>
                                 </div>
                             </td>
                         </tr>
@@ -142,23 +144,29 @@
                 </table>
             </div>
 
-            <!-- Card Footer: Total Banner & Submit -->
-            <div class="p-3.5 bg-slate-50/80 dark:bg-slate-800/50">
+            <!-- TOTAL DISPLAY BANNER & SUBMIT -->
+            <div class="p-4 bg-slate-50/80 dark:bg-slate-800/40 border-t border-slate-200/80 dark:border-slate-800 space-y-3">
                 <!-- Total Banner Pacific Navy -->
-                <div class="bg-[#284c9a] text-white px-4 py-3 rounded-xl flex items-center justify-between mb-3 shadow-xs">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="calculator" class="w-4 h-4 text-blue-200"></i>
-                        <span class="text-xs font-bold uppercase tracking-wider text-white">TOTAL PIUTANG</span>
+                <div class="rounded-xl bg-[#284c9a] text-white p-4 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                            <i data-lucide="calculator" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-bold text-white/70 uppercase tracking-wider">Total Piutang</span>
+                            <span class="text-xs text-white/50">Akumulasi saldo akhir piutang salesman</span>
+                        </div>
                     </div>
-                    <span class="text-base sm:text-lg font-black font-mono-num text-white">
-                        Rp <span id="total_piutang">0</span>
-                    </span>
+                    <div class="text-right">
+                        <span class="text-xs text-white/60 font-semibold block">Total Nominal</span>
+                        <span class="text-xl font-black font-mono-num tracking-tight">Rp. <span id="total_piutang">0</span></span>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" id="btnSimpan"
-                    class="w-full h-[38px] bg-[#284c9a] hover:bg-[#1e3a78] text-white font-bold rounded-lg text-xs flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
-                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                    class="w-full h-[38px] rounded-lg bg-[#284c9a] hover:bg-[#1e3a78] active:bg-[#152a56] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer">
+                    <i data-lucide="save" class="w-4 h-4"></i>
                     <span>Simpan Saldo Awal</span>
                 </button>
             </div>

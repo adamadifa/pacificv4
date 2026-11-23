@@ -730,6 +730,12 @@ class PelangganController extends Controller
                     $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $btn;
                 })
+                ->filterColumn('nama_salesman', function ($query, $keyword) {
+                    $query->where('salesman.nama_salesman', 'like', "%{$keyword}%");
+                })
+                ->filterColumn('nama_wilayah', function ($query, $keyword) {
+                    $query->where('wilayah.nama_wilayah', 'like', "%{$keyword}%");
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -767,6 +773,12 @@ class PelangganController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '<a href="#" kode_pelanggan="' . Crypt::encrypt($row->kode_pelanggan) . '" nama_pelanggan="' . $row->nama_pelanggan . '" class="pilihpelanggan"><i class="ti ti-external-link"></i></a>';
                     return $btn;
+                })
+                ->filterColumn('nama_salesman', function ($query, $keyword) {
+                    $query->where('salesman.nama_salesman', 'like', "%{$keyword}%");
+                })
+                ->filterColumn('nama_wilayah', function ($query, $keyword) {
+                    $query->where('wilayah.nama_wilayah', 'like', "%{$keyword}%");
                 })
                 ->rawColumns(['action'])
                 ->make(true);

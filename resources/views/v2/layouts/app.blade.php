@@ -24,6 +24,7 @@
     <!-- Vendor Libraries (jQuery, SweetAlert2, Flatpickr, Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('assets/vendor/js/jquery.maskMoney.js') }}"></script>
+    <script src="{{ asset('assets/vendor/js/easy-number-separator.js') }}?v=1.0.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- Flatpickr -->
@@ -190,6 +191,34 @@
         .has-error .select2-container--default.select2-container--open .select2-selection--single {
             border-color: #f43f5e !important;
             box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25) !important;
+        }
+        /* Standard Form Control Invalid / Error State (takes precedence) */
+        input.is-invalid,
+        select.is-invalid,
+        textarea.is-invalid,
+        .has-error input,
+        .has-error select,
+        .has-error textarea,
+        .field-group.has-error input,
+        .field-group.has-error select,
+        .field-group.has-error textarea {
+            border: 1px solid #f43f5e !important;
+            border-color: #f43f5e !important;
+            box-shadow: 0 0 0 1px #f43f5e !important;
+        }
+        .has-error .input-prefix-icon,
+        .field-group.has-error .input-prefix-icon,
+        .input-prefix-icon.text-rose-500 {
+            color: #f43f5e !important;
+        }
+        .field-error-msg {
+            color: #e11d48 !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            margin-top: 4px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
         }
         /* Rendered Text */
         .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -2038,6 +2067,13 @@
         $(function() {
             if ($.fn.maskMoney) {
                 $('.money').maskMoney({thousands: '.', decimal: ',', precision: 0});
+            }
+            if (typeof easyNumberSeparator === 'function') {
+                easyNumberSeparator({
+                    selector: '.number-separator',
+                    separator: '.',
+                    decimalSeparator: ',',
+                });
             }
         });
     </script>
