@@ -386,12 +386,18 @@
                             </span>
                         </label>
 
-                        <div id="saveButton" class="hidden">
-                            <button type="submit" id="btnSimpan"
-                                class="inline-flex items-center justify-center gap-1.5 h-[36px] px-5 rounded-lg bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-bold transition shadow-xs cursor-pointer">
-                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                                <span>Simpan Transaksi Pembelian</span>
-                            </button>
+                        <div id="saveButton" class="hidden pt-2 border-t border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="{{ route('pembelian.index') }}"
+                                    class="h-[36px] px-4 inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+                                    Batal
+                                </a>
+                                <button type="submit" id="btnSimpan"
+                                    class="inline-flex items-center justify-center gap-1.5 h-[36px] px-5 rounded-lg bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-bold transition shadow-xs cursor-pointer">
+                                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                    <span>Simpan Transaksi Pembelian</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 

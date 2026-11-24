@@ -66,6 +66,10 @@ Untuk menjaga konsistensi tampilan seluruh halaman Version 2 (V2):
         - Jarak margin bawah (*bottom margin*) header seksi wajib seragam `mb-2.5`.
         - Jika card berupa ringkasan dokumen referensi (Executive Summary Strip), header wajib memiliki garis pembatas halus:
           `<div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-200/80 dark:border-slate-800">`.
+    - **Posisi Tombol Aksi Formulir Utama (Wajib di Sebelah Kanan / Right-Aligned)**:
+      - Pada formulir Create maupun Edit (baik halaman penuh maupun seksi submit di card), tombol aksi utama pengiriman data (`Submit`, `Simpan ...`, `Perbarui ...`) beserta tombol pendampingnya (`Batal`) **WAJIB diposisikan di sisi kanan bawah (*right-aligned*)** menggunakan `<div class="flex items-center justify-end gap-2">`.
+      - **Dilarang Keras** membiarkan tombol submit utama menggantung di sisi kiri bawah formulir (*left-aligned*), karena layout form akan terlihat timpang, tidak rapi, dan tidak mengikuti standar alur mata pengguna (*visual reading flow* enterprise).
+      - Jika formulir dilengkapi klausul konfirmasi (*agreement checkbox*), blok tombol aksi yang muncul di bawahnya dipisahkan dengan garis pembatas halus (`border-t border-slate-100 dark:border-slate-800 pt-2`) dengan posisi tombol tetap terkunci rapi di sisi kanan.
 
 - **Statistic & Metric Cards**:
   - **Satu Kesatuan Strip**: Disatukan dalam satu card container strip utuh (`rounded-xl overflow-hidden shadow-xs hover:shadow-md`), bukan card terpisah-pisah dengan jarak gap.

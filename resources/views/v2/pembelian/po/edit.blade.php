@@ -264,16 +264,22 @@
                 <!-- SUBMIT / UPDATE SECTION -->
                 <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs space-y-3">
                     <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" name="agreement" class="agreement w-4 h-4 rounded-sm border-slate-300 text-[#284c9a] focus:ring-brand-500">
+                        <input type="checkbox" name="agreement" class="agreement w-4 h-4 rounded-sm border-slate-300 text-[#284c9a] focus:ring-brand-500 cursor-pointer">
                         <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Yakin data perubahan Pre-Order (PO) sudah benar dan siap disimpan?</span>
                     </label>
 
-                    <div id="saveButton" class="hidden">
-                        <button type="submit" id="btnSimpan"
-                            class="w-full sm:w-auto px-6 h-[38px] rounded-lg bg-[#284c9a] hover:bg-[#1e3a78] active:bg-[#152a57] text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
-                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                            <span>Perbarui Pre-Order (PO)</span>
-                        </button>
+                    <div id="saveButton" class="hidden pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('po.index') }}"
+                                class="h-[36px] px-4 inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+                                Batal
+                            </a>
+                            <button type="submit" id="btnSimpan"
+                                class="w-full sm:w-auto px-6 h-[36px] rounded-lg bg-[#284c9a] hover:bg-[#1e3a78] active:bg-[#152a57] text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span>Perbarui Pre-Order (PO)</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
