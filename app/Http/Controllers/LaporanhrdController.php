@@ -28,7 +28,7 @@ class LaporanhrdController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $data['roles_access_all_karyawan'] = config('global.roles_access_all_karyawan');
         $data['roles_access_all_pjp'] = config('global.roles_access_all_pjp');
-        return view('hrd.laporan.index', $data);
+        return view('v2.hrd.laporan.index', $data);
     }
 
 
