@@ -101,7 +101,7 @@
             </a>
 
             <!-- 3. Penilaian Karyawan -->
-            <a href="{{ route('penilaiankaryawan.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}" class="group relative overflow-hidden block p-4 sm:p-5 flex flex-col justify-between min-h-[128px] hover:bg-white/[0.05] transition-colors duration-200">
+            <a href="{{ route('penilaiankaryawan.index', ['status' => 'pending']) }}" class="group relative overflow-hidden block p-4 sm:p-5 flex flex-col justify-between min-h-[128px] hover:bg-white/[0.05] transition-colors duration-200">
                 <!-- Decorative Vector Arcs -->
                 <svg class="absolute right-0 bottom-0 w-24 h-24 text-white/[0.06] pointer-events-none transition-transform duration-300 group-hover:scale-105" viewBox="0 0 100 100" fill="none">
                     <circle cx="100" cy="100" r="45" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
@@ -134,7 +134,7 @@
             </a>
 
             <!-- 4. Pengajuan Izin -->
-            <a href="{{ route('izinabsen.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}" class="group relative overflow-hidden block p-4 sm:p-5 flex flex-col justify-between min-h-[128px] hover:bg-white/[0.05] transition-colors duration-200">
+            <a href="{{ route('izinabsen.index', ['status' => 'pending']) }}" class="group relative overflow-hidden block p-4 sm:p-5 flex flex-col justify-between min-h-[128px] hover:bg-white/[0.05] transition-colors duration-200">
                 <!-- Decorative Vector Arcs -->
                 <svg class="absolute right-0 bottom-0 w-24 h-24 text-white/[0.06] pointer-events-none transition-transform duration-300 group-hover:scale-105" viewBox="0 0 100 100" fill="none">
                     <circle cx="100" cy="100" r="45" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
@@ -167,7 +167,7 @@
             </a>
 
             <!-- 5. Lembur -->
-            <a href="{{ route('lembur.index', ['posisi_ajuan' => $level_user, 'status' => 'pending']) }}" class="group relative overflow-hidden block p-4 sm:p-5 flex flex-col justify-between min-h-[128px] hover:bg-white/[0.05] transition-colors duration-200">
+            <a href="{{ route('lembur.index', ['status' => 'pending']) }}" class="group relative overflow-hidden block p-4 sm:p-5 flex flex-col justify-between min-h-[128px] hover:bg-white/[0.05] transition-colors duration-200">
                 <!-- Decorative Vector Arcs -->
                 <svg class="absolute right-0 bottom-0 w-24 h-24 text-white/[0.06] pointer-events-none transition-transform duration-300 group-hover:scale-105" viewBox="0 0 100 100" fill="none">
                     <circle cx="100" cy="100" r="45" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
