@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-<form action="{{ route('penjualan.store') }}" method="POST" id="formPenjualan" class="space-y-4" autocomplete="off">
+<form action="{{ route('penjualan.store') }}" method="POST" id="formPenjualan" class="space-y-2.5" autocomplete="off">
     @csrf
     <input type="hidden" name="limit_pelanggan" id="limit_pelanggan">
     <input type="hidden" name="sisa_piutang" id="sisa_piutang">
@@ -37,14 +37,14 @@
     </div>
 
     <!-- MAIN TWO COLUMN GRID -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
         
         <!-- LEFT COLUMN: FAKTUR & PELANGGAN (Col-span 3) -->
-        <div class="lg:col-span-3 space-y-4">
+        <div class="lg:col-span-3 space-y-3">
             
             <!-- Card 1: Data Faktur -->
-            <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 sm:p-4 shadow-2xs space-y-2.5">
-                <div class="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+            <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs space-y-2">
+                <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                     <i data-lucide="receipt" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                     <span>Informasi Dokumen Faktur</span>
                 </div>
@@ -133,13 +133,13 @@
             </div>
 
             <!-- Card 2: Profil & Status Pelanggan -->
-            <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 sm:p-4 shadow-2xs space-y-3">
-                <div class="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+            <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs space-y-2">
+                <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                     <i data-lucide="user-circle" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                     <span>Profil &amp; Limit Pelanggan</span>
                 </div>
 
-                <div class="w-full h-36 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center relative">
+                <div class="w-full h-28 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center relative">
                     <img src="" alt="Foto Pelanggan" id="foto" class="w-full h-full object-cover hidden" onerror="$(this).addClass('hidden'); $('#foto_placeholder').removeClass('hidden');">
                     <div id="foto_placeholder" class="text-slate-400 flex flex-col items-center justify-center gap-1">
                         <i data-lucide="image" class="w-6 h-6"></i>
@@ -189,10 +189,10 @@
         </div>
 
         <!-- RIGHT COLUMN: PRODUK & PEMBAYARAN (Col-span 9) -->
-        <div class="lg:col-span-9 space-y-4">
+        <div class="lg:col-span-9 space-y-3">
             
             <!-- GRAND TOTAL DISPLAY STRIP (Pacific Navy) -->
-            <div class="rounded-xl bg-[#284c9a] text-white p-4 sm:p-5 shadow-2xs overflow-hidden relative">
+            <div class="rounded-xl bg-[#284c9a] text-white p-3.5 sm:p-4 shadow-2xs overflow-hidden relative">
                 <div class="flex items-center justify-between gap-4 relative z-10">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-xl bg-white/10 text-white flex items-center justify-center shrink-0">
@@ -210,8 +210,8 @@
             </div>
 
             <!-- CARD INPUT RINCIAN PRODUK -->
-            <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 sm:p-4 shadow-2xs space-y-3">
-                <div class="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+            <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-3.5 shadow-2xs space-y-2">
+                <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                     <i data-lucide="package-plus" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                     <span>Tambah Rincian Produk</span>
                 </div>
@@ -236,10 +236,10 @@
                 </div>
 
                 <!-- Grid Jumlah & Harga Produk -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     
                     <!-- DUS -->
-                    <div class="space-y-1.5">
+                    <div class="space-y-1">
                         <div class="relative flex rounded-lg shadow-2xs">
                             <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
                                 <i data-lucide="box" class="w-3.5 h-3.5"></i>
@@ -261,7 +261,7 @@
                     </div>
 
                     <!-- PACK -->
-                    <div class="space-y-1.5">
+                    <div class="space-y-1">
                         <div class="relative flex rounded-lg shadow-2xs">
                             <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
                                 <i data-lucide="box" class="w-3.5 h-3.5"></i>
@@ -283,7 +283,7 @@
                     </div>
 
                     <!-- PCS -->
-                    <div class="space-y-1.5">
+                    <div class="space-y-1">
                         <div class="relative flex rounded-lg shadow-2xs">
                             <div class="input-prefix-icon absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 z-10">
                                 <i data-lucide="box" class="w-3.5 h-3.5"></i>
@@ -322,7 +322,7 @@
                 </div>
 
                 <!-- TABEL KERANJANG PRODUK (~36px) -->
-                <div class="rounded-lg border border-slate-200/80 dark:border-slate-800 overflow-hidden mt-3">
+                <div class="rounded-lg border border-slate-200/80 dark:border-slate-800 overflow-hidden mt-2">
                     <div class="overflow-x-auto">
                         <table class="w-full text-xs text-left border-collapse whitespace-nowrap" id="tabelproduk">
                             <thead>
@@ -367,10 +367,10 @@
             </div>
 
             <!-- GRID 4 KOLOM: DISKON, POTIS, PENYESUAIAN & PEMBAYARAN -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
                 
                 <!-- Kolom 1: Potongan Diskon -->
-                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-2xs space-y-2">
+                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-2.5 shadow-2xs space-y-1.5">
                     <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                         <i data-lucide="percent" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                         <span>Potongan Diskon</span>
@@ -401,7 +401,7 @@
                 </div>
 
                 <!-- Kolom 2: Potongan Istimewa -->
-                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-2xs space-y-2">
+                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-2.5 shadow-2xs space-y-1.5">
                     <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                         <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                         <span>Potongan Khusus</span>
@@ -427,7 +427,7 @@
                 </div>
 
                 <!-- Kolom 3: Penyesuaian -->
-                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-2xs space-y-2">
+                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-2.5 shadow-2xs space-y-1.5">
                     <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                         <i data-lucide="sliders" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                         <span>Penyesuaian</span>
@@ -453,7 +453,7 @@
                 </div>
 
                 <!-- Kolom 4: Pembayaran & Simpan -->
-                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shadow-2xs space-y-2">
+                <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-2.5 shadow-2xs space-y-1.5">
                     <div class="flex items-center gap-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                         <i data-lucide="wallet" class="w-3.5 h-3.5 text-[#284c9a] dark:text-blue-400"></i>
                         <span>Pembayaran</span>

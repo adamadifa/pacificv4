@@ -413,11 +413,6 @@
     <div class="sidebar-scroll-container flex-1 overflow-y-auto overflow-x-hidden">
         <ul class="menu-inner">
             
-            <!-- 1. SECTION: UTAMA -->
-            <li class="menu-header">
-                <span>Utama</span>
-            </li>
-
             <!-- Dashboard -->
             <li class="menu-item {{ request()->is(['dashboard', 'dashboard/*']) ? 'active' : '' }}">
                 <a href="{{ route('dashboard') }}" class="menu-link">
@@ -451,11 +446,7 @@
             @endif
 
 
-            <!-- 2. SECTION: SALES FORCE AUTOMATION (SFA) -->
             @if (auth()->user()->hasAnyPermission(['dashboard.sfa', 'sfa.trackingsalesman', 'tracking.index', 'sfa.pelanggan', 'sfa.penjualan']))
-                <li class="menu-header">
-                    <span>Monitoring & SFA</span>
-                </li>
 
                 <!-- Dashboard SFA -->
                 @if (auth()->user()->hasAnyPermission(['dashboard.sfa']))
@@ -509,11 +500,7 @@
             @endif
 
 
-            <!-- 3. SECTION: MASTER DATA -->
             @if (auth()->user()->hasAnyPermission($datamaster_permission ?? []))
-                <li class="menu-header">
-                    <span>Master Data</span>
-                </li>
                 @include('layouts.sidebar.datamaster')
             @endif
 
@@ -529,9 +516,6 @@
                     auth()->user()->hasAnyPermission(['barangmasukmtc.index', 'barangkeluarmtc.index', 'mtc.bahanbakar']);
             @endphp
             @if ($hasProduksiLogistik)
-                <li class="menu-header">
-                    <span>Produksi & Logistik</span>
-                </li>
                 @include('layouts.sidebar.produksi')
                 @include('layouts.sidebar.gudang_bahan')
                 @include('layouts.sidebar.gudang_logistik')
@@ -561,9 +545,6 @@
                     ]);
             @endphp
             @if ($hasMarketing)
-                <li class="menu-header">
-                    <span>Marketing & Penjualan</span>
-                </li>
                 @include('layouts.sidebar.marketing')
                 @include('layouts.sidebar.worksheetom')
             @endif
@@ -580,9 +561,6 @@
                 ]);
             @endphp
             @if ($hasPembelian)
-                <li class="menu-header">
-                    <span>Pembelian</span>
-                </li>
                 @include('layouts.sidebar.pembelian')
             @endif
 
@@ -601,9 +579,6 @@
                     ]);
             @endphp
             @if ($hasFinance)
-                <li class="menu-header">
-                    <span>Keuangan & Akuntansi</span>
-                </li>
                 @include('layouts.sidebar.keuangan')
                 @include('layouts.sidebar.accounting')
             @endif
@@ -622,9 +597,6 @@
                     ]);
             @endphp
             @if ($hasHrdGa)
-                <li class="menu-header">
-                    <span>SDM & General Affair</span>
-                </li>
                 @include('layouts.sidebar.hrd')
                 @include('layouts.sidebar.generalaffair')
             @endif
@@ -641,9 +613,6 @@
                     ]);
             @endphp
             @if ($hasSettings)
-                <li class="menu-header">
-                    <span>Pengaturan & Sistem</span>
-                </li>
 
                 <!-- Utilities -->
                 @if (auth()->user()->hasAnyPermission(['kirimlhp.index', 'kirimlpc.index', 'tutuplaporan.index', 'activitylog.index', 'push-subscriptions.index']) ||
