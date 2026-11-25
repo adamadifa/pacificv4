@@ -12,6 +12,7 @@
 @endsection
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/leaflet/leaflet.css') }}" />
 <style>
     .webcam-capture,
     .webcam-capture video {
@@ -42,9 +43,11 @@
     </div>
 
     <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
-        <div class="bg-[#284c9a] text-white px-3.5 py-2 flex items-center gap-2">
-            <i data-lucide="camera" class="w-3.5 h-3.5 text-blue-200"></i>
-            <span class="text-xs font-bold uppercase tracking-wider">Kamera & Peta Lokasi</span>
+        <div class="px-3.5 py-2.5 border-b border-slate-200/80 dark:border-slate-800 flex items-center gap-2">
+            <div class="w-6 h-6 rounded-md bg-blue-50 dark:bg-blue-950/60 text-[#284c9a] dark:text-blue-400 flex items-center justify-center shrink-0">
+                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+            </div>
+            <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Kamera & Peta Lokasi</span>
         </div>
 
         <div class="p-4 space-y-3">
@@ -64,6 +67,7 @@
 @endsection
 
 @push('myscript')
+<script src="{{ asset('assets/vendor/libs/leaflet/leaflet.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
 <script>
     $(function() {
