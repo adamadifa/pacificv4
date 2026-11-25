@@ -30,7 +30,7 @@ class IzinkeluarController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izinkeluar.index', $data);
+        return view('v2.hrd.pengajuanizin.izinkeluar.index', $data);
     }
 
 
@@ -38,7 +38,7 @@ class IzinkeluarController extends Controller
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinkeluar.create', $data);
+        return view('v2.hrd.pengajuanizin.izinkeluar.create', $data);
     }
 
     public function store(Request $request)
@@ -154,7 +154,7 @@ class IzinkeluarController extends Controller
         $data['izinkeluar'] = Izinkeluar::where('kode_izin_keluar', $kode_izin_keluar)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinkeluar.edit', $data);
+        return view('v2.hrd.pengajuanizin.izinkeluar.edit', $data);
     }
 
     public function update(Request $request, $kode_izin_keluar)
@@ -210,7 +210,7 @@ class IzinkeluarController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izinkeluar.approve', $data);
+        return view('v2.hrd.pengajuanizin.izinkeluar.approve', $data);
     }
 
 
@@ -267,7 +267,7 @@ class IzinkeluarController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinkeluar.show', $data);
+        return view('v2.hrd.pengajuanizin.izinkeluar.show', $data);
     }
 
 
@@ -396,7 +396,7 @@ class IzinkeluarController extends Controller
         $i_keluar = new Izinkeluar();
         $izinkeluar = $i_keluar->getIzinkeluar(kode_izin_keluar: $kode_izin_keluar)->first();
         $data['izinkeluar'] = $izinkeluar;
-        return view('hrd.pengajuanizin.izinkeluar.updatejamkembali', $data);
+        return view('v2.hrd.pengajuanizin.izinkeluar.updatejamkembali', $data);
     }
 
     public function storeupdatejamkembali(Request $request, $kode_izin_keluar)

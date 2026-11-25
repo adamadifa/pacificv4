@@ -178,7 +178,7 @@
             <!-- Tabel Barang Terpilih -->
             <div class="overflow-x-auto min-h-[140px]">
                 <table class="w-full text-xs text-left border-separate border-spacing-0 whitespace-nowrap" id="tabledetail">
-                    <thead>
+                    <thead class="sticky top-0 z-10">
                         <!-- Baris 1: Strip Header Pacific Navy -->
                         <tr class="bg-[#284c9a] text-white">
                             <th colspan="5" class="px-3.5 py-2 bg-[#284c9a] text-white border-0">

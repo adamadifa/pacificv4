@@ -29,14 +29,14 @@ class IzinpulangController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izinpulang.index', $data);
+        return view('v2.hrd.pengajuanizin.izinpulang.index', $data);
     }
 
     public function create()
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinpulang.create', $data);
+        return view('v2.hrd.pengajuanizin.izinpulang.create', $data);
     }
 
 
@@ -91,7 +91,7 @@ class IzinpulangController extends Controller
         $data['izinpulang'] = Izinpulang::where('kode_izin_pulang', $kode_izin_pulang)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinpulang.edit', $data);
+        return view('v2.hrd.pengajuanizin.izinpulang.edit', $data);
     }
 
 
@@ -146,7 +146,7 @@ class IzinpulangController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izinpulang.approve', $data);
+        return view('v2.hrd.pengajuanizin.izinpulang.approve', $data);
     }
 
     public function show($kode_izin_pulang)
@@ -202,7 +202,7 @@ class IzinpulangController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinpulang.show', $data);
+        return view('v2.hrd.pengajuanizin.izinpulang.show', $data);
     }
 
     public function storeapprove($kode_izin_pulang, Request $request)

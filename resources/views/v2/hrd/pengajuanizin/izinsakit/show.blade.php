@@ -1,0 +1,51 @@
+<div class="space-y-3">
+    <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-3 sm:p-3.5 divide-y divide-dashed divide-slate-200 dark:divide-slate-700 text-xs">
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Kode</span>
+            <span class="font-mono-num font-bold text-[#284c9a] dark:text-blue-400">{{ $izinsakit->kode_izin_sakit }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Tanggal</span>
+            <span class="font-semibold text-slate-800 dark:text-slate-100">{{ DateToIndo($izinsakit->tanggal) }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">NIK</span>
+            <span class="font-mono-num font-bold text-slate-800 dark:text-slate-100">{{ $izinsakit->nik }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Nama Karyawan</span>
+            <span class="font-bold text-slate-800 dark:text-slate-100 text-right">{{ $izinsakit->nama_karyawan }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Jabatan</span>
+            <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $izinsakit->nama_jabatan }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Departemen</span>
+            <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $izinsakit->nama_dept }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Cabang</span>
+            <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ textUpperCase($izinsakit->nama_cabang) }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Periode Tanggal</span>
+            <span class="font-mono-num font-semibold text-slate-700 dark:text-slate-200">{{ formatIndo($izinsakit->dari) }} - {{ formatIndo($izinsakit->sampai) }}</span>
+        </div>
+        <div class="py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-400">Lama</span>
+            <span class="font-mono-num font-bold text-slate-800 dark:text-slate-100">{{ hitungHari($izinsakit->dari, $izinsakit->sampai) }} Hari</span>
+        </div>
+        <div class="py-1.5 flex items-start justify-between gap-2">
+            <span class="text-slate-400 shrink-0">Keterangan</span>
+            <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $izinsakit->keterangan }}</span>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-end pt-2 border-t border-slate-100 dark:border-slate-800">
+        <button type="button" onclick="window.closeModalIzinSakit && window.closeModalIzinSakit()"
+            class="h-[36px] px-4 rounded-lg bg-[#284c9a] hover:bg-[#1e3a78] text-white text-xs font-bold shadow-xs transition cursor-pointer">
+            Tutup
+        </button>
+    </div>
+</div>

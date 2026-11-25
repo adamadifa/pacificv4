@@ -26,7 +26,7 @@ class LemburController extends Controller
         $dept_lembur = config('hrd.dept_lembur');
         $data['departemen'] = Departemen::whereIn('kode_dept', $dept_lembur)->orderBy('kode_dept')->get();
         $data['listApprovelembur'] = listApprovelembur(auth()->user()->kode_dept, auth()->user()->kode_cabang, $user->getRoleNames()->first());
-        return view('hrd.lembur.index', $data);
+        return view('v2.hrd.lembur.index', $data);
     }
 
 
@@ -35,7 +35,7 @@ class LemburController extends Controller
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $cbg = new Cabang();
         $data['cabang'] = $cbg->getcabang();
-        return view('hrd.lembur.create', $data);
+        return view('v2.hrd.lembur.create', $data);
     }
 
 
@@ -120,7 +120,7 @@ class LemburController extends Controller
         if (in_array($role, ['super admin', 'asst. manager hrd', 'spv presensi'])) {
             $data['roles_approve'] = cekRoleapprovelembur($lembur->kode_dept, $lembur->kode_cabang);
         }
-        return view('hrd.lembur.edit', $data);
+        return view('v2.hrd.lembur.edit', $data);
     }
 
 
@@ -183,7 +183,7 @@ class LemburController extends Controller
         $kode_lembur = Crypt::decrypt($kode_lembur);
         $lb = new Lembur();
         $data['lembur'] = $lb->getLembur($kode_lembur)->first();
-        return view('hrd.lembur.aturlembur', $data);
+        return view('v2.hrd.lembur.aturlembur', $data);
     }
 
 
@@ -194,7 +194,7 @@ class LemburController extends Controller
             ->join('hrd_lembur', 'hrd_lembur_detail.kode_lembur', '=', 'hrd_lembur.kode_lembur')
             ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
             ->where('hrd_lembur_detail.kode_lembur', $kode_lembur)->get();
-        return view('hrd.lembur.getkaryawanlembur', $data);
+        return view('v2.hrd.lembur.getkaryawanlembur', $data);
     }
 
     public function aturkaryawan($kode_lembur)
@@ -212,7 +212,7 @@ class LemburController extends Controller
             ->groupBy('hrd_karyawan.kode_group', 'nama_group')->get();
 
 
-        return view('hrd.lembur.aturkaryawan', $data);
+        return view('v2.hrd.lembur.aturkaryawan', $data);
     }
 
     function getkaryawan(Request $request)
@@ -253,7 +253,7 @@ class LemburController extends Controller
         $query->orderBy('hrd_karyawan.kode_group');
         $query->orderBy('nama_karyawan');
         $data['karyawan'] = $query->get();
-        return view('hrd.lembur.getkaryawan', $data);
+        return view('v2.hrd.lembur.getkaryawan', $data);
     }
 
     public function updatelemburkaryawan(Request $request)
@@ -432,7 +432,7 @@ class LemburController extends Controller
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
         $data['level_user'] = $role;
-        return view('hrd.lembur.approve', $data);
+        return view('v2.hrd.lembur.approve', $data);
     }
 
 

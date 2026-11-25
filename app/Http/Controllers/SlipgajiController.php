@@ -18,14 +18,14 @@ class SlipgajiController extends Controller
     public function index()
     {
         $data['slipgaji'] = Slipgaji::orderBy('tahun')->orderBy('bulan')->get();
-        return view('hrd.slipgaji.index', $data);
+        return view('v2.hrd.slipgaji.index', $data);
     }
 
     public function create()
     {
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        return view('hrd.slipgaji.create', $data);
+        return view('v2.hrd.slipgaji.create', $data);
     }
 
     public function store(Request $request)
@@ -56,7 +56,7 @@ class SlipgajiController extends Controller
         $data['slipgaji'] = Slipgaji::where('kode_gaji', $kode_gaji)->first();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        return view('hrd.slipgaji.edit', $data);
+        return view('v2.hrd.slipgaji.edit', $data);
     }
 
     public function update(Request $request, $kode_gaji)

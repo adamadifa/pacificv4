@@ -34,14 +34,14 @@ class IzinabsenController extends Controller
         $data['level_hrd'] = config('presensi.approval.level_hrd');
         // dd($data['roles_approve'][$role]);
 
-        return view('hrd.pengajuanizin.izinabsen.index', $data);
+        return view('v2.hrd.pengajuanizin.izinabsen.index', $data);
     }
 
     public function create()
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinabsen.create', $data);
+        return view('v2.hrd.pengajuanizin.izinabsen.create', $data);
     }
 
     public function store(Request $request)
@@ -171,7 +171,7 @@ class IzinabsenController extends Controller
         $data['izinabsen'] = Izinabsen::where('kode_izin', $kode_izin)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinabsen.edit', $data);
+        return view('v2.hrd.pengajuanizin.izinabsen.edit', $data);
     }
 
 
@@ -219,7 +219,7 @@ class IzinabsenController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izinabsen.approve', $data);
+        return view('v2.hrd.pengajuanizin.izinabsen.approve', $data);
     }
 
 
@@ -276,7 +276,7 @@ class IzinabsenController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinabsen.show', $data);
+        return view('v2.hrd.pengajuanizin.izinabsen.show', $data);
     }
 
     public function storeapprove($kode_izin, Request $request)

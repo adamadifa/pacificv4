@@ -96,26 +96,26 @@
 
                 <!-- Body Card -->
                 <div class="p-3.5 space-y-3">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                         <!-- No. BPPB -->
-                        <div class="p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 border-l-[3px] border-l-[#284c9a]">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">No. BPPB</span>
-                            <span class="text-xs font-bold font-mono-num text-slate-800 dark:text-slate-100 truncate block">{{ $bpb->no_bpb }}</span>
+                        <div>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 block">No. BPPB</span>
+                            <span class="text-xs font-bold font-mono-num text-[#284c9a] dark:text-blue-400 mt-0.5 block truncate">{{ $bpb->no_bpb }}</span>
                         </div>
                         <!-- Tanggal -->
-                        <div class="p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 border-l-[3px] border-l-sky-500">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Tanggal</span>
-                            <span class="text-xs font-bold font-mono-num text-slate-800 dark:text-slate-100 truncate block">{{ DateToIndo($bpb->tanggal) }}</span>
+                        <div>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 block">Tanggal</span>
+                            <span class="text-xs font-bold font-mono-num text-slate-800 dark:text-slate-200 mt-0.5 block truncate">{{ DateToIndo($bpb->tanggal) }}</span>
                         </div>
                         <!-- Departemen -->
-                        <div class="p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 border-l-[3px] border-l-emerald-500">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Departemen</span>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block">{{ $bpb->nama_dept ?: '-' }}</span>
+                        <div>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 block">Departemen</span>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate">{{ $bpb->nama_dept ?: '-' }}</span>
                         </div>
                         <!-- Cabang -->
-                        <div class="p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 border-l-[3px] border-l-amber-500">
-                            <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Cabang</span>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block">{{ $bpb->nama_cabang ?: '-' }}</span>
+                        <div>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 block">Cabang</span>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate">{{ $bpb->nama_cabang ?: '-' }}</span>
                         </div>
                     </div>
 

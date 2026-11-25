@@ -35,7 +35,7 @@ class IzincutiController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izincuti.index', $data);
+        return view('v2.hrd.pengajuanizin.izincuti.index', $data);
     }
 
     public function create()
@@ -44,7 +44,7 @@ class IzincutiController extends Controller
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         $data['jenis_cuti'] = Jeniscuti::orderBy('kode_cuti')->get();
         $data['jenis_cuti_khusus'] = Jeniscutikhusus::orderBy('kode_cuti_khusus')->get();
-        return view('hrd.pengajuanizin.izincuti.create', $data);
+        return view('v2.hrd.pengajuanizin.izincuti.create', $data);
     }
 
     public function store(Request $request)
@@ -140,7 +140,7 @@ class IzincutiController extends Controller
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         $data['jenis_cuti'] = Jeniscuti::orderBy('kode_cuti')->get();
         $data['jenis_cuti_khusus'] = Jeniscutikhusus::orderBy('kode_cuti_khusus')->get();
-        return view('hrd.pengajuanizin.izincuti.edit', $data);
+        return view('v2.hrd.pengajuanizin.izincuti.edit', $data);
     }
 
     public function update(Request $request, $kode_izin_cuti)
@@ -207,7 +207,7 @@ class IzincutiController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izincuti.approve', $data);
+        return view('v2.hrd.pengajuanizin.izincuti.approve', $data);
     }
 
 
@@ -274,7 +274,7 @@ class IzincutiController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izincuti.show', $data);
+        return view('v2.hrd.pengajuanizin.izincuti.show', $data);
     }
 
     public function storeapprove($kode_izin_cuti, Request $request)

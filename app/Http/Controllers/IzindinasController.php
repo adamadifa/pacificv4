@@ -26,7 +26,7 @@ class IzindinasController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izindinas.index', $data);
+        return view('v2.hrd.pengajuanizin.izindinas.index', $data);
     }
 
 
@@ -35,7 +35,7 @@ class IzindinasController extends Controller
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        return view('hrd.pengajuanizin.izindinas.create', $data);
+        return view('v2.hrd.pengajuanizin.izindinas.create', $data);
     }
 
 
@@ -99,7 +99,7 @@ class IzindinasController extends Controller
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
-        return view('hrd.pengajuanizin.izindinas.edit', $data);
+        return view('v2.hrd.pengajuanizin.izindinas.edit', $data);
     }
 
 
@@ -162,7 +162,7 @@ class IzindinasController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izindinas.approve', $data);
+        return view('v2.hrd.pengajuanizin.izindinas.approve', $data);
     }
 
     public function storeapprove($kode_izin_dinas, Request $request)

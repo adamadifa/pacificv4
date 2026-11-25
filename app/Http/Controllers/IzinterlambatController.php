@@ -28,14 +28,14 @@ class IzinterlambatController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izinterlambat.index', $data);
+        return view('v2.hrd.pengajuanizin.izinterlambat.index', $data);
     }
 
     public function create()
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinterlambat.create', $data);
+        return view('v2.hrd.pengajuanizin.izinterlambat.create', $data);
     }
 
     public function store(Request $request)
@@ -93,7 +93,7 @@ class IzinterlambatController extends Controller
         $data['izinterlambat'] = Izinterlambat::where('kode_izin_terlambat', $kode_izin_terlambat)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinterlambat.edit', $data);
+        return view('v2.hrd.pengajuanizin.izinterlambat.edit', $data);
     }
 
     public function update(Request $request, $kode_izin_terlambat)
@@ -148,7 +148,7 @@ class IzinterlambatController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izinterlambat.approve', $data);
+        return view('v2.hrd.pengajuanizin.izinterlambat.approve', $data);
     }
 
 
@@ -205,7 +205,7 @@ class IzinterlambatController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinterlambat.show', $data);
+        return view('v2.hrd.pengajuanizin.izinterlambat.show', $data);
     }
 
 

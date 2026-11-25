@@ -18,12 +18,12 @@ class JadwalshiftController extends Controller
     public function index()
     {
         $data['jadwalshift'] = Jadwalshift::orderBy('dari', 'desc')->paginate(15);
-        return view('hrd.jadwalshift.index', $data);
+        return view('v2.hrd.jadwalshift.index', $data);
     }
 
     public function create()
     {
-        return view('hrd.jadwalshift.create');
+        return view('v2.hrd.jadwalshift.create');
     }
 
     public function store(Request $request)
@@ -65,7 +65,7 @@ class JadwalshiftController extends Controller
     {
         $kode_jadwalshift = Crypt::decrypt($kode_jadwalshift);
         $data['jadwalshift'] = Jadwalshift::where('kode_jadwalshift', $kode_jadwalshift)->first();
-        return view('hrd.jadwalshift.edit', $data);
+        return view('v2.hrd.jadwalshift.edit', $data);
     }
 
     public function update(Request $request, $kode_jadwalshift)
@@ -88,7 +88,7 @@ class JadwalshiftController extends Controller
     {
         $kode_jadwalshift = Crypt::decrypt($kode_jadwalshift);
         $data['jadwalshift'] = Jadwalshift::where('kode_jadwalshift', $kode_jadwalshift)->first();
-        return view('hrd.jadwalshift.aturjadwal', $data);
+        return view('v2.hrd.jadwalshift.aturjadwal', $data);
     }
 
     public function getshift(Request $request)
@@ -106,7 +106,7 @@ class JadwalshiftController extends Controller
 
         $data['shift'] =  $shift;
 
-        return view('hrd.jadwalshift.getshift', $data);
+        return view('v2.hrd.jadwalshift.getshift', $data);
     }
 
     public function aturshift($shift, $kode_jadwalshift)
@@ -118,7 +118,7 @@ class JadwalshiftController extends Controller
         $data['group'] = Group::orderBy('kode_group')
             ->whereIn('kode_dept', $dept_access)
             ->get();
-        return view('hrd.jadwalshift.aturshift', $data);
+        return view('v2.hrd.jadwalshift.aturshift', $data);
     }
 
     public function getgroup($kode_group, $kode_jadwalshift)
@@ -142,7 +142,7 @@ class JadwalshiftController extends Controller
             ->where('status_aktif_karyawan', 1)
             ->orderBy('nama_karyawan')
             ->get();
-        return view('hrd.jadwalshift.getgroup', $data);
+        return view('v2.hrd.jadwalshift.getgroup', $data);
     }
 
 
@@ -254,7 +254,7 @@ class JadwalshiftController extends Controller
             ->whereIn('hrd_karyawan.kode_dept', $dept_access)
             ->get();
         $data['jadwalshift'] = Jadwalshift::where('kode_jadwalshift', $kode_jadwalshift)->first();
-        return view('hrd.jadwalshift.gantishift', $data);
+        return view('v2.hrd.jadwalshift.gantishift', $data);
     }
 
     public function storegantishift(Request $request)
@@ -301,7 +301,7 @@ class JadwalshiftController extends Controller
             ->join('hrd_jadwalkerja', 'hrd_gantishift.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
             ->get();
 
-        return view('hrd.jadwalshift.getgantishift', $data);
+        return view('v2.hrd.jadwalshift.getgantishift', $data);
     }
 
     public function deletegantishift(Request $request)

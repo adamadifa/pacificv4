@@ -27,7 +27,7 @@ class HariliburController extends Controller
         $data['kategorilibur'] = Kategorilibur::orderBy('kode_kategori')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
-        return view('hrd.harilibur.index', $data);
+        return view('v2.hrd.harilibur.index', $data);
     }
 
     public function create()
@@ -36,7 +36,7 @@ class HariliburController extends Controller
         $data['cabang'] = $cbg->getCabang();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
         $data['kategorilibur'] = Kategorilibur::orderBy('kode_kategori')->get();
-        return view('hrd.harilibur.create', $data);
+        return view('v2.hrd.harilibur.create', $data);
     }
 
     public function store(Request $request)
@@ -124,7 +124,7 @@ class HariliburController extends Controller
         $data['kategorilibur'] = Kategorilibur::orderBy('kode_kategori')->get();
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['departemen'] = Departemen::orderBy('kode_dept')->get();
-        return view('hrd.harilibur.edit', $data);
+        return view('v2.hrd.harilibur.edit', $data);
     }
 
     public function update(Request $request, $kode_libur)
@@ -181,7 +181,7 @@ class HariliburController extends Controller
         $kode_libur = Crypt::decrypt($kode_libur);
         $hl = new Harilibur();
         $data['harilibur'] = $hl->getHarilibur(kode_libur: $kode_libur)->first();
-        return view('hrd.harilibur.aturharilibur', $data);
+        return view('v2.hrd.harilibur.aturharilibur', $data);
     }
 
     function getkaryawanlibur($kode_libur)
@@ -190,7 +190,7 @@ class HariliburController extends Controller
         $data['detailharilibur'] = Detailharilibur::join('hrd_karyawan', 'hrd_harilibur_detail.nik', '=', 'hrd_karyawan.nik')
             ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
             ->where('kode_libur', $kode_libur)->get();
-        return view('hrd.harilibur.getkaryawanlibur', $data);
+        return view('v2.hrd.harilibur.getkaryawanlibur', $data);
     }
 
     public function aturkaryawan($kode_libur)
@@ -215,7 +215,7 @@ class HariliburController extends Controller
         }
 
 
-        return view('hrd.harilibur.aturkaryawan', $data);
+        return view('v2.hrd.harilibur.aturkaryawan', $data);
     }
 
     function getkaryawan(Request $request)
@@ -254,7 +254,7 @@ class HariliburController extends Controller
         $query->orderBy('hrd_karyawan.kode_group');
         $query->orderBy('nama_karyawan');
         $data['karyawan'] = $query->get();
-        return view('hrd.harilibur.getkaryawan', $data);
+        return view('v2.hrd.harilibur.getkaryawan', $data);
     }
 
     public function updateliburkaryawan(Request $request)
@@ -408,7 +408,7 @@ class HariliburController extends Controller
         $data['detail'] = Detailharilibur::join('hrd_karyawan', 'hrd_harilibur_detail.nik', '=', 'hrd_karyawan.nik')
             ->join('hrd_group', 'hrd_karyawan.kode_group', '=', 'hrd_group.kode_group')
             ->where('kode_libur', $kode_libur)->get();
-        return view('hrd.harilibur.approve', $data);
+        return view('v2.hrd.harilibur.approve', $data);
     }
 
     public function storeapprove($kode_libur, Request $request)

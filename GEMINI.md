@@ -126,6 +126,10 @@ Untuk seluruh tabel data master dan transaksi Version 2:
   - Menghasilkan tinggi baris total **~36px** (standar emas enterprise ERP yang padat, rapi, dan mudah dibaca).
 - **Colspan Strip Judul Tabel Presisi**:
   - Atribut `colspan` pada baris strip judul tabel (`bg-[#284c9a]`) WAJIB sama persis dengan total seluruh jumlah kolom data (`td`/`th` aktif) agar tidak menyisakan ruang/celah kosong putih di ujung kanan header.
+- **Dilarang Menumpuk Data Menjadi Multi-Baris dalam Satu Sel Tabel (Anti-Stacked Data / Wajib Kolom Terpisah)**:
+  - Seluruh sel data tabel (`td`) **DILARANG KERAS** menumpuk dua atau lebih informasi secara vertikal menjadi beberapa baris dalam satu kolom (seperti menumpuk nama pelanggan di baris atas dan kode pelanggan di baris bawahnya, menumpuk no bukti dan tanggal, atau menumpuk nama bank dan nomor rekening).
+  - Seluruh atribut data wajib dipisahkan ke dalam kolomnya masing-masing secara mandiri (misal: buat kolom terpisah untuk `KODE PELANGGAN` dan kolom `NAMA PELANGGAN`).
+  - Hal ini menjamin setiap baris tabel tetap padat, seragam satu baris rapi (`whitespace-nowrap`), memenuhi standar tinggi enterprise **~36px**, dan mudah dipindai (*scannable*) oleh pengguna tanpa layout yang menggembung ke bawah.
 - **Warna Background Card Header Pembungkus Tabel Samakan dengan Header Tabel**:
   - Jika sebuah tabel dibungkus dalam card yang memiliki baris Card Header tersendiri (misal: memuat judul tabel serta tombol aksi seperti "+ Input Pembayaran", "+ Input Giro", dsb.):
   - Warna latar belakang (*background color*) card header tersebut **WAJIB disamakan** dengan warna strip judul tabel Pacific Navy (`bg-[#284c9a] text-white`).
@@ -223,6 +227,10 @@ Untuk seluruh modal detail data (seperti Detail Transaksi, Detail BPB, Barang Ma
   - Setiap elemen input pada formulir V1 (input teks, select box, tanggal, radio/checkbox/switch, textarea, file upload, hidden input, peta/koordinat, dsb.) **WAJIB** dicantumkan lengkap pada formulir V2.
   - Jangan sampai ada data, bagian, atau kontrol input yang hilang atau terlewat saat restyling ke V2 (seperti contoh kasus: field titik koordinat GPS / picker peta lokasi pelanggan, NIK, KK, limit kredit, status jaminan, opsi dropdown, keterangan tambahan, dsb.).
   - Jika V1 memiliki fitur visual atau integrasi khusus (misal: Leaflet map, kalkulator dinamis, modal pencarian referensi, status baris, dsb.), seluruh fitur tersebut **WAJIB** diikutsertakan dan berfungsi 100% pada V2.
+- **Dilarang Keras Menambah / Mengubah Variabel, Field Form Filter, & Kolom Tabel Baru Tanpa Instruksi (Anti-Addition / Zero Invention)**:
+  - Dilarang keras menambah field form filter, input baru, variabel backend baru, atau kolom tabel baru yang tidak ada pada rancangan modul atau tidak diminta oleh pengguna.
+  - Dilarang mengimprovisasi atau berasumsi menambahkan filter tambahan (seperti filter cari pelanggan, filter kategori tambahan, kolom dummy, dsb.) jika halaman/fitur tersebut tidak memerlukannya atau tidak memilikinya di controller/model.
+  - Susunan form filter dan kolom tabel pada V2 **WAJIB HANYA** mencakup elemen-elemen yang valid dan sama persis dengan rancangan V1 & controller backend. Tugas asisten AI **HANYA** memodernisasi desain visualnya ke standar Version 2 Tailwind, bukan mengubah struktur data atau menambah variabel/filter baru.
 - **Dilarang Keras Mengubah Istilah / Label Asli Bawaan V1 (Preservasi Label Verbatim)**:
   - Teks label form, header kolom, judul ringkasan, dan baris footer tabel (`tfoot`) **DILARANG KERAS** diubah, diganti, disingkat, atau ditambahi kata-kata baru yang tidak ada pada V1.
   - Wajib mempertahankan istilah dan penamaan asli dari V1 secara persis (*verbatim*).

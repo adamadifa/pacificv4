@@ -35,14 +35,14 @@ class IzinsakitController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izinsakit.index', $data);
+        return view('v2.hrd.pengajuanizin.izinsakit.index', $data);
     }
 
     public function create()
     {
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinsakit.create', $data);
+        return view('v2.hrd.pengajuanizin.izinsakit.create', $data);
     }
 
     public function store(Request $request)
@@ -124,7 +124,7 @@ class IzinsakitController extends Controller
         $data['izinsakit'] = Izinsakit::where('kode_izin_sakit', $kode_izin_sakit)->first();
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
-        return view('hrd.pengajuanizin.izinsakit.edit', $data);
+        return view('v2.hrd.pengajuanizin.izinsakit.edit', $data);
     }
 
     public function update(Request $request, $kode_izin_sakit)
@@ -197,7 +197,7 @@ class IzinsakitController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izinsakit.approve', $data);
+        return view('v2.hrd.pengajuanizin.izinsakit.approve', $data);
     }
 
 
@@ -254,7 +254,7 @@ class IzinsakitController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinsakit.show', $data);
+        return view('v2.hrd.pengajuanizin.izinsakit.show', $data);
     }
 
 

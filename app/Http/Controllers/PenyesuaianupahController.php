@@ -17,14 +17,14 @@ class PenyesuaianupahController extends Controller
     public function index()
     {
         $data['penyupah'] = Penyesuaianupah::orderBy('tahun')->orderBy('bulan')->get();
-        return view('hrd.penyesuaianupah.index', $data);
+        return view('v2.hrd.penyesuaianupah.index', $data);
     }
 
     public function create()
     {
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        return view('hrd.penyesuaianupah.create', $data);
+        return view('v2.hrd.penyesuaianupah.create', $data);
     }
 
     public function store(Request $request)
@@ -48,7 +48,7 @@ class PenyesuaianupahController extends Controller
         $data['penyupah'] = Penyesuaianupah::where('kode_gaji', $kode_gaji)->first();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
-        return view('hrd.penyesuaianupah.edit', $data);
+        return view('v2.hrd.penyesuaianupah.edit', $data);
     }
 
     public function update(Request $request, $kode_gaji)
@@ -106,7 +106,7 @@ class PenyesuaianupahController extends Controller
         $data['total_pengurang'] = $detailpenyupah->sum('pengurang');
         $data['total_net'] = $data['total_penambah'] - $data['total_pengurang'];
 
-        return view('hrd.penyesuaianupah.show', $data);
+        return view('v2.hrd.penyesuaianupah.show', $data);
     }
 
     public function tambahkaryawan($kode_gaji)
@@ -115,7 +115,7 @@ class PenyesuaianupahController extends Controller
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
         $data['karyawan'] = Karyawan::where('status_aktif_karyawan', 1)->orderBy('nama_karyawan', 'asc')->get();
-        return view('hrd.penyesuaianupah.tambahkaryawan', $data);
+        return view('v2.hrd.penyesuaianupah.tambahkaryawan', $data);
     }
 
     public function storekaryawan(Request $request, $kode_gaji)
@@ -152,7 +152,7 @@ class PenyesuaianupahController extends Controller
             ->join('hrd_karyawan', 'hrd_penyesuaian_upah_detail.nik', '=', 'hrd_karyawan.nik')
             ->select('hrd_penyesuaian_upah_detail.*', 'hrd_karyawan.nama_karyawan')
             ->firstOrFail();
-        return view('hrd.penyesuaianupah.editkaryawan', $data);
+        return view('v2.hrd.penyesuaianupah.editkaryawan', $data);
     }
 
     public function updatekaryawan(Request $request, $kode_gaji, $nik)

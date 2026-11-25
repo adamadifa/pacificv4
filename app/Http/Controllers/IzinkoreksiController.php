@@ -31,7 +31,7 @@ class IzinkoreksiController extends Controller
         $data['cabang'] = Cabang::orderBy('kode_cabang')->get();
         $data['roles_can_approve'] = config('presensi.approval');
         $data['level_hrd'] = config('presensi.approval.level_hrd');
-        return view('hrd.pengajuanizin.izinkoreksi.index', $data);
+        return view('v2.hrd.pengajuanizin.izinkoreksi.index', $data);
     }
 
 
@@ -41,7 +41,7 @@ class IzinkoreksiController extends Controller
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         $data['alasan_koreksi'] = Alasankoreksi::orderBy('id')->get();
 
-        return view('hrd.pengajuanizin.izinkoreksi.create', $data);
+        return view('v2.hrd.pengajuanizin.izinkoreksi.create', $data);
     }
 
     function getjadwalkerja($kode_jadwal = "")
@@ -154,7 +154,7 @@ class IzinkoreksiController extends Controller
         $k = new Karyawan();
         $data['karyawan'] = $k->getkaryawanpresensi()->get();
         $data['alasan_koreksi'] = Alasankoreksi::orderBy('id')->get();
-        return view('hrd.pengajuanizin.izinkoreksi.edit', $data);
+        return view('v2.hrd.pengajuanizin.izinkoreksi.edit', $data);
     }
 
 
@@ -212,7 +212,7 @@ class IzinkoreksiController extends Controller
         $role = $user->getRoleNames()->first();
         $data['level_hrd'] = $level_hrd;
         $data['role'] = $role;
-        return view('hrd.pengajuanizin.izinkoreksi.approve', $data);
+        return view('v2.hrd.pengajuanizin.izinkoreksi.approve', $data);
     }
 
 
@@ -269,7 +269,7 @@ class IzinkoreksiController extends Controller
         $data['nextrole'] = $nextrole;
         $data['userrole'] = $userrole;
         $data['end_role'] = $end_role;
-        return view('hrd.pengajuanizin.izinkoreksi.show', $data);
+        return view('v2.hrd.pengajuanizin.izinkoreksi.show', $data);
     }
 
 
