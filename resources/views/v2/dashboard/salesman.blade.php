@@ -15,6 +15,52 @@
     <!-- WELCOME SLIM BAR -->
     @include('dashboard.welcome')
 
+    <!-- ACTIVE CHECK-IN CUSTOMER BANNER (MOBILE-FIRST QUICK ACCESS) -->
+    @if (!empty($pelanggan_checkin))
+        <a href="{{ route('sfa.showpelanggan', Crypt::encrypt($pelanggan_checkin->kode_pelanggan)) }}"
+            class="group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/80 dark:bg-emerald-950/30 hover:bg-emerald-100/70 dark:hover:bg-emerald-950/50 shadow-2xs transition">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <i data-lucide="map-pin-check" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-600/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Sedang Check-in
+                        </span>
+                        <span class="text-[11px] font-bold font-mono-num text-slate-500 dark:text-slate-400">
+                            {{ $pelanggan_checkin->kode_pelanggan }}
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-100 truncate mt-0.5 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
+                        {{ strtoupper($pelanggan_checkin->nama_pelanggan) }}
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 shrink-0">
+                <span class="hidden sm:inline">Buka Outlet</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 transition-transform group-hover:translate-x-0.5"></i>
+            </div>
+        </a>
+    @else
+        <a href="{{ route('sfa.pelanggan') }}"
+            class="group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-[#284c9a]/50 hover:bg-slate-50/70 dark:hover:bg-slate-800/50 shadow-2xs transition">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-[#284c9a] dark:group-hover:text-blue-400 flex items-center justify-center shrink-0 transition-colors">
+                    <i data-lucide="map-pin-off" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Belum Ada Pelanggan Check-in</p>
+                    <p class="text-[11px] text-slate-400 truncate">Klik untuk memilih pelanggan dan mulai kunjungan.</p>
+                </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-[#284c9a] text-white text-[11px] font-bold shrink-0">
+                Pilih Outlet
+            </span>
+        </a>
+    @endif
+
     <!-- STATISTIC CARDS STRIP (SOLID PACIFIC NAVY UNIFIED CARD WITH DIVIDERS) -->
     <div class="rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-shadow duration-200 bg-[#284c9a] text-white relative">
         <div class="absolute inset-0 bg-radial from-white/[0.04] to-transparent pointer-events-none"></div>

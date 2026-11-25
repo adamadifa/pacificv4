@@ -515,6 +515,20 @@ class DashboardController extends Controller
             ->count();
         $data['list_bulan'] = config('global.list_bulan');
         $data['start_year'] = config('global.start_year');
+
+        $kodepelanggan_checkin = \Illuminate\Support\Facades\Cookie::get('kodepelanggan');
+        $data['pelanggan_checkin'] = null;
+        if (!empty($kodepelanggan_checkin)) {
+            try {
+                $kodepelanggan_decrypted = \Illuminate\Support\Facades\Crypt::decrypt($kodepelanggan_checkin);
+                $data['pelanggan_checkin'] = \App\Models\Pelanggan::select('kode_pelanggan', 'nama_pelanggan', 'alamat_pelanggan')
+                    ->where('kode_pelanggan', $kodepelanggan_decrypted)
+                    ->first();
+            } catch (\Exception $e) {
+                $data['pelanggan_checkin'] = null;
+            }
+        }
+
         return view('dashboard.salesman', $data);
     }
 

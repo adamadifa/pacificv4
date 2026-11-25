@@ -7,11 +7,17 @@ use App\Models\Pelanggan as MPelanggan;
 
 class Pelanggan extends Component
 {
-    public $datapelanggan;
     public $namapelanggan_search = '';
+
     public function render()
     {
-        $this->datapelanggan = MPelanggan::join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
+        $datapelanggan = MPelanggan::join('wilayah', 'pelanggan.kode_wilayah', '=', 'wilayah.kode_wilayah')
+            ->select(
+                'pelanggan.kode_pelanggan',
+                'pelanggan.nama_pelanggan',
+                'pelanggan.status_aktif_pelanggan',
+                'wilayah.nama_wilayah'
+            )
             ->where('pelanggan.kode_salesman', auth()->user()->kode_salesman)
             ->where('pelanggan.kode_cabang', auth()->user()->kode_cabang)
             ->when($this->namapelanggan_search, function ($query) {
@@ -22,7 +28,9 @@ class Pelanggan extends Component
             })
             ->orderBy('tanggal_register', 'desc')
             ->limit(30)
+            ->toBase()
             ->get();
-        return view('livewire.pelanggan');
+
+        return view('livewire.pelanggan', compact('datapelanggan'));
     }
 }

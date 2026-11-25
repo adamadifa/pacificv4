@@ -136,7 +136,7 @@
             jpeg_quality: 80,
             sourceId: cameras[0],
             facingMode: {
-                exact: 'environment'
+                ideal: 'environment'
             }
         });
 

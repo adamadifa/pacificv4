@@ -809,6 +809,9 @@
         /* ==========================================================================
            SWEETALERT2 MODERN V2 REDESIGN (WARNING, ERROR, SUCCESS, INFO)
            ========================================================================== */
+        body.swal2-height-auto {
+            height: 100vh !important;
+        }
         .swal2-container {
             z-index: 99999 !important;
             backdrop-filter: blur(4px) !important;
@@ -1694,6 +1697,35 @@
         </div>
 
     </div>
+
+    <!-- Mobile Bottom Navigation V2 -->
+    @hasanyrole(['gm marketing', 'regional sales manager', 'sales marketing manager'])
+        <nav class="fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 md:hidden">
+            <div class="grid grid-cols-5 h-14 max-w-md mx-auto">
+                <a href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-[#284c9a] dark:hover:text-blue-400 transition">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-semibold">Profil</span>
+                </a>
+                <a href="{{ route('aktifitassmm.index') }}" class="flex flex-col items-center justify-center gap-0.5 {{ request()->is('aktifitassmm*') ? 'text-[#284c9a] dark:text-blue-400' : 'text-slate-400 hover:text-[#284c9a] dark:hover:text-blue-400' }} transition">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-semibold">Aktivitas</span>
+                </a>
+                <a href="/dashboard" class="flex flex-col items-center justify-center gap-0.5 {{ request()->is('dashboard') ? 'text-[#284c9a] dark:text-blue-400' : 'text-slate-400 hover:text-[#284c9a] dark:hover:text-blue-400' }} transition">
+                    <div class="w-8 h-8 rounded-full {{ request()->is('dashboard') ? 'bg-[#284c9a] text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800' }} flex items-center justify-center">
+                        <i data-lucide="home" class="w-4 h-4"></i>
+                    </div>
+                </a>
+                <a href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-[#284c9a] dark:hover:text-blue-400 transition">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-semibold">Pesan</span>
+                </a>
+                <a href="#" class="flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-[#284c9a] dark:hover:text-blue-400 transition">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-semibold">Bantuan</span>
+                </a>
+            </div>
+        </nav>
+    @endhasanyrole
 
     <!-- Core Scripts Initializer -->
     <script>
