@@ -121,6 +121,8 @@ use App\Http\Controllers\PencairanProgramIkatan2026Controller;
 use App\Http\Controllers\PenilaiankaryawanApprovalConfigController;
 use App\Http\Controllers\PenilaiankaryawanController;
 use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\PengirimanDriverController;
+use App\Http\Controllers\FpbController;
 use App\Http\Controllers\PenyesuaiangudangcabangController;
 use App\Http\Controllers\PenyesuaianupahController;
 use App\Http\Controllers\PermintaankirimanController;
@@ -2316,6 +2318,37 @@ Route::middleware('auth')->group(function () {
     });
 
 
+
+    Route::controller(FpbController::class)->group(function () {
+        Route::get('/fpb', 'index')->name('fpb.index')->can('fpb.index');
+        Route::get('/fpb/create', 'create')->name('fpb.create')->can('fpb.create');
+        Route::get('/fpb/getbycabang', 'getbycabang')->name('fpb.getbycabang')->can('fpb.create');
+        Route::get('/fpb/getfaktur', 'getfaktur')->name('fpb.getfaktur')->can('fpb.create');
+        Route::post('/fpb/store', 'store')->name('fpb.store')->can('fpb.store');
+        Route::get('/fpb/{no_fpb}/show', 'show')->name('fpb.show')->can('fpb.index');
+        Route::delete('/fpb/{no_fpb}/delete', 'destroy')->name('fpb.delete')->can('fpb.delete');
+    });
+
+    //SFA
+    Route::controller(PengirimanDriverController::class)->group(function () {
+        Route::get('/pengirimandriver', 'index')->name('pengirimandriver.index')->can('pengirimandriver.index');
+        Route::get('/pengirimandriver/create', 'create')->name('pengirimandriver.create')->can('pengirimandriver.create');
+        Route::get('/pengirimandriver/getbycabang', 'getbycabang')->name('pengirimandriver.getbycabang')->can('pengirimandriver.create');
+        Route::get('/pengirimandriver/getpelanggan', 'getpelanggan')->name('pengirimandriver.getpelanggan')->can('pengirimandriver.create');
+        Route::post('/pengirimandriver/store', 'store')->name('pengirimandriver.store')->can('pengirimandriver.store');
+        Route::get('/pengirimandriver/{no_pengiriman}/show', 'show')->name('pengirimandriver.show')->can('pengirimandriver.index');
+        Route::delete('/pengirimandriver/{no_pengiriman}/delete', 'destroy')->name('pengirimandriver.delete')->can('pengirimandriver.delete');
+    });
+
+    Route::controller(FpbController::class)->group(function () {
+        Route::get('/fpb', 'index')->name('fpb.index')->can('fpb.index');
+        Route::get('/fpb/create', 'create')->name('fpb.create')->can('fpb.create');
+        Route::get('/fpb/getbycabang', 'getbycabang')->name('fpb.getbycabang')->can('fpb.create');
+        Route::get('/fpb/getfaktur', 'getfaktur')->name('fpb.getfaktur')->can('fpb.create');
+        Route::post('/fpb/store', 'store')->name('fpb.store')->can('fpb.store');
+        Route::get('/fpb/{no_fpb}/show', 'show')->name('fpb.show')->can('fpb.index');
+        Route::delete('/fpb/{no_fpb}/delete', 'destroy')->name('fpb.delete')->can('fpb.delete');
+    });
 
     //SFA
     Route::controller(SfaControler::class)->group(function () {

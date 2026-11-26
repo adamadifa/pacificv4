@@ -530,7 +530,7 @@
                 $hasMarketing = 
                     auth()->user()->hasAnyPermission([
                         'omancabang.index', 'oman.index', 'permintaankiriman.index',
-                        'targetkomisi.index', 'penjualan.index', 'retur.index',
+                        'targetkomisi.index', 'penjualan.index', 'retur.index', 'pengirimandriver.index', 'fpb.index',
                         'ajuanlimit.index', 'sapiutang.index', 'sapiutangsales.index', 'movefaktur.index',
                         'trackingtruck.index'
                     ]) ||

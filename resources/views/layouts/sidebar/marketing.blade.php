@@ -34,6 +34,8 @@
             'permintaankiriman.index',
             'targetkomisi.index',
             'penjualan.index',
+            'pengirimandriver.index',
+            'fpb.index',
             'retur.index',
             'ajuanlimit.index',
             'sapiutang.index',
@@ -142,6 +144,20 @@
                 <li class="menu-item {{ request()->is(['penjualan', 'penjualan/*']) ? 'active' : '' }}">
                     <a href="{{ route('penjualan.index') }}" class="menu-link">
                         <div>Penjualan</div>
+                    </a>
+                </li>
+            @endcan
+            @can('pengirimandriver.index')
+                <li class="menu-item {{ request()->is(['pengirimandriver', 'pengirimandriver/*']) ? 'active' : '' }}">
+                    <a href="{{ route('pengirimandriver.index') }}" class="menu-link">
+                        <div>Pengiriman Driver</div>
+                    </a>
+                </li>
+            @endcan
+            @can('fpb.index')
+                <li class="menu-item {{ request()->is(['fpb', 'fpb/*']) ? 'active' : '' }}">
+                    <a href="{{ route('fpb.index') }}" class="menu-link">
+                        <div>FPB</div>
                     </a>
                 </li>
             @endcan
